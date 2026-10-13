@@ -5,6 +5,7 @@ kind: feature_idea
 status: backlog
 updated: 2026-10-13
 depends_on: [F001]
+issue: 2
 ---
 
 # F002 — エネルギーの受取・消費を矛盾なく扱う（候補、未実装）
