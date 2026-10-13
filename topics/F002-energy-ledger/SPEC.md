@@ -87,12 +87,15 @@ assert state2.residual_uj == 0
 ## 実装・初回数値実験の結果（2026-10-14 JST）
 
 - 実装：`soma/f002.py`、`tests/test_f002.py`、`experiments/F002/run_suite.py`。セル・状態は不変、`apply_event` は新しい状態とEntryを返す。
-- Python 3.11 / GitHub ActionsでF001・F002あわせて**20テスト合格（F002 11件）**。F002 A〜Fの全有効イベントで`residual_uj=0`。
+- Python 3.11 / GitHub ActionsでF001・F002あわせて**21テスト合格（F002 12件）**。F002 A〜Fの全有効イベントで`residual_uj=0`。
 - 乱数seed `20261014` の500イベント列について、残差0・状態範囲・完全な再実行一致。
-- E：9種類の不正操作を拒否し、元の状態を保持。
+- E：13種類の不正操作（小数・非有限値を含む）を拒否し、元の状態を保持。
 - F：3 µJ・50%送金を一括で実行した場合はBが1 µJ受領、3回に分けた場合は0 µJ。どちらも残差0。量子化差は確認されたモデルの制約。
 - D：Aが7,000,000 µJ、Bが4,400,000 µJ、損失600,000 µJ。Wolframの整数検算と一致。
-- 出力証拠：[GitHub Actions #38424989145](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38424989145)、artifact #11827224188。コードSHA `e0defe10a38e148b0ef6cb1fd8a24bb7b4f0c1d8`。
+- 出力証拠：[GitHub Actions #38424989145](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38430103190)、artifact #11830128744。レビュー指摘対応を含むコードSHA `f28b60ff30fb15d8f1160afbd15236cb721488f1`。
 - **科学的判定**：会計上の整数不変量と再現性に関する仮説H002は、今回の実装および検証条件の範囲で支持。実世界の電池・アクチュエータ・接続の物理妥当性は未検証。
 
 [詳しい結果・数値](../../findings/F002-validation.md)。
+
+### 独立レビューからの研究プロトコル修正
+PR #6のCodexレビューで、初回A〜Cの2セル設定が事前計画の単一セルと不一致であると発見された。条件を変更していたことを見落とした初回判定を訂正し、A〜Cを1セルで再実行した。Eの小数・非有限値の拒否証拠、実行コードのGit/dirty/SHA256 provenance、推移・内訳SVGを追加。**初回ログを隠さず履歴として残す**。詳細は[検証ノート](../../findings/F002-validation.md)。
