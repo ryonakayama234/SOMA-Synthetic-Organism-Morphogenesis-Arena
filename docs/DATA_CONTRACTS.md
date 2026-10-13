@@ -2,7 +2,7 @@
 id: DATA
 title: データの構造と流れ
 kind: contract
-status: proposed
+status: partially_implemented
 updated: 2026-10-13
 related: [ARCHITECTURE, F001, F002]
 ---
@@ -64,3 +64,11 @@ time_s,x_m,v_m_s,force_n
 - 物理エンジン用の真の状態ログと、セルが実際に知覚した観測ログを分ける。
 
 [システム図鑑](ARCHITECTURE.md)
+
+## F001で確立した入出力（2026-10-13）
+- 設定は `schema_version=f001.v1` を使用。 `model=1d_linear_drag`。
+- `initial_x_m`、`initial_v_m_s` も入力として追加。
+- 時系列 `states.csv` の列順は `time_s,x_m,v_m_s,force_n` で確定。
+- 各実験に `config.json`、`manifest.json`（コードコミットIDとチェックサム）、`motion.svg` を出力。
+- 実行結果の上書きを禁止し、出力先には未使用のディレクトリを指定。
+- 詳細： [F001の再現方法](../experiments/F001/README.md)。
