@@ -155,6 +155,37 @@ class F002Tests(unittest.TestCase):
             self.assertEqual(entry, expected_entry)
         self.assertEqual(state, replay)
 
+    def test_suite_evidence_matches_registered_conditions(self):
+        import subprocess
+        import sys
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "suite"
+            completed = subprocess.run(
+                [sys.executable, "-m", "experiments.F002.run_suite", "--output-dir", str(folder)],
+                capture_output=True, text=True, check=True,
+            )
+            summary = json.loads(completed.stdout)
+            self.assertEqual(summary["invalid_control_count"], 13)
+            for name, expected in (("A-rest", 10_000_000),
+                                   ("B-acquire", 15_000_000),
+                                   ("C-spend", 7_000_000)):
+                conf = json.loads((folder / name / "config.json").read_text())
+                self.assertEqual(len(conf["cells"]), 1)
+                self.assertEqual(conf["cells"][0]["cell_id"], "A")
+                self.assertEqual(summary["runs"][name]["final_balances_uj"], {"A": expected})
+            cases = json.loads((folder / "E-invalid-events.json").read_text())["cases"]
+            self.assertIn("fractional_amount", {case["case"] for case in cases})
+            self.assertIn("fractional_efficiency", {case["case"] for case in cases})
+            self.assertIn("nonfinite_amount", {case["case"] for case in cases})
+            self.assertTrue(all(c["rejected"] and c["state_unchanged"] for c in cases))
+            svg = (folder / "F-split" / "energy.svg").read_text()
+            self.assertIn("<polyline", svg)
+            self.assertIn("event 3:", svg)
+            self.assertIn("transfer loss: 3", svg)
+            manifest = json.loads((folder / "D-transfer" / "manifest.json").read_text())
+            self.assertEqual(type(manifest["python_code_git_dirty"]) in (bool, type(None)), True)
+            self.assertEqual(len(manifest["python_code_sha256"]), 64)
+
     def test_save_manifest_csv_and_no_overwrite(self):
         conf = make_config("D-transfer", [{"kind": "transfer", "source_id": "A", "target_id": "B", "amount_uj": 3_000_000, "eta_bps": 8000}])
         with tempfile.TemporaryDirectory() as tmp:
@@ -162,6 +193,8 @@ class F002Tests(unittest.TestCase):
             manifest = save_run(conf, folder)
             self.assertEqual(manifest["final_balances_uj"], {"A": 7_000_000, "B": 4_400_000})
             self.assertEqual(manifest["residual_uj"], 0)
+            self.assertEqual(len(manifest["python_code_sha256"]), 64)
+            self.assertIn("python_code_git_dirty", manifest)
             self.assertEqual(set(manifest["artifacts"]), {"config.json", "events.csv", "balances.csv", "energy.svg"})
             with (folder / "events.csv").open() as f:
                 rows = list(csv.DictReader(f))

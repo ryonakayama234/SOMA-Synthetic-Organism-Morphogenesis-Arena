@@ -93,3 +93,6 @@ F002での `transfer` は**数値台帳上の取引**であり、力学的な結
 - `experiments.F002.run_suite`：A〜Fの対照実験とEの9つの拒否監査。出力をCI artifactへ保管。
 
 [実験記録](../findings/F002-validation.md) / [コード](../soma/f002.py)。
+
+### レビュー #6 後の保存証拠の検査
+取引 → 中間残量の全履歴（balances.csv）→ CSVに対応するイベント推移・台帳内訳（energy.svg）→ manifest（Git SHA、dirty判定、モジュールSHA256、artifact SHA256）の順に検証できる。なお、グラフの間引きは表示だけであり、CSVは間引かない。

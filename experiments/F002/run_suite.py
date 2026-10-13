@@ -35,6 +35,10 @@ def rejection_checks() -> dict:
         "missing_id": Event("spend", 1, source_id="missing"),
         "self_transfer": Event("transfer", 1, "A", "A", 10000),
         "bad_efficiency": Event("transfer", 1, "A", "B", 10001),
+        "fractional_amount": Event("spend", 1.5, source_id="A"),
+        "fractional_efficiency": Event("transfer", 1, "A", "B", 5000.5),
+        "nonfinite_amount": Event("spend", float("nan"), source_id="A"),
+        "nonfinite_efficiency": Event("transfer", 1, "A", "B", float("inf")),
     }
     records = []
     for name, event in trials.items():
@@ -56,10 +60,11 @@ def main() -> None:
     args = parser.parse_args()
     out = args.output_dir
     out.mkdir(parents=True, exist_ok=False)
+    single_cell = [{"cell_id": "A", "balance_uj": 10_000_000, "capacity_uj": 20_000_000}]
     plans = {
-        "A-rest": common("A-rest", []),
-        "B-acquire": common("B-acquire", [{"kind": "acquire", "target_id": "A", "amount_uj": 5_000_000}]),
-        "C-spend": common("C-spend", [{"kind": "spend", "source_id": "A", "amount_uj": 3_000_000}]),
+        "A-rest": common("A-rest", [], cells=single_cell),
+        "B-acquire": common("B-acquire", [{"kind": "acquire", "target_id": "A", "amount_uj": 5_000_000}], cells=single_cell),
+        "C-spend": common("C-spend", [{"kind": "spend", "source_id": "A", "amount_uj": 3_000_000}], cells=single_cell),
         "D-transfer": common("D-transfer", [transfer(3_000_000, 8000)]),
         "F-bulk": common("F-bulk", [transfer(3, 5000)]),
         "F-split": common("F-split", [transfer(1, 5000)] * 3),
@@ -68,6 +73,11 @@ def main() -> None:
     e = rejection_checks()
     (out / "E-invalid-events.json").write_text(json.dumps(e, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     assert all(x["residual_uj"] == 0 for x in results.values())
+    assert all(results[name]["final_balances_uj"] == expected for name, expected in {
+        "A-rest": {"A": 10_000_000},
+        "B-acquire": {"A": 15_000_000},
+        "C-spend": {"A": 7_000_000},
+    }.items()), "A-C must use only cell A as preregistered"
     assert results["D-transfer"]["final_balances_uj"] == {"A": 7_000_000, "B": 4_400_000}
     assert results["F-bulk"]["final_balances_uj"]["B"] - results["F-split"]["final_balances_uj"]["B"] == 1
     manifest = {"experiment_id": "F002-A-F", "runs": {name: {"residual_uj": r["residual_uj"], "final_balances_uj": r["final_balances_uj"], "loss_uj": r["loss_uj"]} for name, r in results.items()},

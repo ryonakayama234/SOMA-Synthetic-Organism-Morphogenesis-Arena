@@ -195,12 +195,25 @@ def run(config: dict[str, Any]) -> tuple[LedgerState, list[Entry], list[LedgerSt
     return state, entries, snapshots
 
 
-def _git_revision() -> str | None:
+def _git_provenance() -> tuple[str | None, bool | None]:
+    """Find the Git repo that owns THIS module, not the caller's cwd.
+
+    A dirty checkout is recorded explicitly; SHA alone does not identify modified code.
+    Generated runs/ are excluded by the repository's .gitignore.
+    """
+    root = Path(__file__).resolve().parents[1]
     try:
-        result = subprocess.run(["git", "rev-parse", "HEAD"], text=True, capture_output=True, check=True, timeout=2)
-        return result.stdout.strip() or None
-    except (OSError, subprocess.SubprocessError):
-        return None
+        def git(*args: str) -> str:
+            return subprocess.run(
+                ["git", "-C", str(root), *args], text=True, capture_output=True,
+                check=True, timeout=3,
+            ).stdout.strip()
+
+        if Path(git("rev-parse", "--show-toplevel")).resolve() != root:
+            return None, None
+        return git("rev-parse", "HEAD"), bool(git("status", "--porcelain", "--untracked-files=all"))
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None, None
 
 
 def _sha256(path: Path) -> str:
@@ -208,28 +221,60 @@ def _sha256(path: Path) -> str:
 
 
 def plot_svg(snapshots: list[LedgerState], experiment_id: str) -> str:
-    """Human inspection only; CSV integer values are the authoritative evidence."""
-    cells = snapshots[0].cells
-    highest = max(c.capacity_uj for c in cells)
-    height = 95 + len(cells) * 44
-    chunks = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 {height}" width="640" height="{height}">',
-              '<rect width="100%" height="100%" fill="white"/>',
-              '<g font-family="Arial,sans-serif" fill="#273449">',
-              f'<text x="20" y="30" font-size="18">{escape(experiment_id)}: stored energy [J]</text>',
-              '<text x="265" y="52" font-size="12">initial (gray) / final (blue)</text>']
-    for i, c in enumerate(cells):
-        final = snapshots[-1].cell(c.cell_id)
-        y = 72 + 44 * i
-        chunks.append(f'<text x="20" y="{y+16}" font-size="13">{escape(c.cell_id)}</text>')
-        chunks.append(f'<rect x="110" y="{y}" width="{450*c.balance_uj/highest:.3f}" height="10" fill="#9ca3af"/>')
-        chunks.append(f'<rect x="110" y="{y+12}" width="{450*final.balance_uj/highest:.3f}" height="10" fill="#2563eb"/>')
-        chunks.append(f'<text x="570" y="{y+19}" font-size="10">{final.balance_uj / UJ_PER_J:g}</text>')
-    chunks.append('</g></svg>')
-    return "".join(chunks)
+    """Show the event-time trace AND the accounted disposition of energy.
 
+    This is an inspection aid; integer CSV/manifest values remain the evidence.
+    For large runs, limit plot points to roughly 400; the CSV retains every event.
+    """
+    final = snapshots[-1]
+    n = len(snapshots) - 1
+    width = 850
+    shown = min(len(snapshots), 9)
+    height = 420 + 21 * shown
+    palette = ("#2563eb", "#dc2626", "#059669", "#7c3aed", "#d97706")
+    top, plot_bottom, left, right = 98, 280, 94, 785
+    ceiling = max(c.capacity_uj for c in final.cells)
+    sampled = sorted(set([0, n] + list(range(0, n + 1, max(1, n // 400)))))
+    chunks = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}">',
+              '<rect width="100%" height="100%" fill="white"/>',
+              '<g font-family="Arial,sans-serif" fill="#243044">',
+              f'<text x="18" y="28" font-size="18">{escape(experiment_id)}: energy ledger</text>',
+              '<text x="18" y="50" font-size="13">Cell balances by accepted event; units: microjoules (µJ)</text>',
+              f'<path d="M {left} {top} V {plot_bottom} H {right}" fill="none" stroke="#64748b"/>',
+              f'<text x="18" y="{top+10}" font-size="12">{ceiling}</text>',
+              f'<text x="{left-10}" y="{plot_bottom+17}" font-size="12">0</text>',
+              f'<text x="{right-55}" y="{plot_bottom+17}" font-size="12">event {n}</text>']
+    for j, cell in enumerate(final.cells):
+        color = palette[j % len(palette)]
+        points = " ".join(
+            f"{left + (right-left)*idx/max(1,n):.3f},{plot_bottom-(plot_bottom-top)*snapshots[idx].cell(cell.cell_id).balance_uj/ceiling:.3f}"
+            for idx in sampled
+        )
+        if n == 0:
+            points += " " + points
+        chunks.append(f'<polyline points="{points}" fill="none" stroke="{color}" stroke-width="2"/>')
+        if j < 8:
+            chunks.append(f'<text x="{left+(j%4)*174}" y="{65+(j//4)*16}" font-size="12" fill="{color}">'
+                          f'{escape(cell.cell_id)}: {cell.balance_uj} µJ</text>')
+    # Integer accounting closure in the same diagram, not an inferred physical energy.
+    total = sum(c.balance_uj for c in final.cells)
+    chunks.extend([
+        '<text x="18" y="331" font-size="14">Accounting breakdown (microjoules)</text>',
+        f'<text x="18" y="353" font-size="12">Initial stores: {final.initial_total_uj} + external acquired: {final.acquired_uj}</text>',
+        f'<text x="18" y="371" font-size="12">= final stores: {total} + spent: {final.spent_uj} + transfer loss: {final.loss_uj}</text>',
+        f'<text x="18" y="389" font-size="12">Conservation residual: {final.residual_uj} microjoules</text>',
+        '<text x="18" y="416" font-size="12">Exact event trace (first 8 snapshots, full trace in balances.csv):</text>',
+    ])
+    for k, state in enumerate(snapshots[:shown]):
+        row = ", ".join(f"{c.cell_id}={c.balance_uj}" for c in state.cells[:5])
+        suffix = " ..." if len(state.cells) > 5 else ""
+        chunks.append(f'<text x="18" y="{438+21*k}" font-size="12">event {state.event_index}: {escape(row)}{suffix}; loss={state.loss_uj}</text>')
+    chunks.append("</g></svg>")
+    return "".join(chunks)
 
 def save_run(config: dict[str, Any], output_dir: Path) -> dict[str, Any]:
     state, entries, snapshots = run(config)  # Validate before creating directory.
+    revision, dirty = _git_provenance()  # Snapshot provenance before writing artifacts.
     output_dir.mkdir(parents=True, exist_ok=False)
     (output_dir / "config.json").write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     with (output_dir / "events.csv").open("w", encoding="utf-8", newline="") as f:
@@ -247,7 +292,9 @@ def save_run(config: dict[str, Any], output_dir: Path) -> dict[str, Any]:
         "schema_version": SCHEMA_VERSION,
         "experiment_id": config["experiment_id"],
         "model": "integer_microjoule_ledger",
-        "python_code_git_commit": _git_revision(),
+        "python_code_git_commit": revision,
+        "python_code_git_dirty": dirty,
+        "python_code_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         "seed": config["seed"],
         "seed_note": "no randomness in this experiment",
         "event_count": len(entries),
