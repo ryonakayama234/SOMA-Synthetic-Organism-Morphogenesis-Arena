@@ -1,0 +1,81 @@
+"""Reproducible F002 conditions A-F. Does not overwrite previous evidence."""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from pathlib import Path
+
+from soma.f002 import Cell, Event, apply_event, new_ledger, save_run
+
+
+def common(name: str, events: list[dict], *, cells: list[dict] | None = None) -> dict:
+    if cells is None:
+        cells = [{"cell_id": "A", "balance_uj": 10_000_000, "capacity_uj": 20_000_000},
+                 {"cell_id": "B", "balance_uj": 2_000_000, "capacity_uj": 20_000_000}]
+    return {"schema_version": "f002.v1", "experiment_id": name, "seed": 1,
+            "cells": cells, "events": events}
+
+
+def transfer(amount: int, eta: int) -> dict:
+    return {"kind": "transfer", "source_id": "A", "target_id": "B",
+            "amount_uj": amount, "eta_bps": eta}
+
+
+def rejection_checks() -> dict:
+    """Control E: explicitly record failures while checking state was not modified."""
+    first = new_ledger([Cell("A", 20_000_000, 10_000_000), Cell("B", 20_000_000, 19_000_000)])
+    trials = {
+        "insufficient": Event("spend", 10_000_001, source_id="A"),
+        "capacity": Event("acquire", 1_000_001, target_id="B"),
+        "transfer_capacity": Event("transfer", 3_000_000, "A", "B", 8000),
+        "negative": Event("spend", -1, source_id="A"),
+        "zero": Event("spend", 0, source_id="A"),
+        "bool": Event("spend", True, source_id="A"),
+        "missing_id": Event("spend", 1, source_id="missing"),
+        "self_transfer": Event("transfer", 1, "A", "A", 10000),
+        "bad_efficiency": Event("transfer", 1, "A", "B", 10001),
+    }
+    records = []
+    for name, event in trials.items():
+        try:
+            apply_event(first, event)
+        except ValueError as exc:
+            records.append({"case": name, "rejected": True, "error": str(exc),
+                            "state_unchanged": first.event_index == 0 and first.residual_uj == 0 and first.cell("A").balance_uj == 10_000_000 and first.cell("B").balance_uj == 19_000_000})
+        else:
+            records.append({"case": name, "rejected": False, "error": None, "state_unchanged": False})
+    if not all(item["rejected"] and item["state_unchanged"] for item in records):
+        raise AssertionError("invalid E control")
+    return {"experiment_id": "E-invalid-events", "cases": records, "passed": len(records)}
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Run F002 controlled experiments A-F")
+    parser.add_argument("--output-dir", type=Path, required=True)
+    args = parser.parse_args()
+    out = args.output_dir
+    out.mkdir(parents=True, exist_ok=False)
+    plans = {
+        "A-rest": common("A-rest", []),
+        "B-acquire": common("B-acquire", [{"kind": "acquire", "target_id": "A", "amount_uj": 5_000_000}]),
+        "C-spend": common("C-spend", [{"kind": "spend", "source_id": "A", "amount_uj": 3_000_000}]),
+        "D-transfer": common("D-transfer", [transfer(3_000_000, 8000)]),
+        "F-bulk": common("F-bulk", [transfer(3, 5000)]),
+        "F-split": common("F-split", [transfer(1, 5000)] * 3),
+    }
+    results = {name: save_run(config, out / name) for name, config in plans.items()}
+    e = rejection_checks()
+    (out / "E-invalid-events.json").write_text(json.dumps(e, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    assert all(x["residual_uj"] == 0 for x in results.values())
+    assert results["D-transfer"]["final_balances_uj"] == {"A": 7_000_000, "B": 4_400_000}
+    assert results["F-bulk"]["final_balances_uj"]["B"] - results["F-split"]["final_balances_uj"]["B"] == 1
+    manifest = {"experiment_id": "F002-A-F", "runs": {name: {"residual_uj": r["residual_uj"], "final_balances_uj": r["final_balances_uj"], "loss_uj": r["loss_uj"]} for name, r in results.items()},
+                "invalid_control_count": e["passed"],
+                "e_checksum_sha256": hashlib.sha256((out / "E-invalid-events.json").read_bytes()).hexdigest()}
+    (out / "comparison.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    print(json.dumps(manifest, ensure_ascii=False, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
