@@ -189,7 +189,9 @@ class F002Tests(unittest.TestCase):
 
     def test_svg_experiment_id_xml10_character_contract(self):
         # Valid XML 1.0 content must remain loadable by an independent XML parser.
-        for experiment_id in ("F002-検証", 'F002-"&<>', "F002-🐙", "tab\\tline\\nnext"):
+        valid_ids = ("F002-検証", 'F002-"&<>', "F002-🐙",
+                     "tab" + chr(9) + "line" + chr(10) + "next")
+        for experiment_id in valid_ids:
             with self.subTest(valid=repr(experiment_id)):
                 conf = make_config(experiment_id, [])
                 state, events = parse_config(conf)
@@ -205,8 +207,11 @@ class F002Tests(unittest.TestCase):
 
         # XML escaping does NOT remove forbidden characters. Reject before
         # creating even a partial artifact directory.
-        for experiment_id in ("bad\\x00id", "bad\\x01id", "bad\\x0bid",
-                              "bad\\ud800id", "bad\\udfffid", "bad\\ufffe", "bad\\uffff"):
+        invalid_ids = ("bad" + chr(0) + "id", "bad" + chr(1) + "id",
+                       "bad" + chr(11) + "id", "bad" + chr(0xD800) + "id",
+                       "bad" + chr(0xDFFF) + "id", "bad" + chr(0xFFFE),
+                       "bad" + chr(0xFFFF))
+        for experiment_id in invalid_ids:
             with self.subTest(invalid=ascii(experiment_id)):
                 conf = make_config(experiment_id, [])
                 with self.assertRaisesRegex(ValueError, "experiment_id"):
