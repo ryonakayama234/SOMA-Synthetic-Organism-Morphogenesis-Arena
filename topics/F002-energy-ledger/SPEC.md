@@ -92,7 +92,7 @@ assert state2.residual_uj == 0
 - E：13種類の不正操作（小数・非有限値を含む）を拒否し、元の状態を保持。
 - F：3 µJ・50%送金を一括で実行した場合はBが1 µJ受領、3回に分けた場合は0 µJ。どちらも残差0。量子化差は確認されたモデルの制約。
 - D：Aが7,000,000 µJ、Bが4,400,000 µJ、損失600,000 µJ。Wolframの整数検算と一致。
-- 出力証拠：[GitHub Actions #38424989145](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38430103190)、artifact #11830128744。レビュー指摘対応を含むコードSHA `f28b60ff30fb15d8f1160afbd15236cb721488f1`。
+- 出力証拠：[GitHub Actions #38430103190](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38430103190)、artifact #11830128744。レビュー指摘対応を含むコードSHA `f28b60ff30fb15d8f1160afbd15236cb721488f1`。
 - **科学的判定**：会計上の整数不変量と再現性に関する仮説H002は、今回の実装および検証条件の範囲で支持。実世界の電池・アクチュエータ・接続の物理妥当性は未検証。
 
 [詳しい結果・数値](../../findings/F002-validation.md)。

@@ -5,8 +5,9 @@ from pathlib import Path
 import random
 import tempfile
 import unittest
+from xml.etree import ElementTree as ET
 
-from soma.f002 import Cell, Event, LedgerState, apply_event, new_ledger, parse_config, save_run
+from soma.f002 import Cell, Event, LedgerState, apply_event, new_ledger, parse_config, plot_svg, save_run
 
 
 def base(*, a=10_000_000, b=2_000_000):
@@ -185,6 +186,36 @@ class F002Tests(unittest.TestCase):
             manifest = json.loads((folder / "D-transfer" / "manifest.json").read_text())
             self.assertEqual(type(manifest["python_code_git_dirty"]) in (bool, type(None)), True)
             self.assertEqual(len(manifest["python_code_sha256"]), 64)
+
+    def test_svg_experiment_id_xml10_character_contract(self):
+        # Valid XML 1.0 content must remain loadable by an independent XML parser.
+        for experiment_id in ("F002-検証", 'F002-"&<>', "F002-🐙", "tab\\tline\\nnext"):
+            with self.subTest(valid=repr(experiment_id)):
+                conf = make_config(experiment_id, [])
+                state, events = parse_config(conf)
+                self.assertEqual(events, [])
+                ET.fromstring(plot_svg([state], experiment_id))
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / "valid"
+                    save_run(conf, path)
+                    self.assertEqual(ET.parse(path / "energy.svg").getroot().tag,
+                                     "{http://www.w3.org/2000/svg}svg")
+                    self.assertEqual(json.loads((path / "manifest.json").read_text())["experiment_id"],
+                                     experiment_id)
+
+        # XML escaping does NOT remove forbidden characters. Reject before
+        # creating even a partial artifact directory.
+        for experiment_id in ("bad\\x00id", "bad\\x01id", "bad\\x0bid",
+                              "bad\\ud800id", "bad\\udfffid", "bad\\ufffe", "bad\\uffff"):
+            with self.subTest(invalid=ascii(experiment_id)):
+                conf = make_config(experiment_id, [])
+                with self.assertRaisesRegex(ValueError, "experiment_id"):
+                    parse_config(conf)
+                with tempfile.TemporaryDirectory() as tmp:
+                    path = Path(tmp) / "must-not-exist"
+                    with self.assertRaises(ValueError):
+                        save_run(conf, path)
+                    self.assertFalse(path.exists())
 
     def test_save_manifest_csv_and_no_overwrite(self):
         conf = make_config("D-transfer", [{"kind": "transfer", "source_id": "A", "target_id": "B", "amount_uj": 3_000_000, "eta_bps": 8000}])

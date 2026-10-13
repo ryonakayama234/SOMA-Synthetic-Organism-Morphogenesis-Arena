@@ -169,10 +169,27 @@ def _exact_keys(obj: object, required: set[str], optional: set[str] = frozenset(
     return obj
 
 
+def _xml10_safe(value: str) -> bool:
+    """XML 1.0 Char production: other controls, surrogates and U+FFFE/U+FFFF are forbidden.
+
+    xml.sax.saxutils.escape only escapes XML markup; it does not filter invalid chars.
+    """
+    return all(
+        ord(ch) in (0x09, 0x0A, 0x0D)
+        or 0x20 <= ord(ch) <= 0xD7FF
+        or 0xE000 <= ord(ch) <= 0xFFFD
+        or 0x10000 <= ord(ch) <= 0x10FFFF
+        for ch in value
+    )
+
+
 def parse_config(config: object) -> tuple[LedgerState, list[Event]]:
     c = _exact_keys(config, {"schema_version", "experiment_id", "seed", "cells", "events"})
-    if c["schema_version"] != SCHEMA_VERSION or not isinstance(c["experiment_id"], str) or not c["experiment_id"] or len(c["experiment_id"]) > 120:
-        raise ValueError("invalid schema_version or experiment_id")
+    experiment_id = c["experiment_id"]
+    if (c["schema_version"] != SCHEMA_VERSION or not isinstance(experiment_id, str)
+            or not experiment_id or len(experiment_id) > 120
+            or not _xml10_safe(experiment_id)):
+        raise ValueError("invalid schema_version or experiment_id (XML 1.0 characters required)")
     if type(c["seed"]) is not int:
         raise ValueError("seed must be integer")
     if not isinstance(c["cells"], list) or not 1 <= len(c["cells"]) <= MAX_CELLS:

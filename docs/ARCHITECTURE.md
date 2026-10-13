@@ -90,7 +90,7 @@ F002での `transfer` は**数値台帳上の取引**であり、力学的な結
 - `LedgerState`：セル群、初期残量合計、外部供給・支出・移送損失の累積、取引番号。構築時に残差0を検証。
 - `Event`/`apply_event`：取得・支出・数値移送。入力を検査し、成功したときだけ新しいstateを返す。失敗時に元stateを変更しない。
 - `save_run`：設定・イベント・セル別残量・SVG・manifestを新しい出力先へ保存。
-- `experiments.F002.run_suite`：A〜Fの対照実験とEの9つの拒否監査。出力をCI artifactへ保管。
+- `experiments.F002.run_suite`：A〜Fの対照実験とEの13件の拒否監査。出力をCI artifactへ保管。
 
 [実験記録](../findings/F002-validation.md) / [コード](../soma/f002.py)。
 
