@@ -4,7 +4,7 @@ title: 単一セルの運動
 kind: feature_spec
 status: proposed
 updated: 2026-10-13
-issue: pending
+issue: 1
 depends_on: []
 next: [F002, F003]
 ---
