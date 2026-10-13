@@ -60,3 +60,8 @@ flowchart LR
 - 運動に伴うエネルギーの消費は F002 で別に検証する。F001で黙って消費を導入しない。
 
 [データの約束](DATA_CONTRACTS.md) / [研究の進め方](RESEARCH_PROCESS.md)
+
+## 実装状況（2026-10-13）
+- F001の `設定 → 運動計算 → 位置と速度のCSV → グラフ／比較` は `soma/f001.py` と `experiments/F001/run_suite.py` に実装済み。
+- 図中の局所センサー・セルの行動選択器・物理結合・エネルギー管理は**将来の概念構成であり未実装**。
+- [F001の実験ノート](../findings/F001-validation.md)
