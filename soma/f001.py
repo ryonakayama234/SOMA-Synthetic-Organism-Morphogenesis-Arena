@@ -100,10 +100,16 @@ def analytic_state(config: RunConfig, t: float) -> tuple[float, float]:
     g = config.drag_per_s
     if g == 0:
         return config.initial_x_m + config.initial_v_m_s*t + .5*a*t*t, config.initial_v_m_s + a*t
-    terminal_speed = a/g
-    one_minus_exp = -math.expm1(-g*t)
-    v = terminal_speed + (config.initial_v_m_s-terminal_speed) * math.exp(-g*t)
-    x = config.initial_x_m + terminal_speed*t + (config.initial_v_m_s-terminal_speed) * one_minus_exp/g
+    z = g * t
+    # Dimensionless integrals avoid subtracting terms of order a/g.
+    phi1 = -math.expm1(-z) / z if z != 0 else 1.0
+    if abs(z) < 0.01:
+        # (z + expm1(-z))/z**2 loses precision when z is small.
+        phi2 = 0.5 - z/6 + z*z/24 - z**3/120 + z**4/720 - z**5/5040
+    else:
+        phi2 = (z + math.expm1(-z)) / (z*z)
+    v = config.initial_v_m_s * math.exp(-z) + a*t*phi1
+    x = config.initial_x_m + config.initial_v_m_s*t*phi1 + a*t*t*phi2
     return x, v
 
 
