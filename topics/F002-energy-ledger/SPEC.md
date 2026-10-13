@@ -2,14 +2,14 @@
 id: F002
 title: 固定小数点エネルギー台帳
 kind: feature_spec
-status: proposed
+status: observed
 updated: 2026-10-13
 issue: 2
 depends_on: [F001]
 next: [F003]
 ---
 
-# F002 — エネルギー収支を一つの台帳で検証する【仕様提案・未実装】
+# F002 — エネルギー収支を一つの台帳で検証する【実装済み・数値検証済み】
 
 ## 研究上の位置づけ
 SOMAは身体形態を先に定めず、相互作用から機能を発見する。F001は外力を受ける単体セルの1D運動を数値検証済み。F002では資源獲得・支出・数値上のセル間移送を検証できる最小の**会計的なエネルギー台帳**を導入する。
@@ -68,7 +68,7 @@ assert state2.residual_uj == 0
 - 結果の採否は実行前に固定。**すべての有効イベント後の残差0 µJ**、容量不変条件、拒否時の原子性、再実行の決定性を確認する。
 - 無作為生成した有効イベント列についても残差0を検査する。乱数を使う試験ではシードを保存する。
 - イベント分割が完全等価になることは要求しない：3 µJを効率50%で一括送ると1 µJ到着、1 µJずつ3回ならそれぞれ0 µJ到着（端数は損失として記帳）。この量子化誤差は失敗として隠さない。
-- Wolfram Languageで理想的な整数移送例の代数的不変性を独立検算済み。**Python実装・CI・物理的検証は未実施**。
+- Wolfram Languageで理想的な整数移送例の代数的不変性を独立検算済み。**Python実装済み・GitHub Actions実行成功・物理的検証は未実施**。
 
 ## 出力物（実装と同じPRで必要）
 - `soma/f002.py`：台帳更新・検証（今回の一能力）。
@@ -80,6 +80,19 @@ assert state2.residual_uj == 0
 - GitHub ActionsでF001回帰テストとF002テスト・実験を実行。独立レビュー後にPR統合。
 
 ## 図・データ・証拠の同時更新
-一機能を実装したPRで、**①動くコード ②システム図 ③データ契約 ④実験記録 ⑤README進捗** の整合性をレビューする。新しい実装だけを先行マージしない。詳細：[研究運営](../../docs/RESEARCH_PROCESS.md) / [データ構造](../../docs/DATA_CONTRACTS.md) / [F002実験計画](../../experiments/F002/PLAN.md) / [結果記録（未実施）](../../findings/F002-validation.md)。
+一機能を実装したPRで、**①動くコード ②システム図 ③データ契約 ④実験記録 ⑤README進捗** の整合性をレビューする。新しい実装だけを先行マージしない。詳細：[研究運営](../../docs/RESEARCH_PROCESS.md) / [データ構造](../../docs/DATA_CONTRACTS.md) / [F002実験計画](../../experiments/F002/PLAN.md) / [実験記録](../../findings/F002-validation.md)。
 
 関連：[Issue #2](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/2)。F001数値安定性の[PR #5](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/5)は未統合・レビュー指摘未解決（2026-10-13確認）。
+
+## 実装・初回数値実験の結果（2026-10-14 JST）
+
+- 実装：`soma/f002.py`、`tests/test_f002.py`、`experiments/F002/run_suite.py`。セル・状態は不変、`apply_event` は新しい状態とEntryを返す。
+- Python 3.11 / GitHub ActionsでF001・F002あわせて**20テスト合格（F002 11件）**。F002 A〜Fの全有効イベントで`residual_uj=0`。
+- 乱数seed `20261014` の500イベント列について、残差0・状態範囲・完全な再実行一致。
+- E：9種類の不正操作を拒否し、元の状態を保持。
+- F：3 µJ・50%送金を一括で実行した場合はBが1 µJ受領、3回に分けた場合は0 µJ。どちらも残差0。量子化差は確認されたモデルの制約。
+- D：Aが7,000,000 µJ、Bが4,400,000 µJ、損失600,000 µJ。Wolframの整数検算と一致。
+- 出力証拠：[GitHub Actions #38424989145](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38424989145)、artifact #11827224188。コードSHA `e0defe10a38e148b0ef6cb1fd8a24bb7b4f0c1d8`。
+- **科学的判定**：会計上の整数不変量と再現性に関する仮説H002は、今回の実装および検証条件の範囲で支持。実世界の電池・アクチュエータ・接続の物理妥当性は未検証。
+
+[詳しい結果・数値](../../findings/F002-validation.md)。

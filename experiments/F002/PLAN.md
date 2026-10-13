@@ -1,12 +1,12 @@
 ---
 id: F002-PLAN
 kind: experiment_plan
-status: proposed
+status: executed-local-and-ci
 updated: 2026-10-13
 feature: F002
 ---
 
-# F002 対照実験計画【未実行】
+# F002 対照実験計画【事前予測・実行済み】
 
 実行すべき条件は [F002 SPEC](../../topics/F002-energy-ledger/SPEC.md) のA〜F。期待値は実行前に確定し、測定後に変更しない。
 
@@ -25,6 +25,6 @@ feature: F002
 - これは会計整合性の検証であり、送電工学的に80%の効率が現実的と示す実験ではない。
 - 数値的な分割依存があることと、保存式の破れは別の事象である。
 - F001の運動エネルギーや外力仕事を、根拠なく蓄電量へ加算しない。
-- **現時点はすべて未実行。観測された実験値は存在しない。**
+- **2026-10-14 JSTに実験を実行し、実測値を別資料（findings）に保存した。**
 
 結果の記録先：[F002 findings](../../findings/F002-validation.md)。
