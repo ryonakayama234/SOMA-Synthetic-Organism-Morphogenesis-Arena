@@ -55,6 +55,50 @@ class TestF001(unittest.TestCase):
         c = replace(DEFAULT, drag_per_s=0, force_n=2, duration_s=2, dt_s=0.01)
         self.assertEqual(analytic_state(c, 2), (4.0, 4.0))
 
+    def test_analytic_near_zero_nonzero_drag(self):
+        # Regression for Codex review on PR #4: previously (-2048, 0).
+        for drag in (1e-18, 1e-100, 5e-324):
+            with self.subTest(drag=drag):
+                c = replace(DEFAULT, drag_per_s=drag)
+                x, v = analytic_state(c, c.duration_s)
+                self.assertTrue(math.isfinite(x) and math.isfinite(v))
+                self.assertAlmostEqual(x, 50.0, delta=1e-11)
+                self.assertAlmostEqual(v, 10.0, delta=1e-11)
+
+    def test_analytic_near_zero_drag_with_initial_state(self):
+        c = replace(DEFAULT, drag_per_s=1e-18, force_n=2.0,
+                    initial_x_m=7.0, initial_v_m_s=-3.0)
+        x, v = analytic_state(c, c.duration_s)
+        self.assertAlmostEqual(x, 77.0, delta=1e-11)
+        self.assertAlmostEqual(v, 17.0, delta=1e-11)
+        self.assertEqual(analytic_state(c, 0.0), (7.0, -3.0))
+
+    def test_analytic_small_drag_series_boundary(self):
+        # Exercise both sides of the series / expm1 switch at gamma*t=0.01.
+        for drag in (0.000999, 0.001, 0.001001):
+            with self.subTest(drag=drag):
+                c = replace(DEFAULT, drag_per_s=drag,
+                            initial_x_m=3.0, initial_v_m_s=-2.0)
+                t = c.duration_s
+                terminal_speed = c.force_n / (c.mass_kg * drag)
+                decay = math.exp(-drag * t)
+                x_expected = (c.initial_x_m + terminal_speed*t
+                              + (c.initial_v_m_s-terminal_speed)
+                              * (-math.expm1(-drag*t)) / drag)
+                v_expected = terminal_speed + (c.initial_v_m_s-terminal_speed)*decay
+                x, v = analytic_state(c, t)
+                self.assertAlmostEqual(x, x_expected, delta=1e-9)
+                self.assertAlmostEqual(v, v_expected, delta=1e-11)
+
+    def test_near_zero_drag_manifest_is_finite(self):
+        c = replace(DEFAULT, drag_per_s=1e-18)
+        with tempfile.TemporaryDirectory() as tmp:
+            result = save_run(c, Path(tmp) / "tiny-drag")
+        self.assertAlmostEqual(result["analytic_x_m"], 50.0, delta=1e-11)
+        self.assertAlmostEqual(result["analytic_v_m_s"], 10.0, delta=1e-11)
+        self.assertTrue(math.isfinite(result["absolute_x_error_m"]))
+        self.assertTrue(math.isfinite(result["absolute_v_error_m_s"]))
+
     def test_initial_position_and_velocity_are_respected(self):
         c = replace(DEFAULT, force_n=0, drag_per_s=0, initial_x_m=-4.0, initial_v_m_s=2.0)
         states = simulate(c)
