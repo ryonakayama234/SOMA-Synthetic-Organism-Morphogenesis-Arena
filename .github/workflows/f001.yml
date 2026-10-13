@@ -1,0 +1,23 @@
+name: F001 1D dynamics verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run F001 invariant and convergence tests
+        run: python -m unittest discover -s tests -v
+      - name: Run A-E comparison experiments
+        run: python -m experiments.F001.run_suite --output-dir runs/F001-ci
+      - name: Preserve all raw traces and plots
+        uses: actions/upload-artifact@v4
+        with:
+          name: F001-A-E-traces
+          path: runs/F001-ci/
