@@ -65,3 +65,21 @@ flowchart LR
 - F001の `設定 → 運動計算 → 位置と速度のCSV → グラフ／比較` は `soma/f001.py` と `experiments/F001/run_suite.py` に実装済み。
 - 図中の局所センサー・セルの行動選択器・物理結合・エネルギー管理は**将来の概念構成であり未実装**。
 - [F001の実験ノート](../findings/F001-validation.md)
+
+## F002 エネルギー台帳を追加するときの図【設計提案・未実装】
+
+~~~mermaid
+flowchart LR
+  SET["config.json\n初期電力量・イベント列"] --> L["F002 台帳\n整数 µJ を原子的に更新"]
+  L --> ST["セル別残量\ncapacity / balance"]
+  L --> TX["供給・支出・移送損失\n収支残差"]
+  ST --> LOG["events.csv / balances.csv"]
+  TX --> LOG
+  LOG --> EVAL["グラフ energy.svg\n検証 manifest.json"]
+  F1["F001: 1D運動（既存）"] -. "電池との因果関係未定義・接続しない" .-> L
+  F3["F003: 機械結合（将来）"] -. "物理結合は別課題" .-> L
+~~~
+
+F002での `transfer` は**数値台帳上の取引**であり、力学的な結合・電線・電力供給ポートを意味しない。研究者・物理環境の真の状態と、将来のセルが局所センサーで取得できる状態は分ける。この図は実装済みのAPIではない。
+
+[仕様案](../topics/F002-energy-ledger/SPEC.md) / [入力出力とデータ構造](DATA_CONTRACTS.md)。

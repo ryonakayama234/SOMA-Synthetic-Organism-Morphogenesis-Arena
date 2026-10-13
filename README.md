@@ -14,7 +14,7 @@
 | 仮説→実験→改善の進め方 | [研究運営](docs/RESEARCH_PROCESS.md) |
 | 最初の一機能 | [F001：単一セルの運動](topics/F001-single-cell-motion/SPEC.md)（実装・初回検証済み） |
 | F001の実験結果 | [初回検証ノート](findings/F001-validation.md) / [再現方法](experiments/F001/README.md) |
-| 次に扱う候補 | [F002：エネルギー収支](topics/F002-energy-ledger/IDEA.md) / [F003：結合](topics/F003-attachment/IDEA.md) |
+| 次の実装提案 | [F002：エネルギー収支の検証仕様（未実装）](topics/F002-energy-ledger/SPEC.md) / [F002実験計画](experiments/F002/PLAN.md) / [F002結果記録（未実施）](findings/F002-validation.md) / [F003：結合（構想）](topics/F003-attachment/IDEA.md) |
 | 論文や参考情報 | [文献図書館](library/INDEX.md) |
 | なぜこの設計にしたか | [意思決定001](docs/decisions/0001-incremental-library.md) |
 | AIエージェントの読み方 | [AI案内](AGENTS.md) |
@@ -50,3 +50,6 @@ flowchart TD
 7. 巨大な抽象化を先に作らず、必要になった機能を一つずつ足す。
 
 **GitHub は進捗の台帳**：Issue = 一つの課題、Pull Request = 変更提案、Commit = 保存された変更。操作の知識がなくても研究判断を確認できることを目指す。
+
+## 機能追加時に必ず同期するもの
+F002以降は、**コード／テスト・システム図（docs/ARCHITECTURE.md）・データ契約（docs/DATA_CONTRACTS.md）・実験記録（findings/Fxxx-validation.md）・READMEの現在地**を同じPRで更新する。仮説と実装と観測を混同しない。詳細は[研究運営](docs/RESEARCH_PROCESS.md)。F002の仕様は**提案段階**であり、コードや実験が実装されたことを意味しない。

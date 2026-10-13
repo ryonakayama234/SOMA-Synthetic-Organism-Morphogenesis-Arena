@@ -72,3 +72,28 @@ time_s,x_m,v_m_s,force_n
 - 各実験に `config.json`、`manifest.json`（コードコミットIDとチェックサム）、`motion.svg` を出力。
 - 実行結果の上書きを禁止し、出力先には未使用のディレクトリを指定。
 - 詳細： [F001の再現方法](../experiments/F001/README.md)。
+
+## F002 エネルギー台帳のデータ契約【提案・未実装】
+
+~~~mermaid
+flowchart TB
+  CFG["① config.json\nセルID / 容量・初期残量 µJ\nイベント順・効率 bps"] --> CORE["② LedgerState\nセル別残量と累計入力・支出・損失"]
+  CORE --> EV["③ events.csv\n取引イベントと収支残差"]
+  CORE --> BAL["③ balances.csv\n各セルの残量・容量"]
+  EV --> M["manifest.json / energy.svg"]
+  BAL --> M
+~~~
+
+| 区分 | カラム・フィールド案 | 注意 |
+| --- | --- | --- |
+| 入力 | `schema_version=f002.v1`, `experiment_id`, `seed`, `cells`, `events` | 取引順序を使い、時間刻みはまだ定義しない |
+| セル | `cell_id`, `capacity_uj`, `balance_uj` | 整数µJ、範囲検証 |
+| イベント | `event_index`, `kind=acquire/spend/transfer`, `source_id`, `target_id`, `amount_uj`, `eta_bps` | 無効時は原子的に拒否 |
+| 記帳 | `received_uj`, `loss_uj`, `external_in_uj`, `external_out_uj`, `residual_uj` | 内部移送は外部流入・外部流出と別 |
+| 証拠 | `config.json`, `events.csv`, `balances.csv`, `energy.svg`, `manifest.json` | 設定・SHA・シード・checksumの対応を残す |
+
+保存会計は `初期残量合計 + 外部取得 = 最終残量合計 + 支出 + 移送損失`。有効イベントの残差は整数で厳密0 µJ。移送の到着量は `floor(amount_uj * eta_bps / 10000)`、送出と受領の差を損失に計上する。丸めによりイベント分割の結果が変わる可能性も記録する。
+
+**数値台帳の電力量とF001の運動モデルを勝手に接続しない。** 電池から運動へ仕事を供給するための効率や回生モデルは未定義。実装済みのデータとして扱わない。
+
+[詳細仕様](../topics/F002-energy-ledger/SPEC.md) / [実験計画](../experiments/F002/PLAN.md)。
