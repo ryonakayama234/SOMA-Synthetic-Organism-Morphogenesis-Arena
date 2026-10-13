@@ -87,7 +87,7 @@ assert state2.residual_uj == 0
 ## 実装・初回数値実験の結果（2026-10-14 JST）
 
 - 実装：`soma/f002.py`、`tests/test_f002.py`、`experiments/F002/run_suite.py`。セル・状態は不変、`apply_event` は新しい状態とEntryを返す。
-- Python 3.11 / GitHub ActionsでF001・F002あわせて**21テスト合格（F002 12件）**。F002 A〜Fの全有効イベントで`residual_uj=0`。
+- Python 3.11 / GitHub ActionsでF001・F002あわせて**22テスト合格（F002 13件）**。F002 A〜Fの全有効イベントで`residual_uj=0`。
 - 乱数seed `20261014` の500イベント列について、残差0・状態範囲・完全な再実行一致。
 - E：13種類の不正操作（小数・非有限値を含む）を拒否し、元の状態を保持。
 - F：3 µJ・50%送金を一括で実行した場合はBが1 µJ受領、3回に分けた場合は0 µJ。どちらも残差0。量子化差は確認されたモデルの制約。
@@ -99,3 +99,6 @@ assert state2.residual_uj == 0
 
 ### 独立レビューからの研究プロトコル修正
 PR #6のCodexレビューで、初回A〜Cの2セル設定が事前計画の単一セルと不一致であると発見された。条件を変更していたことを見落とした初回判定を訂正し、A〜Cを1セルで再実行した。Eの小数・非有限値の拒否証拠、実行コードのGit/dirty/SHA256 provenance、推移・内訳SVGを追加。**初回ログを隠さず履歴として残す**。詳細は[検証ノート](../../findings/F002-validation.md)。
+
+### 2回目のレビューからの修正と追加テスト（2026-10-14）
+Codexの2回目のレビューで、XML禁止文字を含む実験IDから不正なSVGが生成される可能性、SPECの修正版CI番号の表示不一致、ARCHITECTUREの拒否件数の記載誤りを指摘された。これらを修正し、**XML 1.0の文字制約を入力時に確認**する新たなテストを追加した。修正版の[CI run #38433251595](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38433251595)で**計22テスト（F001=9, F002=13）合格**し、実験A〜Fと13件の拒否実験が成功。WolframでXML文字境界の16例と移送会計の式を独立に検算。初回テストの失敗履歴は[検証ノート](../../findings/F002-validation.md)に残す。

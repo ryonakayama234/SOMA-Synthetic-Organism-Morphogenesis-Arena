@@ -75,4 +75,16 @@ Codexによるcommit `0a87fae` への再レビューでは、新たに**P2が3�
 2. SPECで修正後のCIへのリンク表示が旧実行番号になっていた。→ リンク文字列も `38430103190` に統一。
 3. ARCHITECTUREのEの監査件数が古い9件だった。→ 13件に修正。
 
-この節は**検証前の修正記録**として作成。新しいコミットのCI合否とartifactは実際に確認してから追記する。古い記録は削除しない。
+以下の追加検証を実施した。以前のCI、特に失敗した中間CIは削除しない。
+
+### 追加実験（SVGの入力条件とデータ保存）
+
+- 修正対象コード `0ec53c911104cc17f5e0d0e2c882d4fa40174197`。
+- [F002 CI #38433251595](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38433251595)：**success、全22テスト（F001 9、F002 13）合格**。A〜F実験および不正取引13件を再実行し、保存残差0 µJ。
+- [F001回帰CI #38433251666](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38433251666)：**success**。
+- F002の追加アーティファクト `F002-A-F-evidence` ID `11832217045`。
+- 新規の `test_svg_experiment_id_xml10_character_contract`：日本語・絵文字・XMLエスケープ対象の記号・許容制御文字を含むIDは実際のXMLパーサで有効なSVGに復元でき、U+0000、U+0001、U+000B、サロゲート、U+FFFE/U+FFFFは**結果ディレクトリ作成前に拒否**される。
+- **途中のCI失敗も保存**：中間コミット`85024454ec525fda3eec69422b788b56ecbf3675`の[F002 #38433163952](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38433163952)とF001 #38433163919は、新設テスト中の禁止文字を文字列リテラルのバックスラッシュとして誤表現していたため失敗。実際のUnicodeコードポイントを`chr(...)`で構成するように修正し、再検証で合格した。これは台帳会計の破綻ではなく、検証コード側の不備。
+- Wolfram Languageは、XML 1.0文字境界の16サンプルの許容判定、3 J・80%移送の受取2.4 J／損失0.6 J／残差0 µJ、3 µJの50%一括と分割の差1 µJを独立に確認した。
+
+**判定**：実装済みの整数µJ台帳の収支整合性と、現在の実験データ出力の入力制約は、指定した計算モデル・CI条件の範囲で支持。実機エネルギー保存・身体創発は未検証。
