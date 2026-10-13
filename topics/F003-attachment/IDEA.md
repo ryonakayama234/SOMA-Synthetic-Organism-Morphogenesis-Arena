@@ -5,6 +5,7 @@ kind: feature_idea
 status: backlog
 updated: 2026-10-13
 depends_on: [F001]
+issue: 3
 ---
 
 # F003 — 結合だけでどんな物理現象が生じるか（候補、未実装）
