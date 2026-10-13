@@ -1,0 +1,13 @@
+{
+  "schema_version": "f001.v1",
+  "experiment_id": "F001-B-positive",
+  "seed": 1,
+  "model": "1d_linear_drag",
+  "mass_kg": 1.0,
+  "drag_per_s": 0.2,
+  "force_n": 1.0,
+  "dt_s": 0.01,
+  "duration_s": 10.0,
+  "initial_x_m": 0.0,
+  "initial_v_m_s": 0.0
+}
