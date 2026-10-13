@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+# Outputs are immutable by convention and can be regenerated; commit reviewed findings only.
+runs/
