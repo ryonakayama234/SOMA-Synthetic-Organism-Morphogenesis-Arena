@@ -139,3 +139,9 @@ Codexが2026-10-14のPR #6レビューで、旧`comparison.json`にF-bulk／F-sp
 - ローカルPython 3.12.14で**25テスト（F001=9、F002=16）合格**。旧CIの24件は当時の結果として保持。現行CIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)で追跡する。
 - Wolfram LanguageでDの残量7,000,000/4,400,000 µJと損失600,000 µJ、F一括・分割の残量と損失2/3 µJ、3条件の残差0を独立に再計算し、事前予測と一致した。コード出自のバグは数値モデルの変更を要しない。
 - **両PRのローカル統合検証**：main `275dcbf` にPR #5 `9879b25` とPR #6 `a41f473`を順に統合し、本節の修正コードを適用。コード競合なし、33テスト（F001=17/F002=16）全件合格。F001 A〜E、F002 A〜F（`python -O`）の再実行も成功。これはローカルの統合候補の検証であり、mainのマージ実行結果ではない。
+
+## 最終統合前のスイート識別監査（2026-10-15）
+
+- `cb37b98`に対する独立P2で、実験suiteの未コミット変更がHEAD・dirty・台帳モジュールhashだけでは識別できないと指摘された。開始時にsuite自身のバイト列を取得し、`comparison.json.python_suite_sha256`と`suite_source_artifact`に対応づけて、証拠内へ`suite_source.py`を保存するよう修正。
+- 回帰試験を同一Git HEADの4条件（clean、台帳モジュール編集、suite-a編集、suite-b編集）へ拡張。全8 manifestで開始時dirty・HEAD・module hashを検査し、二つのsuite編集が異なるhashになること、保存ソースが実行ファイルのバイト列と一致することを確認。最適化モードで実行し、ローカルPython 3.12.14で25テスト合格。
+- 2026-10-15にPR #5をmainへ先行統合した。PR #6の統合・main CI結果はGitHubのPRとActionsを一次証拠とする。既存の条件・会計値・F同条件再実行は変えない。

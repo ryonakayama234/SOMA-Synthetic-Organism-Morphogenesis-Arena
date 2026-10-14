@@ -18,3 +18,4 @@ python -m soma.f002 --config experiments/F002/configs/D_transfer.json --output-d
 整数µJとbpsで計算し、`residual_uj=0` を厳密比較。エネルギー支出は電動機の消費電力や運動エネルギーを意味しない。セル同士はまだ物理接続されていない。制御学習・資源枯渇・実機物理は未実装。
 
 個別の結果と留保：[findings](../../findings/F002-validation.md)。研究仕様：[SPEC](../../topics/F002-energy-ledger/SPEC.md)。
+実験出力ルートの`suite_source.py`と`comparison.json.python_suite_sha256`は、条件生成・合否判定を担当したスクリプトの開始時ソースとSHA256。未コミット変更がある実行も監査できるよう保存する。

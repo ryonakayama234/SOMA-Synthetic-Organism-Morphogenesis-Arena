@@ -110,7 +110,10 @@ def main() -> None:
     args = parser.parse_args()
     out = args.output_dir
     provenance = git_provenance()  # Capture before the suite creates any output.
+    suite_source = Path(__file__).read_bytes()
+    suite_sha256 = hashlib.sha256(suite_source).hexdigest()
     out.mkdir(parents=True, exist_ok=False)
+    (out / "suite_source.py").write_bytes(suite_source)
     single_cell = [{"cell_id": "A", "balance_uj": 10_000_000, "capacity_uj": 20_000_000}]
     plans = {
         "A-rest": common("A-rest", [], cells=single_cell),
@@ -147,6 +150,8 @@ def main() -> None:
     (out / "E-invalid-events.json").write_text(json.dumps(e, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     validate_expected_results(results)
     manifest = {"experiment_id": "F002-A-F", "runs": {name: {field: r[field] for field in ("event_count", "final_balances_uj", "acquired_uj", "spent_uj", "loss_uj", "residual_uj")} for name, r in results.items()},
+                "python_suite_sha256": suite_sha256,
+                "suite_source_artifact": "suite_source.py",
                 "invalid_control_count": e["passed"],
                 "f_replay_checks": replay_checks,
                 "e_checksum_sha256": hashlib.sha256((out / "E-invalid-events.json").read_bytes()).hexdigest()}

@@ -391,40 +391,63 @@ print(f"negative executions={len(bad_cases)}, unique mutations={len(unique_cases
         import subprocess
         import sys
         source = Path(__file__).resolve().parents[1]
-        for dirty in (False, True):
-            with self.subTest(dirty=dirty), tempfile.TemporaryDirectory() as tmp:
-                repo = Path(tmp)
-                for package in ("soma", "experiments"):
-                    shutil.copytree(source/package, repo/package,
-                                    ignore=shutil.ignore_patterns("__pycache__"))
-                (repo/".gitignore").write_text("__pycache__/\n*.pyc\n")
+        with tempfile.TemporaryDirectory() as tmp:
+            repo = Path(tmp)
+            for package in ("soma", "experiments"):
+                shutil.copytree(source/package, repo/package,
+                                ignore=shutil.ignore_patterns("__pycache__"))
+            (repo/".gitignore").write_text("__pycache__/\n*.pyc\n")
 
-                def git(*args):
-                    return subprocess.run(["git", *args], cwd=repo,
-                                          capture_output=True, text=True,
-                                          check=True).stdout.strip()
+            def git(*args):
+                return subprocess.run(["git", *args], cwd=repo,
+                                      capture_output=True, text=True,
+                                      check=True).stdout.strip()
 
-                git("init")
-                git("add", ".")
-                git("-c", "user.name=SOMA test", "-c", "user.email=test@example.invalid",
-                    "-c", "commit.gpgsign=false", "commit", "-m", "fixture")
-                revision = git("rev-parse", "HEAD")
-                if dirty:
-                    with (repo/"soma/f002.py").open("a") as f:
-                        f.write("\n# Uncommitted source change for provenance test.\n")
-                self.assertEqual(bool(git("status", "--porcelain")), dirty)
-                subprocess.run([sys.executable, "-O", "-m", "experiments.F002.run_suite",
-                                "--output-dir", ".review-suite-output"], cwd=repo,
-                               capture_output=True, text=True, check=True)
-                manifests = list((repo/".review-suite-output").glob("*/manifest.json"))
-                self.assertEqual(len(manifests), 8)
-                code_hash = hashlib.sha256((repo/"soma/f002.py").read_bytes()).hexdigest()
-                for path in manifests:
-                    manifest = json.loads(path.read_text())
-                    self.assertEqual(manifest["python_code_git_commit"], revision)
-                    self.assertIs(manifest["python_code_git_dirty"], dirty)
-                    self.assertEqual(manifest["python_code_sha256"], code_hash)
-                self.assertIn(".review-suite-output/", git("status", "--porcelain"))
+            git("init")
+            git("add", ".")
+            git("-c", "user.name=SOMA test", "-c", "user.email=test@example.invalid",
+                "-c", "commit.gpgsign=false", "commit", "-m", "fixture")
+            revision = git("rev-parse", "HEAD")
+            module_path = repo/"soma/f002.py"
+            suite_path = repo/"experiments/F002/run_suite.py"
+            module_original = module_path.read_bytes()
+            suite_original = suite_path.read_bytes()
+            suite_hashes = {}
+            for change in ("clean", "module", "suite-a", "suite-b"):
+                with self.subTest(change=change):
+                    module_path.write_bytes(module_original)
+                    suite_path.write_bytes(suite_original)
+                    dirty = change != "clean"
+                    if change == "module":
+                        module_path.write_bytes(module_original + b"\n# Uncommitted module edit.\n")
+                    elif change.startswith("suite-"):
+                        suite_path.write_bytes(suite_original +
+                                               f"\n# Uncommitted {change} edit.\n".encode())
+                    self.assertEqual(bool(git("status", "--porcelain")), dirty)
+                    folder = repo/".review-suite-output"
+                    subprocess.run([sys.executable, "-O", "-m", "experiments.F002.run_suite",
+                                    "--output-dir", str(folder)], cwd=repo,
+                                   capture_output=True, text=True, check=True)
+                    manifests = list(folder.glob("*/manifest.json"))
+                    self.assertEqual(len(manifests), 8)
+                    code_hash = hashlib.sha256(module_path.read_bytes()).hexdigest()
+                    report = json.loads((folder/"comparison.json").read_text())
+                    saved_suite = (folder/report["suite_source_artifact"]).read_bytes()
+                    self.assertEqual(saved_suite, suite_path.read_bytes())
+                    self.assertEqual(report["python_suite_sha256"],
+                                     hashlib.sha256(saved_suite).hexdigest())
+                    suite_hashes[change] = report["python_suite_sha256"]
+                    if change.startswith("suite-"):
+                        self.assertEqual(code_hash, hashlib.sha256(module_original).hexdigest())
+                    for path in manifests:
+                        manifest = json.loads(path.read_text())
+                        self.assertEqual(manifest["python_code_git_commit"], revision)
+                        self.assertIs(manifest["python_code_git_dirty"], dirty)
+                        self.assertEqual(manifest["python_code_sha256"], code_hash)
+                    self.assertIn(".review-suite-output/", git("status", "--porcelain"))
+                    shutil.rmtree(folder)
+            self.assertNotEqual(suite_hashes["suite-a"], suite_hashes["suite-b"])
+            self.assertEqual(suite_hashes["clean"], suite_hashes["module"])
 
     def test_save_manifest_csv_and_no_overwrite(self):
         conf = make_config("D-transfer", [{"kind": "transfer", "source_id": "A", "target_id": "B", "amount_uj": 3_000_000, "eta_bps": 8000}])

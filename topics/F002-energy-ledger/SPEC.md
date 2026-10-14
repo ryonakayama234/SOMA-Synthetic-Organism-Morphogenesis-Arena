@@ -136,3 +136,7 @@ Codexレビューの追加P2により、F-bulk／F-splitのB残量差1 µJの照
 ### 出力によるGit dirty誤認の回帰検証（2026-10-15）
 
 スイートは出力前のGit出自を一度取得し、全run・再実行で開始時のSHA/dirtyを保持する。クリーンなGit作業コピーとソースを未コミット変更したコピーの双方を、Git未除外の`.review-suite-output`へ最適化モードで実行し、全8 manifestがそれぞれdirty=false/true、同一SHA・モジュールchecksumを保持することを要求する。ローカルで計25テスト（F001=9、F002=16）合格。旧24件CIは履歴として保持し、現行CIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)を参照。
+
+### 実行した実験スクリプトの識別（2026-10-15）
+
+`comparison.json`は開始時suiteソースのSHA256と保存ソース`suite_source.py`を対応づける。条件生成・合否判定を変更した二つの未コミットsuite版は、同一HEAD・dirty=true・同じ台帳モジュールhashでも異なるsuite hashとして識別される。既存の出自テスト内にclean／台帳モジュール編集／suite-a編集／suite-b編集の4条件を追加し、保存ソースのバイト一致とhashを照合。単独構成は25テストのまま。初回のGit出自・dirty修正履歴は保持する。
