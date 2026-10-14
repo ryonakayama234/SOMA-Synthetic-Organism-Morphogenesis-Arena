@@ -104,3 +104,10 @@ Codexが2026-10-14のPR #6レビューで、旧`comparison.json`にF-bulk／F-sp
 - `tests/test_f002.py` に最適化サブプロセスを起動する負例試験を追加。`__debug__ == False` を確認し、正常値は合格、A・B・C・D・Fの残量改変と会計残差の改変（計6パターン）は実行時例外で拒否されることを検証した。
 - コードコミット `7a97d7a683fd0b38850ac92323efc07f1324f596` の [F002 CI #38533052570](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38533052570) は成功、Python 3.11で24テスト全件合格（F001=9、F002=15）、A〜F実験スイートも成功。[F001回帰 #38533052578](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38533052578) も成功。
 - これは実験の合否判定に対する回帰防止であり、台帳の物理的妥当性や形態創発の検証ではない。既存の初回失敗・修正履歴・artifactは保持する。
+
+## 対照Fの絶対予測と最新負例監査（2026-10-14）
+
+- 最新Codex P2では、F-bulk／F-splitのB残量の**差が1 µJ**という旧検査だけでは、両B残量の同量のずれ、両A残量の破損、損失の破損を見逃すと判明。初期残量A=10,000,000 µJ・B=2,000,000 µJ、移送量3 µJ、効率50%をWolframで独立計算すると、**F-bulk: A=9,999,997 / B=2,000,001 / loss=2 µJ、F-split: A=9,999,997 / B=2,000,000 / loss=3 µJ**、いずれも会計残差0 µJ。分割・一括の受領量差は1 µJ。
+- `validate_expected_results()` にFの**A・B残量と損失の完全な絶対予測**を追加し、差分検査と残差検査も維持。最適化実行`python -O`で、旧6負例に加えてFの両Bの同時+1、両Aの同時+1、F-bulkの損失+1、F-splitの損失+1の**追加4負例、計10負例**を拒否できることを検査。現物のA〜F出力も比較ファイルから直接照合する。
+- READMEの進捗要約を **24テスト（F001=9 / F002=15）** に訂正。commit `67300f5d36a6d21c4dc16e7cf737ba80a205325d` の [F002検証 #38534904906](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904906) と [F001回帰 #38534904676](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904676) は成功、24テスト全件合格。追加負例は既存のテストメソッド内に置いたためテスト件数は増えていない。
+- これは**ソフトウェア台帳と事前予測の照合**であり、物理的エネルギー伝送や身体構造の創発を実証するものではない。旧実験証拠・失敗履歴は保持する。
