@@ -130,3 +130,12 @@ Codexが2026-10-14のPR #6レビューで、旧`comparison.json`にF-bulk／F-sp
 - Python 3.12.14のローカル実行で24テスト（F001=9 / F002=15）合格。A〜Fスイートを`python -O`でも再実行し、Eの13不正条件拒否、残差0、F-bulk/F-splitそれぞれの再実行5成果物のバイト・SHA256一致を確認した。最新コミットのCIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)で確認する。
 
 - **GitHub CI実測**：修正テスト・記録 `d72ce101a7766ad71a74f71016dbe19bbbc8db39` に対する [F002 CI #38554395269](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38554395269) は成功。Python 3.11で24テスト合格、A〜F実行・artifact保存も成功。[F001回帰 #38554395287](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38554395287) も成功した。
+
+## マージ前監査：生成物によるGit dirty誤認（2026-10-15）
+
+- `a41f473`の独立レビューP2を再現。クリーンな統合作業コピーで`.review-suite-output-before`に出力すると、Aのみdirty=false、B/C/D/Fとreplayはtrueとなった。原因はrunごとのGit status取得が、先行runの未追跡生成物をコード変更と誤認すること。
+- スイート開始時・出力作成前にGit SHA/dirtyを一度取得し、全runとreplayの`save_run`へ渡す。単独save_runは従来どおり自身で保存前に取得する。台帳式や事前実験条件は変更しない。
+- 新規回帰試験で隔離したGitリポジトリを作り、クリーン・実行モジュールの未コミット変更ありの2条件を`python -O`で実行。Git未除外の出力ツリーで、全8 manifestに開始時のfalse/true、同一SHA、実行モジュールchecksumが残ることを確認。単なるdirty強制falseによる隠蔽を排除した。
+- ローカルPython 3.12.14で**25テスト（F001=9、F002=16）合格**。旧CIの24件は当時の結果として保持。現行CIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)で追跡する。
+- Wolfram LanguageでDの残量7,000,000/4,400,000 µJと損失600,000 µJ、F一括・分割の残量と損失2/3 µJ、3条件の残差0を独立に再計算し、事前予測と一致した。コード出自のバグは数値モデルの変更を要しない。
+- **両PRのローカル統合検証**：main `275dcbf` にPR #5 `9879b25` とPR #6 `a41f473`を順に統合し、本節の修正コードを適用。コード競合なし、33テスト（F001=17/F002=16）全件合格。F001 A〜E、F002 A〜F（`python -O`）の再実行も成功。これはローカルの統合候補の検証であり、mainのマージ実行結果ではない。

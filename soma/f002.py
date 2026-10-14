@@ -212,7 +212,7 @@ def run(config: dict[str, Any]) -> tuple[LedgerState, list[Entry], list[LedgerSt
     return state, entries, snapshots
 
 
-def _git_provenance() -> tuple[str | None, bool | None]:
+def git_provenance() -> tuple[str | None, bool | None]:
     """Find the Git repo that owns THIS module, not the caller's cwd.
 
     A dirty checkout is recorded explicitly; SHA alone does not identify modified code.
@@ -289,9 +289,12 @@ def plot_svg(snapshots: list[LedgerState], experiment_id: str) -> str:
     chunks.append("</g></svg>")
     return "".join(chunks)
 
-def save_run(config: dict[str, Any], output_dir: Path) -> dict[str, Any]:
+def save_run(config: dict[str, Any], output_dir: Path, *,
+             provenance: tuple[str | None, bool | None] | None = None) -> dict[str, Any]:
     state, entries, snapshots = run(config)  # Validate before creating directory.
-    revision, dirty = _git_provenance()  # Snapshot provenance before writing artifacts.
+    # A suite supplies its pre-output snapshot so earlier runs' artifacts do
+    # not masquerade as source changes. Standalone runs capture their own.
+    revision, dirty = git_provenance() if provenance is None else provenance
     output_dir.mkdir(parents=True, exist_ok=False)
     (output_dir / "config.json").write_text(json.dumps(config, ensure_ascii=False, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     with (output_dir / "events.csv").open("w", encoding="utf-8", newline="") as f:

@@ -6,7 +6,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from soma.f002 import Cell, Event, apply_event, new_ledger, save_run
+from soma.f002 import Cell, Event, apply_event, git_provenance, new_ledger, save_run
 
 
 def common(name: str, events: list[dict], *, cells: list[dict] | None = None) -> dict:
@@ -109,6 +109,7 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, required=True)
     args = parser.parse_args()
     out = args.output_dir
+    provenance = git_provenance()  # Capture before the suite creates any output.
     out.mkdir(parents=True, exist_ok=False)
     single_cell = [{"cell_id": "A", "balance_uj": 10_000_000, "capacity_uj": 20_000_000}]
     plans = {
@@ -119,13 +120,14 @@ def main() -> None:
         "F-bulk": common("F-bulk", [transfer(3, 5000)]),
         "F-split": common("F-split", [transfer(1, 5000)] * 3),
     }
-    results = {name: save_run(config, out / name) for name, config in plans.items()}
+    results = {name: save_run(config, out / name, provenance=provenance)
+               for name, config in plans.items()}
     # Replay the exact same F configurations, not simply compare different partitions.
     artifact_names = ("config.json", "events.csv", "balances.csv", "energy.svg", "manifest.json")
     replay_checks = {}
     for name in ("F-bulk", "F-split"):
         replay_dir = out / (name + "-replay")
-        save_run(plans[name], replay_dir)
+        save_run(plans[name], replay_dir, provenance=provenance)
         hashes = {}
         for filename in artifact_names:
             original = (out / name / filename).read_bytes()

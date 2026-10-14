@@ -132,3 +132,7 @@ Codexレビューの追加P2により、F-bulk／F-splitのB残量差1 µJの照
 ### 負例件数の監査（2026-10-14）
 
 旧表記「49種類」は重複7件を含んでいたため、49実行・42種類へ訂正。最適化サブプロセスでJSON正規化による実件数・重複除外件数の照合を行い、件数の誤記を防ぐ。ローカルPython 3.12.14で24テスト合格、最適化A〜F再実行も成功。重複の内訳と履歴は[検証記録](../../findings/F002-validation.md)の「負例件数の重複監査」を参照。最新コミットのCIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)から確認する。
+
+### 出力によるGit dirty誤認の回帰検証（2026-10-15）
+
+スイートは出力前のGit出自を一度取得し、全run・再実行で開始時のSHA/dirtyを保持する。クリーンなGit作業コピーとソースを未コミット変更したコピーの双方を、Git未除外の`.review-suite-output`へ最適化モードで実行し、全8 manifestがそれぞれdirty=false/true、同一SHA・モジュールchecksumを保持することを要求する。ローカルで計25テスト（F001=9、F002=16）合格。旧24件CIは履歴として保持し、現行CIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)を参照。

@@ -385,6 +385,47 @@ print(f"negative executions={len(bad_cases)}, unique mutations={len(unique_cases
                 self.assertEqual(original["residual_uj"], 0)
                 self.assertEqual(original["event_count"], 1 if name == "F-bulk" else 3)
 
+    def test_suite_provenance_precedes_unignored_output(self):
+        import hashlib
+        import shutil
+        import subprocess
+        import sys
+        source = Path(__file__).resolve().parents[1]
+        for dirty in (False, True):
+            with self.subTest(dirty=dirty), tempfile.TemporaryDirectory() as tmp:
+                repo = Path(tmp)
+                for package in ("soma", "experiments"):
+                    shutil.copytree(source/package, repo/package,
+                                    ignore=shutil.ignore_patterns("__pycache__"))
+                (repo/".gitignore").write_text("__pycache__/\n*.pyc\n")
+
+                def git(*args):
+                    return subprocess.run(["git", *args], cwd=repo,
+                                          capture_output=True, text=True,
+                                          check=True).stdout.strip()
+
+                git("init")
+                git("add", ".")
+                git("-c", "user.name=SOMA test", "-c", "user.email=test@example.invalid",
+                    "-c", "commit.gpgsign=false", "commit", "-m", "fixture")
+                revision = git("rev-parse", "HEAD")
+                if dirty:
+                    with (repo/"soma/f002.py").open("a") as f:
+                        f.write("\n# Uncommitted source change for provenance test.\n")
+                self.assertEqual(bool(git("status", "--porcelain")), dirty)
+                subprocess.run([sys.executable, "-O", "-m", "experiments.F002.run_suite",
+                                "--output-dir", ".review-suite-output"], cwd=repo,
+                               capture_output=True, text=True, check=True)
+                manifests = list((repo/".review-suite-output").glob("*/manifest.json"))
+                self.assertEqual(len(manifests), 8)
+                code_hash = hashlib.sha256((repo/"soma/f002.py").read_bytes()).hexdigest()
+                for path in manifests:
+                    manifest = json.loads(path.read_text())
+                    self.assertEqual(manifest["python_code_git_commit"], revision)
+                    self.assertIs(manifest["python_code_git_dirty"], dirty)
+                    self.assertEqual(manifest["python_code_sha256"], code_hash)
+                self.assertIn(".review-suite-output/", git("status", "--porcelain"))
+
     def test_save_manifest_csv_and_no_overwrite(self):
         conf = make_config("D-transfer", [{"kind": "transfer", "source_id": "A", "target_id": "B", "amount_uj": 3_000_000, "eta_bps": 8000}])
         with tempfile.TemporaryDirectory() as tmp:
