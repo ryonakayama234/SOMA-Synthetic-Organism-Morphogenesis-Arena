@@ -222,6 +222,43 @@ class F002Tests(unittest.TestCase):
                         save_run(conf, path)
                     self.assertFalse(path.exists())
 
+    def test_suite_f_replay_raw_artifacts_are_identical(self):
+        import subprocess
+        import sys
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp) / "suite"
+            completed = subprocess.run(
+                [sys.executable, "-m", "experiments.F002.run_suite",
+                 "--output-dir", str(folder)],
+                capture_output=True, text=True, check=True,
+            )
+            report = json.loads((folder / "comparison.json").read_text())
+            self.assertEqual(json.loads(completed.stdout), report)
+            for name in ("F-bulk", "F-split"):
+                proof = report["f_replay_checks"][name]
+                self.assertTrue(proof["same_config"])
+                self.assertTrue(proof["byte_identical"])
+                self.assertEqual(proof["replay_run"], name + "-replay")
+                expected = {"config.json", "events.csv", "balances.csv",
+                            "energy.svg", "manifest.json"}
+                self.assertEqual(set(proof["matching_artifact_sha256"]), expected)
+                for filename in expected:
+                    a = (folder / name / filename).read_bytes()
+                    b = (folder / proof["replay_run"] / filename).read_bytes()
+                    self.assertEqual(a, b)
+                    self.assertEqual(
+                        proof["matching_artifact_sha256"][filename],
+                        hashlib.sha256(a).hexdigest(),
+                    )
+                original = json.loads((folder / name / "manifest.json").read_text())
+                replay = json.loads(
+                    (folder / proof["replay_run"] / "manifest.json").read_text()
+                )
+                self.assertEqual(original, replay)
+                self.assertEqual(original["residual_uj"], 0)
+                self.assertEqual(original["event_count"], 1 if name == "F-bulk" else 3)
+
     def test_save_manifest_csv_and_no_overwrite(self):
         conf = make_config("D-transfer", [{"kind": "transfer", "source_id": "A", "target_id": "B", "amount_uj": 3_000_000, "eta_bps": 8000}])
         with tempfile.TemporaryDirectory() as tmp:

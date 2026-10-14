@@ -28,3 +28,6 @@ feature: F002
 - **2026-10-14 JSTに実験を実行し、実測値を別資料（findings）に保存した。**
 
 結果の記録先：[F002 findings](../../findings/F002-validation.md)。
+
+## 同一イベント列の再現性証拠の補強（2026-10-14）
+事前に定めたFの条件・予測は変更しない。F-bulkとF-splitをそれぞれ**同じconfig**で再実行し、初回と再実行の5成果物のバイト一致を検証する。比較対象のSHA256は`comparison.json.f_replay_checks`に保存。これにより再実行の一致結果をCI artifactから独立監査可能にする。

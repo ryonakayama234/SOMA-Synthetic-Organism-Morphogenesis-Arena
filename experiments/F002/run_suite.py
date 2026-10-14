@@ -70,6 +70,27 @@ def main() -> None:
         "F-split": common("F-split", [transfer(1, 5000)] * 3),
     }
     results = {name: save_run(config, out / name) for name, config in plans.items()}
+    # Replay the exact same F configurations, not simply compare different partitions.
+    artifact_names = ("config.json", "events.csv", "balances.csv", "energy.svg", "manifest.json")
+    replay_checks = {}
+    for name in ("F-bulk", "F-split"):
+        replay_dir = out / (name + "-replay")
+        save_run(plans[name], replay_dir)
+        hashes = {}
+        for filename in artifact_names:
+            original = (out / name / filename).read_bytes()
+            repeat = (replay_dir / filename).read_bytes()
+            original_sha = hashlib.sha256(original).hexdigest()
+            repeat_sha = hashlib.sha256(repeat).hexdigest()
+            if original_sha != repeat_sha:
+                raise AssertionError(f"nondeterministic F replay: {name}/{filename}")
+            hashes[filename] = original_sha
+        replay_checks[name] = {
+            "replay_run": name + "-replay",
+            "same_config": True,
+            "byte_identical": True,
+            "matching_artifact_sha256": hashes,
+        }
     e = rejection_checks()
     (out / "E-invalid-events.json").write_text(json.dumps(e, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     assert all(x["residual_uj"] == 0 for x in results.values())
@@ -82,6 +103,7 @@ def main() -> None:
     assert results["F-bulk"]["final_balances_uj"]["B"] - results["F-split"]["final_balances_uj"]["B"] == 1
     manifest = {"experiment_id": "F002-A-F", "runs": {name: {"residual_uj": r["residual_uj"], "final_balances_uj": r["final_balances_uj"], "loss_uj": r["loss_uj"]} for name, r in results.items()},
                 "invalid_control_count": e["passed"],
+                "f_replay_checks": replay_checks,
                 "e_checksum_sha256": hashlib.sha256((out / "E-invalid-events.json").read_bytes()).hexdigest()}
     (out / "comparison.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(manifest, ensure_ascii=False, sort_keys=True))
