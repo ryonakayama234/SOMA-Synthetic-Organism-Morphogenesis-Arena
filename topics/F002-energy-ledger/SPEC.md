@@ -116,3 +116,9 @@ commit `7b61e0c068ab3f2cb4cb1a408b5306141b63b43d` に対する [F002 CI #3850733
 ### 受入条件が最適化モードで無効化されないことの検証（2026-10-14）
 
 CodexレビューP2を受け、A〜C・D・Fの最終残量と会計残差の検査を、最適化で除去される`assert`から、明示的な条件分岐による検査へ変更。正常実験と、6種類の異常結果を注入して`python -O`で拒否される負例試験を追加した。コードコミット`7a97d7a`の[F002 CI #38533052570](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38533052570)は24テスト合格、[F001回帰 #38533052578](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38533052578)も成功。実験予測値や数学モデルは不変。証拠と限界は[findings](../../findings/F002-validation.md)に記録。
+
+### 対照Fの絶対期待値の固定と追加負例（2026-10-14）
+
+Codexレビューの追加P2により、F-bulk／F-splitのB残量差1 µJの照合だけでは両結果が同時に誤る回帰を検出できないと判明。受入条件として、初期A=10,000,000 µJ・B=2,000,000 µJに対して、一括F-bulkの**A=9,999,997 / B=2,000,001 / loss=2 µJ**、3分割F-splitの**A=9,999,997 / B=2,000,000 / loss=3 µJ**をそれぞれ完全一致で要求する。残差0、到着量差1 µJ、同一config再実行の生ファイル一致も維持する。
+
+最適化モード`python -O`で、既存6件の負例に、両FのB残量同時+1、両FのA残量同時+1、F-bulk損失+1、F-split損失+1を加えた**計10負例**を検証。READMEを**現行24件（F001=9、F002=15）**に同期した。[F002 CI #38534904906](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904906) と [F001回帰 #38534904676](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904676) はともに成功（24テスト全件合格）。テスト関数数を増やさず負例を拡張している。算術期待値はWolframで独立に確認。経緯と限界は[検証ノート](../../findings/F002-validation.md)に追記し、旧CI証拠も保持した。
