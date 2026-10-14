@@ -55,26 +55,49 @@ def rejection_checks() -> dict:
 
 
 def validate_expected_results(results: dict[str, dict]) -> None:
-    """Enforce preregistered controls also when Python runs with -O."""
-    for name, outcome in results.items():
-        if outcome["residual_uj"] != 0:
-            raise AssertionError(f"{name}: nonzero accounting residual")
-
-    expected_balances = {
-        "A-rest": {"A": 10_000_000},
-        "B-acquire": {"A": 15_000_000},
-        "C-spend": {"A": 7_000_000},
-        "D-transfer": {"A": 7_000_000, "B": 4_400_000},
-        "F-bulk": {"A": 9_999_997, "B": 2_000_001},
-        "F-split": {"A": 9_999_997, "B": 2_000_000},
+    """Check every preregistered manifest measurement, even with Python -O."""
+    expected = {
+        "A-rest": {
+            "final_balances_uj": {"A": 10_000_000},
+            "acquired_uj": 0, "spent_uj": 0, "loss_uj": 0,
+            "residual_uj": 0, "event_count": 0,
+        },
+        "B-acquire": {
+            "final_balances_uj": {"A": 15_000_000},
+            "acquired_uj": 5_000_000, "spent_uj": 0, "loss_uj": 0,
+            "residual_uj": 0, "event_count": 1,
+        },
+        "C-spend": {
+            "final_balances_uj": {"A": 7_000_000},
+            "acquired_uj": 0, "spent_uj": 3_000_000, "loss_uj": 0,
+            "residual_uj": 0, "event_count": 1,
+        },
+        "D-transfer": {
+            "final_balances_uj": {"A": 7_000_000, "B": 4_400_000},
+            "acquired_uj": 0, "spent_uj": 0, "loss_uj": 600_000,
+            "residual_uj": 0, "event_count": 1,
+        },
+        "F-bulk": {
+            "final_balances_uj": {"A": 9_999_997, "B": 2_000_001},
+            "acquired_uj": 0, "spent_uj": 0, "loss_uj": 2,
+            "residual_uj": 0, "event_count": 1,
+        },
+        "F-split": {
+            "final_balances_uj": {"A": 9_999_997, "B": 2_000_000},
+            "acquired_uj": 0, "spent_uj": 0, "loss_uj": 3,
+            "residual_uj": 0, "event_count": 3,
+        },
     }
-    for name, expected in expected_balances.items():
-        if results[name]["final_balances_uj"] != expected:
-            raise AssertionError(f"{name}: balances differ from preregistered prediction")
-    expected_f_losses = {"F-bulk": 2, "F-split": 3}
-    for name, expected_loss in expected_f_losses.items():
-        if results[name]["loss_uj"] != expected_loss:
-            raise AssertionError(f"{name}: loss differs from preregistered prediction")
+    if results.keys() != expected.keys():
+        raise AssertionError("A-F: missing or unexpected experiment outcomes")
+    for name, predicted in expected.items():
+        for field, value in predicted.items():
+            if results[name].get(field) != value:
+                raise AssertionError(
+                    f"{name}: {field} differs from preregistered prediction"
+                )
+
+    # Preserve the preregistered contrast as well as both absolute predictions.
     bulk_b = results["F-bulk"]["final_balances_uj"]["B"]
     split_b = results["F-split"]["final_balances_uj"]["B"]
     if bulk_b - split_b != 1:
@@ -121,7 +144,7 @@ def main() -> None:
     e = rejection_checks()
     (out / "E-invalid-events.json").write_text(json.dumps(e, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     validate_expected_results(results)
-    manifest = {"experiment_id": "F002-A-F", "runs": {name: {"residual_uj": r["residual_uj"], "final_balances_uj": r["final_balances_uj"], "loss_uj": r["loss_uj"]} for name, r in results.items()},
+    manifest = {"experiment_id": "F002-A-F", "runs": {name: {field: r[field] for field in ("event_count", "final_balances_uj", "acquired_uj", "spent_uj", "loss_uj", "residual_uj")} for name, r in results.items()},
                 "invalid_control_count": e["passed"],
                 "f_replay_checks": replay_checks,
                 "e_checksum_sha256": hashlib.sha256((out / "E-invalid-events.json").read_bytes()).hexdigest()}
