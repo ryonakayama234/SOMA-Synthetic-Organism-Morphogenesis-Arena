@@ -109,3 +109,6 @@ Codexの2回目のレビューで、XML禁止文字を含む実験IDから不正
 
 ### 対照Fの同一イベント列の再実行証拠（独立レビューP1への対応）
 追加レビューにより、旧A〜F保存証拠には一括・分割の**異なるイベント列**の比較しかなく、各イベント列の同一configの再実行結果が保存されていないと指摘された。F-bulkとF-splitをそれぞれ同じconfigで独立にもう一度実行し、`F-bulk-replay/`と`F-split-replay/`に全成果物を記録する。5つの生ファイルが初回実行とバイト単位・SHA256で一致した事実を`comparison.json.f_replay_checks`に記録し、不一致時は実験を失敗させる。事前に固定した計算条件・予測は変更していない。
+
+### 保存可能な再現性の実測結果（2026-10-14）
+commit `7b61e0c068ab3f2cb4cb1a408b5306141b63b43d` に対する [F002 CI #38507338366](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38507338366) は**success：計23テスト（F001 9・F002 14）**。`F-bulk`と`F-bulk-replay`、`F-split`と`F-split-replay`の各5成果物がバイト単位とSHA256ですべて一致したことを `comparison.json` に保存した。F001回帰の[CI #38507338216](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38507338216)も成功。artifact：`F002-A-F-evidence` ID `11868571427`。これを2026-10-14時点の最新のF002検証証拠とする（旧CIとその当時の不備・訂正履歴は保持）。

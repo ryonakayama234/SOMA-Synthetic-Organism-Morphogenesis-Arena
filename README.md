@@ -2,7 +2,7 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
-**現在：F001は実装・数値検証済み。F002（整数µJエネルギー台帳）は実装し、レビュー指摘に対応したCIでテスト22件（F001=9、F002=13）と事前条件に修正した対照実験A〜Fが成功。F003は未実装。F001数値安定性のPR #5は別途未統合。**
+**現在：F001は実装・数値検証済み。F002（整数µJエネルギー台帳）は実装し、レビュー指摘に対応したCIでテスト23件（F001=9、F002=14）と事前条件に修正した対照実験A〜Fが成功。F003は未実装。F001数値安定性のPR #5は別途未統合。**
 
 ## 入口：どこから読む？
 
@@ -52,4 +52,4 @@ flowchart TD
 **GitHub は進捗の台帳**：Issue = 一つの課題、Pull Request = 変更提案、Commit = 保存された変更。操作の知識がなくても研究判断を確認できることを目指す。
 
 ## 機能追加時に必ず同期するもの
-F002以降は、**コード／テスト・システム図（docs/ARCHITECTURE.md）・データ契約（docs/DATA_CONTRACTS.md）・実験記録（findings/Fxxx-validation.md）・READMEの現在地**を同じPRで更新する。仮説と実装と観測を混同しない。詳細は[研究運営](docs/RESEARCH_PROCESS.md)。F002ではこの5点を同一PR #6で更新し、対照Fの同一設定での再実行証拠も保存する。[GitHub Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38433251595)に実測ログを保存済み。
+F002以降は、**コード／テスト・システム図（docs/ARCHITECTURE.md）・データ契約（docs/DATA_CONTRACTS.md）・実験記録（findings/Fxxx-validation.md）・READMEの現在地**を同じPRで更新する。仮説と実装と観測を混同しない。詳細は[研究運営](docs/RESEARCH_PROCESS.md)。F002ではこの5点を同一PR #6で更新し、対照Fの同一設定での再実行証拠も保存する。[GitHub Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38507338366)に実測ログを保存済み。

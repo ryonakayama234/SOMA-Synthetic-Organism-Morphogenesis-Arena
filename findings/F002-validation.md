@@ -94,4 +94,4 @@ Codexが2026-10-14のPR #6レビューで、旧`comparison.json`にF-bulk／F-sp
 
 そのため旧実験の予測や結果を改変せず、F-bulkとF-splitをそれぞれ全く同じconfig（ID・seed・セル構成・イベント順）で2回ずつ実行して`F-bulk-replay/`と`F-split-replay/`を追加し、各runの5ファイル（設定／events／balances／energy SVG／manifest）をバイト・SHA256で比較する処理を導入した。監査結果は`comparison.json.f_replay_checks`に保存し、異なる場合はCIを失敗させる。
 
-**実測確認**：本節作成時点では新実装のCI結果未確定。結果はGitHub Actionsの最新コミットを参照し、確認後に成功／失敗・artifact IDを追記する。従前の保存実験・中間失敗は履歴として保持する。
+**実測確認（2026-10-14）**：commit `7b61e0c068ab3f2cb4cb1a408b5306141b63b43d` の [F002 Actions #38507338366](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38507338366) は **success・23テスト全件合格（F001 9、F002 14）**。ログ上の `comparison.json.f_replay_checks` で F-bulk と F-split の双方が `same_config=true`、`byte_identical=true`、5成果物の一致SHA256を記録。保存証拠 [artifact `F002-A-F-evidence` ID 11868571427](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38507338366) に初回・再実行の両フォルダを保存。[F001回帰 #38507338216](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38507338216) も成功。**数値の同条件再現性は今回の実行・保存条件で支持**される。従前の保存実験と中間失敗は履歴として保持し、同条件の数値再現性を実機のエネルギー・身体創発へ一般化しない。
