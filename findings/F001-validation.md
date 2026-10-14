@@ -61,5 +61,7 @@ feature: F001
 - レビュー対象 `c0c509f` では各積が有限でも位置項の加算途中があふれる。再現条件は `m=gamma=dt=T=1`、`x0=7.3e307`、`v0=1.7e308`、`F=-9e306`。修正前のローカル実行で解析位置 `inf` を確認した。
 - `_signed_sum()` は通常 `math.fsum` を使い、有限項の途中和で `OverflowError` が出た場合だけ、標準ライブラリ `Fraction` による二進浮動小数点値の厳密な有理数和へ切り替える。各項が有限なときの相殺を保持し、最終結果自体がfloatで表せない場合は符号付き `inf` とする。抵抗ゼロの式も同じ積・和の処理を使う。
 - 独立基準は `Decimal` の100桁計算で連続方程式を評価。再現条件の位置は約 `1.7714958003031182e308 m`、速度は約 `5.685041996968817e307 m/s`。正負を反転した条件、時刻0、manifestの解析値・誤差の有限性、抵抗ゼロの相殺、本当に表現範囲を超える結果を回帰テスト2件で検証した。
-- Python 3.12.14のローカル実行で **17テスト合格**、A〜Eの6条件を再実行し、位置・速度および刻み半減の収束傾向を確認した。最新コミットのCI証拠は [PR #5 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/5/checks) で確認する（この記録作成時点では未実行）。
+- Python 3.12.14のローカル実行で **17テスト合格**、A〜Eの6条件を再実行し、位置・速度および刻み半減の収束傾向を確認した。最新コミットのCI証拠は [PR #5 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/5/checks) で確認する。
 - 今回の保証は有限な各項の加算に対するもの。個々の項そのものが表現範囲を超える場合や、数値積分・SVGを含むすべての極端入力を保証するものではない。初回観測・旧CI証拠は履歴として保持する。
+
+- **GitHub CI実測**：修正コード `a143998877732178df0e119f535f9ca65dfec98d` に対する [F001 CI #38554389057](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38554389057) は成功。Python 3.11で17テスト合格、A〜Eの6条件実行・生ログとSVGのartifact保存も成功した。
