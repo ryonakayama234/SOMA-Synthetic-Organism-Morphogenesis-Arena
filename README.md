@@ -2,7 +2,7 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
-**現在：F001（単一セルの一次元運動）を実装し、初回数値実験を検証済み。F002/F003は未実装。**
+**現在：mainではF001（単一セルの一次元運動）を実装・初回検証済み。F002はPR #6で実装・検証結果を提出してレビュー待ち（未統合）。F003は仕様・実験計画の提案段階（未実装）。**
 
 ## 入口：どこから読む？
 
@@ -14,7 +14,7 @@
 | 仮説→実験→改善の進め方 | [研究運営](docs/RESEARCH_PROCESS.md) |
 | 最初の一機能 | [F001：単一セルの運動](topics/F001-single-cell-motion/SPEC.md)（実装・初回検証済み） |
 | F001の実験結果 | [初回検証ノート](findings/F001-validation.md) / [再現方法](experiments/F001/README.md) |
-| 次に扱う候補 | [F002：エネルギー収支](topics/F002-energy-ledger/IDEA.md) / [F003：結合](topics/F003-attachment/IDEA.md) |
+| 次に扱う候補 | [F002：エネルギー収支](topics/F002-energy-ledger/IDEA.md)（[レビュー待ちPR #6](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6)） / [F003：結合の仕様案](topics/F003-attachment/SPEC.md)と[実験計画](experiments/F003/PLAN.md) |
 | 論文や参考情報 | [文献図書館](library/INDEX.md) |
 | なぜこの設計にしたか | [意思決定001](docs/decisions/0001-incremental-library.md) |
 | AIエージェントの読み方 | [AI案内](AGENTS.md) |
@@ -36,8 +36,8 @@ flowchart TD
 ## 当面の研究対象
 
 - **F001：単一セルが動く（実装済み）**。位置・速度・力を検証。計算結果・誤差を記録済み。学習、結合、エネルギーはまだ追加しない。
-- F002：エネルギーの獲得・消費・移送を帳簿として扱う（構想）。
-- F003：細胞の接続・切断と力学的影響を扱う（構想）。
+- F002：エネルギーの獲得・消費・移送を帳簿として扱う（PR #6で実装・検証提出、レビュー待ち・未統合）。
+- F003：まず二つのセルの1D理想機械結合・切断と力の伝達を検証する（[仕様案](topics/F003-attachment/SPEC.md)・[A〜F実験計画](experiments/F003/PLAN.md)、未実装）。
 
 ## 守る原則
 
