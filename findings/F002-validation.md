@@ -127,4 +127,6 @@ Codexが2026-10-14のPR #6レビューで、旧`comparison.json`にF-bulk／F-sp
 - `94e2242` に対する独立レビューで、「49種類」の記載に重複が含まれると判明。正しくは **49回実行・42種類の異なる改変**。過去の全測定量検証の表記を訂正し、当時のCIリンクは保持した。
 - 重複7件は、A-rest/B-acquire/C-spendのA残量、D-transferのB残量と残差、F-bulk/F-splitの損失の各+1改変。全フィールド走査は39種類、旧10負例のうち7件がそれと同一なので、`39 + 10 - 7 = 42`。F-bulkのB残量-1と、両FのAまたはB残量を同時に+1する3種類は走査と異なる。
 - `python -O`サブプロセス内で全改変結果をキー順固定のJSONに正規化して重複を数え、49実行・42種類でなければ明示的な例外を出す。従来の負例49回は引き続きすべて拒否されることを確認する。台帳本体・実験条件・予測値は変わらない。
-- Python 3.12.14のローカル実行で24テスト（F001=9 / F002=15）合格。A〜Fスイートを`python -O`でも再実行し、Eの13不正条件拒否、残差0、F-bulk/F-splitそれぞれの再実行5成果物のバイト・SHA256一致を確認した。最新コミットのCIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)で確認する（この記録作成時点では未実行）。
+- Python 3.12.14のローカル実行で24テスト（F001=9 / F002=15）合格。A〜Fスイートを`python -O`でも再実行し、Eの13不正条件拒否、残差0、F-bulk/F-splitそれぞれの再実行5成果物のバイト・SHA256一致を確認した。最新コミットのCIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)で確認する。
+
+- **GitHub CI実測**：修正テスト・記録 `d72ce101a7766ad71a74f71016dbe19bbbc8db39` に対する [F002 CI #38554395269](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38554395269) は成功。Python 3.11で24テスト合格、A〜F実行・artifact保存も成功。[F001回帰 #38554395287](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38554395287) も成功した。
