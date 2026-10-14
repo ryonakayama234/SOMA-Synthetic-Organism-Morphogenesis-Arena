@@ -54,6 +54,27 @@ def rejection_checks() -> dict:
     return {"experiment_id": "E-invalid-events", "cases": records, "passed": len(records)}
 
 
+def validate_expected_results(results: dict[str, dict]) -> None:
+    """Enforce preregistered controls also when Python runs with -O."""
+    for name, outcome in results.items():
+        if outcome["residual_uj"] != 0:
+            raise AssertionError(f"{name}: nonzero accounting residual")
+
+    expected_balances = {
+        "A-rest": {"A": 10_000_000},
+        "B-acquire": {"A": 15_000_000},
+        "C-spend": {"A": 7_000_000},
+        "D-transfer": {"A": 7_000_000, "B": 4_400_000},
+    }
+    for name, expected in expected_balances.items():
+        if results[name]["final_balances_uj"] != expected:
+            raise AssertionError(f"{name}: balances differ from preregistered prediction")
+    bulk_b = results["F-bulk"]["final_balances_uj"]["B"]
+    split_b = results["F-split"]["final_balances_uj"]["B"]
+    if bulk_b - split_b != 1:
+        raise AssertionError("F: bulk/split received-energy difference must be 1 µJ")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run F002 controlled experiments A-F")
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -93,14 +114,7 @@ def main() -> None:
         }
     e = rejection_checks()
     (out / "E-invalid-events.json").write_text(json.dumps(e, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    assert all(x["residual_uj"] == 0 for x in results.values())
-    assert all(results[name]["final_balances_uj"] == expected for name, expected in {
-        "A-rest": {"A": 10_000_000},
-        "B-acquire": {"A": 15_000_000},
-        "C-spend": {"A": 7_000_000},
-    }.items()), "A-C must use only cell A as preregistered"
-    assert results["D-transfer"]["final_balances_uj"] == {"A": 7_000_000, "B": 4_400_000}
-    assert results["F-bulk"]["final_balances_uj"]["B"] - results["F-split"]["final_balances_uj"]["B"] == 1
+    validate_expected_results(results)
     manifest = {"experiment_id": "F002-A-F", "runs": {name: {"residual_uj": r["residual_uj"], "final_balances_uj": r["final_balances_uj"], "loss_uj": r["loss_uj"]} for name, r in results.items()},
                 "invalid_control_count": e["passed"],
                 "f_replay_checks": replay_checks,
