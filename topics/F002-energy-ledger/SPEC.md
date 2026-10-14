@@ -122,3 +122,9 @@ CodexレビューP2を受け、A〜C・D・Fの最終残量と会計残差の検
 Codexレビューの追加P2により、F-bulk／F-splitのB残量差1 µJの照合だけでは両結果が同時に誤る回帰を検出できないと判明。受入条件として、初期A=10,000,000 µJ・B=2,000,000 µJに対して、一括F-bulkの**A=9,999,997 / B=2,000,001 / loss=2 µJ**、3分割F-splitの**A=9,999,997 / B=2,000,000 / loss=3 µJ**をそれぞれ完全一致で要求する。残差0、到着量差1 µJ、同一config再実行の生ファイル一致も維持する。
 
 最適化モード`python -O`で、既存6件の負例に、両FのB残量同時+1、両FのA残量同時+1、F-bulk損失+1、F-split損失+1を加えた**計10負例**を検証。READMEを**現行24件（F001=9、F002=15）**に同期した。[F002 CI #38534904906](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904906) と [F001回帰 #38534904676](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904676) はともに成功（24テスト全件合格）。テスト関数数を増やさず負例を拡張している。算術期待値はWolframで独立に確認。経緯と限界は[検証ノート](../../findings/F002-validation.md)に追記し、旧CI証拠も保持した。
+
+### A〜Fの全計測値の厳密照合とCI参照先の継続性（2026-10-14）
+
+追加Codex P2を受け、Fの絶対値だけでなく、**B取得量5,000,000 µJ、C支出量3,000,000 µJ、D損失量600,000 µJ**を含む、A・B・C・D・F-bulk・F-splitの各runの最終残量、取得・支出・移送損失累計、会計残差、イベント件数を事前予測と全項目一致で判定する。実験設定・モデル・予測は変更していない。比較概要`comparison.json.runs`にもこの6項目を残して証拠を追跡可能にした。出力形式の契約は[DATA_CONTRACTS](../../docs/DATA_CONTRACTS.md)。
+
+`python -O`下で49種類の独立した数値改変を拒否する負例試験を既存のテストメソッドに追加したため、テストは引き続き**計24件（F001=9、F002=15）**。[F002 CI #38546596268](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596268)と[F001回帰 #38546596161](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596161)が修正コードとテストに対して成功。以後のHEADのCIは [PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks) を入口として参照する。失敗履歴を含む経緯は[findings](../../findings/F002-validation.md)に保存。
