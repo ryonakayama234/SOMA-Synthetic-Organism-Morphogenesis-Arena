@@ -20,3 +20,11 @@
 
 ## ステータス表現
 proposed=仕様案、backlog=構想、active=運用中、implemented=コード実装済み、observed=実験観測済み。文書が書かれたことだけで implemented/observed にしない。
+
+
+## 一機能ごとの必須同時更新（2026-10-14追加）
+- 実装・調査・実験の各PRでは、仕様（topics）、システム図（docs/ARCHITECTURE.md）、データ構造/流れ（docs/DATA_CONTRACTS.md）、実験計画と結果（experiments / findings）、入口（README）を同時に確認・更新する。
+- Mermaid図は文章と整合させ、提案だけの設計を実装済みと表示しない。観測値と理論予測を分ける。
+- 実験の生ログ、対照群、コードSHA、失敗結果をPRに紐づける。第三者レビュー前にmainへ統合しない。
+- F002はレビュー待ちの別PR。F003はF001だけに依存する設計で、F002ブランチを混ぜない。
+- 詳細：[研究運営の同期規則](docs/RESEARCH_PROCESS.md)。
