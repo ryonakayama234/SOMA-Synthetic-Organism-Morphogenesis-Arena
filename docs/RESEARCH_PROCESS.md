@@ -55,3 +55,18 @@ flowchart TD
 - 将来のAIは [AGENTS.md](../AGENTS.md) → README → 対象仕様 → Issueの順に読む。
 
 [研究憲章](PROJECT.md) / [F001仕様](../topics/F001-single-cell-motion/SPEC.md)
+
+
+## 変更と同時に更新する「研究コンテキスト一式」（2026-10-14追加）
+
+機能ごとのPRは**コードだけで完了としない**。原則として次の資料を同じPRで整合させる（該当しない場合は理由を書く）。
+
+- topics/Fxxx/SPEC.md：問い、仮説、対立仮説、設計仮定、測定量と単位、受入・反証条件、未解決事項。
+- docs/ARCHITECTURE.md：今回の能力が既存部品のどこに挿入されるかをMermaid図で可視化し、「概念／実装済み」を区別する。
+- docs/DATA_CONTRACTS.md：設定→真の状態→観測／イベント→ログ／成果物の構造と流れをMermaid図で可視化する。
+- experiments/Fxxx/PLAN.md：対照条件、固定条件、測定量、再現方法。実行後は生ログ・図をActions artifact等に保管し、findings/Fxxx-validation.mdに支持／反証／不明の判定を記録。
+- README.md：入口・進捗・関連PR/Issueのリンク。必要ならAGENTS.mdと文献図書館も更新。
+
+仕様だけのPRでは「proposed・未実施」を明記し、実測のない数値を成果として扱わない。**正式採用は独立レビュー、対照実験、記録整合の確認後にのみ行う**。保留PRのコードを別機能が暗黙に使うことを禁止する。
+
+参考：[F003提案仕様](../topics/F003-attachment/SPEC.md) / [F003実験計画](../experiments/F003/PLAN.md)。
