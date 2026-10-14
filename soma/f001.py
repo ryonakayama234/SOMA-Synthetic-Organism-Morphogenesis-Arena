@@ -94,6 +94,25 @@ def simulate(config: RunConfig) -> list[State]:
     return states
 
 
+def _scaled_product(*factors: float) -> float:
+    """Multiply factors without overflowing a finite final product.
+
+    Keeping the binary mantissas separate from their exponents avoids
+    intermediate overflow in a*t*phi1 and a*t*t*phi2. In particular,
+    applying damping only after a*t*t is too late for large forces.
+    """
+    mantissa = 1.0
+    exponent = 0
+    for factor in factors:
+        part, shift = math.frexp(factor)
+        mantissa *= part
+        exponent += shift
+    try:
+        return math.ldexp(mantissa, exponent)
+    except OverflowError:
+        return math.copysign(math.inf, mantissa)
+
+
 def analytic_state(config: RunConfig, t: float) -> tuple[float, float]:
     """Exact solution of the CONTINUOUS ODE, useful for numerical-error checks."""
     a = config.force_n / config.mass_kg
@@ -108,8 +127,9 @@ def analytic_state(config: RunConfig, t: float) -> tuple[float, float]:
         phi2 = 0.5 - z/6 + z*z/24 - z**3/120 + z**4/720 - z**5/5040
     else:
         phi2 = (z + math.expm1(-z)) / (z*z)
-    v = config.initial_v_m_s * math.exp(-z) + a*t*phi1
-    x = config.initial_x_m + config.initial_v_m_s*t*phi1 + a*t*t*phi2
+    v = config.initial_v_m_s * math.exp(-z) + _scaled_product(a, t, phi1)
+    x = (config.initial_x_m + _scaled_product(config.initial_v_m_s, t, phi1)
+         + _scaled_product(a, t, t, phi2))
     return x, v
 
 
