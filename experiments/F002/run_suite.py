@@ -65,10 +65,16 @@ def validate_expected_results(results: dict[str, dict]) -> None:
         "B-acquire": {"A": 15_000_000},
         "C-spend": {"A": 7_000_000},
         "D-transfer": {"A": 7_000_000, "B": 4_400_000},
+        "F-bulk": {"A": 9_999_997, "B": 2_000_001},
+        "F-split": {"A": 9_999_997, "B": 2_000_000},
     }
     for name, expected in expected_balances.items():
         if results[name]["final_balances_uj"] != expected:
             raise AssertionError(f"{name}: balances differ from preregistered prediction")
+    expected_f_losses = {"F-bulk": 2, "F-split": 3}
+    for name, expected_loss in expected_f_losses.items():
+        if results[name]["loss_uj"] != expected_loss:
+            raise AssertionError(f"{name}: loss differs from preregistered prediction")
     bulk_b = results["F-bulk"]["final_balances_uj"]["B"]
     split_b = results["F-split"]["final_balances_uj"]["B"]
     if bulk_b - split_b != 1:
