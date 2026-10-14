@@ -168,12 +168,36 @@ from experiments.F002.run_suite import validate_expected_results
 if __debug__:
     raise RuntimeError("expected Python optimized mode")
 good = {
-    "A-rest": {"residual_uj": 0, "final_balances_uj": {"A": 10_000_000}},
-    "B-acquire": {"residual_uj": 0, "final_balances_uj": {"A": 15_000_000}},
-    "C-spend": {"residual_uj": 0, "final_balances_uj": {"A": 7_000_000}},
-    "D-transfer": {"residual_uj": 0, "final_balances_uj": {"A": 7_000_000, "B": 4_400_000}},
-    "F-bulk": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_001}, "loss_uj": 2},
-    "F-split": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_000}, "loss_uj": 3},
+    "A-rest": {
+        "final_balances_uj": {"A": 10_000_000},
+        "acquired_uj": 0, "spent_uj": 0, "loss_uj": 0,
+        "residual_uj": 0, "event_count": 0,
+    },
+    "B-acquire": {
+        "final_balances_uj": {"A": 15_000_000},
+        "acquired_uj": 5_000_000, "spent_uj": 0, "loss_uj": 0,
+        "residual_uj": 0, "event_count": 1,
+    },
+    "C-spend": {
+        "final_balances_uj": {"A": 7_000_000},
+        "acquired_uj": 0, "spent_uj": 3_000_000, "loss_uj": 0,
+        "residual_uj": 0, "event_count": 1,
+    },
+    "D-transfer": {
+        "final_balances_uj": {"A": 7_000_000, "B": 4_400_000},
+        "acquired_uj": 0, "spent_uj": 0, "loss_uj": 600_000,
+        "residual_uj": 0, "event_count": 1,
+    },
+    "F-bulk": {
+        "final_balances_uj": {"A": 9_999_997, "B": 2_000_001},
+        "acquired_uj": 0, "spent_uj": 0, "loss_uj": 2,
+        "residual_uj": 0, "event_count": 1,
+    },
+    "F-split": {
+        "final_balances_uj": {"A": 9_999_997, "B": 2_000_000},
+        "acquired_uj": 0, "spent_uj": 0, "loss_uj": 3,
+        "residual_uj": 0, "event_count": 3,
+    },
 }
 validate_expected_results(good)
 bad_cases = []
@@ -207,6 +231,18 @@ bad_cases.append(("F-bulk-loss", bad))
 bad = deepcopy(good)
 bad["F-split"]["loss_uj"] += 1
 bad_cases.append(("F-split-loss", bad))
+
+# Probe every reported A-F manifest measurement in optimized mode,
+# including unchanged-zero counters and both cells' absolute balances.
+for name, outcome in good.items():
+    for field in ("acquired_uj", "spent_uj", "loss_uj", "residual_uj", "event_count"):
+        bad = deepcopy(good)
+        bad[name][field] += 1
+        bad_cases.append((f"{name}-{field}", bad))
+    for cell_id in outcome["final_balances_uj"]:
+        bad = deepcopy(good)
+        bad[name]["final_balances_uj"][cell_id] += 1
+        bad_cases.append((f"{name}-balance-{cell_id}", bad))
 
 for name, bad in bad_cases:
     try:
@@ -246,6 +282,17 @@ for name, bad in bad_cases:
                                  {"A": 9_999_997, "B": expected_b})
                 self.assertEqual(observation["loss_uj"], expected_loss)
                 self.assertEqual(observation["residual_uj"], 0)
+            self.assertEqual(summary["runs"]["B-acquire"]["acquired_uj"], 5_000_000)
+            self.assertEqual(summary["runs"]["C-spend"]["spent_uj"], 3_000_000)
+            self.assertEqual(summary["runs"]["D-transfer"]["loss_uj"], 600_000)
+            self.assertEqual(summary["runs"]["F-split"]["event_count"], 3)
+            for observation in summary["runs"].values():
+                self.assertEqual(observation["residual_uj"], 0)
+                self.assertEqual(
+                    set(observation),
+                    {"final_balances_uj", "acquired_uj", "spent_uj",
+                     "loss_uj", "residual_uj", "event_count"},
+                )
             cases = json.loads((folder / "E-invalid-events.json").read_text())["cases"]
             self.assertIn("fractional_amount", {case["case"] for case in cases})
             self.assertIn("fractional_efficiency", {case["case"] for case in cases})
