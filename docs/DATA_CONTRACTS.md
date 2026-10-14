@@ -72,3 +72,43 @@ time_s,x_m,v_m_s,force_n
 - 各実験に `config.json`、`manifest.json`（コードコミットIDとチェックサム）、`motion.svg` を出力。
 - 実行結果の上書きを禁止し、出力先には未使用のディレクトリを指定。
 - 詳細： [F001の再現方法](../experiments/F001/README.md)。
+
+
+## F003の提案データ構造（2026-10-14、未実装）
+F001が確立した単一セルの位置・速度・外力を二セルに拡張する。**以下は仕様案であり、動作するAPIや保存済み実験データではない。**
+
+~~~mermaid
+flowchart LR
+  INPUT["設定JSON\n2セルの初期状態\n各セルの外力・リンクON/OFF"] --> WORLD["世界の真の状態\nCell A / Cell B / Link"]
+  WORLD --> TRACE["states.csv\n位置・速度・外力\n内部力・拘束誤差"]
+  WORLD --> EVENT["events.csv\n結合・切断・拒否"]
+  TRACE --> META["manifest.json\n設定・commit・各成果物ハッシュ"]
+  EVENT --> META
+  INPUT --> META
+  TRACE --> REVIEW["対照比較・図・判断"]
+~~~
+
+~~~json
+{
+  "schema_version": "f003.v0-proposal",
+  "experiment_id": "F003-B-planned",
+  "seed": null,
+  "dt_s": 0.01,
+  "duration_s": 10.0,
+  "drag_per_s": 0.2,
+  "cells": [
+    {"id": "A", "mass_kg": 1.0, "initial_x_m": 0.0, "initial_v_m_s": 0.0, "force_n": 1.0},
+    {"id": "B", "mass_kg": 1.0, "initial_x_m": 0.5, "initial_v_m_s": 0.0, "force_n": 0.0}
+  ],
+  "link": {"initially_attached": true, "length_m": 0.5, "detach_time_s": null}
+}
+~~~
+
+- 実行状態：時刻、各セルの位置・速度、外部指定力、結合ON/OFF、各セルに作用するリンク内部力。
+- 記録：拘束誤差や重心の解析値との差分も追加して、間違った内部力や数値積分の劣化を発見可能にする。
+- イベント：接続/切断/拒否を理由とともに記録。無理な初期接続を黙って修正しない。
+- 境界：すべて**世界の真値を用いる研究用データ**であり、セルが知覚できる情報とは異なる。セル観測ログはセンサー能力を別途実装するまで作らない。
+- 再現性：F001と同じく設定・コードSHA・生ログ・SHA256と図を関連づける。乱数を使用しなければ seed は null と記録する。
+
+列名・厳密な許容誤差は実装前の仕様レビューで決定し、実験データに合わせて後付けしない。
+[設計仕様](../topics/F003-attachment/SPEC.md) / [実験計画](../experiments/F003/PLAN.md)。
