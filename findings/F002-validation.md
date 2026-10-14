@@ -111,3 +111,13 @@ Codexが2026-10-14のPR #6レビューで、旧`comparison.json`にF-bulk／F-sp
 - `validate_expected_results()` にFの**A・B残量と損失の完全な絶対予測**を追加し、差分検査と残差検査も維持。最適化実行`python -O`で、旧6負例に加えてFの両Bの同時+1、両Aの同時+1、F-bulkの損失+1、F-splitの損失+1の**追加4負例、計10負例**を拒否できることを検査。現物のA〜F出力も比較ファイルから直接照合する。
 - READMEの進捗要約を **24テスト（F001=9 / F002=15）** に訂正。commit `67300f5d36a6d21c4dc16e7cf737ba80a205325d` の [F002検証 #38534904906](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904906) と [F001回帰 #38534904676](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38534904676) は成功、24テスト全件合格。追加負例は既存のテストメソッド内に置いたためテスト件数は増えていない。
 - これは**ソフトウェア台帳と事前予測の照合**であり、物理的エネルギー伝送や身体構造の創発を実証するものではない。旧実験証拠・失敗履歴は保持する。
+
+## PR #6 全測定量の事前予測照合（2026-10-14）
+
+- commit `f21184a` に対する独立Codexレビューで、新規P2として **B-acquireの`acquired_uj`、C-spendの`spent_uj`、D-transferの`loss_uj` を最終残量と独立に検査していない**こと、および**READMEの固定CIリンクが古い**ことが指摘された。従来の検証は残量・残差・Fの損失まではカバーしていたが、実験manifestの他のフロー項目が正しく記録されたという証拠として不十分だった。
+- 変更前に固定したA〜Fの事前予測を保持し、Wolframで次の整数計算を独立検算した。B: 取得`5,000,000 µJ`・最終A`15,000,000 µJ`、C: 支出`3,000,000 µJ`・最終A`7,000,000 µJ`、D: 損失`600,000 µJ`・最終A/B`7,000,000/4,400,000 µJ`、残差はいずれも0。F: 一括損失2 µJ、3分割損失3 µJ、受領差1 µJ。
+- `validate_expected_results()` で **A-rest/B-acquire/C-spend/D-transfer/F-bulk/F-split** の各runの `final_balances_uj`、`acquired_uj`、`spent_uj`、`loss_uj`、`residual_uj`、`event_count` を個別の絶対期待値と比較する。最適化実行`python -O`でも省略されない明示的な失敗判定を使う。実験条件・数学モデル・イベントの挙動は変更していない。
+- `tests/test_f002.py` の`python -O`負例試験を **49種類の測定値破損** に拡張。フロー量、ゼロであるべき項目、イベント数、両セルの残量、会計残差を個別に破損させ、すべて拒否する。Fの対照差のみを保って絶対値を変える従来の負例も維持した。テストメソッド数は増やしていないので計24件（F001=9、F002=15）。
+- `comparison.json.runs` は従来の最終残量・損失・残差に加えて取得量・支出量・イベント数を記録し、`docs/DATA_CONTRACTS.md`へ同期した。READMEの「CI確認先」は過去の特定runではなく、現在のPR HEADに追随する [PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks) に変更（古いCIログは本記録に残す）。
+- コード・テストコミット`72a40f8de3db1f3369859923091ad387789aef0e`に対する [F002 CI #38546596268](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596268) と [F001回帰 #38546596161](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596161) は成功。途中のコードのみコミット`300c0e6`は、テストの旧fixtureと新しい必須項目の不一致によってCI失敗となったが、同じPRでテスト更新を加えて解消した。この中間失敗も隠さず、Actionsの実行履歴に保持する。
+- 上記が示すのは**事前登録したソフトウェア台帳モデルの出力値と保存記録の一致**まで。現実のエネルギー伝送・自律生存・身体形成は別課題であり、この数値結果からは実証されない。
