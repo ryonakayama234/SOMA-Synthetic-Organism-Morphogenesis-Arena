@@ -172,8 +172,8 @@ good = {
     "B-acquire": {"residual_uj": 0, "final_balances_uj": {"A": 15_000_000}},
     "C-spend": {"residual_uj": 0, "final_balances_uj": {"A": 7_000_000}},
     "D-transfer": {"residual_uj": 0, "final_balances_uj": {"A": 7_000_000, "B": 4_400_000}},
-    "F-bulk": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_001}},
-    "F-split": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_000}},
+    "F-bulk": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_001}, "loss_uj": 2},
+    "F-split": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_000}, "loss_uj": 3},
 }
 validate_expected_results(good)
 bad_cases = []
@@ -190,6 +190,23 @@ bad_cases.append(("F", bad))
 bad = deepcopy(good)
 bad["D-transfer"]["residual_uj"] = 1
 bad_cases.append(("residual", bad))
+
+# These mutations keep the original bulk-minus-split B delta at 1 µJ.
+# The earlier delta-only validator incorrectly accepted them.
+bad = deepcopy(good)
+for name in ("F-bulk", "F-split"):
+    bad[name]["final_balances_uj"]["B"] += 1
+bad_cases.append(("F-paired-B-shift", bad))
+bad = deepcopy(good)
+for name in ("F-bulk", "F-split"):
+    bad[name]["final_balances_uj"]["A"] += 1
+bad_cases.append(("F-paired-A-shift", bad))
+bad = deepcopy(good)
+bad["F-bulk"]["loss_uj"] += 1
+bad_cases.append(("F-bulk-loss", bad))
+bad = deepcopy(good)
+bad["F-split"]["loss_uj"] += 1
+bad_cases.append(("F-split-loss", bad))
 
 for name, bad in bad_cases:
     try:
@@ -222,6 +239,13 @@ for name, bad in bad_cases:
                 self.assertEqual(len(conf["cells"]), 1)
                 self.assertEqual(conf["cells"][0]["cell_id"], "A")
                 self.assertEqual(summary["runs"][name]["final_balances_uj"], {"A": expected})
+            for name, expected_b, expected_loss in (("F-bulk", 2_000_001, 2),
+                                                    ("F-split", 2_000_000, 3)):
+                observation = summary["runs"][name]
+                self.assertEqual(observation["final_balances_uj"],
+                                 {"A": 9_999_997, "B": expected_b})
+                self.assertEqual(observation["loss_uj"], expected_loss)
+                self.assertEqual(observation["residual_uj"], 0)
             cases = json.loads((folder / "E-invalid-events.json").read_text())["cases"]
             self.assertIn("fractional_amount", {case["case"] for case in cases})
             self.assertIn("fractional_efficiency", {case["case"] for case in cases})
