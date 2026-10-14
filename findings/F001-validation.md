@@ -46,3 +46,12 @@ feature: F001
 出力ディレクトリの中に `comparison.json`、各条件の `states.csv`・`motion.svg`・`manifest.json` が生成される。実験パラメータは [設定JSON](../experiments/F001/configs/B_positive.json) 参照。
 
 **判定**：今回の条件についてH001の予測と整合。ただしF001の正否は実装の再現性と追加実験により継続的に評価する。
+
+## PR #5 解析解の大きな値に対する数値安定性（2026-10-14）
+
+- 本節は2026-10-13のA〜E初回実験とは別の**回帰テスト・コード修正履歴**であり、上記の初回観測数値を変更しない。
+- 旧解析解には`a*t*t*phi2`の積の途中で`inf`が生じる問題があり、CodexがPR #5のP2で報告した。構成`m=1 kg, F=2e304 N, gamma=1 /s, dt=1 s, T=100 s`は有効で、Wolframの連続解は`x≈1.98e306 m`・`v≈2e304 m/s`と有限である。
+- さらに`m=1 kg, F=2e307 N, gamma=1000 /s, dt=0.001 s, T=10 s`では、従来の速度項`a*t*phi1`も積の途中でオーバーフローしうるが、Wolframでは`x=1.9998e305 m, v=2e304 m/s`と有限。非常に長い時間・微小な加速度`F=1e-300 N, gamma=1e-200 /s, dt=T=1e200 s`についても、`t*t`の直接計算を経由せず`x≈3.6787944e99 m`を算出する必要がある。
+- `soma/f001.py`の`analytic_state()`は`math.frexp`/`math.ldexp`により積の仮数と二進指数を別々に扱い、**数学的には有限な積の途中だけがオーバーフローする事象**を防ぐ。小さい`gamma*t`の`expm1`／Taylor計算や半陰的Eulerの`step()`、初回のA〜E設定は変更していない。
+- `tests/test_f001.py`に大きな正負力、強抵抗下の速度、微小力・巨大時間の負例を2テストメソッドとして追加。commit`7befcfb4d3083a1b24364311e5fef9519a0b3702`の[F001 CI #38547923781](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38547923781)で**15テスト全件合格**した。
+- これらは数値的な演算域の健全性検査であり、非現実的な大きさの力を物理実機で扱えることを示すものではない。PR #5は独立レビュー・統合前であり、当時の旧CIと初回観測は履歴として保持する。
