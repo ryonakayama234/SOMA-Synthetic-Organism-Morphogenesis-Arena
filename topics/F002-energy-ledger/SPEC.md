@@ -87,7 +87,7 @@ assert state2.residual_uj == 0
 ## 実装・初回数値実験の結果（2026-10-14 JST）
 
 - 実装：`soma/f002.py`、`tests/test_f002.py`、`experiments/F002/run_suite.py`。セル・状態は不変、`apply_event` は新しい状態とEntryを返す。
-- Python 3.11 / GitHub ActionsでF001・F002あわせて**22テスト合格（F002 13件）**。F002 A〜Fの全有効イベントで`residual_uj=0`。
+- Python 3.11 / [初期修正CI #38430103190](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38430103190)では、F001・F002あわせて**21テスト合格（F001=9・F002=12）**。追加のXML境界テストを含む**22テスト**の成功は後段の [CI #38433251595](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38433251595) の観測であり、同一runの成果と混同しない。F002 A〜Fの全有効イベントで`residual_uj=0`。
 - 乱数seed `20261014` の500イベント列について、残差0・状態範囲・完全な再実行一致。
 - E：13種類の不正操作（小数・非有限値を含む）を拒否し、元の状態を保持。
 - F：3 µJ・50%送金を一括で実行した場合はBが1 µJ受領、3回に分けた場合は0 µJ。どちらも残差0。量子化差は確認されたモデルの制約。
