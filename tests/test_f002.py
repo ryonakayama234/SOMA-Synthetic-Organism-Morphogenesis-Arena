@@ -156,6 +156,54 @@ class F002Tests(unittest.TestCase):
             self.assertEqual(entry, expected_entry)
         self.assertEqual(state, replay)
 
+    def test_preregistered_controls_reject_corruption_under_python_optimized(self):
+        # A passing -O run alone is insufficient: inject incorrect observations
+        # and require the suite's acceptance checks to raise at runtime.
+        import subprocess
+        import sys
+        script = """
+from copy import deepcopy
+from experiments.F002.run_suite import validate_expected_results
+
+if __debug__:
+    raise RuntimeError("expected Python optimized mode")
+good = {
+    "A-rest": {"residual_uj": 0, "final_balances_uj": {"A": 10_000_000}},
+    "B-acquire": {"residual_uj": 0, "final_balances_uj": {"A": 15_000_000}},
+    "C-spend": {"residual_uj": 0, "final_balances_uj": {"A": 7_000_000}},
+    "D-transfer": {"residual_uj": 0, "final_balances_uj": {"A": 7_000_000, "B": 4_400_000}},
+    "F-bulk": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_001}},
+    "F-split": {"residual_uj": 0, "final_balances_uj": {"A": 9_999_997, "B": 2_000_000}},
+}
+validate_expected_results(good)
+bad_cases = []
+for name in ("A-rest", "B-acquire", "C-spend"):
+    bad = deepcopy(good)
+    bad[name]["final_balances_uj"]["A"] += 1
+    bad_cases.append((name, bad))
+bad = deepcopy(good)
+bad["D-transfer"]["final_balances_uj"]["B"] += 1
+bad_cases.append(("D", bad))
+bad = deepcopy(good)
+bad["F-bulk"]["final_balances_uj"]["B"] -= 1
+bad_cases.append(("F", bad))
+bad = deepcopy(good)
+bad["D-transfer"]["residual_uj"] = 1
+bad_cases.append(("residual", bad))
+
+for name, bad in bad_cases:
+    try:
+        validate_expected_results(bad)
+    except AssertionError:
+        continue
+    raise RuntimeError(f"{name} invalid result accepted under -O")
+"""
+        completed = subprocess.run(
+            [sys.executable, "-O", "-c", script],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+
     def test_suite_evidence_matches_registered_conditions(self):
         import subprocess
         import sys
