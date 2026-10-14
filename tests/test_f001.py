@@ -1,6 +1,7 @@
 """F001 invariants and convergence tests (stdlib-only)."""
 
 from dataclasses import replace
+from decimal import Decimal, localcontext
 import math
 from pathlib import Path
 import tempfile
@@ -129,6 +130,49 @@ class TestF001(unittest.TestCase):
         self.assertTrue(math.isfinite(x) and math.isfinite(v))
         self.assertAlmostEqual(x / (1e100 / math.e), 1.0, delta=1e-13)
         self.assertAlmostEqual(v / (1e-100 * (1 - 1 / math.e)), 1.0, delta=1e-13)
+
+    def test_analytic_signed_position_cancellation(self):
+        # PR #5 P2: x0 + the initial-velocity displacement overflows before
+        # the negative force displacement restores a finite position.
+        for sign in (1, -1):
+            with self.subTest(sign=sign):
+                c = replace(DEFAULT, mass_kg=1.0, drag_per_s=1.0,
+                            dt_s=1.0, duration_s=1.0,
+                            initial_x_m=sign*7.3e307,
+                            initial_v_m_s=sign*1.7e308,
+                            force_n=-sign*9e306)
+                with localcontext() as context:
+                    context.prec = 100
+                    decay = (-Decimal(1)).exp()
+                    # Independent continuous solution in high precision,
+                    # using the exact values of the supplied binary floats.
+                    x_expected = float(Decimal(c.initial_x_m)
+                                       + Decimal(c.initial_v_m_s)*(1-decay)
+                                       + Decimal(c.force_n)*decay)
+                    v_expected = float(Decimal(c.initial_v_m_s)*decay
+                                       + Decimal(c.force_n)*(1-decay))
+                x, v = analytic_state(c, 1.0)
+                self.assertTrue(math.isfinite(x) and math.isfinite(v))
+                self.assertAlmostEqual(x/x_expected, 1.0, delta=1e-14)
+                self.assertAlmostEqual(v/v_expected, 1.0, delta=1e-14)
+                self.assertEqual(analytic_state(c, 0.0),
+                                 (c.initial_x_m, c.initial_v_m_s))
+                with tempfile.TemporaryDirectory() as tmp:
+                    result = save_run(c, Path(tmp)/"signed-cancellation")
+                for field in ("analytic_x_m", "analytic_v_m_s",
+                              "absolute_x_error_m", "absolute_v_error_m_s"):
+                    self.assertTrue(math.isfinite(result[field]), field)
+
+    def test_analytic_no_drag_signed_cancellation_and_true_overflow(self):
+        c = replace(DEFAULT, mass_kg=1.0, drag_per_s=0.0,
+                    dt_s=1.0, duration_s=1.0, initial_x_m=1e308,
+                    initial_v_m_s=1e308, force_n=-1e308)
+        x, v = analytic_state(c, 1.0)
+        self.assertAlmostEqual(x/1.5e308, 1.0, delta=1e-14)
+        self.assertEqual(v, 0.0)
+        # A genuinely unrepresentable result must not become a finite value.
+        self.assertEqual(analytic_state(replace(c, force_n=0.0), 1.0)[0],
+                         math.inf)
 
     def test_initial_position_and_velocity_are_respected(self):
         c = replace(DEFAULT, force_n=0, drag_per_s=0, initial_x_m=-4.0, initial_v_m_s=2.0)

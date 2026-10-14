@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import csv
 from dataclasses import asdict, dataclass
+from fractions import Fraction
 import hashlib
 import json
 import math
@@ -113,12 +114,32 @@ def _scaled_product(*factors: float) -> float:
         return math.copysign(math.inf, mantissa)
 
 
+def _signed_sum(*terms: float) -> float:
+    """Sum finite signed terms even when a partial sum would overflow."""
+    if not all(math.isfinite(term) for term in terms):
+        return sum(terms)
+    try:
+        return math.fsum(terms)
+    except OverflowError:
+        # fsum can overflow its partials before opposite signs cancel.
+        # Exact binary-float ratios preserve cancellation without scaling
+        # away tiny terms. This fallback is only needed at extreme magnitudes.
+        exact = sum((Fraction(term) for term in terms), Fraction())
+        try:
+            return float(exact)
+        except OverflowError:
+            return -math.inf if exact < 0 else math.inf
+
+
 def analytic_state(config: RunConfig, t: float) -> tuple[float, float]:
     """Exact solution of the CONTINUOUS ODE, useful for numerical-error checks."""
     a = config.force_n / config.mass_kg
     g = config.drag_per_s
     if g == 0:
-        return config.initial_x_m + config.initial_v_m_s*t + .5*a*t*t, config.initial_v_m_s + a*t
+        return (_signed_sum(config.initial_x_m,
+                            _scaled_product(config.initial_v_m_s, t),
+                            _scaled_product(.5, a, t, t)),
+                _signed_sum(config.initial_v_m_s, _scaled_product(a, t)))
     z = g * t
     # Dimensionless integrals avoid subtracting terms of order a/g.
     phi1 = -math.expm1(-z) / z if z != 0 else 1.0
@@ -127,9 +148,9 @@ def analytic_state(config: RunConfig, t: float) -> tuple[float, float]:
         phi2 = 0.5 - z/6 + z*z/24 - z**3/120 + z**4/720 - z**5/5040
     else:
         phi2 = (z + math.expm1(-z)) / (z*z)
-    v = config.initial_v_m_s * math.exp(-z) + _scaled_product(a, t, phi1)
-    x = (config.initial_x_m + _scaled_product(config.initial_v_m_s, t, phi1)
-         + _scaled_product(a, t, t, phi2))
+    v = _signed_sum(config.initial_v_m_s * math.exp(-z), _scaled_product(a, t, phi1))
+    x = _signed_sum(config.initial_x_m, _scaled_product(config.initial_v_m_s, t, phi1),
+                    _scaled_product(a, t, t, phi2))
     return x, v
 
 
