@@ -20,3 +20,6 @@
 
 ## ステータス表現
 proposed=仕様案、backlog=構想、active=運用中、implemented=コード実装済み、observed=実験観測済み。文書が書かれたことだけで implemented/observed にしない。
+
+## F002以降のPR同時更新ルール
+コードを追加するときは `docs/ARCHITECTURE.md`、`docs/DATA_CONTRACTS.md`、`findings/Fxxx-validation.md`、`README.md`、対象SPECを同じPRで検証・更新する。図とログの食い違い、記録の欠落、根拠のない「観測済み」昇格を監査する。デザインのみのPRは未実装・未実行として区別する。

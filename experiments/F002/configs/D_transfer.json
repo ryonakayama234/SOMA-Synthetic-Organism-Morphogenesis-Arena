@@ -1,0 +1,26 @@
+{
+  "schema_version": "f002.v1",
+  "experiment_id": "D-transfer",
+  "seed": 1,
+  "cells": [
+    {
+      "cell_id": "A",
+      "capacity_uj": 20000000,
+      "balance_uj": 10000000
+    },
+    {
+      "cell_id": "B",
+      "capacity_uj": 20000000,
+      "balance_uj": 2000000
+    }
+  ],
+  "events": [
+    {
+      "kind": "transfer",
+      "source_id": "A",
+      "target_id": "B",
+      "amount_uj": 3000000,
+      "eta_bps": 8000
+    }
+  ]
+}
