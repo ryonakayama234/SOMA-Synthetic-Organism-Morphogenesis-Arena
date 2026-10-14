@@ -127,4 +127,8 @@ Codexレビューの追加P2により、F-bulk／F-splitのB残量差1 µJの照
 
 追加Codex P2を受け、Fの絶対値だけでなく、**B取得量5,000,000 µJ、C支出量3,000,000 µJ、D損失量600,000 µJ**を含む、A・B・C・D・F-bulk・F-splitの各runの最終残量、取得・支出・移送損失累計、会計残差、イベント件数を事前予測と全項目一致で判定する。実験設定・モデル・予測は変更していない。比較概要`comparison.json.runs`にもこの6項目を残して証拠を追跡可能にした。出力形式の契約は[DATA_CONTRACTS](../../docs/DATA_CONTRACTS.md)。
 
-`python -O`下で49種類の独立した数値改変を拒否する負例試験を既存のテストメソッドに追加したため、テストは引き続き**計24件（F001=9、F002=15）**。[F002 CI #38546596268](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596268)と[F001回帰 #38546596161](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596161)が修正コードとテストに対して成功。以後のHEADのCIは [PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks) を入口として参照する。失敗履歴を含む経緯は[findings](../../findings/F002-validation.md)に保存。
+`python -O`下で49回の負例実行（重複を除く42種類の数値改変）を拒否する負例試験を既存のテストメソッドに追加したため、テストは引き続き**計24件（F001=9、F002=15）**。[F002 CI #38546596268](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596268)と[F001回帰 #38546596161](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38546596161)が修正コードとテストに対して成功。以後のHEADのCIは [PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks) を入口として参照する。失敗履歴を含む経緯は[findings](../../findings/F002-validation.md)に保存。
+
+### 負例件数の監査（2026-10-14）
+
+旧表記「49種類」は重複7件を含んでいたため、49実行・42種類へ訂正。最適化サブプロセスでJSON正規化による実件数・重複除外件数の照合を行い、件数の誤記を防ぐ。ローカルPython 3.12.14で24テスト合格、最適化A〜F再実行も成功。重複の内訳と履歴は[検証記録](../../findings/F002-validation.md)の「負例件数の重複監査」を参照。最新コミットのCIは[PR #6 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)から確認する。

@@ -163,6 +163,7 @@ class F002Tests(unittest.TestCase):
         import sys
         script = """
 from copy import deepcopy
+import json
 from experiments.F002.run_suite import validate_expected_results
 
 if __debug__:
@@ -244,18 +245,24 @@ for name, outcome in good.items():
         bad[name]["final_balances_uj"][cell_id] += 1
         bad_cases.append((f"{name}-balance-{cell_id}", bad))
 
+unique_cases = {json.dumps(bad, sort_keys=True) for _, bad in bad_cases}
+if len(bad_cases) != 49 or len(unique_cases) != 42:
+    raise RuntimeError("expected 49 negative executions and 42 unique mutations")
+
 for name, bad in bad_cases:
     try:
         validate_expected_results(bad)
     except AssertionError:
         continue
     raise RuntimeError(f"{name} invalid result accepted under -O")
+print(f"negative executions={len(bad_cases)}, unique mutations={len(unique_cases)}")
 """
         completed = subprocess.run(
             [sys.executable, "-O", "-c", script],
             capture_output=True, text=True,
         )
         self.assertEqual(completed.returncode, 0, completed.stdout + completed.stderr)
+        self.assertIn("negative executions=49, unique mutations=42", completed.stdout)
 
     def test_suite_evidence_matches_registered_conditions(self):
         import subprocess
