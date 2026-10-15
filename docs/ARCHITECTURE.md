@@ -132,3 +132,21 @@ flowchart LR
 
 [詳しいF003仕様とシステム図](../topics/F003-attachment/SPEC.md) / [F003の対照実験計画](../experiments/F003/PLAN.md)。
 F002はmainに統合済み。F003は機械結合のみ提案し、F002台帳との接続は未実装のまま維持。
+
+## F003 イベント時刻の状態遷移（2026-10-15、事前設計・未実装）
+
+~~~mermaid
+flowchart TD
+  C["設定JSON"] --> V{"開始前検査"}
+  V -->|拒否| R["suite: rejections.json"]
+  V -->|受理| A["結合状態に従い区間の運動を更新"]
+  A --> B["時刻tの位置・速度を確定"]
+  B --> D{"tに切断イベント？"}
+  D -->|yes| E["位置・速度を変えずON→OFF"]
+  D -->|no| S["状態を保持"]
+  E --> L["post-event states.csv／before-after events.csv"]
+  S --> L
+  L --> N["次の時間区間へ"]
+~~~
+
+切断時刻のstates.csvはイベント反映後1行。切断前後の位置・速度はevents.csvで直接照合する。拒否入力は正常runのイベントではない。すべて将来F003の設計で、現在の実装はF001/F002まで。
