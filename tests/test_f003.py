@@ -116,5 +116,34 @@ class TestF003(unittest.TestCase):
             for name in ("config.json","states.csv","events.csv","motion.svg","manifest.json"):
                 self.assertEqual((a/name).read_bytes(),(b/name).read_bytes())
 
+
+    def test_c_equal_drive_matches_independent_mass_oracle(self):
+        rows,_=simulate(Config.from_dict(config(b_force_n=1.)))
+        v,x=0.,0.
+        for row in rows:
+            self.assertAlmostEqual(row["x_a_m"],x,delta=1e-9)
+            self.assertAlmostEqual(row["v_a_m_s"],v,delta=1e-9)
+            self.assertAlmostEqual(row["x_b_m"]-row["x_a_m"],.5,delta=1e-10)
+            v=v+.01*(1.-.2*v)
+            x=x+.01*v
+
+    def test_d_every_post_cut_state_matches_independent_oracle(self):
+        rows,events=simulate(Config.from_dict(config(link_detach_time_s=5.)))
+        self.assertEqual(len(events),2)
+        r=rows[500]
+        xa,xb,va,vb=r["x_a_m"],r["x_b_m"],r["v_a_m_s"],r["v_b_m_s"]
+        for state in rows[501:]:
+            va=va+.01*(1.-.2*va)
+            xa=xa+.01*va
+            vb=vb+.01*(-.2*vb)
+            xb=xb+.01*vb
+            self.assertAlmostEqual(state["x_a_m"],xa,delta=1e-9)
+            self.assertAlmostEqual(state["x_b_m"],xb,delta=1e-9)
+            self.assertAlmostEqual(state["v_a_m_s"],va,delta=1e-9)
+            self.assertAlmostEqual(state["v_b_m_s"],vb,delta=1e-9)
+            self.assertFalse(state["attached"])
+            self.assertEqual(state["link_force_a_n"],0.)
+            self.assertEqual(state["link_force_b_n"],0.)
+
 if __name__=="__main__":
     unittest.main()
