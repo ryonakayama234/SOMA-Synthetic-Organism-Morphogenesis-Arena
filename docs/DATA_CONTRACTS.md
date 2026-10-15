@@ -3,7 +3,7 @@ id: DATA
 title: データの構造と流れ
 kind: contract
 status: partially_implemented
-updated: 2026-10-15
+updated: 2026-10-16
 related: [ARCHITECTURE, F001, F002, F003]
 ---
 
@@ -274,3 +274,11 @@ flowchart LR
 不変条件：残量は非負の整数µJ、正常支出は常にF002の保存会計残差0。外力のみならspend=0。残高不足時は内部力だけ0として候補を捨て、外力によるF001運動を記録。入力や派生量が無効なら、世界状態と台帳の両方を更新しない。丸め境界の表現方式と最大数値範囲は実装前に仕様レビューで凍結する。
 
 この段階は**仮説と契約案**であり、F004実験ログ・実装の存在を示さない。[仕様](../topics/F004-actuation-energy/SPEC.md) / [A〜F](../experiments/F004/PLAN.md) / [Findings](../findings/F004-validation.md)。
+
+### F004 2026-10-16 事前監査のデータ・数値契約（未実装）
+- `states.csv` に`step_index`, `ledger_event_index`（spendなしはnull）、`motor_command_n`, `motor_applied_n`, `external_force_n`, `candidate_motor_work_j`, `spent_uj`, `balance_uj`, `decision_reason`を持たせ、時刻と位置・速度に対応づける。
+- `ledger_event_index`によってF002のspendイベントと当該運動ステップを1対0/1で結合する。支出0のステップはF002にイベントを出さない。
+- `decision_reason` は `zero_balance`, `zero_command`, `insufficient_balance`, `accepted_positive_work`, `accepted_nonpositive_work` など。残量0でも候補仕事0ならモーターが動く抜け道を防ぐ。
+- `candidate_motor_work_j`はステップの仮計算値。電池0の場合は仮計算を行わずnullとする。`spent_uj`は整数、`balance_uj`はF002の厳密整数。外力の仕事をspentへ算入しない。
+- 浮動小数点と1 µJ切上げにより、Wolfram理想有理数とbinary64参照はBで5 µJ、Dで4 µJ異なる。理論参照と浮動小数点の合否参照を明確に分離し、どちらも記録する。
+- 無効時は台帳と運動を不可分に拒否。入力の時刻格子は十進有理数で厳密判定。F004は最大10000ステップ。全ログと実行スクリプト・Git版・hashを対応づける。設計時点の提案契約であり、実装済みスキーマではない。
