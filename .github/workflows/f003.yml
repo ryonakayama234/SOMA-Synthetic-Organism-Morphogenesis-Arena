@@ -1,0 +1,27 @@
+name: F003 two-cell ideal mechanical coupling
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run F001 F002 F003 regression and invariants
+        run: python -m unittest discover -s tests -v
+      - name: Run F003 A-F experiments
+        run: python -m experiments.F003.run_suite --output-dir runs/F003-ci
+      - name: Retain F003 raw states events comparisons manifests and plots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F003-A-F-evidence
+          path: runs/F003-ci/
+          if-no-files-found: error
