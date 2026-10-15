@@ -3,7 +3,7 @@ id: ARCHITECTURE
 title: システム図鑑
 kind: diagram
 status: conceptual
-updated: 2026-10-13
+updated: 2026-10-15
 related: [DATA, F001, F002, F003]
 ---
 
@@ -205,3 +205,26 @@ flowchart TD
 
 ### F003の採用判断（2026-10-15）
 監査修正・50テスト・A〜F・再現性・CI検証を経て、記載した1D二セル理想リンクの実装を採用する。設計#7はmain統合済み、実装の統合はPR #8で追跡。既存の図・スキーマ・観測境界は不変で、候補・未統合表記は過去時点の履歴。
+
+## F004：内部駆動と電池の因果接続【2026-10-15 設計提案・未実装】
+
+F001の運動とF002の整数µJ台帳の間に、**一セルの内部モーター仕事**だけを扱う薄い接続層を追加する案。F003の二セル理想リンクはmainに存在するが、F004とは**未接続**。
+
+~~~mermaid
+flowchart TD
+  CONF["設定：モーター指令 u、外力 f_ext、初期残高"] --> CAND["F004：F001による候補1Dステップ"]
+  CAND --> W["台形速度による内部機械仕事 W_motor"]
+  W --> G{"F002の残高は足りるか"}
+  G -->|足りる| YES["内部＋外力で運動／spendをF002へ記帳"]
+  G -->|足りない| NO["内部力0／外力のみでF001を再計算"]
+  YES --> WORLD["世界の真値：位置・速度・残高"]
+  NO --> WORLD
+  WORLD --> LOG["研究ロガー：states／spendイベント／manifest"]
+  LOG --> GATE["独立予測／不変条件／対照A〜F／図"]
+  F003["F003：2セル機械結合（既存）"] -. "F004の範囲外" .-> CAND
+  WORLD -. "セルの局所観測へ直結しない" .-> SENSOR["将来のセンサーAPI（未実装）"]
+~~~
+
+役割：F001は運動更新、F002は残高・会計不変条件、F004はモーター仕事と実行可否の調停のみを担当。**外力は電池消費対象ではない**。研究側ロガーは世界の真値を知るが、セルの意思決定器には真値を渡さない。モーターの実機効率、待機電力、熱、回生、二セル協調は未実装。
+
+[仕様・仮説](../topics/F004-actuation-energy/SPEC.md) / [A〜F計画](../experiments/F004/PLAN.md) / [未実施の記録](../findings/F004-validation.md) / [Issue #9](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/9)。
