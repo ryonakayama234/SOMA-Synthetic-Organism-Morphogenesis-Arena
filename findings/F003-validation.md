@@ -97,3 +97,14 @@ dtを0.005／0.0025へ半減した位置誤差の事前期待：0.00911802794361
 | ソフトウェア試験 | 44テスト・A〜F・再現性支持 |
 | 独立監査 | 未実施 |
 | 正式採用 | 保留 |
+
+## 監査修正後のGitHub証拠（2026-10-15）
+
+- 設計PR #7の修正HEAD：`c367a4207a0b53fbf011eea6767b91ae98277cee`。F001/F002回帰CI success（[F001](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38737005653)、[F002](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38737005652)）。設計ブランチにF003実装は含めない。
+- 実装コードの監査修正HEAD：`e980f1772f24a4f4e77b99c1ab0ba41c3de7d47d`。[F003 CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38737032473)、[F001](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38737031197)、[F002](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38737031478)すべてsuccess。50テスト・正常7run・拒否10例・全スイート再実行一致をログで確認。
+- ActionsはPR統合候補`d59f859e10cbe220d2797e8d8057e1c737e46163`を実行した。これは上記実装HEADと同じtree `fa7f8923a8b1c3b405264c3b1a62b74d42615d85`であることをGitオブジェクトで照合済み。artifact内Git SHAがブランチHEADと違うのはこのためで、dirty=false。
+- [実験artifact](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38737032473/artifacts/11974127240)：87ファイル、ZIP SHA256 `95a8003047e73d1b2c796f4d157bc6cb746cc125715b69fb1128b2fdddd0ec2a`。ダウンロードしたZIPのハッシュ、43組の実験成果物バイト一致、拒否証拠SHA、suite_source.pyと実行ソースの一致を独立に再照合済み。
+- F003モジュールSHA256：`c32b7946eb588eab576baa4b80d2c5eff66ade188a016e2c96bc747595d558ef`、F001依存モジュール：`f67be3b5fc06da4a98f42573c146ded62817dc26b28631759b2a5b2bb209210d`。ローカルの現行コードと一致。
+- この追記は証拠を保存する文書更新。以後の現行HEADの成否は[PR #8 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/8/checks)で確認し、上記コード検証の固定証拠と区別する。
+
+**審査結論：指摘3件は修正・再検証済み。理想1D機械結合のソフトウェア候補として、採用を妨げる既知の指摘は残っていない。両PRはdraft・main未統合のまま。** 設計→実装の統合順序を維持する。本記録はGitHubの別アカウントによるAPPROVEや人間の査読の代替を称するものではない。
