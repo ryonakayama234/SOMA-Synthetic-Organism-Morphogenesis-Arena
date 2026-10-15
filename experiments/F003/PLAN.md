@@ -65,3 +65,15 @@ GitHub Actions artifact: raw configs / states / events / comparisons / figures /
 7. 別視点の監査で実測・予測・失敗・ログ・図・SHAを照合。条件ごとに支持／反証／不明をfindingsへ記録。全ゲート通過時だけmain統合とIssue #3完了を提案する。不合格は修正して再測定し、旧結果を消さない。
 
 **採用の全数値閾値はSPECの「A〜Fの数値合格ゲート」節を正本とする。現状は未実装・未実験。**
+
+## 実装候補の実行順と証拠（2026-10-15）
+
+事前登録の条件・閾値を維持。新たな不等質量の単体テストは補助検査であり、A〜Fの操作変数を変更しない。
+
+1. `python -m unittest discover -s tests -v` でF001/F002/F003回帰。
+2. `python -m experiments.F003.run_suite --output-dir runs/F003-ci` でA・B・C・D・E・F（Fの刻みは3条件）を実行する。
+3. 比較結果に理論値と各条件の終値/拘束誤差/内部力/刻み感度を保存する。異常設定8ケースの拒否理由を別ファイルに保存する。
+4. B条件を同設定で再実行し、config/raw CSV/SVG/manifestのバイト・SHA256一致を保存する。
+5. GitHub Actions artifactと実行HEADを台帳に記入。実測値と予測値は別の欄で保持し、独立監査後に採否を判定する。
+
+[実行方法](README.md) / [設計正本](../../topics/F003-attachment/SPEC.md)。

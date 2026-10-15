@@ -150,3 +150,29 @@ flowchart TD
 ~~~
 
 切断時刻のstates.csvはイベント反映後1行。切断前後の位置・速度はevents.csvで直接照合する。拒否入力は正常runのイベントではない。すべて将来F003の設計で、現在の実装はF001/F002まで。
+
+## F003 実装候補（2026-10-15）
+
+下図は実装ブランチ `feat/F003-1d-coupling-validation-20261015` の責務とデータフロー。**mainへの統合前**であり、F002との物理結線・局所知覚・AI制御は存在しない。
+
+~~~mermaid
+flowchart TD
+  SET["config.json: 2セルと結合/切断設定"] --> VALID{"入力検証: dt格子/距離/初速"}
+  VALID -->|不正| REJ["suiteのrejections.json"]
+  VALID -->|正常| W["世界真値 (A,B,リンク状態)"]
+  W --> G{"attached?"}
+  G -->|yes| COUPLED["合成質量+合計外力 -> F001 step"]
+  G -->|no| FREE["A/BそれぞれF001 step"]
+  COUPLED --> EVENT{"時刻kで切断?"}
+  FREE --> EVENT
+  EVENT -->|yes| POST["位置/速度は不変、リンクだけOFF"]
+  EVENT -->|no| POST
+  POST --> LOG["states.csv (post-event) / events.csv (before/after)"]
+  LOG --> EVAL["comparison.json + motion.svg"]
+  EVAL --> PROV["manifest.json: Git SHA / ソースhash / artifacts SHA"]
+  F2["F002：エネルギー台帳"] -. "物理的に未接続" .-> W
+~~~
+
+`Config.from_dict` が不正入力を実行前に拒否。`simulate` は世界の真値の時系列とイベントを返す。`save_run` は新しいフォルダにのみ保存する。`experiments.F003.run_suite` は開始時のGit出自と実験スクリプトhashを全runで共有し、生ログと再実行のバイト一致を判定する。**これらの真値をセル自身へ渡す制御器は実装しない。**
+
+[事前登録SPEC](../topics/F003-attachment/SPEC.md) / [実装テスト](../tests/test_f003.py) / [検証台帳](../findings/F003-validation.md)。

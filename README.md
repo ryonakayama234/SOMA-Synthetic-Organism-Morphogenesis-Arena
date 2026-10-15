@@ -53,3 +53,10 @@ flowchart TD
 
 ## 機能追加時に必ず同期するもの
 F002以降は、**コード／テスト・システム図（docs/ARCHITECTURE.md）・データ契約（docs/DATA_CONTRACTS.md）・実験記録（findings/Fxxx-validation.md）・READMEの現在地**を同じPRで更新する。仮説と実装と観測を混同しない。詳細は[研究運営](docs/RESEARCH_PROCESS.md)。F002ではこの5点を同一PR #6で更新し、対照Fの同一設定での再実行証拠も保存する。[PR #6のChecks（最新HEADのCI）](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6/checks)から常に現行HEADの実行ログ・保存artifactを確認できる。過去のCIと途中の不備・訂正履歴は[検証ノート](findings/F002-validation.md)に保持。
+
+## F003実装候補（feat/F003-1d-coupling-validation-20261015）
+
+- [事前登録の設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7)を土台にした**別の実装ブランチ**。設計PRの正式レビューとmain統合を先取りしない。
+- `soma/f003.py`：理想一次元リンクの力伝達と切断。`tests/test_f003.py`：独立参照・保存・拒否。`experiments/F003/run_suite.py`：A〜F対照。
+- [F003アーキテクチャ](docs/ARCHITECTURE.md#f003-実装候補-2026-10-15) / [データ契約](docs/DATA_CONTRACTS.md#f003-実装候補-2026-10-15) / [実験ノート](findings/F003-validation.md) / [再実行方法](experiments/F003/README.md)。
+- GitHub ActionsでF001/F002/F003の回帰、A〜F、SHA付き生ログの保存を確認し、別視点の監査で支持・反証・不明を判定するまで**正式採用しない**。
