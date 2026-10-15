@@ -45,9 +45,26 @@ dtを0.005／0.0025へ半減した位置誤差の事前期待：0.00911802794361
 - **コード**：専用実装ブランチにF003計算、A〜F実験スイート、9件の単体検査、およびCI workflowを追加。
 - **設計側の予測**：連続系 v(10)=2.161661791908468... m/s、変位14.191691040457659... m；dt=.01の離散系 v(10)=2.162338693883291... m/s、変位14.209929917522378... m。Wolframで独立に再確認。Bの内部力 +0.5 N、不等質量2kg/1kgのB内部力 +1/3 N。
 - **ローカル試作の検査**：モデル等価なF001小関数を用いたローカル試作では9件の検査とA〜F（7正常run／8拒否ケース）、B再実行のバイト一致が成功。ただしGitHubにある実装そのものとmainの既存F001/F002の回帰を確認したものではなく、**GitHub Actionsでの正式な検証証拠として扱わない**。
-- **GitHub CI**：最新実装ブランチのF003・F001・F002回帰結果およびartifactは未確認。CI完了までは結果を正式な観測値として確定しない。
+- **GitHub CI**：以下の2026-10-15の最新CI証拠を確認。
 - **独立監査**：未完了。主張できるのは理想1D力学ソフトウェアの検証候補まで。実機接続や創発を示さない。
 
 **ゲート**：CI結果・SHA照合・第三者視点のレビューを確認してから採否を記録する。失敗・修正履歴は削除しない。
 
 [実験スイート](../experiments/F003/run_suite.py) / [CI workflow](../.github/workflows/f003.yml)。
+
+## F003 GitHub CI 確認（2026-10-15）
+
+- 実装HEAD: 1512206596ca8939705e6e1ab603e9aa1bbd626d
+- F003 Actions: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190546 — success。Python 3.11で合計44テスト（F001 17、F002 16、F003 11）合格。
+- A〜F正常7run、不正入力8件を拒否、B同条件再実行の生バイト一致。artifact: F003-A-F-evidence（ID 11970235937）。
+- F001既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190562 — success。
+- F002既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190549 — success。
+- 以上は1D理想モデル・ソフトウェアの整合性を示す。実機による結合、エネルギー相互作用、身体創発を示さない。
+- 独立第三者の監査は未了。PR #7の設計レビューと、PR #8の正式採用判断を区別する。
+
+| 種別 | 現時点の判定 |
+| --- | --- |
+| Wolfram理論値 | 事前予測として固定 |
+| ソフトウェア試験 | 44テスト・A〜F・再現性支持 |
+| 独立監査 | 未実施 |
+| 正式採用 | 保留 |

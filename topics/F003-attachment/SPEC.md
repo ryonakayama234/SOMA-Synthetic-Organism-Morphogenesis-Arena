@@ -140,3 +140,13 @@ flowchart LR
 - 独立監査とCIの成功が揃うまでは**review pending / not adopted**とする。
 
 [実装コード](../../soma/f003.py) / [実験スイート](../../experiments/F003/run_suite.py) / [findings](../../findings/F003-validation.md)
+
+## F003 GitHub CI 確認（2026-10-15）
+
+- 実装HEAD: 1512206596ca8939705e6e1ab603e9aa1bbd626d
+- F003 Actions: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190546 — success。Python 3.11で合計44テスト（F001 17、F002 16、F003 11）合格。
+- A〜F正常7run、不正入力8件を拒否、B同条件再実行の生バイト一致。artifact: F003-A-F-evidence（ID 11970235937）。
+- F001既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190562 — success。
+- F002既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190549 — success。
+- 以上は1D理想モデル・ソフトウェアの整合性を示す。実機による結合、エネルギー相互作用、身体創発を示さない。
+- 独立第三者の監査は未了。PR #7の設計レビューと、PR #8の正式採用判断を区別する。
