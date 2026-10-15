@@ -4,12 +4,12 @@ title: データの構造と流れ
 kind: contract
 status: partially_implemented
 updated: 2026-10-13
-related: [ARCHITECTURE, F001, F002]
+related: [ARCHITECTURE, F001, F002, F003]
 ---
 
 # データの構造と流れ
 
-「どんな情報が、どこからどこへ移るか」を図で保持するための、最小限の約束。**ここに示した構造は提案であり、まだ実装済みのAPIではない。**
+「どんな情報が、どこからどこへ移るか」を図で保持するための、最小限の約束。**F001・F002は実装済みの契約を含み、F003は提案中。** 状態を節ごとに区別する。
 
 ## 三つに分けて考える
 ~~~mermaid
@@ -126,3 +126,65 @@ F-bulk、F-splitの各configを一切変更せずに再実行し、`F-bulk-repla
 ### 実験スクリプトの出自（2026-10-15）
 
 スイート開始時に`experiments/F002/run_suite.py`のバイト列を取得する。`comparison.json.python_suite_sha256`にSHA256、`suite_source_artifact`に保存先`suite_source.py`を記録し、そのバイト列を出力ルートに保存する。各manifestの`python_code_sha256`は引き続き台帳モジュール本体の識別子。これにより同じHEAD・dirty=true・同じ台帳モジュールでも、条件生成と合否判定の異なるローカル版を区別し、保存ソースを監査できる。会計値とrun単位のスキーマは不変。
+
+## F003の提案データ構造（2026-10-14、未実装）
+F001が確立した単一セルの位置・速度・外力を二セルに拡張する。**以下は仕様案であり、動作するAPIや保存済み実験データではない。**
+
+~~~mermaid
+flowchart LR
+  INPUT["設定JSON\n2セルの初期状態\n各セルの外力・リンクON/OFF"] --> WORLD["世界の真の状態\nCell A / Cell B / Link"]
+  WORLD --> TRACE["states.csv\n位置・速度・外力\n内部力・拘束誤差"]
+  WORLD --> EVENT["events.csv\n正常な結合・切断"]
+  TRACE --> META["manifest.json\n設定・commit・各成果物ハッシュ"]
+  EVENT --> META
+  INPUT --> META
+  TRACE --> REVIEW["対照比較・図・判断"]
+~~~
+
+~~~json
+{
+  "schema_version": "f003.v0-proposal",
+  "experiment_id": "F003-B-planned",
+  "seed": null,
+  "dt_s": 0.01,
+  "duration_s": 10.0,
+  "drag_per_s": 0.2,
+  "cells": [
+    {"id": "A", "mass_kg": 1.0, "initial_x_m": 0.0, "initial_v_m_s": 0.0, "force_n": 1.0},
+    {"id": "B", "mass_kg": 1.0, "initial_x_m": 0.5, "initial_v_m_s": 0.0, "force_n": 0.0}
+  ],
+  "link": {"initially_attached": true, "length_m": 0.5, "detach_time_s": null}
+}
+~~~
+
+- 実行状態：時刻、各セルの位置・速度、外部指定力、結合ON/OFF、各セルに作用するリンク内部力。
+- 記録：拘束誤差や重心の解析値との差分も追加して、間違った内部力や数値積分の劣化を発見可能にする。
+- イベント：正常な接続/切断だけを記録。不正設定はrejections.jsonに別記。無理な初期接続を黙って修正しない。
+- 境界：すべて**世界の真値を用いる研究用データ**であり、セルが知覚できる情報とは異なる。セル観測ログはセンサー能力を別途実装するまで作らない。
+- 再現性：F001と同じく設定・コードSHA・生ログ・SHA256と図を関連づける。乱数を使用しなければ seed は null と記録する。
+
+列名・厳密な許容誤差は実装前の仕様レビューで決定し、実験データに合わせて後付けしない。
+[設計仕様](../topics/F003-attachment/SPEC.md) / [実験計画](../experiments/F003/PLAN.md)。
+
+## F003 切断イベント／不正入力のデータフロー（2026-10-15提案・未実装）
+
+~~~mermaid
+flowchart TD
+  C["config.json 2セル・力・リンク"] --> V{"事前検査"}
+  V -->|有効| W["F003 worldの真値"]
+  V -->|無効| R["suiteのrejections.json"]
+  W --> S["states.csv：時刻毎のpost-event状態"]
+  W --> E["events.csv：正常な結合／切断"]
+  S --> J["comparison.json・SVG"]
+  E --> J
+  R --> J
+  J --> M["manifest：Git版・suite/モジュール/成果物SHA256"]
+~~~
+
+- states.csv：最小列time_s、attached、x_a_m、x_b_m、v_a_m_s、v_b_m_s、force_a_n、force_b_n、link_force_a_n、link_force_b_n、distance_constraint_error_m、velocity_constraint_error_m_s。各時刻の**イベント適用後**の状態を1行だけ記録する。OFF時リンク力0、拘束誤差空欄。
+- events.csv：切断イベントはtime_s、kind、attached_before/after、x_a_before_m、x_a_after_m、x_b_before_m、x_b_after_m、v_a_before_m_s、v_a_after_m_s、v_b_before_m_s、v_b_after_m_s、link_force_before_nを持つ（この必須列名を事前固定）。切断の位置・速度before/afterは完全一致する。時刻0の初期結合も有効な場合だけ記録。
+- rejections.json：Fスイートの各case_id、入力、expected_error、actual_error、reason、rejected_before_run、pass。無効runのstates/events出力を作らない。
+- 研究用world真値とセルの局所知覚を隔離し、F002台帳とは未接続。列順・型の確定は実装PRで検証する。この節はまだ動作していない提案契約。
+
+### F003 設計監査の補足契約（2026-10-15、未実装）
+保存される真値・派生量はすべて有限、OFF時の拘束誤差だけnull/CSV空欄とする。表現不能な数値は正常run生成前に拒否する。時間格子の整数性は十進有理数として厳密判定し、Decimalの実行時精度から独立させる。比較結果は保存CSVとイベントを読み戻した全ゲート照合から作る。rejections.jsonは入力全体と例外証拠を保持し、comparison.jsonからSHA256で紐づける。F001依存ソースも出自に含める。

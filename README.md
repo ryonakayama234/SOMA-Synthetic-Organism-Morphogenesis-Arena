@@ -2,7 +2,7 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
-**現在：F001は実装・数値検証済み。F002（整数µJエネルギー台帳）は実装し、レビュー指摘に対応した単独構成のCIでテスト25件（F001=9、F002=16）と事前条件に修正した対照実験A〜Fが成功。F003は未実装。F001数値安定性の修正（PR #5）はmainへ統合済み。両PRのローカル統合候補では33テスト（F001=17、F002=16）合格。**
+**現在（2026-10-15）：F001・F002は実装・検証を経てmain統合済み（33テスト、各CI成功）。F003は[設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7)で審査中。本設計ブランチでは機械結合の実装・実験は未実施。独立視点の設計監査で数値範囲と保存証拠の検証契約を補足済み。後続の実装候補は[PR #8](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/8)で管理。**
 
 ## 入口：どこから読む？
 
@@ -14,7 +14,7 @@
 | 仮説→実験→改善の進め方 | [研究運営](docs/RESEARCH_PROCESS.md) |
 | 最初の一機能 | [F001：単一セルの運動](topics/F001-single-cell-motion/SPEC.md)（実装・初回検証済み） |
 | F001の実験結果 | [初回検証ノート](findings/F001-validation.md) / [再現方法](experiments/F001/README.md) |
-| 次の実装提案 | [F002：エネルギー収支の検証仕様（実装済み）](topics/F002-energy-ledger/SPEC.md) / [F002実験計画](experiments/F002/PLAN.md) / [F002検証結果](findings/F002-validation.md) / [F003：結合（構想）](topics/F003-attachment/IDEA.md) |
+| 次の研究能力 | [F003仕様案](topics/F003-attachment/SPEC.md) / [A〜F実験計画](experiments/F003/PLAN.md) / [検証記録・未実施](findings/F003-validation.md) / [設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7) |
 | 論文や参考情報 | [文献図書館](library/INDEX.md) |
 | なぜこの設計にしたか | [意思決定001](docs/decisions/0001-incremental-library.md) |
 | AIエージェントの読み方 | [AI案内](AGENTS.md) |
@@ -37,7 +37,7 @@ flowchart TD
 
 - **F001：単一セルが動く（実装済み）**。位置・速度・力を検証。計算結果・誤差を記録済み。学習、結合、エネルギーはまだ追加しない。
 - **F002：エネルギー取得・支出・セル間の数値移送を追跡（実装・初回検証済み）**。[再現手順](experiments/F002/README.md)／[CIによる検証ノート](findings/F002-validation.md)。物理的な電力消費・機械結合は未実装。 [発案時の構想メモ（歴史資料）](topics/F002-energy-ledger/IDEA.md) は正式仕様ではない。
-- F003：細胞の接続・切断と力学的影響を扱う（構想）。
+- **F003：二セルの理想機械結合と切断（設計PR審査中・未実装）**。身体の自律形成・学習・物理エネルギー移送は対象外。
 
 ## 守る原則
 
