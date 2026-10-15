@@ -151,6 +151,9 @@ flowchart TD
 
 切断時刻のstates.csvはイベント反映後1行。切断前後の位置・速度はevents.csvで直接照合する。拒否入力は正常runのイベントではない。すべて将来F003の設計で、現在の実装はF001/F002まで。
 
+### F003 設計監査の補足（2026-10-15）
+入力検査→有限な世界状態・派生量→新規出力の保存→CSV/イベント読み戻し→独立離散参照による全ゲート照合、という責務を分離する。数値表現不能は保存前の拒否経路へ流し、内部力や重心のinfを正常な世界真値と扱わない。仕様・許容差は維持し、実装・観測は後続PR #8で検証する。
+
 ## F003 実装候補（2026-10-15）
 
 下図は実装ブランチ `feat/F003-1d-coupling-validation-20261015` の責務とデータフロー。**mainへの統合前**であり、F002との物理結線・局所知覚・AI制御は存在しない。
@@ -177,7 +180,7 @@ flowchart TD
 
 [事前登録SPEC](../topics/F003-attachment/SPEC.md) / [実装テスト](../tests/test_f003.py) / [検証台帳](../findings/F003-validation.md)。
 
-## F003 GitHub CI 確認（2026-10-15）
+## F003 GitHub CI 履歴（監査修正前・2026-10-15）
 
 - 実装HEAD: 1512206596ca8939705e6e1ab603e9aa1bbd626d
 - F003 Actions: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190546 — success。Python 3.11で合計44テスト（F001 17、F002 16、F003 11）合格。
@@ -186,3 +189,16 @@ flowchart TD
 - F002既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190549 — success。
 - 以上は1D理想モデル・ソフトウェアの整合性を示す。実機による結合、エネルギー相互作用、身体創発を示さない。
 - 独立第三者の監査は未了。PR #7の設計レビューと、PR #8の正式採用判断を区別する。
+
+## F003 監査修正後の証拠検証（2026-10-15、実装候補）
+~~~mermaid
+flowchart TD
+  C["設定・数値表現可能性・厳密時間格子"] --> W["F001 stepを再利用する世界更新"]
+  W --> V["全状態・内部力・重心の有限性検査"]
+  V --> S["CSV・イベント・SVGを新規保存"]
+  S --> R["保存済みCSV・イベントを読み戻す"]
+  R --> O["stepを呼ばない独立離散オラクル"]
+  O --> G["全A〜Fゲート・最大誤差・拒否証拠SHA"]
+  G --> P["比較JSONを含む全スイート再実行一致"]
+~~~
+不正状態は保存前に拒否する。スイートは別のsimulate結果を合否根拠にしない。F001依存モジュールSHAも開始時出自に保存する。F002との物理結線とセル制御器は対象外。監査前の未実装・未監査表記は設計時点の履歴。

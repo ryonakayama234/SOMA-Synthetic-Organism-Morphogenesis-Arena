@@ -7,7 +7,9 @@ updated: 2026-10-14
 feature: F003
 ---
 
-# F003 — 実験計画（未実施）
+# F003 — 実験計画と実装候補の検証
+
+**以下の事前登録節は実装前の履歴。現行の実測・合否はfindingsと本末尾の監査記録を参照。**
 
 [仕様・図](../../topics/F003-attachment/SPEC.md) / [追跡 Issue #3](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/3)
 
@@ -45,7 +47,7 @@ GitHub Actions artifact: raw configs / states / events / comparisons / figures /
 3. 別視点のレビューで、結果と事前仮説・理論予測を突き合わせる。
 4. 支持／反証／不明を条件別に記録し、改善なら仕様へ戻す。成功かつレビュー済みの場合のみmainへ採用。
 
-**現段階の実験結果：未実施。** F002のレビュー待ちとは独立して設計を進める。
+**現段階の実験結果：未実施。** F001/F002はmain統合済み。F003は別PRで設計・実装を管理する。
 
 ## 観測前に事前登録した期待（2026-10-15）
 - Aは個別のF001計算に一致し、B静止、内部リンク力0。
@@ -66,6 +68,9 @@ GitHub Actions artifact: raw configs / states / events / comparisons / figures /
 
 **採用の全数値閾値はSPECの「A〜Fの数値合格ゲート」節を正本とする。現状は未実装・未実験。**
 
+## 独立監査による検証方法の補足（2026-10-15）
+A〜Fの事前条件・数値閾値は維持する。保存CSVとイベントを一次証拠として全時系列オラクル・両セル鏡映・切断前後の参照状態を照合し、各ゲートの最大誤差と合否をcomparison.jsonへ保存する。非有限の派生量とDecimal精度変更による誤受理を補助回帰で検査する。拒否入力全体、拒否証拠SHA256、F001依存ソースの出自を保持し、比較結果を含むスイート全体の再実行一致を検証する。これは判定の具体化であり、実験閾値の変更ではない。
+
 ## 実装候補の実行順と証拠（2026-10-15）
 
 事前登録の条件・閾値を維持。新たな不等質量の単体テストは補助検査であり、A〜Fの操作変数を変更しない。
@@ -78,7 +83,7 @@ GitHub Actions artifact: raw configs / states / events / comparisons / figures /
 
 [実行方法](README.md) / [設計正本](../../topics/F003-attachment/SPEC.md)。
 
-## F003 GitHub CI 確認（2026-10-15）
+## F003 GitHub CI 履歴（監査修正前・2026-10-15）
 
 - 実装HEAD: 1512206596ca8939705e6e1ab603e9aa1bbd626d
 - F003 Actions: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190546 — success。Python 3.11で合計44テスト（F001 17、F002 16、F003 11）合格。
@@ -87,3 +92,6 @@ GitHub Actions artifact: raw configs / states / events / comparisons / figures /
 - F002既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190549 — success。
 - 以上は1D理想モデル・ソフトウェアの整合性を示す。実機による結合、エネルギー相互作用、身体創発を示さない。
 - 独立第三者の監査は未了。PR #7の設計レビューと、PR #8の正式採用判断を区別する。
+
+## 監査修正後の検証（2026-10-15）
+50テスト（F001=17、F002=16、F003=17）、A〜Fの正常7run、異常入力10例、B再実行、全スイート再実行のバイト一致をローカルで確認。8種のCSV/イベント改変をすべて拒否し、python -Oでも合否検査が消えない。旧8拒否例は維持し、数値範囲の2例を補助追加した。スイートは保存CSV・イベントを一度だけの運動実行から読み戻して検査する。comparison.jsonの各case.gatesに最大誤差と全数値ゲートを保存し、full_suite_replay.jsonに比較JSONを含む全成果物の一致SHAを保存する。

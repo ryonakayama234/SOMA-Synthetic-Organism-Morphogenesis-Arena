@@ -1,6 +1,12 @@
 """F003 pre-registered invariants. Pure stdlib test suite."""
 from __future__ import annotations
 import math
+import csv
+import json
+from decimal import localcontext
+import subprocess
+import sys
+from unittest.mock import patch
 from pathlib import Path
 import tempfile
 import unittest
@@ -144,6 +150,119 @@ class TestF003(unittest.TestCase):
             self.assertFalse(state["attached"])
             self.assertEqual(state["link_force_a_n"],0.)
             self.assertEqual(state["link_force_b_n"],0.)
+
+
+    def test_time_grid_is_independent_of_decimal_context(self):
+        for precision in (3,28,60):
+            with self.subTest(precision=precision),localcontext() as ctx:
+                ctx.prec=precision
+                with self.assertRaises(ValueError):
+                    Config.from_dict(config(dt_s=.03))
+                with self.assertRaises(ValueError):
+                    Config.from_dict(config(link_detach_time_s=5.005))
+                self.assertEqual(Config.from_dict(config()).steps,1000)
+
+    def test_finite_inputs_do_not_save_nonfinite_derived_values(self):
+        cfg=Config.from_dict(config(a_mass_kg=1e200,b_mass_kg=1e200,a_force_n=1e200))
+        self.assertAlmostEqual(link_forces(cfg)[1]/1e200,.5,delta=1e-15)
+        rows,_=simulate(cfg)
+        self.assertAlmostEqual(rows[-1]["v_a_m_s"],2.162338693883291,delta=1e-9)
+        self.assertTrue(all(value is None or math.isfinite(value)
+                            for row in rows for value in row.values()))
+        # Weighted center of mass must not overflow a mass*position product.
+        rows,_=simulate(Config.from_dict(config(False,a_mass_kg=2.,b_mass_kg=2.,
+              a_initial_x_m=1e308,b_initial_x_m=1e308,a_force_n=0.)))
+        self.assertEqual(rows[0]["center_of_mass_m"],1e308)
+
+    def test_unrepresentable_aggregates_and_dynamic_state_rejected_before_files(self):
+        invalid=[config(a_mass_kg=1e308,b_mass_kg=1e308),
+                 config(a_force_n=1e308,b_force_n=1e308),
+                 config(a_mass_kg=10**1000),
+                 config(False,a_mass_kg=1e-300,a_force_n=1e300)]
+        with tempfile.TemporaryDirectory() as tmp:
+            for i,raw in enumerate(invalid):
+                dest=Path(tmp)/str(i)
+                with self.subTest(index=i),self.assertRaises(ValueError):
+                    save_run(Config.from_dict(raw),dest)
+                self.assertFalse(dest.exists())
+
+    def test_full_suite_evidence_and_comparison_replay(self):
+        from experiments.F003.run_suite import suite,checksum
+        with tempfile.TemporaryDirectory() as tmp:
+            first,second=Path(tmp)/"first",Path(tmp)/"second"
+            result=suite(first)
+            suite(second)
+            self.assertEqual(result["rejections_sha256"],checksum(first/"rejections.json"))
+            self.assertTrue(all(result["gate_checks"].values()))
+            for name,case in result["cases"].items():
+                if name=="theory": continue
+                self.assertLessEqual(case["gates"]["max_oracle_x_error_m"],1e-9)
+                self.assertLessEqual(case["gates"]["max_internal_force_sum_n"],1e-12)
+            for case in result["rejections"]:
+                self.assertIn("input",case)
+                self.assertTrue(case["pass"])
+            paths=sorted(p.relative_to(first) for p in first.rglob("*") if p.is_file())
+            self.assertEqual(paths,sorted(p.relative_to(second) for p in second.rglob("*") if p.is_file()))
+            for path in paths:
+                self.assertEqual((first/path).read_bytes(),(second/path).read_bytes(),str(path))
+
+    def test_suite_rejects_corrupted_saved_evidence(self):
+        import experiments.F003.run_suite as runner
+        real=runner.save_run
+        cases=[("A-free","states.csv",100,"x_a_m",3.,"discrete position"),
+               ("B-pull","states.csv",0,"link_force_a_n",8.,"internal forces"),
+               ("C-both","states.csv",100,"v_b_m_s",.01,"velocity error log"),
+               ("D-cut","states.csv",501,"x_b_m",3.,"discrete position"),
+               ("D-cut","events.csv",1,"x_b_before_m",3.,"event/CSV continuity"),
+               ("E-minus","states.csv",100,"x_b_m",3.,"distance error log"),
+               ("B-pull","states.csv",10,"center_of_mass_m",3.,"center of mass"),
+               ("B-pull","states.csv",10,"v_a_m_s",float("inf"),"non-finite")]
+        with tempfile.TemporaryDirectory() as tmp:
+            for i,(case,filename,index,field,delta,message) in enumerate(cases):
+                def corrupt(cfg,dest,**kwargs):
+                    manifest=real(cfg,dest,**kwargs)
+                    if cfg.experiment_id=="F003-"+case:
+                        with (dest/filename).open(newline="") as stream:
+                            reader=csv.DictReader(stream)
+                            fields=reader.fieldnames
+                            rows=list(reader)
+                        rows[index][field]=str(float(rows[index][field])+delta)
+                        # A copied lie within events.csv must still fail the CSV cross-check.
+                        if filename=="events.csv":
+                            rows[index][field.replace("before","after")]=rows[index][field]
+                        with (dest/filename).open("w",newline="") as stream:
+                            writer=csv.DictWriter(stream,fieldnames=fields)
+                            writer.writeheader(); writer.writerows(rows)
+                    return manifest
+                with self.subTest(case=case,field=field),patch.object(runner,"save_run",corrupt):
+                    with self.assertRaisesRegex(AssertionError,message):
+                        runner.suite(Path(tmp)/str(i))
+
+    def test_optimized_python_keeps_suite_semantic_gates(self):
+        code = r"""
+from pathlib import Path
+from unittest.mock import patch
+import csv, tempfile
+import experiments.F003.run_suite as runner
+real=runner.save_run
+def corrupt(cfg,dest,**kwargs):
+    manifest=real(cfg,dest,**kwargs)
+    if cfg.experiment_id=='F003-D-cut':
+        with (dest/'events.csv').open(newline='') as stream:
+            reader=csv.DictReader(stream); fields=reader.fieldnames; rows=list(reader)
+        rows[1]['x_a_before_m']=rows[1]['x_a_after_m']='99'
+        with (dest/'events.csv').open('w',newline='') as stream:
+            writer=csv.DictWriter(stream,fieldnames=fields); writer.writeheader(); writer.writerows(rows)
+    return manifest
+with tempfile.TemporaryDirectory() as tmp, patch.object(runner,'save_run',corrupt):
+    try: runner.suite(Path(tmp)/'corrupt')
+    except AssertionError as exc:
+        if 'event/CSV continuity' not in str(exc): raise
+    else: raise RuntimeError('optimized Python accepted corrupted evidence')
+"""
+        result=subprocess.run([sys.executable,"-O","-c",code],cwd=Path(__file__).resolve().parents[1],
+                              text=True,capture_output=True)
+        self.assertEqual(result.returncode,0,result.stdout+result.stderr)
 
 if __name__=="__main__":
     unittest.main()

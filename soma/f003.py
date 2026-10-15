@@ -1,14 +1,13 @@
 """F003: two 1D cells and a massless, ideal rigid link (research world truth)."""
 from __future__ import annotations
 from dataclasses import dataclass, asdict
-from decimal import Decimal
+from fractions import Fraction
 from pathlib import Path
 import csv
 import hashlib
 import json
 import math
 import subprocess
-from typing import Any
 from xml.sax.saxutils import escape
 from soma.f001 import step as f001_step
 
@@ -23,16 +22,21 @@ EVENT_COLUMNS = ("time_s","kind","attached_before","attached_after",
  "link_force_before_n")
 
 def numeric(value, name, positive=False, nonnegative=False):
-    if type(value) not in (int,float) or not math.isfinite(value):
-        raise ValueError(f"{name}: finite real number required")
-    v=float(value)
+    try:
+        if type(value) not in (int, float):
+            raise ValueError
+        v = float(value)
+        if not math.isfinite(v):
+            raise ValueError
+    except (ValueError, OverflowError):
+        raise ValueError(f"{name}: finite real number required") from None
     if positive and v<=0: raise ValueError(f"{name}: must be positive")
     if nonnegative and v<0: raise ValueError(f"{name}: must not be negative")
     return v
 
 def steps_for(time, dt, name):
-    n=Decimal(str(time))/Decimal(str(dt))
-    if n!=n.to_integral_value(): raise ValueError(f"{name}: not an exact decimal multiple of dt_s")
+    n=Fraction(str(time))/Fraction(str(dt))
+    if n.denominator!=1: raise ValueError(f"{name}: not an exact decimal multiple of dt_s")
     return int(n)
 
 def exact_keys(row, expected, label):
@@ -104,6 +108,10 @@ class Config:
             a,b=cells
             if b.initial_x_m-a.initial_x_m!=length or a.initial_v_m_s!=b.initial_v_m_s:
                 raise ValueError("initial rigid constraint inconsistent; no silent snap")
+        if not math.isfinite(cells[0].mass_kg + cells[1].mass_kg):
+            raise ValueError("combined mass is not representable")
+        if not math.isfinite(cells[0].force_n + cells[1].force_n):
+            raise ValueError("combined force is not representable")
         return cls(name,dt,duration,drag,(cells[0],cells[1]),
                    link["initially_attached"],length,cut,count,cut_step)
 
@@ -120,20 +128,26 @@ class Config:
 
 def link_forces(cfg):
     a,b=cfg.cells
-    fb=b.mass_kg*(a.force_n+b.force_n)/(a.mass_kg+b.mass_kg)-b.force_n
+    # Normalize first: mass * force can overflow although the force is finite.
+    fb=(b.mass_kg/(a.mass_kg+b.mass_kg))*a.force_n - (a.mass_kg/(a.mass_kg+b.mass_kg))*b.force_n
+    if not math.isfinite(fb):
+        raise ValueError("non-finite link force")
     return -fb,fb
 
 def snapshot(cfg,k,xa,xb,va,vb,attached):
     a,b=cfg.cells
     ta,tb=link_forces(cfg) if attached else (0.,0.)
     total=a.mass_kg+b.mass_kg
-    return dict(time_s=k*cfg.dt_s,attached=attached,x_a_m=xa,x_b_m=xb,
+    row = dict(time_s=k*cfg.dt_s,attached=attached,x_a_m=xa,x_b_m=xb,
       v_a_m_s=va,v_b_m_s=vb,force_a_n=a.force_n,force_b_n=b.force_n,
       link_force_a_n=ta,link_force_b_n=tb,
       distance_constraint_error_m=(xb-xa-cfg.length_m) if attached else None,
       velocity_constraint_error_m_s=(vb-va) if attached else None,
-      center_of_mass_m=(a.mass_kg*xa+b.mass_kg*xb)/total,
-      center_of_mass_velocity_m_s=(a.mass_kg*va+b.mass_kg*vb)/total)
+      center_of_mass_m=(a.mass_kg/total)*xa+(b.mass_kg/total)*xb,
+      center_of_mass_velocity_m_s=(a.mass_kg/total)*va+(b.mass_kg/total)*vb)
+    if any(value is not None and not math.isfinite(value) for value in row.values()):
+        raise ValueError("non-finite world state or derived quantity")
+    return row
 
 def event(t,kind,attached_before,attached_after,xa,xb,va,vb,before_force):
     return dict(time_s=t,kind=kind,attached_before=attached_before,
@@ -181,40 +195,50 @@ def provenance():
                  check=True,capture_output=True,text=True,timeout=3).stdout.strip())
     except (OSError,subprocess.SubprocessError):
         commit,dirty=None,None
-    return dict(git_commit=commit,git_dirty=dirty,module_sha256=sha(Path(__file__)))
+    return dict(git_commit=commit,git_dirty=dirty,module_sha256=sha(Path(__file__)),
+                f001_sha256=sha(root/"soma"/"f001.py"))
 
 def plot_svg(rows,title):
     values=[r[f] for r in rows for f in ("x_a_m","x_b_m")]
     lo,hi=min(values),max(values)
-    span=hi-lo or 1.
+    scale=max(abs(lo),abs(hi),1.)
+    low=lo/scale
+    span=hi/scale-low or 1.
     stride=max(1,(len(rows)-1)//500)
     sampled=rows[::stride]
     if sampled[-1] is not rows[-1]: sampled.append(rows[-1])
     paths=[]
     for field,color in (("x_a_m","#2563eb"),("x_b_m","#059669")):
-        points=" ".join(f"{70+590*r['time_s']/rows[-1]['time_s']:.2f},"
-          f"{200-150*(r[field]-lo)/span:.2f}" for r in sampled)
+        points=" ".join(f"{70+590*(r['time_s']/rows[-1]['time_s']):.2f},"
+          f"{200-150*(r[field]/scale-low)/span:.2f}" for r in sampled)
         paths.append(f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{points}"/>')
     return ('<svg xmlns="http://www.w3.org/2000/svg" width="720" height="250" viewBox="0 0 720 250">'
       '<rect width="720" height="250" fill="white"/><g font-family="Arial" fill="#334155">'
       f'<text x="70" y="25" font-size="16">{escape(title)}: A blue / B green</text>'
-      '<path d="M70 40V200H660" fill="none" stroke="#888"/>'+''.join(paths)+'</g></svg>')
+      '<path d="M70 40V200H660" fill="none" stroke="#888"/>'+''.join(paths)+
+      f'<text x="70" y="220" font-size="12">0</text>'
+      f'<text x="660" y="220" text-anchor="end" font-size="12">{rows[-1]["time_s"]:g} s</text>'
+      f'<text x="65" y="55" text-anchor="end" font-size="12">{hi:.4g}</text>'
+      f'<text x="65" y="200" text-anchor="end" font-size="12">{lo:.4g}</text>'
+      '<text x="70" y="42" font-size="12">position [m]</text>'
+      '<text x="360" y="240" font-size="12">time [s]</text></g></svg>')
 
 def save_run(cfg,path,*,provenance_data=None,suite_sha256=None):
-    rows,events=simulate(cfg)  # no files until successful simulation
     identity=provenance_data if provenance_data is not None else provenance()
+    rows,events=simulate(cfg)  # no files until successful simulation
+    svg=plot_svg(rows,cfg.experiment_id)
     path.mkdir(parents=True,exist_ok=False)
-    (path/"config.json").write_text(json.dumps(cfg.to_dict(),ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    (path/"config.json").write_text(json.dumps(cfg.to_dict(),ensure_ascii=False,indent=2,allow_nan=False)+"\n",encoding="utf-8")
     for fname,columns,data in (("states.csv",STATE_COLUMNS,rows),("events.csv",EVENT_COLUMNS,events)):
         with (path/fname).open("w",newline="",encoding="utf-8") as file:
             writer=csv.DictWriter(file,fieldnames=columns)
             writer.writeheader()
             writer.writerows(data)
-    (path/"motion.svg").write_text(plot_svg(rows,cfg.experiment_id),encoding="utf-8")
+    (path/"motion.svg").write_text(svg,encoding="utf-8")
     info=dict(schema_version=SCHEMA,experiment_id=cfg.experiment_id,
       model="1d_two_cell_ideal_link",integration="semi_implicit_euler",
       seed=None,seed_note="no randomness",samples=len(rows),events=len(events),
       **identity,suite_sha256=suite_sha256,
       artifacts={n:sha(path/n) for n in ("config.json","states.csv","events.csv","motion.svg")})
-    (path/"manifest.json").write_text(json.dumps(info,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    (path/"manifest.json").write_text(json.dumps(info,ensure_ascii=False,indent=2,allow_nan=False)+"\n",encoding="utf-8")
     return info

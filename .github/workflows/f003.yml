@@ -16,12 +16,14 @@ jobs:
           python-version: '3.11'
       - name: Run F001 F002 F003 regression and invariants
         run: python -m unittest discover -s tests -v
-      - name: Run F003 A-F experiments
-        run: python -m experiments.F003.run_suite --output-dir runs/F003-ci
+      - name: Run F003 A-F experiments and complete evidence replay
+        run: python -m experiments.F003.run_suite --output-dir runs/F003-ci --replay-output-dir runs/F003-replay
       - name: Retain F003 raw states events comparisons manifests and plots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: F003-A-F-evidence
-          path: runs/F003-ci/
+          path: |
+            runs/F003-ci/
+            runs/F003-replay/
           if-no-files-found: error
