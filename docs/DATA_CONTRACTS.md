@@ -165,3 +165,23 @@ flowchart LR
 
 列名・厳密な許容誤差は実装前の仕様レビューで決定し、実験データに合わせて後付けしない。
 [設計仕様](../topics/F003-attachment/SPEC.md) / [実験計画](../experiments/F003/PLAN.md)。
+
+## F003 切断イベント／不正入力のデータフロー（2026-10-15提案・未実装）
+
+~~~mermaid
+flowchart TD
+  C["config.json 2セル・力・リンク"] --> V{"事前検査"}
+  V -->|有効| W["F003 worldの真値"]
+  V -->|無効| R["suiteのrejections.json"]
+  W --> S["states.csv：時刻毎のpost-event状態"]
+  W --> E["events.csv：正常な結合／切断"]
+  S --> J["comparison.json・SVG"]
+  E --> J
+  R --> J
+  J --> M["manifest：Git版・suite/モジュール/成果物SHA256"]
+~~~
+
+- states.csv：最小列time_s、attached、x_a_m、x_b_m、v_a_m_s、v_b_m_s、force_a_n、force_b_n、link_force_a_n、link_force_b_n、distance_constraint_error_m、velocity_constraint_error_m_s。各時刻の**イベント適用後**の状態を1行だけ記録する。OFF時リンク力0、拘束誤差空欄。
+- events.csv：切断イベントはtime_s、kind、attached_before/after、x_a_before/after_m、x_b_before/after_m、v_a_before/after_m_s、v_b_before/after_m_s、link_force_before_nを持つ（正確な列名の対称性は実装前に固定）。切断の位置・速度before/afterは完全一致する。時刻0の初期結合も有効な場合だけ記録。
+- rejections.json：Fスイートの各case_id、入力、expected_error、actual_error、reason、rejected_before_run、pass。無効runのstates/events出力を作らない。
+- 研究用world真値とセルの局所知覚を隔離し、F002台帳とは未接続。列順・型の確定は実装PRで検証する。この節はまだ動作していない提案契約。
