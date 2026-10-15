@@ -1,6 +1,7 @@
 """F001 invariants and convergence tests (stdlib-only)."""
 
 from dataclasses import replace
+from decimal import Decimal, localcontext
 import math
 from pathlib import Path
 import tempfile
@@ -54,6 +55,124 @@ class TestF001(unittest.TestCase):
     def test_analytic_no_drag(self):
         c = replace(DEFAULT, drag_per_s=0, force_n=2, duration_s=2, dt_s=0.01)
         self.assertEqual(analytic_state(c, 2), (4.0, 4.0))
+
+    def test_analytic_near_zero_nonzero_drag(self):
+        # Regression for Codex review on PR #4: previously (-2048, 0).
+        for drag in (1e-18, 1e-100, 5e-324):
+            with self.subTest(drag=drag):
+                c = replace(DEFAULT, drag_per_s=drag)
+                x, v = analytic_state(c, c.duration_s)
+                self.assertTrue(math.isfinite(x) and math.isfinite(v))
+                self.assertAlmostEqual(x, 50.0, delta=1e-11)
+                self.assertAlmostEqual(v, 10.0, delta=1e-11)
+
+    def test_analytic_near_zero_drag_with_initial_state(self):
+        c = replace(DEFAULT, drag_per_s=1e-18, force_n=2.0,
+                    initial_x_m=7.0, initial_v_m_s=-3.0)
+        x, v = analytic_state(c, c.duration_s)
+        self.assertAlmostEqual(x, 77.0, delta=1e-11)
+        self.assertAlmostEqual(v, 17.0, delta=1e-11)
+        self.assertEqual(analytic_state(c, 0.0), (7.0, -3.0))
+
+    def test_analytic_small_drag_series_boundary(self):
+        # Exercise both sides of the series / expm1 switch at gamma*t=0.01.
+        for drag in (0.000999, 0.001, 0.001001):
+            with self.subTest(drag=drag):
+                c = replace(DEFAULT, drag_per_s=drag,
+                            initial_x_m=3.0, initial_v_m_s=-2.0)
+                t = c.duration_s
+                terminal_speed = c.force_n / (c.mass_kg * drag)
+                decay = math.exp(-drag * t)
+                x_expected = (c.initial_x_m + terminal_speed*t
+                              + (c.initial_v_m_s-terminal_speed)
+                              * (-math.expm1(-drag*t)) / drag)
+                v_expected = terminal_speed + (c.initial_v_m_s-terminal_speed)*decay
+                x, v = analytic_state(c, t)
+                self.assertAlmostEqual(x, x_expected, delta=1e-9)
+                self.assertAlmostEqual(v, v_expected, delta=1e-11)
+
+    def test_near_zero_drag_manifest_is_finite(self):
+        c = replace(DEFAULT, drag_per_s=1e-18)
+        with tempfile.TemporaryDirectory() as tmp:
+            result = save_run(c, Path(tmp) / "tiny-drag")
+        self.assertAlmostEqual(result["analytic_x_m"], 50.0, delta=1e-11)
+        self.assertAlmostEqual(result["analytic_v_m_s"], 10.0, delta=1e-11)
+        self.assertTrue(math.isfinite(result["absolute_x_error_m"]))
+        self.assertTrue(math.isfinite(result["absolute_v_error_m_s"]))
+
+    def test_analytic_large_force_outputs_remain_finite(self):
+        # Original review: a*t*t overflows, even though x is ~1.98e306.
+        for force in (2e304, -2e304):
+            with self.subTest(force=force):
+                c = replace(DEFAULT, mass_kg=1.0, force_n=force,
+                            drag_per_s=1.0, dt_s=1.0, duration_s=100.0)
+                x, v = analytic_state(c, c.duration_s)
+                self.assertTrue(math.isfinite(x) and math.isfinite(v))
+                x_expected = force * (99.0 + math.exp(-100))
+                v_expected = force * (-math.expm1(-100))
+                self.assertAlmostEqual(x / x_expected, 1.0, delta=1e-13)
+                self.assertAlmostEqual(v / v_expected, 1.0, delta=1e-13)
+                self.assertTrue(math.isfinite(simulate(c)[-1].x_m))
+
+        # Additional velocity failure: a*t overflows before phi1 is applied.
+        c = replace(DEFAULT, mass_kg=1.0, force_n=2e307,
+                    drag_per_s=1000.0, dt_s=0.001, duration_s=10.0)
+        x, v = analytic_state(c, c.duration_s)
+        self.assertTrue(math.isfinite(x) and math.isfinite(v))
+        self.assertAlmostEqual(x / 1.9998e305, 1.0, delta=1e-13)
+        self.assertAlmostEqual(v / 2e304, 1.0, delta=1e-13)
+
+    def test_analytic_large_time_small_force_product(self):
+        # t*t overflows, while a*t*t*phi2 is finite.
+        c = replace(DEFAULT, mass_kg=1.0, force_n=1e-300,
+                    drag_per_s=1e-200, dt_s=1e200, duration_s=1e200)
+        x, v = analytic_state(c, c.duration_s)
+        self.assertTrue(math.isfinite(x) and math.isfinite(v))
+        self.assertAlmostEqual(x / (1e100 / math.e), 1.0, delta=1e-13)
+        self.assertAlmostEqual(v / (1e-100 * (1 - 1 / math.e)), 1.0, delta=1e-13)
+
+    def test_analytic_signed_position_cancellation(self):
+        # PR #5 P2: x0 + the initial-velocity displacement overflows before
+        # the negative force displacement restores a finite position.
+        for sign in (1, -1):
+            with self.subTest(sign=sign):
+                c = replace(DEFAULT, mass_kg=1.0, drag_per_s=1.0,
+                            dt_s=1.0, duration_s=1.0,
+                            initial_x_m=sign*7.3e307,
+                            initial_v_m_s=sign*1.7e308,
+                            force_n=-sign*9e306)
+                with localcontext() as context:
+                    context.prec = 100
+                    decay = (-Decimal(1)).exp()
+                    # Independent continuous solution in high precision,
+                    # using the exact values of the supplied binary floats.
+                    x_expected = float(Decimal(c.initial_x_m)
+                                       + Decimal(c.initial_v_m_s)*(1-decay)
+                                       + Decimal(c.force_n)*decay)
+                    v_expected = float(Decimal(c.initial_v_m_s)*decay
+                                       + Decimal(c.force_n)*(1-decay))
+                x, v = analytic_state(c, 1.0)
+                self.assertTrue(math.isfinite(x) and math.isfinite(v))
+                self.assertAlmostEqual(x/x_expected, 1.0, delta=1e-14)
+                self.assertAlmostEqual(v/v_expected, 1.0, delta=1e-14)
+                self.assertEqual(analytic_state(c, 0.0),
+                                 (c.initial_x_m, c.initial_v_m_s))
+                with tempfile.TemporaryDirectory() as tmp:
+                    result = save_run(c, Path(tmp)/"signed-cancellation")
+                for field in ("analytic_x_m", "analytic_v_m_s",
+                              "absolute_x_error_m", "absolute_v_error_m_s"):
+                    self.assertTrue(math.isfinite(result[field]), field)
+
+    def test_analytic_no_drag_signed_cancellation_and_true_overflow(self):
+        c = replace(DEFAULT, mass_kg=1.0, drag_per_s=0.0,
+                    dt_s=1.0, duration_s=1.0, initial_x_m=1e308,
+                    initial_v_m_s=1e308, force_n=-1e308)
+        x, v = analytic_state(c, 1.0)
+        self.assertAlmostEqual(x/1.5e308, 1.0, delta=1e-14)
+        self.assertEqual(v, 0.0)
+        # A genuinely unrepresentable result must not become a finite value.
+        self.assertEqual(analytic_state(replace(c, force_n=0.0), 1.0)[0],
+                         math.inf)
 
     def test_initial_position_and_velocity_are_respected(self):
         c = replace(DEFAULT, force_n=0, drag_per_s=0, initial_x_m=-4.0, initial_v_m_s=2.0)

@@ -21,10 +21,10 @@
 ## ステータス表現
 proposed=仕様案、backlog=構想、active=運用中、implemented=コード実装済み、observed=実験観測済み。文書が書かれたことだけで implemented/observed にしない。
 
+## F002以降のPR同時更新ルール
+コードを追加するときは `docs/ARCHITECTURE.md`、`docs/DATA_CONTRACTS.md`、`findings/Fxxx-validation.md`、`README.md`、対象SPECを同じPRで検証・更新する。図とログの食い違い、記録の欠落、根拠のない「観測済み」昇格を監査する。デザインのみのPRは未実装・未実行として区別する。
 
-## 一機能ごとの必須同時更新（2026-10-14追加）
-- 実装・調査・実験の各PRでは、仕様（topics）、システム図（docs/ARCHITECTURE.md）、データ構造/流れ（docs/DATA_CONTRACTS.md）、実験計画と結果（experiments / findings）、入口（README）を同時に確認・更新する。
-- Mermaid図は文章と整合させ、提案だけの設計を実装済みと表示しない。観測値と理論予測を分ける。
-- 実験の生ログ、対照群、コードSHA、失敗結果をPRに紐づける。第三者レビュー前にmainへ統合しない。
-- F002はレビュー待ちの別PR。F003はF001だけに依存する設計で、F002ブランチを混ぜない。
-- 詳細：[研究運営の同期規則](docs/RESEARCH_PROCESS.md)。
+## 現在の研究焦点（2026-10-15）
+- F001/F002はmain統合済み。F003の1D二セル理想リンクは仕様審査中・未実装・未観測。
+- [F003仕様](topics/F003-attachment/SPEC.md) → [A〜F計画](experiments/F003/PLAN.md) → [検証ノート](findings/F003-validation.md) → [Issue #3](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/3)の順に追う。
+- 世界側の接続真値・リンク力は研究専用ログであり、後のセル行動器へ直接渡さない。F002台帳の数値移送と物理的結合を同一視しない。

@@ -7,9 +7,9 @@ updated: 2026-10-13
 related: [DATA, F001, F002, F003]
 ---
 
-# システム図鑑（概念図・未実装）
+# システム図鑑（実装済み・提案の境界を明記）
 
-ここにあるのは **概念上の境界**。実際のプログラムの分割を確定させたものではない。機能が実装されるたびに現実に合わせて更新する。
+全体図は**概念上の境界**。各機能の節で実装済み・未実装を区別し、実験結果を示す図と混同しない。
 
 ## 全体図
 ~~~mermaid
@@ -63,9 +63,50 @@ flowchart LR
 
 ## 実装状況（2026-10-13）
 - F001の `設定 → 運動計算 → 位置と速度のCSV → グラフ／比較` は `soma/f001.py` と `experiments/F001/run_suite.py` に実装済み。
-- 図中の局所センサー・セルの行動選択器・物理結合・エネルギー管理は**将来の概念構成であり未実装**。
+- 局所センサー・セルの行動選択・機械結合は未実装。エネルギー台帳はF002として実装済みだが、運動とは未連携。
 - [F001の実験ノート](../findings/F001-validation.md)
 
+## F002 実装後のシステム図【Python実装・数値検証済み】
+
+~~~mermaid
+flowchart LR
+  SET["config.json\n初期電力量・イベント列"] --> L["F002 台帳\n整数 µJ を原子的に更新"]
+  L --> ST["セル別残量\ncapacity / balance"]
+  L --> TX["供給・支出・移送損失\n収支残差"]
+  ST --> LOG["events.csv / balances.csv"]
+  TX --> LOG
+  LOG --> EVAL["グラフ energy.svg\n検証 manifest.json"]
+  F1["F001: 1D運動（既存）"] -. "電池との因果関係未定義・接続しない" .-> L
+  F3["F003: 機械結合（将来）"] -. "物理結合は別課題" .-> L
+~~~
+
+F002での `transfer` は**数値台帳上の取引**であり、力学的な結合・電線・電力供給ポートを意味しない。研究者・物理環境の真の状態と、将来のセルが局所センサーで取得できる状態は分ける。F002の台帳・トランザクション・CSV・manifest・可視化部分は `soma/f002.py` と `experiments/F002/run_suite.py` で実装済み。F001の外部力からF002の蓄電量への結合と、F003の機械結合は未実装。図は実装境界を明示する。
+
+[仕様案](../topics/F002-energy-ledger/SPEC.md) / [入力出力とデータ構造](DATA_CONTRACTS.md)。
+
+### コードの責務分割（F002）
+
+- `Cell`：個体ID、最大容量、現在残量（immutable）。
+- `LedgerState`：セル群、初期残量合計、外部供給・支出・移送損失の累積、取引番号。構築時に残差0を検証。
+- `Event`/`apply_event`：取得・支出・数値移送。入力を検査し、成功したときだけ新しいstateを返す。失敗時に元stateを変更しない。
+- `save_run`：設定・イベント・セル別残量・SVG・manifestを新しい出力先へ保存。
+- `experiments.F002.run_suite`：A〜Fの対照実験とEの13件の拒否監査。出力をCI artifactへ保管。
+
+[実験記録](../findings/F002-validation.md) / [コード](../soma/f002.py)。
+
+### レビュー #6 後の保存証拠の検査
+取引 → 中間残量の全履歴（balances.csv）→ CSVに対応するイベント推移・台帳内訳（energy.svg）→ manifest（Git SHA、dirty判定、モジュールSHA256、artifact SHA256）の順に検証できる。なお、グラフの間引きは表示だけであり、CSVは間引かない。
+
+### F002の再現性証拠データフロー
+`experiments.F002.run_suite` → F-bulkとF-splitの**各同一設定を2回実行** → 元run・replay runそれぞれにconfig／events／balances／SVG／manifest → 5ファイルずつのバイト一致とSHA256 → `comparison.json.f_replay_checks`に保存。新規出力ディレクトリのみを使用し、F001運動モデルには接続しない。
+
+### 出自取得と保存の順序（2026-10-15）
+
+スイート開始 → 出力前のGit SHA/dirtyを一度取得 → 各runとreplayの`save_run(..., provenance=...)` → 同一開始状態を8 manifestへ保存。単独runは自身で保存前に取得する。未追跡の実験出力によるdirty判定の変化を防ぐため、開始時の出自取得をスイートの責務とする。台帳の演算やF001との境界は変わらない。
+
+### 条件生成・判定コードの保存（2026-10-15）
+
+スイート開始 → Git出自とsuiteソースを取得 → `suite_source.py`を証拠へ保存 → A〜Fと再実行 → `comparison.json`へsuite SHA256と保存先を記録。台帳モジュールのhashだけでなく、条件生成・事前予測の照合を担当するスクリプトも識別する。
 
 ## F003の設計追加（2026-10-14、PRで審査中・未実装）
 「二つのセルが理想的な機械リンクで拘束される」能力のみを新設する案。F002のエネルギー台帳とは独立させる。
@@ -90,4 +131,4 @@ flowchart LR
 - 非目標：2D/3D、接触・衝突、実機コネクタ、通信、電力移送、AI、創発。
 
 [詳しいF003仕様とシステム図](../topics/F003-attachment/SPEC.md) / [F003の対照実験計画](../experiments/F003/PLAN.md)。
-F002は[PR #6](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/6)で実装提案・レビュー待ちであり、mainの実装状況とは区別する。
+F002はmainに統合済み。F003は機械結合のみ提案し、F002台帳との接続は未実装のまま維持。
