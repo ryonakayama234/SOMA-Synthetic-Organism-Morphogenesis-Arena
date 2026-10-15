@@ -3,7 +3,7 @@ id: ARCHITECTURE
 title: システム図鑑
 kind: diagram
 status: conceptual
-updated: 2026-10-15
+updated: 2026-10-16
 related: [DATA, F001, F002, F003]
 ---
 
@@ -228,3 +228,20 @@ flowchart TD
 役割：F001は運動更新、F002は残高・会計不変条件、F004はモーター仕事と実行可否の調停のみを担当。**外力は電池消費対象ではない**。研究側ロガーは世界の真値を知るが、セルの意思決定器には真値を渡さない。モーターの実機効率、待機電力、熱、回生、二セル協調は未実装。
 
 [仕様・仮説](../topics/F004-actuation-energy/SPEC.md) / [A〜F計画](../experiments/F004/PLAN.md) / [未実施の記録](../findings/F004-validation.md) / [Issue #9](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/9)。
+
+### F004 2026-10-16 設計ゲート修正（未実装）
+~~~mermaid
+flowchart TD
+ S["世界状態とF002電池残量"] --> B{"残量が0？"}
+ B -->|Yes| Z["モーター力0／外力だけをF001.stepへ"]
+ B -->|No| C["モーター+外力でF001候補運動を仮計算"]
+ C --> W["binary64正仕事をceilしてµJ費用確定"]
+ W --> E{"費用が残量以下か"}
+ E -->|Yes| Y["候補運動とF002 spendを一体採用（費用0ならイベントなし）"]
+ E -->|No| Z
+ Y --> V["有限値・原子的確定の検査"]
+ Z --> V
+ V --> L["世界真値ログ・台帳イベント・Git出自"]
+ L --> O["独立の全時系列オラクルと対照比較"]
+~~~
+反例：残量0でu=+1 N、外力=-1 N、初速0の候補仕事は0だが、**内部モーター力は0にする**。電池残量0の判定は費用計算より先に置く。これは設計修正であり、現時点の動作する実装ではない。
