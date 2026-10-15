@@ -25,6 +25,14 @@ proposed=仕様案、backlog=構想、active=運用中、implemented=コード�
 コードを追加するときは `docs/ARCHITECTURE.md`、`docs/DATA_CONTRACTS.md`、`findings/Fxxx-validation.md`、`README.md`、対象SPECを同じPRで検証・更新する。図とログの食い違い、記録の欠落、根拠のない「観測済み」昇格を監査する。デザインのみのPRは未実装・未実行として区別する。
 
 ## 現在の研究焦点（2026-10-15）
-- F001/F002はmain統合済み。F003の1D二セル理想リンクは仕様審査中・未実装・未観測。
+- F001/F002はmain統合済み。F003の1D二セル理想リンクは実装・検証済み。独立視点の監査修正、50テスト・A〜F・再現性・CI検証を経て採用判断済み。設計PR #7はmain統合済み、実装の統合はPR #8で追跡。
 - [F003仕様](topics/F003-attachment/SPEC.md) → [A〜F計画](experiments/F003/PLAN.md) → [検証ノート](findings/F003-validation.md) → [Issue #3](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/3)の順に追う。
 - 世界側の接続真値・リンク力は研究専用ログであり、後のセル行動器へ直接渡さない。F002台帳の数値移送と物理的結合を同一視しない。
+
+## F003実装・監査時の読み順（2026-10-15）
+- `topics/F003-attachment/SPEC.md`（事前仮説・反証・許容誤差）
+- `experiments/F003/PLAN.md`（A〜F）
+- `soma/f003.py` と `tests/test_f003.py`（理想1D力学）
+- `docs/ARCHITECTURE.md`、`docs/DATA_CONTRACTS.md`（図・スキーマ）
+- `findings/F003-validation.md`（予測、観測、CI証拠、未解決）
+F003世界真値を将来のセル局所観測へ注入しないこと。F002の台帳と物理的に結線しないこと。未実施を実測と記載しないこと。監査前の44テストCIは履歴として扱い、現行HEADのCI証拠と混同しないこと。

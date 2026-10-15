@@ -188,3 +188,40 @@ flowchart TD
 
 ### F003 設計監査の補足契約（2026-10-15、未実装）
 保存される真値・派生量はすべて有限、OFF時の拘束誤差だけnull/CSV空欄とする。表現不能な数値は正常run生成前に拒否する。時間格子の整数性は十進有理数として厳密判定し、Decimalの実行時精度から独立させる。比較結果は保存CSVとイベントを読み戻した全ゲート照合から作る。rejections.jsonは入力全体と例外証拠を保持し、comparison.jsonからSHA256で紐づける。F001依存ソースも出自に含める。
+
+## F003 実装候補（2026-10-15）
+
+~~~mermaid
+flowchart LR
+  C["設定: f003.v1"] --> S["World Truth: A/B/attached"]
+  S --> R["states.csv: 1刻み1行 (post-event)"]
+  S --> E["events.csv: attach_initial/detach"]
+  C --> M["manifest.json"]
+  R --> M
+  E --> M
+  R --> J["comparison.json: A-F照合"]
+  E --> J
+  I["不正入力"] --> Q["rejections.json: 拒否ケースのみ"]
+  J --> M
+~~~
+
+- `config.json`: `schema_version=f003.v1`、`experiment_id`、`seed=null`、`dt_s`、`duration_s`、`drag_per_s`、`cells` (A/Bにid, mass_kg, initial_x_m, initial_v_m_s, force_n)、`link` (initially_attached, length_m, detach_time_s)。
+- `states.csv` 列順：`time_s,attached,x_a_m,x_b_m,v_a_m_s,v_b_m_s,force_a_n,force_b_n,link_force_a_n,link_force_b_n,distance_constraint_error_m,velocity_constraint_error_m_s,center_of_mass_m,center_of_mass_velocity_m_s`。OFF時の内部力0・拘束誤差は空欄。
+- `events.csv`: `time_s,kind,attached_before,attached_after,x_a_before_m,x_a_after_m,x_b_before_m,x_b_after_m,v_a_before_m_s,v_a_after_m_s,v_b_before_m_s,v_b_after_m_s,link_force_before_n`。正常な初期接続・切断のみ。切断瞬間の前後の座標・速度は同値。
+- `rejections.json`：無効設定のcase_id、変更した入力、予期/実際の例外、理由、正常runが生成されなかったか。
+- `motion.svg` は最大約500点で**表示のみ間引く**。完全な真値はCSVに保存。
+- `manifest.json` はGit HEAD/dirty、F003モジュールSHA、suiteソースSHA、4成果物SHA256、シード未使用、積分方式・行数・イベント数を保持。`suite_source.py` は実行開始時のスクリプトそのものを保存。
+- 同じ入力・同じソースに対する `B-pull` と `B-pull-replay` はconfig/CSV/SVG/manifestのバイト一致を検査する。GitHub Actionsのartifactへ全runを保管。
+- 初期接続の位置差と速度は**厳密一致**を要求し、丸めや自動補正で修復しない。時間格子は `Fraction(str(value))` によって十進数の厳密な有理数として整数ステップを判定する。これらは理想リンクの設計条件であり、衝突時の合体は対象外。
+
+参考：[F003実装スイート](../experiments/F003/run_suite.py) / [SPEC](../topics/F003-attachment/SPEC.md)。
+
+### F003 監査修正後の証拠契約（2026-10-15、実装候補）
+- 各真値・派生数値は有限。表現不能な合成量や状態は保存前にValueErrorで拒否し、OFF拘束だけ空欄とする。保存JSONはallow_nan=False。
+- `manifest.json.f001_sha256`は再利用するF001コードのハッシュ。保存を伴わないシミュレーションの前にGit/ソース出自を取得する。
+- `comparison.json.cases.<case>.gates`は保存CSV/イベントから検査した全時系列の離散参照・拘束・内部力・重心・イベント同値の合否と最大誤差。`gate_checks`は両セル鏡映・収束・拒否等を含む全体ゲート。
+- `rejections.json[].input`は無効入力全体。非有限floatを`{"nonfinite_float":"nan"}`等の文字列タグで表し、正常JSONに非標準NaN/Infinityを持ち込まない。`comparison.json.rejections_sha256`で拒否証拠を参照する。
+- `--replay-output-dir`指定時は比較JSONを含む全保存物の生バイトを照合し、初回ルートの`full_suite_replay.json`に一致SHAを保存する。CIは初回・再実行の両方をartifactに保存する。
+
+### F003の採用判断（2026-10-15）
+監査修正・50テスト・A〜F・再現性・CI検証を経て、記載した1D二セル理想リンクの実装を採用する。設計#7はmain統合済み、実装の統合はPR #8で追跡。既存の図・スキーマ・観測境界は不変で、候補・未統合表記は過去時点の履歴。

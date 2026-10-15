@@ -153,3 +153,55 @@ flowchart TD
 
 ### F003 設計監査の補足（2026-10-15）
 入力検査→有限な世界状態・派生量→新規出力の保存→CSV/イベント読み戻し→独立離散参照による全ゲート照合、という責務を分離する。数値表現不能は保存前の拒否経路へ流し、内部力や重心のinfを正常な世界真値と扱わない。仕様・許容差は維持し、実装・観測は後続PR #8で検証する。
+
+## F003 実装候補（2026-10-15）
+
+下図は実装ブランチ `feat/F003-1d-coupling-validation-20261015` の責務とデータフロー。**mainへの統合前**であり、F002との物理結線・局所知覚・AI制御は存在しない。
+
+~~~mermaid
+flowchart TD
+  SET["config.json: 2セルと結合/切断設定"] --> VALID{"入力検証: dt格子/距離/初速"}
+  VALID -->|不正| REJ["suiteのrejections.json"]
+  VALID -->|正常| W["世界真値 (A,B,リンク状態)"]
+  W --> G{"attached?"}
+  G -->|yes| COUPLED["合成質量+合計外力 -> F001 step"]
+  G -->|no| FREE["A/BそれぞれF001 step"]
+  COUPLED --> EVENT{"時刻kで切断?"}
+  FREE --> EVENT
+  EVENT -->|yes| POST["位置/速度は不変、リンクだけOFF"]
+  EVENT -->|no| POST
+  POST --> LOG["states.csv (post-event) / events.csv (before/after)"]
+  LOG --> EVAL["comparison.json + motion.svg"]
+  EVAL --> PROV["manifest.json: Git SHA / ソースhash / artifacts SHA"]
+  F2["F002：エネルギー台帳"] -. "物理的に未接続" .-> W
+~~~
+
+`Config.from_dict` が不正入力を実行前に拒否。`simulate` は世界の真値の時系列とイベントを返す。`save_run` は新しいフォルダにのみ保存する。`experiments.F003.run_suite` は開始時のGit出自と実験スクリプトhashを全runで共有し、生ログと再実行のバイト一致を判定する。**これらの真値をセル自身へ渡す制御器は実装しない。**
+
+[事前登録SPEC](../topics/F003-attachment/SPEC.md) / [実装テスト](../tests/test_f003.py) / [検証台帳](../findings/F003-validation.md)。
+
+## F003 GitHub CI 履歴（監査修正前・2026-10-15）
+
+- 実装HEAD: 1512206596ca8939705e6e1ab603e9aa1bbd626d
+- F003 Actions: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190546 — success。Python 3.11で合計44テスト（F001 17、F002 16、F003 11）合格。
+- A〜F正常7run、不正入力8件を拒否、B同条件再実行の生バイト一致。artifact: F003-A-F-evidence（ID 11970235937）。
+- F001既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190562 — success。
+- F002既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190549 — success。
+- 以上は1D理想モデル・ソフトウェアの整合性を示す。実機による結合、エネルギー相互作用、身体創発を示さない。
+- 独立第三者の監査は未了。PR #7の設計レビューと、PR #8の正式採用判断を区別する。
+
+## F003 監査修正後の証拠検証（2026-10-15、実装候補）
+~~~mermaid
+flowchart TD
+  C["設定・数値表現可能性・厳密時間格子"] --> W["F001 stepを再利用する世界更新"]
+  W --> V["全状態・内部力・重心の有限性検査"]
+  V --> S["CSV・イベント・SVGを新規保存"]
+  S --> R["保存済みCSV・イベントを読み戻す"]
+  R --> O["stepを呼ばない独立離散オラクル"]
+  O --> G["全A〜Fゲート・最大誤差・拒否証拠SHA"]
+  G --> P["比較JSONを含む全スイート再実行一致"]
+~~~
+不正状態は保存前に拒否する。スイートは別のsimulate結果を合否根拠にしない。F001依存モジュールSHAも開始時出自に保存する。F002との物理結線とセル制御器は対象外。監査前の未実装・未監査表記は設計時点の履歴。
+
+### F003の採用判断（2026-10-15）
+監査修正・50テスト・A〜F・再現性・CI検証を経て、記載した1D二セル理想リンクの実装を採用する。設計#7はmain統合済み、実装の統合はPR #8で追跡。既存の図・スキーマ・観測境界は不変で、候補・未統合表記は過去時点の履歴。
