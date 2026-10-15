@@ -2,7 +2,7 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
-**現在（2026-10-15）：F001・F002は実装・検証を経てmain統合済み（33テスト、各CI成功）。F003は[設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7)で審査中。機械結合の実装・実験は未実施。**
+**現在（2026-10-15）：F001・F002は実装・検証を経てmain統合済み（33テスト、各CI成功）。F003は[設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7)で審査中。本設計ブランチでは機械結合の実装・実験は未実施。独立視点の設計監査で数値範囲と保存証拠の検証契約を補足済み。後続の実装候補は[PR #8](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/8)で管理。**
 
 ## 入口：どこから読む？
 
