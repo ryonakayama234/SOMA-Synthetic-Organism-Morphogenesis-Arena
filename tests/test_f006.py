@@ -39,9 +39,8 @@ class F006Tests(unittest.TestCase):
             self.assertEqual(manifest["verdict"], "supported")
             audit = audit_suite(folder, build_settings())
             self.assertEqual(audit["integer_residual_uj"], 0)
-            comparison = list(csv.DictReader(
-                (folder / "comparison.csv").open(encoding="utf-8", newline="")
-            ))
+            with (folder / "comparison.csv").open(encoding="utf-8", newline="") as fp:
+                comparison = list(csv.DictReader(fp))
             self.assertEqual(len(comparison), 15)
             self.assertEqual([int(r["spent_uj"]) for r in comparison
                               if r["case_id"] == "C"], [1, 10, 100])
