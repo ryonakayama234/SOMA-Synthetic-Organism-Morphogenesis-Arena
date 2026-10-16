@@ -96,3 +96,52 @@ Mark this feature `observed` only after obtaining successful CI **on the final p
 - 変更はF005検証・テスト・補足記録。`soma/f001.py`〜`soma/f005.py`の運動・費用ロジックは維持。
 
 現行HEADのCI・artifactは[PR #14 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/14/checks)とレビュー完了コメントでSHAを対応づける。上記ローカル結果をCI結果と取り違えない。F005はDraft候補を維持し、正式採用・設計PR #13と実装PR #14のmain統合は未実施。保持/待機消費0、実機電力・F003統合・自律制御は引き続き後続課題。
+
+## 2026-10-16 意味論監査：正式採用範囲の判断材料
+
+対象コードHEAD：`a7d55af699b0de89ff5b7693ac9c14af1fb1a9b1`。GitHubで設計PR #13・実装PR #14はともにDraft/open、#14のレビュー未解決スレッド0、同HEADのF001〜F005全5 workflow成功を再確認。ここで検討するのは「仕様どおり動くか」と別の、研究環境としての意味と誘導である。
+
+### 再現した意味論上の懸念
+
+全ケースm=1kg、drag=0、x0=0、外力は特記以外0。現行の`Config`/`simulate`をPython 3.12.14で実行し、運動・仕事・F002台帳から次を観測した。新しいA〜F事前登録結果には数えず、事後の診断として記録する。
+
+| 診断 | 入力 | 実行結果と意味 |
+|---|---|---|
+| 位置と仕事の軌道 | u=1N,v0=0,h=T=1s,残高1J | x1=1m,v1=1m/s,正仕事0.5J。仕事計算用の速度補間の積分は0.5m。力×保存位置差は1Jで、記録された符号付き仕事0.5Jとは異なる。ΔK=0.5Jとの恒等式は成立するが、同じ位置軌道上の仕事を検証した意味ではない。 |
+| 不足時の全区間棄却 | u=1N,v0=0,T=1s,残高0.4J | h=1s：x=v=0、支出0、残高400000µJ。h=0.5s：x=0.5m,v=0.5m/s、支出125000µJ、残高275000µJ。位置誤差だけでなく、駆動を採用する区間自体が変化する。 |
+| 同じ運動の量子化 | u=1e-6N,f_ext=-u,v0=1m/s,T=1s,残高1000µJ | h=1/0.1/0.01sで速度1・最終位置約1m・総正仕事約1e-6Jを維持しながら、支出は1/10/100µJ。1µJ程度の微小な丸め差が常に無視可能とは言えない。 |
+| 無償保持と残量0の不連続 | u=1N,f_ext=-1N,v0=0,h=1s,T=1000s,残高1µJ | 全1000区間でx=v=0、支出0、残高1µJ。残高0では最初の1秒からuが遮断され、x=-1m,v=-1m/s。無償保持は有限試行で確認し、任意の長さで不変という主張は同じ状態が反復する式からの推論。 |
+| ブレーキの残量境界 | u=-1N,v0=1m/s,h=T=1s | 残高1µJ：v1=0、支出0、残高1。残高0：v1=1、支出0。電池がないとブレーキも無効という現在の有効アクチュエータ定義。 |
+
+簡易再現（リポジトリルート）：
+```python
+from experiments.F005.run_suite import base
+from soma.f005 import Config, simulate
+cases = [
+    dict(motor=1., dt=1.),
+    dict(motor=1., dt=1., battery=400000),
+    dict(motor=1., dt=.5, battery=400000),
+    dict(motor=1., external=-1., dt=1., duration=1000., battery=1),
+    dict(motor=1., external=-1., dt=1., battery=0),
+    dict(motor=-1., velocity=1., dt=1., battery=1),
+    dict(motor=-1., velocity=1., dt=1., battery=0),
+] + [dict(motor=1e-6, external=-1e-6, velocity=1., dt=h, battery=1000)
+     for h in (1., .1, .01)]
+for inputs in cases:
+    cfg = Config.from_dict(base('semantic-diagnostic', **inputs))
+    rows, events, ledger = simulate(cfg)
+    linear_dx = sum(cfg.dt_s*(a['v_m_s']+b['v_m_s'])/2
+                    for a,b in zip(rows, rows[1:]))
+    print(inputs, rows[-1]['x_m'], rows[-1]['v_m_s'],
+          ledger.spent_uj, rows[-1]['balance_uj'], linear_dx)
+```
+
+### 独立数式検算と解釈
+Wolframで位置差の一般式 `h*(v1-v0)/2` を積分から再導出。厳密有理数の候補→費用→受否→速度/位置更新を独立実行して、上の0.4Jの1区間/2区間比較を再現した。同じ総正仕事1µJの分割切上げも1/10/100µJと確認。これはPython観測とは独立の式検算。
+
+さらにf_ext=drag=0の運動量変化はu*h。現行実装に接地や反作用相手の状態はなく、uは**有効な駆動力入力**である。反作用相手がモデルにないこと自体をF005の計算バグとは扱わないが、自由空間の純内部力による自己推進、あるいは接触条件から自律的に移動機能を獲得した証拠とは解釈できない。これは実装境界からの研究上の推論である。
+
+### 採用についての推奨
+正仕事積算・台帳接続という一能力の離散計算部品として、限定的な正式採用・マージを推奨できる。現時点で自律移動・生存・協調/形態の優劣を測る環境全体が成立したとは判定しない。優先する後続検討は、位置/速度/仕事の共通軌道と受否/端数処理の刻み依存、次に対象駆動機構の保持消費と反作用/接触の定義。全機能をF005へ追加するのではなく独立課題に分ける。
+
+この監査は仕様/実行結果の意味を明確化するもので、F001〜F005のコードや過去の証拠は変更していない。**ユーザーによる採否確定・PR #13/#14のマージは未実施。**
