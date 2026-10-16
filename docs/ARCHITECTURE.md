@@ -371,3 +371,20 @@ flowchart LR
 - F006の合格は**診断の正確さ**。dt不変・実機妥当・自律移動の成立とは異なる。部分時間駆動、端数繰越、共通軌道などの修正は後続研究。
 
 [仕様](../topics/F006-timestep-diagnostics/SPEC.md) / [事前A〜F](../experiments/F006/PLAN.md) / [研究記録（未実施）](../findings/F006-validation.md) / [Issue #16](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/16)
+
+
+### F006実装候補の責務境界（設計詳細・未実装）
+
+~~~mermaid
+flowchart TD
+  SET["F006 run_suite.py\n固定条件をdtごとに展開"] --> EXIST["採用済み soma/f005.py\nConfig.from_dict → save_run"]
+  EXIST --> RAW["変更しないF005原本\nconfig / states / events / manifest"]
+  RAW --> V["既存 verify_saved_run\n全行・イベント独立照合"]
+  RAW --> NEW["新規 diagnostics.py\ndt横断の比較と原因候補"]
+  V --> NEW
+  THEORY["独立の有理数・binary64参照\n事前に固定"] --> NEW
+  NEW --> OUT["comparison.csv / diagnostics.json\ncomparison.svg / manifest"]
+  OUT --> F["findings/F006-validation.md\n再現性・反証・採否"]
+~~~
+
+F006は研究者の**後処理**専用。セル制御器や物理エンジン内部に横断比較値を戻さない。表示の補間は可視化に限定し、観測値と区別する。測定不能な寄与は`mixed`・`undetermined`で記録する。実装後のコードと図を必ず同一実装PRで更新する。
