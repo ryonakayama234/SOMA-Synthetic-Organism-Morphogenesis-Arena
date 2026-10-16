@@ -23,6 +23,10 @@ On `feat/F005-positive-work-20261016` (base: Draft design branch) the new F005 i
 - The separate `.github/workflows/f005.yml` runs all prior tests and F005 A–F and uploads raw CSV/ledger/SVG/source/hash/replay artifacts. No autonomous decision, two-cell motor coupling, hardware, or emergence is being claimed.
 
 
+
+### F005 CI初回結果（2026-10-16、実装候補のまま）
+[監査修正済みHEADのF005 Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876548177)は**90 Pythonテスト、10正常対照、17入力拒否、保存CSV独立照合と再実行一致でsuccess**。証拠：[artifact ID 12036090522](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876548177/artifacts/12036090522)。端点パワーを先に掛けると微小仕事が0へアンダーフローする問題を監査で発見・修正し、`findings/F005-validation.md`へ反例と限界を記録した。これは**正式採用・main統合ではない**。
+
 ## 入口：どこから読む？
 
 | 知りたいこと | 読む資料 |
