@@ -99,9 +99,10 @@ def analyze_run(cfg: Config, folder: Path, case: str, index: int) -> tuple[dict,
     event_spend = sum(event["amount_uj"] for event in events)
     positive = math.fsum(r["motor_positive_work_j"] for r in states[1:])
     signed = math.fsum(r["motor_work_j"] for r in states[1:])
-    exact_endpoints = sum(
-        (Fraction(r["motor_positive_work_j"]) for r in states[1:]),
-        Fraction(),
+    # The independent F005 oracle integrates exact rational endpoint powers.
+    # Fraction(saved binary64 work) is NOT the same reference.
+    exact_endpoints = Fraction(
+        checked["quantization"]["exact_endpoint_integral_j"]
     )
     require(event_spend == spend == cfg.initial_balance_uj - final["balance_uj"],
             "integer ledger mismatch")
@@ -149,6 +150,7 @@ def analyze_run(cfg: Config, folder: Path, case: str, index: int) -> tuple[dict,
                                   and r["motor_command_n"] != 0],
         "ideal_positive_work_j": float(exact_endpoints),
         "binary64_endpoint_sum_j": positive,
+        "binary64_work_error_j": checked["quantization"]["binary64_work_error_j"],
         "quantization_excess_uj": checked["quantization"]["exact_rounding_excess_uj"],
         "integer_balance_residual_uj": 0,
     }
@@ -259,6 +261,8 @@ def audit_suite(directory: Path, settings: dict) -> dict:
         require(sha(directory / name) == digest, "suite file sha: " + name)
     require(manifest["suite_sha256"] == sha(directory / "suite_source.py"),
             "suite source hash")
+    require(manifest["suite_sha256"] == sha(Path(__file__).with_name("run_suite.py")),
+            "source snapshot differs from currently audited suite implementation")
     sweep = json.loads((directory / "sweep.json").read_text(encoding="utf-8"))
     require(sweep["schema_version"] == SCHEMA and
             sweep["source_model"] == "f005.v1" and
