@@ -86,3 +86,13 @@ F001（1D運動）、F002（整数µJ台帳）、F003（2セル理想リンク�
 
 ### F004 設計レビュー追記（2026-10-16）
 F004は引き続き**設計段階／実験未実施**。Draft PR #10で2つの設計上の問題を事前修正：①残量0かつ仕事0での内部駆動を禁止（外力は残す）、②数学的理想値とbinary64の各ステップµJ切上げ参照値を区別。Bの計画値は理想500000 µJ・binary64参照499995 µJ、Dは理想55000 µJ・binary64参照54996 µJ。既存F001〜F003は変更しない。仕様・図・データ契約・検証記録はこのPR内で同期。[設計PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)。
+
+## F004 内部モーター駆動と電池残量の連携【2026-10-16 実装候補】
+
+**状態：Draft実装PR #11でコード・自動検証を構築。main未統合、正式採用前。** 上に残る「F004未実装」はPR #10の設計時点の記録であり、当節は実装ブランチ上の現在地。
+
+- [F004実装PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)は[事前登録の設計PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)に積んだPR。両者ともレビューなしにmainへ統合しない。
+- [実装](soma/f004.py) / [テスト](tests/test_f004.py) / [実験実行](experiments/F004/run_suite.py) / [WSL2での再現手順](experiments/F004/README.md)。
+- [システム図](docs/ARCHITECTURE.md#f004-実装候補2026-10-16pr-11正式採用前) / [データ契約](docs/DATA_CONTRACTS.md#f004-実装候補-f004v1-の確定予定スキーマ2026-10-16pr-11) / [仕様・仮説](topics/F004-actuation-energy/SPEC.md) / [初回検証結果・Wolfram独立理論値](findings/F004-validation.md)。
+- [初回CI成功](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901)：Python3.11の全68テスト成功、A〜F 10正常対照・16不正入力拒否、独立CSV検証と全スイート再実行一致。B残高499995µJ/D残高54996µJは実装前に記録したbinary64参照と一致。
+- 既存F001/F002/F003のAPI変更なし。エネルギー制約付き1セル1D運動のみ。F003への結合・細胞の知能・実機・進化・創発の根拠にはならない。
