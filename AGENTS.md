@@ -58,3 +58,8 @@ F003世界真値を将来のセル局所観測へ注入しないこと。F002の
 - The corrected F005 verifier cross-checks an exact Fraction integral of binary64 endpoints and the separately frozen binary64 charging order; never derive integer spend from a different algebraic ordering.
 - The suite now has 13 controls, including ordinary ceil-boundary reversal, endpoint-power underflow and decimal time splitting. Initial candidate-positive work must be null; tiny positive values must not pass a zero-value tamper under an absolute 1e-12 tolerance.
 - Current local result: 93 total tests / 20 optimized F005 tests, 17 rejected inputs, 73-file suite replay. Check final-HEAD CI before claiming CI completion.
+
+
+## F005 limited formal acceptance (2026-10-16)
+User approved adoption and main integration **only** as the 1D single-cell discrete positive mechanical work accountant connected atomically to F002 integer-microjoule ledger. F004 history and APIs remain intact. Preserve [SPEC](topics/F005-positive-work/SPEC.md), [F005 findings](findings/F005-validation.md), A–F evidence and the review correction history. The older proposal/Draft sections describe earlier stages, not current acceptance.
+**Do not infer** physically meaningful travel energy efficiency, timestep-independent motor-budget feasibility, real battery holding costs, or ungrounded propulsion from this acceptance. Position uses semi-implicit Euler, work a velocity interpolant; stepwise ceil and all-or-nothing gating are dt-sensitive; motor is an effective world force with no reaction partner. Do not use F005 as a validated autonomous/survival/morphology benchmark. Next research priority: dt-convergence of energy-gated motion as a *separate* hypothesis/feature. No multi-cell actuation is adopted by this decision.
