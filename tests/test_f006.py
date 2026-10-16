@@ -8,12 +8,14 @@ import math
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
-from soma.f005 import Config
+from soma.f005 import Config, provenance
 from experiments.F006.diagnostics import (
     DTS, REFERENCES, audit_suite, sha,
 )
-from experiments.F006.run_suite import build_settings, identical_files, run
+from experiments.F006.run_suite import build_settings, identical_files, run, run_pair
+from experiments.F006 import run_suite as runner
 
 
 class F006Tests(unittest.TestCase):
@@ -54,14 +56,17 @@ class F006Tests(unittest.TestCase):
                              [2., 2.])
             self.assertTrue(all(d["integer_balance_residual_uj"] == 0
                                 for d in diag["runs"]))
+            self.assertEqual(diag["classification_scope"], "fixed_preregistered_controls_only")
+            self.assertIsNone(diag["causal_attribution"])
+            self.assertEqual(comparison[0]["expected_classification"], "integration")
+            self.assertEqual(comparison[0]["signature_matches_reference"], "True")
+            self.assertNotIn("classification", comparison[0])
 
     def test_byte_replay_all_artifacts(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             # Fix metadata once, just like the public CLI, to exclude host drift.
-            identity = {"git_commit": None, "git_dirty": None,
-                        "f005_sha256": "snapshot", "f001_sha256": "snapshot",
-                        "f002_sha256": "snapshot"}
+            identity = provenance()
             run(root / "first", identity=identity)
             run(root / "second", identity=identity)
             self.assertTrue(identical_files(root / "first", root / "second"))
@@ -161,6 +166,173 @@ class F006Tests(unittest.TestCase):
             target = root / "second" / "A-dt-00" / "states.csv"
             target.write_bytes(target.read_bytes() + b"\n")
             self.assertFalse(identical_files(root / "first", root / "second"))
+
+    def test_suite_metadata_and_reference_tampering_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "run"
+            run(root)
+            manifest_path = root / "manifest.json"
+            original = manifest_path.read_bytes()
+            for key, value in {"source_model": "wrong", "sweep_id": "wrong", "seed": 42,
+                               "git_commit": "0"*40, "git_dirty": 0,
+                               "f005_sha256": "0"*64}.items():
+                with self.subTest(key=key):
+                    m = json.loads(original)
+                    m[key] = value
+                    manifest_path.write_text(json.dumps(m))
+                    with self.assertRaises(ValueError):
+                        audit_suite(root, build_settings())
+            manifest_path.write_bytes(original)
+            sweep_path = root / "sweep.json"
+            sweep_original = sweep_path.read_bytes()
+            for key in ("reference_id", "sweep_id"):
+                with self.subTest(key=key):
+                    sweep = json.loads(sweep_original)
+                    sweep[key] = "wrong"
+                    sweep_path.write_text(json.dumps(sweep))
+                    m = json.loads(original)
+                    m["artifacts"]["sweep.json"] = sha(sweep_path)
+                    manifest_path.write_text(json.dumps(m))
+                    with self.assertRaises(ValueError):
+                        audit_suite(root, build_settings())
+
+    def test_dependency_hash_tampering_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "run"
+            run(root)
+            path = root / "manifest.json"
+            original = path.read_bytes()
+            for source in ("experiments/F006/diagnostics.py", "experiments/F005/run_suite.py"):
+                with self.subTest(source=source):
+                    m = json.loads(original)
+                    m["source_hashes"][source] = "0"*64
+                    path.write_text(json.dumps(m))
+                    with self.assertRaises(ValueError):
+                        audit_suite(root, build_settings())
+
+    def test_run_provenance_cannot_be_hidden_by_resigning_summaries(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "run"
+            run(root)
+            path = root / "A-dt-00" / "manifest.json"
+            run_original = path.read_bytes()
+            for key, value in {"git_commit": "0"*40, "suite_sha256": "0"*64,
+                               "f001_sha256": "0"*64, "model": "wrong"}.items():
+                with self.subTest(key=key):
+                    m = json.loads(run_original)
+                    m[key] = value
+                    path.write_text(json.dumps(m))
+                    dp = root / "diagnostics.json"
+                    diagnosis = json.loads(dp.read_text())
+                    diagnosis["runs"][0]["artifacts"]["manifest.json"] = sha(path)
+                    dp.write_text(json.dumps(diagnosis))
+                    mp = root / "manifest.json"
+                    suite_manifest = json.loads(mp.read_text())
+                    suite_manifest["artifacts"]["diagnostics.json"] = sha(dp)
+                    mp.write_text(json.dumps(suite_manifest))
+                    with self.assertRaises(ValueError):
+                        audit_suite(root, build_settings())
+
+    def test_external_identity_must_be_explicitly_trusted(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "run"
+            external = {**provenance(), "git_commit": "a"*40, "git_dirty": False}
+            # Synthetic external anchor tests the audit API, not execution attestation.
+            run(root, identity=external)
+            with self.assertRaises(ValueError):
+                audit_suite(root, build_settings())
+            result = audit_suite(root, build_settings(), expected_identity=external)
+            self.assertTrue(result["identity_matches_trusted_expectation"])
+            self.assertFalse(result["historical_execution_attested"])
+
+    def test_existing_replay_rejects_before_primary_output(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            replay = root / "replay"
+            replay.mkdir()
+            sentinel = replay / "sentinel"
+            sentinel.write_text("keep")
+            with self.assertRaises(FileExistsError):
+                run_pair(root / "primary", replay)
+            self.assertFalse((root / "primary").exists())
+            self.assertEqual(sentinel.read_text(), "keep")
+            self.assertEqual(sorted(p.name for p in root.iterdir()), ["replay"])
+
+    def test_resolved_paths_and_dangling_symlinks_are_rejected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root / "alias").symlink_to(root, target_is_directory=True)
+            primary = root / "primary"
+            for replay in (root/"alias"/"primary", root/"alias"/"primary"/"child"):
+                with self.subTest(replay=replay), self.assertRaises(ValueError):
+                    run_pair(primary, replay)
+                self.assertFalse(primary.exists())
+            (root / "dangling").symlink_to(root / "absent")
+            with self.assertRaises(FileExistsError):
+                run(root / "dangling")
+            self.assertTrue((root / "dangling").is_symlink())
+            self.assertFalse((root / "absent").exists())
+
+    def test_simulation_and_audit_exceptions_leave_no_published_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for failing in ("save_run", "audit_suite"):
+                with self.subTest(failing=failing):
+                    with patch.object(runner, failing, side_effect=ValueError("injected")):
+                        with self.assertRaises(ValueError):
+                            run_pair(root / "first", root / "second")
+                    self.assertEqual(list(root.iterdir()), [])
+            original = runner.recompute
+            count = 0
+            def fail_second(*args):
+                nonlocal count
+                count += 1
+                if count == 2:
+                    raise ValueError("injected replay calculation failure")
+                return original(*args)
+            with patch.object(runner, "recompute", side_effect=fail_second):
+                with self.assertRaises(ValueError):
+                    run_pair(root / "first", root / "second")
+            self.assertEqual(list(root.iterdir()), [])
+
+    def test_replay_mismatch_leaves_no_published_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            with patch.object(runner, "identical_files", return_value=False):
+                with self.assertRaises(ValueError):
+                    run_pair(root / "first", root / "second")
+            self.assertEqual(list(root.iterdir()), [])
+
+    def test_publication_collision_preserves_other_writer_and_rolls_back_primary(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            first, second = root/"first", root/"second"
+            publish = runner._publish
+            def race(stage, target):
+                if target == second:
+                    target.mkdir()
+                    (target / "sentinel").write_text("other writer")
+                publish(stage, target)
+            with patch.object(runner, "_publish", side_effect=race):
+                with self.assertRaises(FileExistsError):
+                    run_pair(first, second)
+            self.assertFalse(first.exists())
+            self.assertEqual((second / "sentinel").read_text(), "other writer")
+            self.assertEqual(sorted(p.name for p in root.iterdir()), ["second"])
+
+    def test_no_replace_publication_preserves_even_an_empty_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            stage, target = root/"stage", root/"target"
+            stage.mkdir()
+            (stage/"evidence").write_text("new")
+            target.mkdir()
+            original_inode = target.stat().st_ino
+            with self.assertRaises(FileExistsError):
+                runner._publish(stage, target)
+            self.assertEqual(target.stat().st_ino, original_inode)
+            self.assertEqual(list(target.iterdir()), [])
+            self.assertEqual((stage/"evidence").read_text(), "new")
 
 
 if __name__ == "__main__":

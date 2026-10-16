@@ -12,16 +12,27 @@ import io
 import json
 import math
 from pathlib import Path
+import re
 
 from experiments.F005.run_suite import read_rows, verify_saved_run
-from soma.f005 import Config, EVENT_COLUMNS, STATE_COLUMNS
+from soma.f005 import Config, EVENT_COLUMNS, STATE_COLUMNS, provenance
 
-SCHEMA = "f006.v1"
+SCHEMA = "f006.v2"
+SWEEP_ID = "F006-A-E-v2"
+REFERENCE_ID = "Wolfram-exact-fractions-2026-10-16"
+IDENTITY_KEYS = ("git_commit", "git_dirty", "f001_sha256", "f002_sha256", "f005_sha256")
+ROOT = Path(__file__).resolve().parents[2]
+SOURCE_PATHS = (
+    "experiments/F006/run_suite.py", "experiments/F006/diagnostics.py",
+    "experiments/F005/run_suite.py", "soma/__init__.py",
+    "soma/f001.py", "soma/f002.py", "soma/f005.py",
+    "experiments/F006/PLAN.md", "topics/F006-timestep-diagnostics/SPEC.md",
+)
 COLUMNS = (
     "case_id", "dt_s", "steps", "final_x_m", "final_v_m_s",
     "positive_work_j", "signed_work_j", "spent_uj", "balance_uj",
     "accepted_steps", "rejected_steps", "reference_x_m", "reference_v_m_s",
-    "reference_type", "classification", "verdict",
+    "reference_type", "expected_classification", "signature_matches_reference", "verdict",
 )
 
 # Independent, preregistered exact-rational discrete references from Wolfram.
@@ -64,6 +75,24 @@ def require(condition: bool, message: str) -> None:
 
 def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def source_hashes() -> dict:
+    """The auditor's trusted checkout, not values supplied by saved evidence."""
+    return {name: sha(ROOT / name) for name in SOURCE_PATHS}
+
+
+def validate_identity(identity: dict) -> None:
+    require(isinstance(identity, dict) and set(identity) == set(IDENTITY_KEYS),
+            "identity fields")
+    commit, dirty = identity["git_commit"], identity["git_dirty"]
+    require((commit is None and dirty is None) or
+            (isinstance(commit, str) and re.fullmatch(r"[0-9a-f]{40}", commit) is not None
+             and type(dirty) is bool), "git identity types")
+    sources = source_hashes()
+    for feature in ("f001", "f002", "f005"):
+        require(identity[feature + "_sha256"] == sources["soma/" + feature + ".py"],
+                "identity source differs from trusted checkout: " + feature)
 
 
 def json_bytes(value: object) -> bytes:
@@ -126,10 +155,12 @@ def analyze_run(cfg: Config, folder: Path, case: str, index: int) -> tuple[dict,
         "accepted_steps": accepted, "rejected_steps": rejected,
         "reference_x_m": ref_x, "reference_v_m_s": ref_v,
         "reference_type": "discrete_exact_fraction",
-        "classification": CLASSES[case], "verdict": "supported",
+        "expected_classification": CLASSES[case],
+        "signature_matches_reference": True, "verdict": "supported",
     }
     detail = {
-        "case_id": case, "dt_s": cfg.dt_s, "classification": CLASSES[case],
+        "case_id": case, "dt_s": cfg.dt_s, "expected_classification": CLASSES[case],
+        "signature_matches_reference": True,
         "verdict": "supported",
         "reference": {"type": "discrete_exact_fraction",
                       "source": "Wolfram preregistration",
@@ -189,26 +220,29 @@ def classify_sweeps(records: list[dict]) -> dict:
     return {
         "schema_version": SCHEMA,
         "source_model": "f005.v1",
+        "classification_scope": "fixed_preregistered_controls_only",
+        "causal_attribution": None,
+        "causal_attribution_note": "No general causal classifier. B also retains Euler position error.",
         "reference_notes": [
             "The Wolfram fractions are exact references for the discrete model.",
             "They are not observations or proof of continuous physical accuracy.",
             "CSV float values are Python binary64 observations verified separately.",
         ],
         "comparisons": {
-            "A": {"classification": "integration", "errors_m": a_errors,
+            "A": {"expected_classification": "integration", "signature_matches_reference": True, "errors_m": a_errors,
                   "reference_continuous_x_m": .5,
                   "observed_error_ratios": [a_errors[0]/a_errors[1],
                                             a_errors[1]/a_errors[2]]},
-            "B": {"classification": "budget_gate",
+            "B": {"expected_classification": "budget_gate", "signature_matches_reference": True,
                   "accepted_counts": [r["accepted_steps"] for r in b],
                   "rejected_counts": [r["rejected_steps"] for r in b]},
-            "C": {"classification": "quantization",
+            "C": {"expected_classification": "quantization", "signature_matches_reference": True,
                   "spent_uj": [r["spent_uj"] for r in c],
                   "positive_work_j": [r["positive_work_j"] for r in c]},
-            "D": {"classification": "positive_work",
+            "D": {"expected_classification": "positive_work", "signature_matches_reference": True,
                   "positive_work_j": [r["positive_work_j"] for r in d],
                   "signed_work_j": [r["signed_work_j"] for r in d]},
-            "E": {"classification": "external_only",
+            "E": {"expected_classification": "external_only", "signature_matches_reference": True,
                   "spent_uj": [r["spent_uj"] for r in e]},
         },
         "verdict": "supported",
@@ -249,10 +283,23 @@ def recompute(directory: Path, settings: dict) -> tuple[list[dict], dict]:
     return records, diagnosis
 
 
-def audit_suite(directory: Path, settings: dict) -> dict:
-    """Audit source files AND diagnostics, including post-hash semantic tampering."""
+def audit_suite(directory: Path, settings: dict, *, expected_identity: dict | None = None) -> dict:
+    """Pin identity from the trusted checkout or an EXTERNAL CI record, never this manifest.
+
+    This proves consistency with that trust anchor, not who historically executed code.
+    """
+    identity = provenance() if expected_identity is None else dict(expected_identity)
+    validate_identity(identity)
     manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     require(manifest["schema_version"] == SCHEMA, "suite schema")
+    require(manifest["source_model"] == "f005.v1" and
+            manifest["sweep_id"] == SWEEP_ID and manifest["seed"] is None,
+            "suite model / sweep / seed")
+    recorded_identity = {key: manifest[key] for key in IDENTITY_KEYS}
+    validate_identity(recorded_identity)
+    require(recorded_identity == identity,
+            "suite identity differs from trusted expectation")
+    require(manifest["source_hashes"] == source_hashes(), "dependency source hashes")
     hashes = manifest["artifacts"]
     require(set(hashes) == {"sweep.json", "suite_source.py", "comparison.csv",
                             "diagnostics.json", "comparison.svg"},
@@ -265,9 +312,24 @@ def audit_suite(directory: Path, settings: dict) -> dict:
             "source snapshot differs from currently audited suite implementation")
     sweep = json.loads((directory / "sweep.json").read_text(encoding="utf-8"))
     require(sweep["schema_version"] == SCHEMA and
+            sweep["sweep_id"] == SWEEP_ID and
+            sweep["reference_id"] == REFERENCE_ID and
             sweep["source_model"] == "f005.v1" and
             sweep["seed"] is None and
             sweep["runs"] == settings, "sweep run identity")
+    for key in settings:
+        run_manifest = json.loads((directory / key / "manifest.json").read_text(encoding="utf-8"))
+        recorded_run_identity = {name: run_manifest[name] for name in IDENTITY_KEYS}
+        validate_identity(recorded_run_identity)
+        require(recorded_run_identity == identity,
+                "run identity differs from suite: " + key)
+        require(run_manifest["suite_sha256"] == manifest["suite_sha256"],
+                "run suite source differs: " + key)
+        require(run_manifest["model"] == "1d_battery_limited_motor_ideal" and
+                run_manifest["seed"] is None and
+                run_manifest["integration"] ==
+                "semi_implicit_euler; midpoint_signed_work; linear_velocity_positive_work",
+                "run model metadata: " + key)
     records, diagnosis = recompute(directory, settings)
     require((directory / "comparison.csv").read_bytes() == csv_bytes(records),
             "comparison CSV mismatches independently recomputed evidence")
@@ -284,4 +346,5 @@ def audit_suite(directory: Path, settings: dict) -> dict:
             require(sha(folder / file) == digest, "raw artifact checksum")
     return {"runs": len(records), "verdict": diagnosis["verdict"],
             "per_step_independent_oracle": True, "cross_dt_recomputed": True,
-            "integer_residual_uj": 0}
+            "integer_residual_uj": 0, "identity_matches_trusted_expectation": True,
+            "historical_execution_attested": False}

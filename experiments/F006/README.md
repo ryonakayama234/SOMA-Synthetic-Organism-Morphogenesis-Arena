@@ -1,4 +1,4 @@
-# F006 — time-step dependence diagnostics (implementation candidate, not adopted)
+# F006 — fixed-control timestep diagnostics (v2 candidate, not adopted)
 
 ## Scope
 
@@ -13,7 +13,7 @@ electrical consumption, test multicellular assembly, or prove emergence.
 
 ## WSL2/Linux commands
 
-From the repository root, Python 3.11:
+From the repository root, Linux/WSL2 and Python 3.11 or 3.12:
 
     python -m unittest discover -s tests -v
     python -O -m unittest discover -s tests -p test_f005.py -v
@@ -23,7 +23,7 @@ From the repository root, Python 3.11:
 Output paths must be unused and disjoint. Evidence files are not overwritten.
 A successful CLI prints:
 
-    {"diagnosis": "supported", "independent_saved_log_audit": true, "replay_bytes_identical": true, "runs": 15, "schema_version": "f006.v1"}
+    {"diagnosis": "supported", "independent_saved_log_audit": true, "replay_bytes_identical": true, "runs": 15, "schema_version": "f006.v2"}
 
 The status is the outcome of this frozen set of diagnostic controls, **not**
 a generic convergence guarantee.
@@ -46,15 +46,23 @@ ledger/events.csv, motion_energy.svg and manifest.json. Each has its own hashes
 and F005 source provenance. The F006 suite additionally emits:
 
 - sweep.json (15 complete, frozen f005.v1 configs; seed=null);
-- comparison.csv (observed and discrete reference values);
+- comparison.csv (observed and discrete reference values, expected_classification,
+  signature_matches_reference);
 - diagnostics.json (cross-dt diagnosis and original artifact hashes);
 - comparison.svg (display only, not numeric evidence);
 - suite_source.py (exact runner source copy);
-- manifest.json (suite hashes and provenance).
+- manifest.json (suite hashes, source_hashes for the nine trusted dependency/
+  reference paths, and pinned suite/run identity).
 
-The replay directory produces the same complete file tree. The suite refuses
-an existing output directory and independently rebuilds all summaries from
-saved files. The comparison and diagnostic files are themselves audit targets.
+The replay directory produces the same complete file tree. The suite refuses existing outputs (including dangling symlinks), resolves both
+paths before disjointness checks, and independently rebuilds all summaries from
+saved files. It generates both suites in private sibling staging directories,
+audits them and compares every byte before no-replace publication. Ordinary
+exceptions roll back only outputs published by this invocation; existing and
+concurrently created paths are preserved. Empty newly created parent directories
+may remain. Linux renameat2 is required; unsupported platforms fail without
+publishing evidence. Two directory renames are not crash-atomic as a pair: an
+uncatchable crash between renames may leave the complete audited primary only. The comparison and diagnostic files are themselves audit targets.
 
 ## Research status
 
@@ -62,3 +70,36 @@ Implementation PR #18 is a draft stacked on design PR #17; neither is adopted
 or merged to main. GitHub Actions F006 runs all historical regressions, optimized
 Python oracle tests, 15 sweeps plus replay, and uploads source evidence. A
 separate research audit and formal adoption decision are required.
+
+## v2 trust and interpretation contract (2026-10-17)
+
+The v2 schema intentionally rejects historical v1 artifacts; preserve those in
+their original archive. Numeric A-E references are unchanged. The auditor compares
+source_hashes to its trusted checkout, including diagnostics.py, the reused F005
+saved-file oracle, simulator sources, and reference PLAN/SPEC. It checks suite
+model/sweep/seed/reference IDs and all run provenance against an independent
+expected identity, not against expectations copied from the manifest.
+
+By default audit_suite(directory, build_settings()) pins provenance from the
+auditor's checkout. For an archived CI artifact, first check out its audited
+source revision, then pass expected_identity from independently inspected CI
+checkout logs (the PR merge SHA can differ from its head SHA):
+
+    from soma.f005 import provenance
+    from experiments.F006.diagnostics import audit_suite
+    from experiments.F006.run_suite import build_settings
+    expected = provenance()
+    expected.update(git_commit=ci_checkout_sha, git_dirty=False)
+    audit_suite(directory, build_settings(), expected_identity=expected)
+
+Never read the expected identity or settings from the evidence being audited.
+The optional run/run_pair identity is also a trusted caller input frozen before
+any staging; it must use actual source hashes. Null Git fields mean unknown
+origin. A successful audit proves consistency with this trust anchor and the
+saved numeric evidence; it does not attest who historically executed the code.
+
+Labels are preregistered expected_classification values. Observed numeric
+signatures and signature_matches_reference are separate. causal_attribution is
+null, with a reason: this is a fixed-control verification suite, not a general
+causal classifier. B retains Euler position error alongside battery gating.
+A reference mismatch raises an exception before publication.

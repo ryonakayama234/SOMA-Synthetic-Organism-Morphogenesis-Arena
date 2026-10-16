@@ -68,8 +68,14 @@ User approved adoption and main integration **only** as the 1D single-cell discr
 F001〜F005の採用範囲を維持。次は`topics/F006-timestep-diagnostics/SPEC.md`の**時間刻み差分診断**という一能力のみ。Issue #16。設計ブランチの提案を採用済みと混同しない。既存F005は変更しない。`experiments/F006/PLAN.md`でWolframの理論値と未実施のSOMA実測を明確に分離する。実装時には同一PRでコード・テスト・システム図・データ契約・findings・READMEを同期し、独立監査とユーザー判断までmainに統合しない。
 
 
+### F006 v2独立監査後の改訂方針（2026-10-17）
+SPECのv2改訂節を旧入力/分類案より優先する。既存F005は不変。出自の期待値は信頼するcheckout/外部CIから得て、診断本体・再利用oracleもhash対象とする。公開前stage/replay監査、例外rollbackを実装し、2パスのcrash原子性は主張しない。固定対照の事前ラベルと観測signatureを分け、一般的な原因推論へ拡張しない。旧v1データを上書きしない。
+
 ### F006 実装担当への追加ルール（2026-10-16）
 F006は後処理のdt横断診断器。既存の`soma/f005.py`と歴史的証拠を修正しない。既存の保存ログ独立検証器を利用しても、クロスdtの参照・原因分類は別に検査する。A〜Fの有理数参照とbinary64参照を混同しない。F006はモデルのdt不変性を証明しない。詳細はF006 SPEC末尾のG1〜G5採用ゲート、実験PLAN、図、データ契約。設計と実測を区別し、採否判断前にmain統合しない。
 
 ### F006実装候補の取り扱い（2026-10-16）
 実装Draft [PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)は設計Draft PR #17に積む。現段階は未採用。F006 A〜Eは15run、Fはテスト側の改変・入力拒否・完全再生。ソフトウェアの`supported`を時間刻み非依存性、実機物理、生存、自律性や身体創発の証拠としない。最終HEAD CI・別視点監査・ユーザーによる採否決定まで`main`にマージしない。
+
+### F006 v2修正候補の監査入口（2026-10-17）
+現行実装PR #18はv2契約（SPECの改訂節を最優先）。通常/最適化の負例、3.11/3.12 CI、15run/81ファイル再生を検査する。audit_suiteのexpected_identityは外部CIや信頼するcheckoutから得る。未信頼manifestから自己検証用の期待値を作らない。独立レビュー後の修正を当人が検証したことと、別レビュアーによる再審査完了を混同しない。

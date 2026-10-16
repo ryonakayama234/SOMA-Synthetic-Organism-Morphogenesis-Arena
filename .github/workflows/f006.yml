@@ -7,13 +7,16 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
     permissions:
       contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: ${{ matrix.python-version }}
       - name: F001-F005 regression and F006 unit/adversarial tests
         run: python -m unittest discover -s tests -v
       - name: Independent oracles remain active under optimized Python
@@ -26,7 +29,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: F006-A-E-evidence
+          name: F006-A-E-evidence-py${{ matrix.python-version }}
           path: |
             runs/F006-ci/
             runs/F006-replay/
