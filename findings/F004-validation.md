@@ -2,13 +2,13 @@
 id: FIND-F004
 title: F004 内部駆動と残量の実験記録
 kind: experiment_finding
-status: not_run
+status: implementation_candidate_initial_ci_pass
 updated: 2026-10-16
 feature: F004
 issue: 9
 ---
 
-# F004 検証記録【未実装・未実験・未採用】
+# F004 検証記録【設計時の事前予測・初回実装結果・正式採用前】
 
 - **対象**：1セル1D内部モーター力による正の仕事の消費と電池不足時の駆動抑止。
 - **中心仮説**：H004（[SPEC](../topics/F004-actuation-energy/SPEC.md)）。
@@ -47,3 +47,16 @@ Wolfram Languageで離散運動と台形仕事の代数恒等式の残差0、お
 3. モーター仕事のみを課金する理想モデルは、残量が正でも静止トルクで電力を消費しない。実機の電気的損失や保持電力は**未モデル化**。試験成功を実機の物理妥当性と同一視しない。
 
 判定：**設計監査の指摘と対処案を記録。F004実装・CI実験・独立実装監査・正式採用は依然未実施。**
+
+## 2026-10-16 初回実装・CI実測（PR #11：まだ正式採用前）
+
+**初回実装コミット**：\`8026f19194b54d609505feacf230e593af58ac55\`（追加ドキュメント・監査修正前）。GitHub Actions \`38829244901\` の **F004 verify = success**、既存F001/F002/F003のworkflowも同HEADでsuccess。
+
+- Python 3.11：\`python -m unittest discover -s tests -v\` **68 tests / OK**（既存50＋F004 18）。F004 A〜F \`python -m experiments.F004.run_suite --output-dir runs/F004-ci --replay-output-dir runs/F004-replay\` 完了。
+- 保存CSV独立検算：正常10ケース、全ステップの力・状態・候補仕事・µJ量子化・支出イベント参照・F002保存残差0。無効入力16件はrun保存前に拒否。B同一設定と全スイートのバイト再実行照合パス。
+- 観測：A x=0.55m, v=1m/s, balance=1000000µJ（外力のみ）；B x=0.55m, v=1m/s, balance=**499995µJ**；C x=0,v=0,balance=0；D x=0.49m,v=0.7m/s,balance=**54996µJ**；E x=0.45m,v≈0,balance=1000000µJ。事前binary64の参照と一致。理想有理数の B=500000/D=55000 との差は設計段階で記録済み。
+- F：電池0かつu=1N,外力=-1Nで適用モーター力0、最初のステップv=-0.1m/s,x=-0.01m。残高1µJでゼロ仕事の理想モーター駆動は無料（実モーターを再現しない）。微小仕事は1µJへ切上げ。dt減少でF001数値誤差が減少。外力・抵抗を含む機械エネルギー恒等式残差は指定範囲内。
+- **独立数式参照**：Wolfram Language 2026-10-16 実行結果：離散運動エネルギー恒等式の記号残差0、有理数A=(11/20m,1m/s,1000000µJ)、B=(11/20m,1m/s,500000µJ)、C=(0,0,0)、D=(49/100m,7/10m/s,55000µJ)、E=(9/20m,0,1000000µJ)。これは**理論参照**であり、F004の実行結果ではない。
+- **監査上の改善**：Eではモーターを10回適用しても支出イベント0。初回比較実装にあった\`motor_steps\`（実際は支出回数）の曖昧な指標を、修正コミット\`3739a125b4b2bb1be08d86c03fc200fbd68e66e6\`で**\`applied_motor_steps\`と\`spend_event_count\`に分離**。改訂HEADのCIは再確認対象。
+- [初回GitHub Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901) / [artifact 12015824529](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901/artifacts/12015824529)。そのartifactには\`runs/F004-ci/\`と\`runs/F004-replay/\`に計117ファイル、生成条件とSHA付きの生ログ・図・比較値がある。
+- **結果判定**：A〜Fのソフトウェアモデルに関する事前仮説を初回証拠は支持。一方、連続物理・モーター損失・実機・自己組織化・生存は**未検証**。最新HEADのCIと独立設計監査、ユーザーの採否判断までは**正式採用不可**。
