@@ -47,3 +47,9 @@ F003世界真値を将来のセル局所観測へ注入しないこと。F002の
 - F001〜F004は正式採用済み。F004の速度反転・正味区間仕事相殺は**既知のモデル制約**であり、バグの修正が実装済みという意味ではない。
 - F005は区間内の正のモーター仕事積算のみを対象とする提案。[Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12) → [SPEC](topics/F005-positive-work/SPEC.md) → [A〜F計画](experiments/F005/PLAN.md) → [F005未実施記録](findings/F005-validation.md)の順に読む。
 - 図は`docs/ARCHITECTURE.md`、スキーマ案は`docs/DATA_CONTRACTS.md`のF005節を参照。F005はF004の既存API・証拠を改変しない別版とし、2セル・学習・生存は後続。仕様PRと実装PRを分け、最新の生ログ・独立参照・CI・監査と採否判断を混同しない。
+
+## F005 implementation candidate instructions (2026-10-16)
+- Candidate feature branch `feat/F005-positive-work-20261016` adds `soma/f005.py` and `f005.v1`. The main branch and F004 `f004.v1` are NOT changed; F005 is not yet adopted.
+- Inspect `topics/F005-positive-work/SPEC.md` → `experiments/F005/PLAN.md` → `soma/f005.py` → `tests/test_f005.py` → `experiments/F005/run_suite.py` → `findings/F005-validation.md`. Verify CI **final HEAD** and saved raw CSV independent checks before claiming an observed result.
+- Signed midpoint work explains kinetic energy; integrated positive work governs ideal battery spend. Do not conflate them and never expose simulation world truth as learned cell observation.
+- Carry forward failed tests and reviewer findings. Do not merge design and implementation PRs or call F005 'adopted' before the explicit research acceptance gate.
