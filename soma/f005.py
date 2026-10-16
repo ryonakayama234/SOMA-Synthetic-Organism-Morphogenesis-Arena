@@ -154,21 +154,25 @@ def positive_motor_work(u: float, v0: float, v1: float, h: float) -> float:
     _check_finite(u=u, v0=v0, v1=v1, h=h)
     if h <= 0:
         raise ValueError("step duration must be positive")
-    p0, p1 = u * v0, u * v1
-    _check_finite(p0=p0, p1=p1)
-    if p0 <= 0 and p1 <= 0:
+    # Determine power sign from velocity and command DIRECTION, avoiding
+    # premature u*v underflow to zero (which would otherwise grant free motion).
+    if u == 0:
         return 0.0
-    if p0 >= 0 and p1 >= 0:
+    orientation = 1.0 if u > 0 else -1.0
+    a, b = orientation * v0, orientation * v1
+    if a <= 0 and b <= 0:
+        return 0.0
+    if a >= 0 and b >= 0:
+        # Preserve F004's binary64 midpoint-work order on nonreversing steps.
         work = (u * h) * ((v0 + v1) / 2)
     else:
-        pos = max(p0, p1)
-        neg = -min(p0, p1)
-        scale = max(pos, neg)
-        alpha = (pos / scale) / ((pos / scale) + (neg / scale))
-        work = ((pos * h) * alpha) / 2
+        positive, negative = max(a, b), -min(a, b)
+        scale = max(positive, negative)
+        alpha = (positive / scale) / ((positive / scale) + (negative / scale))
+        work = ((abs(u) * h) * positive) * alpha / 2
     _check_finite(positive_motor_work=work)
-    if work < 0:
-        raise ValueError("positive motor work cannot be negative")
+    if work < 0 or (work == 0 and (a > 0 or b > 0)):
+        raise ValueError("positive motor work became negative or underflowed")
     return work
 
 
