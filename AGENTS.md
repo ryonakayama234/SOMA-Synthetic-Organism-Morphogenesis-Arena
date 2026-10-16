@@ -70,3 +70,6 @@ F001〜F005の採用範囲を維持。次は`topics/F006-timestep-diagnostics/SP
 
 ### F006 実装担当への追加ルール（2026-10-16）
 F006は後処理のdt横断診断器。既存の`soma/f005.py`と歴史的証拠を修正しない。既存の保存ログ独立検証器を利用しても、クロスdtの参照・原因分類は別に検査する。A〜Fの有理数参照とbinary64参照を混同しない。F006はモデルのdt不変性を証明しない。詳細はF006 SPEC末尾のG1〜G5採用ゲート、実験PLAN、図、データ契約。設計と実測を区別し、採否判断前にmain統合しない。
+
+### F006実装候補の取り扱い（2026-10-16）
+実装Draft [PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)は設計Draft PR #17に積む。現段階は未採用。F006 A〜Eは15run、Fはテスト側の改変・入力拒否・完全再生。ソフトウェアの`supported`を時間刻み非依存性、実機物理、生存、自律性や身体創発の証拠としない。最終HEAD CI・別視点監査・ユーザーによる採否決定まで`main`にマージしない。
