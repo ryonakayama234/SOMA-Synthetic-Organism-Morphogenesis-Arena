@@ -42,3 +42,16 @@ issue: 12
 実装前に一定力・端点速度の線形補間に対する`Integrate[Max[0,u*(v0+(v1-v0)*t/h)],{t,0,h}]`を独立評価。反転A：`W_signed=0, W_plus=1/2 J`、通常加速C：`1/2, 1/2 J`、制動D：`-1/2, 0 J`、外力のみE：`0, 0 J`、0.5秒×2の反転F：`W_plus=0+1/2 J`、非対称反転：`W_signed=4, W_plus=9/2 J`。2分割正仕事と1分割正仕事が同じことも検算。
 
 上記は**理論・事前予測**のみであり、F005 Python実装・CI・artifact・GitHub main統合・採用判断の証拠ではない。F004既存のモデルとF001の位置積分誤差を混同しない。定量ゲートは[仕様](../topics/F005-positive-work/SPEC.md)と[A〜F計画](../experiments/F005/PLAN.md)の2026-10-16追記に記録。
+
+## 2026-10-16 Implementation candidate (not yet independently validated in CI)
+
+An implementation branch contains the new single-cell module `soma/f005.py`, `tests/test_f005.py`, A–F suite `experiments/F005/run_suite.py`, instructions, `.github/workflows/f005.yml`, synchronized architecture and data-contract sections. This is **code availability only**, not an observed result or formal adoption.
+
+### Implementation boundary
+- F004 `f004.v1` and F001/F002/F003 are left unchanged.
+- The new `f005.v1` contract adds candidate/accepted positive motor work, separately preserving signed midpoint work.
+- The A–F saved-file independent oracle, tampering, microjoule rounding, and whole-suite byte replay are programmed for CI.
+- Pending: GitHub Actions status for the exact implementation HEAD, immutable artifact hashes, independent review, any failed cases and corrective changes.
+
+### Quality gate
+Mark this feature `observed` only after obtaining successful CI **on the final proposed HEAD** and independently inspecting tests/results. Preserve error reports and failed iterations. Do not treat the earlier Wolfram rational reference as SOMA output.
