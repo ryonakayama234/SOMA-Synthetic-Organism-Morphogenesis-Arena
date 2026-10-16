@@ -309,3 +309,6 @@ step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,can
 - 初期行（step_index=0）の`motor_work_j`、`external_work_j`、`drag_work_j`、`kinetic_delta_j`、`mechanical_residual_j`はすべて厳密0。初期速度が非0でも区間仕事・エネルギー**差**なので0とする。
 - `manifest.artifacts`のキーは`config.json`、`states.csv`、`ledger/events.csv`、`motion_energy.svg`の4つと厳密一致させる。空・欠落・余分な一覧を拒否し、すべてのSHA256を照合する。hash一致と独立の意味検証は別の条件であり、hashが更新されても初期行異常を許可しない。manifest自体の真正性を保証する署名方式ではない。
 - SVGは有限値の時間比と正規化した状態範囲から座標を計算する。大きい有限状態でも座標を`inf`/`nan`にしない。CSVの物理値や仕事のbinary64演算順序は変更しない。
+
+### F004 採用決定（2026-10-16）
+ユーザーの指示で`f004.v1`を正式採用。設計PR #10は先に統合済み、実装・採用記録はPR #11で統合する。採用による列・型・演算順序・既存APIの変更なし。仕事は区間の符号付き仕事であり、速度反転をまたぐ場合も正負を相殺した**後**の正部分を課金する。区間内の正の仕事だけを積分した電力費用とは異なる。`accepted_nonpositive_work`で適用モーター力非0・支出0があり得る。保持/待機消費と実モーター損失は未モデル化。[反転の実行例と後続課題](../findings/F004-validation.md#2026-10-16-採用判断と統合)。

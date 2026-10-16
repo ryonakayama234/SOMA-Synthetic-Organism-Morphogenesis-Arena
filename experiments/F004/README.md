@@ -28,3 +28,6 @@ Reference: [F004 specification](../../topics/F004-actuation-energy/SPEC.md), [A-
 
 ## Review hardening (2026-10-16)
 All Config constructors validate inputs, including direct construction and `dataclasses.replace`. The exact decimal time ratio must remain unchanged after float normalization; unrepresentable grids are rejected rather than truncated. Plot coordinates normalize before large products/subtractions. The saved-run verifier requires the exact four-artifact inventory and checks zero work/energy delta at the initial row independently of updated CSV hashes. Existing A-F predictions and the binary64 motor-work formula are unchanged. See the finding log for review counterexamples and current validation evidence.
+
+## Adoption (2026-10-16)
+The user authorized formal adoption and merging of the one-cell 1D discrete ideal model. Design PR #10 is merged; implementation and adoption records are integrated through PR #11. Earlier candidate/Draft language records the historical review stage. No physics, cost formula, schema, or preregistered baseline changes accompany adoption. See the [adoption decision and limitations](../../findings/F004-validation.md#2026-10-16-採用判断と統合), including free holding/braking, interval-work cancellation across velocity reversal, and timestep-dependent microjoule rounding.

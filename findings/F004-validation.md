@@ -2,13 +2,15 @@
 id: FIND-F004
 title: F004 内部駆動と残量の実験記録
 kind: experiment_finding
-status: implementation_candidate_review_fixed_local_pass
+status: observed
 updated: 2026-10-16
 feature: F004
 issue: 9
 ---
 
-# F004 検証記録【設計時の事前予測・初回実装結果・正式採用前】
+# F004 検証記録【実装・検証済み／2026-10-16 採用決定】
+
+最新の採用判断は末尾を参照。以下の「未実施」「正式採用前」は各時点の履歴として保持する。
 
 - **対象**：1セル1D内部モーター力による正の仕事の消費と電池不足時の駆動抑止。
 - **中心仮説**：H004（[SPEC](../topics/F004-actuation-energy/SPEC.md)）。
@@ -80,3 +82,13 @@ Wolfram Languageで離散運動と台形仕事の代数恒等式の残差0、お
 - 修正後コードSHA256：F004=`f841a49b364750672f427c8a614b71ec0e45656e9bb50eafa0cc57ba7d63ef12`、suite=`77e52bac4c172b635c54725ececa01a04e9540ae68c1312006da057a1287d843`。GitHubでの最新コミットのCI結果・artifactは[PR #11 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11/checks)で確認する。上記ローカル検証と過去HEADのCIを同一視しない。
 
 **判定**：4件は修正と反例試験で解消。A〜Fの通常条件について物理・費用式と観測値は変えていない。保存hashは整合性確認であり、manifestごと書き換える攻撃に対する署名ではない。F001/F002/F003のAPIは変更なし。PR #10→#11の依存順とDraftを維持し、main統合・正式採用はユーザーの判断に残す。
+
+## 2026-10-16 採用判断と統合
+
+ユーザーが設計PR #10・実装PR #11の正式採用とマージを指示した。設計PR #10は先にmainへ統合済み（`d4b1c8bffe9c0e0cd4c5e47aab8b8db27cd0b012`）。実装と本採用記録は[PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)で統合する。
+
+- 実装監査済み`142e810ba61a0e9c141d5971fa6e7b1c4b18e9a3`でF001/F002/F003/F004 CIすべてsuccess。[F004 CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38840628591)のログで73 tests、10対照、17拒否、全再実行一致を確認。[117ファイルの保存証拠](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38840628591/artifacts/12021411127)。本追記後の現行HEAD・mainのCIは[Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11/checks)で区別して確認する。
+- **採用範囲**：1セル1Dの正の離散区間仕事と整数µJ台帳・残量依存駆動の接続。保存会計とソフトウェアの再現性を支持する。
+- **今回追加で実行確認した制約**：m=1、u=-2、外力=抵抗=0、初速+1、dt=duration=1、初期残量1 µJで、終速-1、候補/適用仕事0、支出0、残量1、`accepted_nonpositive_work`。速度反転をまたぐ粗い刻みで正負の仕事が相殺される。現仕様に整合するが、連続無回生モーターの再加速費用を再現しない。
+- **後続課題**：自律制御の省エネルギー最適化・生存実験に進む前に、反転時刻での分割または区間内の正仕事積分を別仕様で比較する。保持/待機電力・効率・損失、dt依存の積分誤差とµJ切上げ差、F003との統合も持ち越す。
+- 実機・学習・身体創発の証拠には昇格させない。今回の採用処理に伴う変更は文書のみで、事前値とコードの演算順序は維持する。

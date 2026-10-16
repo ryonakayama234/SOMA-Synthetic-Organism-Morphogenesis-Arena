@@ -2,7 +2,7 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
-**現在（2026-10-15）：F001/F002/F003は実装・検証済み。F003は独立視点の監査で3件を修正し、50テスト、A〜F、10拒否例、比較JSONを含む全証拠の再実行一致とCIが成功。採用範囲は「1D・二セル・理想機械リンクの結合／切断」。設計PR #7はmain統合済み、実装の統合は[PR #8](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/8)で追跡。証拠は[検証ノート](findings/F003-validation.md)を参照。**
+**現在（2026-10-16）：F001〜F003に加え、F004の「電池残量に制約された1セル1D内部駆動」を実装・検証済みとして正式採用。73テスト、A〜Fの10対照、17拒否例、保存証拠の独立照合と再実行一致、CIを確認。設計[PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)を先に統合し、実装と採用記録は[PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)で統合する。[F004検証記録](findings/F004-validation.md#2026-10-16-採用判断と統合)を参照。**
 
 ## 入口：どこから読む？
 
@@ -14,7 +14,7 @@
 | 仮説→実験→改善の進め方 | [研究運営](docs/RESEARCH_PROCESS.md) |
 | 最初の一機能 | [F001：単一セルの運動](topics/F001-single-cell-motion/SPEC.md)（実装・初回検証済み） |
 | F001の実験結果 | [初回検証ノート](findings/F001-validation.md) / [再現方法](experiments/F001/README.md) |
-| 次の研究能力 | [F003仕様案](topics/F003-attachment/SPEC.md) / [A〜F実験計画](experiments/F003/PLAN.md) / [検証記録・監査結果](findings/F003-validation.md) / [設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7) |
+| F003の設計・検証履歴 | [F003仕様案](topics/F003-attachment/SPEC.md) / [A〜F実験計画](experiments/F003/PLAN.md) / [検証記録・監査結果](findings/F003-validation.md) / [設計PR #7](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/7) |
 | 論文や参考情報 | [文献図書館](library/INDEX.md) |
 | なぜこの設計にしたか | [意思決定001](docs/decisions/0001-incremental-library.md) |
 | AIエージェントの読み方 | [AI案内](AGENTS.md) |
@@ -99,3 +99,8 @@ F004は引き続き**設計段階／実験未実施**。Draft PR #10で2つの�
 
 ### PR #11 実装監査の更新（2026-10-16）
 時間格子のfloat正規化でステップが欠ける問題、Config直接生成での検証迂回、巨大な有限値のSVG座標overflow、保存証拠検証の抜けを修正。通常の物理・費用式と事前参照値は維持し、境界と改変に対する5テストを追加。[4件の反例・修正・検証結果](findings/F004-validation.md#2026-10-16-pr-11-独立視点の実装監査)。Draft維持、main統合・正式採用は別途判断する。
+
+### F004 正式採用（2026-10-16）
+ユーザーの採用・統合指示により、1セル1Dの離散理想モデルを採用する。上の提案・Draft・採用前の記載は各時点の履歴。[仕様の採用範囲](topics/F004-actuation-energy/SPEC.md#2026-10-16-正式採用の範囲と持越し課題)を優先する。
+
+保持・待機消費ゼロ、負の区間仕事は無回生・支出ゼロ。粗い刻みで速度反転をまたぐと正負の仕事が相殺され、再加速を含むのに支出0となり得る。この制約とdt依存のµJ切上げを記録し、自律制御の消費最適化・生存課題へ広げる前に別課題で改善する。F003との結合、実機、知覚・学習・身体創発は今回の採用範囲に含めない。
