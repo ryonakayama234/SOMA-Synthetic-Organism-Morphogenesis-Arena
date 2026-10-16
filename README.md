@@ -13,6 +13,16 @@
 - [F005 システム図](docs/ARCHITECTURE.md#f005速度反転時の正仕事積算2026-10-16-研究提案未実装)／[提案データ構造](docs/DATA_CONTRACTS.md#f005正仕事と符号付き仕事の分離2026-10-16-提案未実装)
 - 詳細は設計PR（main未統合）で監査。コードと証拠は別の実装PRで同時更新し、ユーザー判断まで採用扱いにしない。
 
+
+## F005 implementation candidate — positive motor work (2026-10-16; not adopted)
+
+On `feat/F005-positive-work-20261016` (base: Draft design branch) the new F005 ideal one-cell 1D positive-work accounting runs independently of existing F004. **The feature remains a review candidate; `main` is unchanged and no adoption is claimed.**
+
+- [F005 module](soma/f005.py), [tests](tests/test_f005.py), [A–F independent saved-evidence suite](experiments/F005/run_suite.py), [WSL2 reproducibility](experiments/F005/README.md).
+- [Architecture diagram](docs/ARCHITECTURE.md), [data schema](docs/DATA_CONTRACTS.md), [preregistered plan](experiments/F005/PLAN.md), [findings (pending CI)](findings/F005-validation.md), [Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12).
+- The separate `.github/workflows/f005.yml` runs all prior tests and F005 A–F and uploads raw CSV/ledger/SVG/source/hash/replay artifacts. No autonomous decision, two-cell motor coupling, hardware, or emergence is being claimed.
+
+
 ## 入口：どこから読む？
 
 | 知りたいこと | 読む資料 |
