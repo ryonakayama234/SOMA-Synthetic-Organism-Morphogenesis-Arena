@@ -66,3 +66,7 @@ User approved adoption and main integration **only** as the 1D single-cell discr
 
 ## 次の研究提案（F006 / 2026-10-16、未実装）
 F001〜F005の採用範囲を維持。次は`topics/F006-timestep-diagnostics/SPEC.md`の**時間刻み差分診断**という一能力のみ。Issue #16。設計ブランチの提案を採用済みと混同しない。既存F005は変更しない。`experiments/F006/PLAN.md`でWolframの理論値と未実施のSOMA実測を明確に分離する。実装時には同一PRでコード・テスト・システム図・データ契約・findings・READMEを同期し、独立監査とユーザー判断までmainに統合しない。
+
+
+### F006 実装担当への追加ルール（2026-10-16）
+F006は後処理のdt横断診断器。既存の`soma/f005.py`と歴史的証拠を修正しない。既存の保存ログ独立検証器を利用しても、クロスdtの参照・原因分類は別に検査する。A〜Fの有理数参照とbinary64参照を混同しない。F006はモデルのdt不変性を証明しない。詳細はF006 SPEC末尾のG1〜G5採用ゲート、実験PLAN、図、データ契約。設計と実測を区別し、採否判断前にmain統合しない。
