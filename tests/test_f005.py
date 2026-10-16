@@ -112,6 +112,19 @@ class TestF005(unittest.TestCase):
                     self.assertGreaterEqual(w, 0.)
                     self.assertGreaterEqual(w+1e-12, max(0., signed))
 
+    def test_subnormal_endpoint_power_must_not_make_positive_work_free(self):
+        # Direct u*v underflows to zero, but u*h*v is representable and positive.
+        u, v, h = 1e-200, 1e-200, 1e300
+        self.assertEqual(u*v, 0.)
+        self.assertAlmostEqual(positive_motor_work(u, v, v, h), 1e-100, delta=1e-110)
+        cfg = self.cfg(motor=u, external=-u, velocity=v, dt=h, duration=h,
+                       battery=1)
+        rows, events, ledger = simulate(cfg)
+        self.assertEqual(rows[1]["motor_positive_work_j"], 1e-100)
+        self.assertEqual(rows[1]["spent_uj"], 1)
+        self.assertEqual(len(events), 1)
+        self.assertEqual(ledger.residual_uj, 0)
+
     def test_nonfinite_intermediates_rejected_atomically(self):
         cfg = self.cfg(motor=1e308, velocity=1e308, dt=1.)
         motion, ledger = initial(cfg)
