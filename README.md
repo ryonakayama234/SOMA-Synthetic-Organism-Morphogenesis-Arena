@@ -4,6 +4,15 @@
 
 **現在（2026-10-16）：F001〜F003に加え、F004の「電池残量に制約された1セル1D内部駆動」を実装・検証済みとして正式採用。73テスト、A〜Fの10対照、17拒否例、保存証拠の独立照合と再実行一致、CIを確認。設計[PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)を先に統合し、実装と採用記録は[PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)で統合する。[F004検証記録](findings/F004-validation.md#2026-10-16-採用判断と統合)を参照。**
 
+## 次の一能力（研究提案：F005／2026-10-16）
+
+**現行mainはF001〜F004を正式採用済み。F005は提案段階・未実装・未実施であり、採用済みと見なさない。** F004の速度反転時に再加速の正仕事が相殺される既知制約に対し、F005では1セル1Dの区間内正モーター仕事を積算する能力だけを検証する。これを先に整備してから、F003との力学的・電池的接続、資源制約、結合の有利不利の実験へ進む。
+
+- [F005 Issue #12（研究課題）](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12)
+- [F005 仮説と受入基準](topics/F005-positive-work/SPEC.md)／[事前A〜F計画](experiments/F005/PLAN.md)／[未実施の検証ノート](findings/F005-validation.md)
+- [F005 システム図](docs/ARCHITECTURE.md#f005速度反転時の正仕事積算2026-10-16-研究提案未実装)／[提案データ構造](docs/DATA_CONTRACTS.md#f005正仕事と符号付き仕事の分離2026-10-16-提案未実装)
+- 詳細は設計PR（main未統合）で監査。コードと証拠は別の実装PRで同時更新し、ユーザー判断まで採用扱いにしない。
+
 ## 入口：どこから読む？
 
 | 知りたいこと | 読む資料 |
