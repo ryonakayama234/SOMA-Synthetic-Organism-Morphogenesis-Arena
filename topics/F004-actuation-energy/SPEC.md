@@ -2,7 +2,7 @@
 id: F004
 title: 内部駆動と電池残量の因果的接続
 kind: feature_spec
-status: proposed_unimplemented
+status: implementation_candidate
 updated: 2026-10-16
 related: [F001, F002, F003, ARCHITECTURE, DATA, EXP-F004, FIND-F004]
 issue: 9
@@ -101,3 +101,17 @@ W_drag = m*g*v*h*v_mid  （符号付きの離散項）
 - F004に伴う既存モジュールの公開API変更を禁止。3既存機能の回帰、独立の予測式／保存ログ突合せ、成果物・source SHA、再実行一致、任意の保存証拠改変の検知を採用前の必須ゲートとする。
 
 この節は**実装前の設計監査で見つかった欠陥の修正案と事前値**である。SOMAの実験観測ではなく、PR #10でレビュー対象。
+
+## 2026-10-16 実装候補 f004.v1 と初回CI (PR #11)
+
+この節はDraft PR #11での**実装候補**を表す。上の未実装表示・予測は設計時点の履歴であり、当節が最新。独立の正式採用判断はまだ。
+
+- モジュール \`soma/f004.py\`：\`Config.from_dict\`でJSON完全キー検証、質量/抵抗/時間格子/finite/整数µJ容量/残量/IDの妥当性を先に確認。\`Motion\`は位置と速度のみで、world truthをエージェントの局所知覚として公開しない。
+- \`advance(cfg, motion, ledger, step_index)\`：F001.stepの候補を作り、残量0を先行判定。正の候補仕事をbinary64で計算して上方整数µJ丸め。十分ならF002.apply_event(spend)で新しい**不変**台帳を作り、足りなければモーター0でF001を再実行。支出0ならイベントを作らない。新しい物理状態、台帳状態、行、任意のイベントをまとめて返す。
+- \`simulate(cfg)\`：全ステップ成功時のみ保存可能。\`save_run\`は検証・シミュレーション成功**後**にrunディレクトリを作り、未使用のパスのみ受理する。
+- 仕事と力学：\`candidate=(u*h)*((v_before+v_candidate)/2)\`、\`cost=ceil(max(0,candidate)*1000000)\`を固定。\`x_next=x+h*v_next\`。F002会計残差は全ステップで厳密0。離散運動エネルギー恒等式は符号付き抵抗項を含む。
+- **ブレーキの「モーター適用回数」と「支出イベント回数」は別**。負の仕事中も指令モーター力は適用されるが、正の費用がないのでF002支出イベントは0となる。独立検証で両方を集計する。
+- 初回CI: [Actions #38829244901](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901) で既存50件+F004の18件=**68 unittest成功**、A〜F正常対照10件・不正入力16件拒否、全生ログのバイト一致、artifact #12015824529。これは**ソフトウェア検証の初回結果**。PR HEAD更新後は最新runを再確認する。
+- 理論値とbinary64事前参照の差（B 500000/499995 µJ、D 55000/54996 µJ）を記録し、事後調整しない。
+
+[再現手順](../../experiments/F004/README.md) / [スイート](../../experiments/F004/run_suite.py) / [F004実装](../../soma/f004.py) / [テスト](../../tests/test_f004.py) / [実装PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)。
