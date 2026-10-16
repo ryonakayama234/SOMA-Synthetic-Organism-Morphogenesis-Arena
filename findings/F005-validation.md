@@ -71,3 +71,11 @@ Mark this feature `observed` only after obtaining successful CI **on the final p
 
 ### 判定
 上記は**ソフトウェアモデルに関する事前仮説を支持**するCI証拠であり、実機の電池消費や自律的な形態創発を確認したわけではない。バッテリー効率・保持消費は未モデル化。非有限な中間計算はrun保存前に拒否する。独立第三者による最終監査とユーザーの正式採用判断は未了。mainは変更していない。
+
+### 最終のコード・記録同期HEADのCI確認（2026-10-16）
+- 対象HEAD `c3f506f0d829296e20f5a02a99a5457c7663cee7` でF001/F002/F003/F004/F005の**5 workflowがすべてsuccess**。
+- [F005 Actions #38876733416](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876733416) では90テスト、10正常対照、17不正入力拒否、完全再実行一致（`full_replay=true`）。A残高0µJ、B残高1µJ。
+- [raw evidence artifact #12035158501](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876733416/artifacts/12035158501)（GitHub Actions artifact ZIP SHA256 `0ed49b5b9b3810a7b07dee0c38d7f295d148d4e35c12b488af2150fccba4906a`）。上記HEADはコード・図・データ契約・検証ノートの同期版。
+- この節を追記した新HEADでも5 workflowを再実行して確認する。過去HEADの成功と新HEADの成功は同一視しない。
+
+**採用判断**：基準モデルのソフトウェア実装仮説は支持。F005はまだDraft実装候補であり、独立監査と正式採用判断、設計PR #13→実装PR #14の順のmain統合は未了。
