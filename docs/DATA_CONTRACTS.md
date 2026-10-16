@@ -366,3 +366,21 @@ flowchart LR
 **不変条件**：残高は非負整数µJ、正仕事だけを理想エネルギー費用として計上、外力の仕事は電池支出に含めない。モーター力が採用されなければ`motor_positive_work_j=0`だが`candidate_positive_work_j`は正の場合がある。費用計量はF001の速度更新や機械恒等式を変更しない。無効設定・非有限派生量は保存前に拒否する。
 
 [仕様](../topics/F005-positive-work/SPEC.md) / [A〜F](../experiments/F005/PLAN.md) / [未実施の記録](../findings/F005-validation.md)。
+
+### F005 implementation candidate: f005.v1 (2026-10-16; adoption pending)
+
+**Schema `f005.v1` is implemented on the proposed feature branch only**, and does not overwrite historic `f004.v1` CSVs. Config accepts exactly F004's 13 keys, changing only `schema_version` to `f005.v1`; no additional motion/controller/observation state is introduced.
+
+`states.csv` columns are exactly:
+
+~~~text
+step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,candidate_motor_work_j,candidate_motor_positive_work_j,motor_positive_work_j,motor_work_j,external_work_j,drag_work_j,kinetic_delta_j,mechanical_residual_j,spent_uj,balance_uj,ledger_event_index,decision_reason
+~~~
+
+- The **candidate** positive field is null when the motor is not evaluated (zero battery or zero command), otherwise measures the proposed motor+external candidate. The accepted `motor_positive_work_j` is zero when the motor is rejected or commanded off.
+- `candidate_motor_work_j` and `motor_work_j` are still **signed midpoint** mechanical work; neither is the battery expense when a velocity reversal occurs.
+- `motor_positive_work_j` integrates only `max(0,motor_force * linearly-interpolated velocity)` in joules. Only `ceil(1e6 * candidate_motor_positive_work_j)` on an accepted step is debited via F002 `spend`. No event for zero cost; rejection recomputes external-force-only F001 motion.
+- No real electrical efficiency, holding, waiting, heat, or regeneration. Decimal time-grid strictness, finite numbers, one-cell A, maximum 10000 steps, immutable atomic accounting, XML-safe identifiers and `seed=null` retain F004-style constraints.
+- `ledger/events.csv`: same `EVENT_COLUMNS` as F004, accepted positive F002 spend only. The F002 conservation residual must be exactly zero µJ.
+- `manifest.json`: `schema_version=f005.v1`, Git commit and dirty flag, F001/F002/F005 code digests, suite SHA256, row/event counts and exact hashes of config, states, ledger events and SVG. `comparison.json` and replay report are suite-level and contain case-specific independent results; initial row must have zero *both signed and positive* interval work.
+- Invalid or nonfinite runs do not create valid evidence. Original F004 test suite and `f004.v1` output remain independently repeatable.
