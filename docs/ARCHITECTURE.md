@@ -309,3 +309,39 @@ flowchart TD
 - F004を上書きせず、提案F005の版を明示した別実験とする。機械力学も費用も「実機の電気消費」ではない。
 
 [仕様](../topics/F005-positive-work/SPEC.md) / [実験計画](../experiments/F005/PLAN.md) / [検証記録・未実施](../findings/F005-validation.md) / [Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12)。
+
+### F005 implementation candidate (2026-10-16; implementation PR, not adopted)
+
+The implementation branch adds `soma/f005.py` without modifying F001–F004. F005 reuses the F001 semi-implicit Euler `step()` and F002 immutable ledger `apply_event(spend)`; it computes positive mechanical work by exact integration of the **chosen linear-in-time velocity interpolant**, but does not simulate electrical motor loss.
+
+~~~mermaid
+flowchart TD
+    IN["Config f005.v1 / Motion / F002 LedgerState"] --> V{"Validate immutable input and time grid"}
+    V -->|valid and balance>0, motor nonzero| P["F001 candidate with motor+external force"]
+    V -->|empty battery or zero motor| X["F001 external-force-only"]
+    P --> PW["F005 positive work of linear velocity interpolant"]
+    P --> SW["F004-compatible signed midpoint work for mechanical identity"]
+    PW --> COST["ceil positive joules to integer microjoules"]
+    COST --> BAL{"candidate cost <= balance"}
+    BAL -->|yes| PAY["Accept candidate + F002 spend if positive"]
+    BAL -->|no| X
+    PAY --> COMMIT["Atomic motion and immutable ledger result"]
+    X --> COMMIT
+    SW --> LOG["Signed work stays separate from positive work"]
+    COMMIT --> LOG
+    LOG --> CSV["states.csv and ledger/events.csv"]
+    CSV --> VERIFY["Independent saved-CSV Euler/positive-work oracle"]
+    VERIFY --> EVIDENCE["comparison.json, SHA manifests, SVG, replay comparison"]
+~~~
+
+- `f005.v1` adds candidate and accepted **positive** motor work fields; existing signed work is unchanged in meaning.
+- The F005 `experiments/F005/run_suite.py` verifier reads saved CSV and event files and checks every timestep without using F005's step or positive-work function. SHA checks alone are insufficient; numeric semantic checks are mandatory.
+- `tests/test_f005.py` and `.github/workflows/f005.yml` exercise all F001–F004 regressions, F005 A–F, reject cases, and replay; complete raw evidence is stored as GitHub Actions artifacts.
+- A successful automated suite is not adoption, a real motor-battery model, or evidence of emergent morphology. F003 link is still not attached to F005.
+
+### F005 PR #14 独立監査後の検証経路（2026-10-16）
+上図の `VERIFY` は保存CSVから再計算する二段階の照合を含む。①入力binary64端点を厳密有理数に変換した区分積分で正仕事を確認、②仕様に固定したbinary64演算順で整数µJ課金と受否を確認する。端点パワーの浮動小数点積で符号を失わない。初期行の候補2欄はnull、正仕事が微小でもゼロへの改変を拒否する。`comparison.json`に積分誤差・厳密切上げ差・binary64支出差を分離して保存する。運動器と台帳の経路は変更しない。
+
+
+### F005 正式採用後の責務境界（2026-10-16）
+上記のF005「implementation candidate」はレビュー時点の記録。現在の採用済み範囲は**正仕事をF002整数µJ台帳へ接続する離散計算部品のみ**。F001の位置は半陰的Euler、F005仕事は線形補間速度を積分するため、保存軌道との距離効率は保証しない。dt依存のモーター棄却・数量化、無償保持、反作用相手未定義が残る。セルの局所センサー、F003へのモーター統合、生存・身体優劣の評価環境は未承認。[採用判断と反例](../topics/F005-positive-work/SPEC.md#2026-10-16-正式採用f005の限定的な研究上の位置づけ)。

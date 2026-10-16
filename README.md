@@ -6,12 +6,32 @@
 
 ## 次の一能力（研究提案：F005／2026-10-16）
 
-**現行mainはF001〜F004を正式採用済み。F005は提案段階・未実装・未実施であり、採用済みと見なさない。** F004の速度反転時に再加速の正仕事が相殺される既知制約に対し、F005では1セル1Dの区間内正モーター仕事を積算する能力だけを検証する。これを先に整備してから、F003との力学的・電池的接続、資源制約、結合の有利不利の実験へ進む。
+**現行mainはF001〜F004を正式採用済み。F005はPR #14上で実装・検証中の候補であり、正式採用・main統合は未了。** F004の速度反転時に再加速の正仕事が相殺される既知制約に対し、F005では1セル1Dの区間内正モーター仕事を積算する能力だけを検証する。これを先に整備してから、F003との力学的・電池的接続、資源制約、結合の有利不利の実験へ進む。
 
 - [F005 Issue #12（研究課題）](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12)
-- [F005 仮説と受入基準](topics/F005-positive-work/SPEC.md)／[事前A〜F計画](experiments/F005/PLAN.md)／[未実施の検証ノート](findings/F005-validation.md)
+- [F005 仮説と受入基準](topics/F005-positive-work/SPEC.md)／[事前A〜F計画](experiments/F005/PLAN.md)／[検証ノート](findings/F005-validation.md)
 - [F005 システム図](docs/ARCHITECTURE.md#f005速度反転時の正仕事積算2026-10-16-研究提案未実装)／[提案データ構造](docs/DATA_CONTRACTS.md#f005正仕事と符号付き仕事の分離2026-10-16-提案未実装)
 - 詳細は設計PR（main未統合）で監査。コードと証拠は別の実装PRで同時更新し、ユーザー判断まで採用扱いにしない。
+
+
+## F005 implementation candidate — positive motor work (2026-10-16; not adopted)
+
+On `feat/F005-positive-work-20261016` (base: Draft design branch) the new F005 ideal one-cell 1D positive-work accounting runs independently of existing F004. **The feature remains a review candidate; `main` is unchanged and no adoption is claimed.**
+
+- [F005 module](soma/f005.py), [tests](tests/test_f005.py), [A–F independent saved-evidence suite](experiments/F005/run_suite.py), [WSL2 reproducibility](experiments/F005/README.md).
+- [Architecture diagram](docs/ARCHITECTURE.md), [data schema](docs/DATA_CONTRACTS.md), [preregistered plan](experiments/F005/PLAN.md), [findings](findings/F005-validation.md), [Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12).
+- The separate `.github/workflows/f005.yml` runs all prior tests and F005 A–F and uploads raw CSV/ledger/SVG/source/hash/replay artifacts. No autonomous decision, two-cell motor coupling, hardware, or emergence is being claimed.
+
+
+
+### F005 CI初回結果（2026-10-16、実装候補のまま）
+[監査修正済みHEADのF005 Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876548177)は**90 Pythonテスト、10正常対照、17入力拒否、保存CSV独立照合と再実行一致でsuccess**。証拠：[artifact ID 12036090522](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876548177/artifacts/12036090522)。端点パワーを先に掛けると微小仕事が0へアンダーフローする問題を監査で発見・修正し、`findings/F005-validation.md`へ反例と限界を記録した。これは**正式採用・main統合ではない**。
+
+### PR #14 独立レビュー修正（2026-10-16）
+保存ログの検証で、通常の反転でも演算順の差から1µJずれる問題、微小仕事の誤拒否、初期候補欄・微小正仕事の改変見逃しを修正。有理数の独立積分とbinary64の課金参照を分離し、0.1秒刻みの数量化差も記録する。ローカル93テスト、13対照、17拒否、73ファイルの再実行一致を確認。現行HEADのCIは[PR #14 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/14/checks)、反例・限界は[検証ノート](findings/F005-validation.md)を参照。
+
+### F005の意味論監査と採用範囲案（2026-10-16）
+[意味論監査](findings/F005-validation.md#2026-10-16-意味論監査正式採用範囲の判断材料)で、位置と仕事の軌道差、刻みによる受否/支出の変化、微小な正残量による無償保持、反作用相手を持たない有効駆動力という境界を具体例で確認。**正仕事積算の離散計算部品として限定採用を推奨可能**だが、自律移動・生存・形態比較の標準環境としての採用を意味しない。[仕様の判断案](topics/F005-positive-work/SPEC.md#2026-10-16-意味論監査限定採用の判断案未採用)を参照。正式採用・マージは未実施。
 
 ## 入口：どこから読む？
 
@@ -113,3 +133,9 @@ F004は引き続き**設計段階／実験未実施**。Draft PR #10で2つの�
 ユーザーの採用・統合指示により、1セル1Dの離散理想モデルを採用する。上の提案・Draft・採用前の記載は各時点の履歴。[仕様の採用範囲](topics/F004-actuation-energy/SPEC.md#2026-10-16-正式採用の範囲と持越し課題)を優先する。
 
 保持・待機消費ゼロ、負の区間仕事は無回生・支出ゼロ。粗い刻みで速度反転をまたぐと正負の仕事が相殺され、再加速を含むのに支出0となり得る。この制約とdt依存のµJ切上げを記録し、自律制御の消費最適化・生存課題へ広げる前に別課題で改善する。F003との結合、実機、知覚・学習・身体創発は今回の採用範囲に含めない。
+
+
+### F005：限定的な正式採用（2026-10-16）
+F005は「単一セル1Dの離散正仕事積分と整数µJ台帳への接続」として採用。[F005仕様の採用範囲](topics/F005-positive-work/SPEC.md#2026-10-16-正式採用f005の限定的な研究上の位置づけ)／[A〜Fと実装監査記録](findings/F005-validation.md)／[設計PR #13](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/13)／[実装PR #14](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/14)。旧提案・Draft・未実施の節はその時点の履歴。
+
+**採用外**：位置と仕事で異なる補間軌道、時間刻み依存の駆動拒否と毎ステップ切上げ、電池1µJでの無償保持、推進反作用相手未定義。これらを解決するまで自律移動、資源到達、移動効率、生存、身体形態/協調の優劣を評価する環境としては採用しない。次の優先課題は電池制約付き運動・課金の刻み幅収束。
