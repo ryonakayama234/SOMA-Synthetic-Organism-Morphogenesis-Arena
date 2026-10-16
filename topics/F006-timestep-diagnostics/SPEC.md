@@ -37,6 +37,19 @@ A: 電池十分ではF001半陰的Eulerの位置誤差を参照解に対して�
 4. 無効入力拒否、保存証拠のハッシュ・改変検出、Python `-O`も含む検証、同設定の完全再実行一致、F001〜F005の回帰、最終HEAD CI、独立監査。
 5. コード／テスト、Mermaidシステム図、データ契約、findings、READMEを**同一の実装PR**で同期して正式採否を判断。
 
+## 2026-10-17 独立監査後の契約改訂（v2設計、未採用）
+本節は初版の入力案・分類案・G3/G4の解釈より優先する。独立監査は**実装後**に行った。実装前に監査済みだったと遡及しない。A〜Eの理論値、binary64課金演算順序、ABS_TOL=1e-12、整数会計の厳密一致は変更しない。Wolframによる今回の再検算でもAの位置1,3/4,5/8、Dの正仕事1/2 J、Cの支出1/10/100 µJを確認したが、これはソフトウェア実測ではない。
+
+- **版と対象**：修正版出力は`schema_version=f006.v2`, `sweep_id=F006-A-E-v2`。旧v1証拠は履歴のまま保持し、新版の監査で黙って読み替えない。任意入力の原因推論ではなく、事前登録A〜E・15runの保存データと固定参照を照合する能力。
+- **分類**：CSVの`classification`を`expected_classification`（事前ラベル文字列）と`signature_matches_reference`（参照一致のbool、CSVはTrue/False）へ置換する。JSONには`classification_scope=fixed_preregistered_controls_only`, `causal_attribution=null`と理由を保存する。BにはEuler位置差も残るのでbudget_gateを唯一原因と解釈しない。未知条件のmixed/undetermined判定器は採用対象外。検査不一致は例外で公開を中止し、unsupportedを成功成果物として出さない。
+- **G3 出自の基準**：監査側が信頼するcheckoutのソースhashとGit commit/dirtyをデフォルトの基準にする。履歴CI証拠では外部CI記録から期待するcommit/dirtyを明示して渡す。検査対象manifest自身から期待値を作ってはならない。Git情報取得不能時はcommit/dirtyを共にnullとし、出自不明を保持する。hashは実行者や過去の実行の暗号学的証明ではない。
+- **G3 照合範囲**：suiteのモデル、sweep ID、seed、参照ID、run完全設定、runとsuiteのGit情報・F001/F002/F005ソースhash・suite hashを照合する。runner、diagnostics、再利用F005保存検証器、soma初期化/F001/F002/F005、参照PLAN/SPECの計9ファイルを`source_hashes`に記録し、信頼するcheckoutと全件比較する。Git commitは40桁小文字hexまたはnull、dirtyはboolまたはnull。失敗・整合不能は拒否する。
+- **G4 保存単位**：一次出力・replayの両パスをresolveし、既存（空ディレクトリ・壊れたsymlinkも含む）、同一、包含を生成前に拒否する。未公開の一時領域で生成・監査し、両方のバイト一致後にLinux/WSL2のno-replace renameで公開する。通常例外ではこの呼出しが公開したディレクトリだけを除去し、既存・競合相手の出力は変更しない。生成した空の親ディレクトリは残り得る。
+- **障害限界**：2つの独立したパスのrenameは、プロセス強制終了・停電に対して一括原子的ではない。間で停止すると完全監査済み一次出力だけが残り得る。これを不完全なrunやreplay検証済み証明と同一視しない。通常例外のrollbackと区別する。
+- **F負例**：suite/runの出自改変と参照ID改変（hash更新を含む）、診断本体・再利用検証器のhash差、既存replay、alias包含、計算/監査例外、replay不一致、公開時の競合・一次出力rollbackを通常/-Oで確認する。
+
+設計PRでは本契約の実装・CI成功を主張しない。実装PRでコード・図・データ契約・findings・READMEを同時に更新し、最新版CIと修正後監査を経て採否を決める。
+
 ## 非目標
 部分時間駆動、残り端数の繰越、位置と仕事の軌道統一、保持電力、接地・反作用、2セル電池統合、局所学習、身体創発、実機妥当性。収束性の診断ができてから、対処を一つずつ別課題にする。
 

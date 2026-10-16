@@ -428,6 +428,15 @@ F006が独自の世界状態を持つことはない。すべての元状態はF
 [仕様](../topics/F006-timestep-diagnostics/SPEC.md) / [A〜F](../experiments/F006/PLAN.md) / [Findings](../findings/F006-validation.md)
 
 
+### F006 v2 改訂契約（2026-10-17、設計・未採用）
+以下は旧v1フィールド案より優先する。`sweep.json`は完全設定15個を持つ`runs`マップ（キーA-dt-00〜E-dt-02）、`schema_version=f006.v2`, `sweep_id=F006-A-E-v2`, `source_model=f005.v1`, `seed=null`, `reference_id=Wolfram-exact-fractions-2026-10-16`を持つ。
+
+CSV確定列順は`case_id,dt_s,steps,final_x_m,final_v_m_s,positive_work_j,signed_work_j,spent_uj,balance_uj,accepted_steps,rejected_steps,reference_x_m,reference_v_m_s,reference_type,expected_classification,signature_matches_reference,verdict`。dt/位置/速度/仕事/参照はfinite float（単位s,m,m/s,J）、steps/支出/残高/受否は整数、case_id=A〜E。reference_typeはdiscrete_exact_fraction、ラベルは事前登録値、署名一致はbool（CSVはTrue/False）、成功verdictはsupported。不一致は公開前に例外とする。
+
+`diagnostics.json`のラベルはexpected_classification、観測値は比較特徴量・各run原本への相対パス/SHA・受否step一覧・仕事/会計残差として保存する。`classification_scope=fixed_preregistered_controls_only`、`causal_attribution=null`と理由を必須にし、事前ラベルと一般因果判定を区別する。
+
+suite manifestはモデル/seed/sweep/run数/verdict、Git commit/dirty、F001/F002/F005 hash、suite_sha256、artifact hashに加え、`source_hashes`（runner/diagnostics/F005 oracle/soma初期化/F001/F002/F005/PLAN/SPECの9パス→SHA256）を持つ。suite sourceコピー、run manifest、モデルメタデータ、参照IDを照合する。Gitとソースは信頼するcheckoutまたは外部CI記録を期待値とし、manifestから信頼基準を逆算しない。履歴実行の本人性をhashで証明したとはしない。具体的保存・障害契約はF006 SPECのv2改訂節を優先する。
+
 ### F006 診断フィールドの意味と整合性ゲート（設計詳細・未実装）
 
 - `accepted_steps`: `motor_applied_n != 0` のステップ数（初期行を除外）。`rejected_steps`: 非ゼロ命令があったにもかかわらず `insufficient_balance` または `zero_balance` により適用されなかったステップ数。`zero_command`は拒否に含めない。

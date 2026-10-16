@@ -373,6 +373,20 @@ flowchart LR
 [仕様](../topics/F006-timestep-diagnostics/SPEC.md) / [事前A〜F](../experiments/F006/PLAN.md) / [研究記録（未実施）](../findings/F006-validation.md) / [Issue #16](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/16)
 
 
+### F006 v2 証拠と公開の設計改訂（2026-10-17、未採用）
+```mermaid
+flowchart TD
+  P["出力2パスを正規化・事前検査"] --> T["非公開の一時領域で15run生成"]
+  T --> A["原本・参照・出所を監査"]
+  S["信頼するcheckout / 外部CI記録"] --> A
+  A --> R["replayを監査・全バイト比較"]
+  R --> O["no-replace renameで公開"]
+  A -->|例外| C["一時成果物を破棄"]
+  R -->|例外| C
+  O -->|通常例外| B["自分の公開分だけrollback"]
+```
+診断本体とF005保存検証器もソース照合範囲に含める。出力ラベルは事前登録のexpected_classification、観測はsignatureの参照一致と数値として分離する。セルへの経路を追加しない。2パスの公開間に強制終了すると監査済み一次出力だけが残り得るため、crash時の一括原子性は保証しない。
+
 ### F006実装候補の責務境界（設計詳細・未実装）
 
 ~~~mermaid

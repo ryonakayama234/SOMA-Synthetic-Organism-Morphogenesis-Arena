@@ -35,6 +35,9 @@ On `feat/F005-positive-work-20261016` (base: Draft design branch) the new F005 i
 ### F005の意味論監査と採用範囲案（2026-10-16）
 [意味論監査](findings/F005-validation.md#2026-10-16-意味論監査正式採用範囲の判断材料)で、位置と仕事の軌道差、刻みによる受否/支出の変化、微小な正残量による無償保持、反作用相手を持たない有効駆動力という境界を具体例で確認。**正仕事積算の離散計算部品として限定採用を推奨可能**だが、自律移動・生存・形態比較の標準環境としての採用を意味しない。[仕様の判断案](topics/F005-positive-work/SPEC.md#2026-10-16-意味論監査限定採用の判断案未採用)を参照。正式採用・マージは未実施。
 
+### F006 独立監査後の修正方針（2026-10-17）
+[PR #18の独立レビュー](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18#pullrequestreview-5550332235)で数値は支持、証拠出所と失敗時保存にP2が2件。設計PR #17で[v2契約](topics/F006-timestep-diagnostics/SPEC.md)を追補し、実装側で修正・負例・新証拠を準備する。分類は固定対照ラベルと観測の参照一致として扱う。正式採用・main統合は未了。
+
 ## 入口：どこから読む？
 
 | 知りたいこと | 読む資料 |
