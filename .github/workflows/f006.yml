@@ -1,0 +1,33 @@
+name: F006 timestep dependence diagnostics
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: F001-F005 regression and F006 unit/adversarial tests
+        run: python -m unittest discover -s tests -v
+      - name: Independent oracles remain active under optimized Python
+        run: |
+          python -O -m unittest discover -s tests -p test_f005.py -v
+          python -O -m unittest discover -s tests -p test_f006.py -v
+      - name: F006 A-E 15 runs and byte-exact independent replay
+        run: python -m experiments.F006.run_suite --output-dir runs/F006-ci --replay-output-dir runs/F006-replay
+      - name: Upload source CSV, events, configs, manifests, comparison, SVG and replay
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F006-A-E-evidence
+          path: |
+            runs/F006-ci/
+            runs/F006-replay/
+          if-no-files-found: warn
