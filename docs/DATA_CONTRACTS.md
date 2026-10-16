@@ -282,3 +282,24 @@ flowchart LR
 - `candidate_motor_work_j`はステップの仮計算値。電池0の場合は仮計算を行わずnullとする。`spent_uj`は整数、`balance_uj`はF002の厳密整数。外力の仕事をspentへ算入しない。
 - 浮動小数点と1 µJ切上げにより、Wolfram理想有理数とbinary64参照はBで5 µJ、Dで4 µJ異なる。理論参照と浮動小数点の合否参照を明確に分離し、どちらも記録する。
 - 無効時は台帳と運動を不可分に拒否。入力の時刻格子は十進有理数で厳密判定。F004は最大10000ステップ。全ログと実行スクリプト・Git版・hashを対応づける。設計時点の提案契約であり、実装済みスキーマではない。
+
+## F004 実装候補 f004.v1 の確定予定スキーマ（2026-10-16／PR #11）
+
+\`config.json\` 必須フィールド（未知キー不可）：\`schema_version="f004.v1"\`, \`experiment_id\`（XML1.0有効、長さ1〜120）, \`seed=null\`, \`mass_kg\`, \`drag_per_s\`, \`dt_s\`, \`duration_s\`, \`initial_x_m\`, \`initial_v_m_s\`, \`motor_force_n\`, \`external_force_n\`, \`capacity_uj\`（1〜10^15）, \`initial_balance_uj\`（0〜capacity）。セルIDは内部で"A"固定。時間格子は\`Fraction(str(duration))/Fraction(str(dt))\`が整数1〜10000と一致する条件。有限値、正質量、非負抵抗、dt*drag<=1。
+
+\`states.csv\` 列順（step_index=0が初期状態、その後各ステップ適用後1行）：
+
+~~~text
+step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,candidate_motor_work_j,motor_work_j,external_work_j,drag_work_j,kinetic_delta_j,mechanical_residual_j,spent_uj,balance_uj,ledger_event_index,decision_reason
+~~~
+
+- \`candidate_motor_work_j\`は電池0または命令0の場合null/空欄。残量不足時は仮計算した値が存在しても\`motor_applied_n=0\`。\`spent_uj\`は非負整数。\`ledger_event_index\`は支出イベントがある時にだけ連続した正整数、他はnull。
+- 理想モデルの\`decision_reason\`：\`initial\`, \`zero_balance\`, \`zero_command\`, \`insufficient_balance\`, \`accepted_positive_work\`, \`accepted_nonpositive_work\`。最後のケースは正の残量がある場合のみ。**ブレーキ等の内部力適用回数≠支出イベント数**。
+- 各行の\`motor_work_j\`, \`external_work_j\`, \`drag_work_j\`は（符号付き）midpoint-velocity仕事。\`mechanical_residual_j = kinetic_delta_j - (motor_work_j + external_work_j - drag_work_j)\`。世界の真値のみでありセンサー出力ではない。
+- \`ledger/events.csv\`：\`step_index,time_s,event_index,kind,source_id,target_id,amount_uj,eta_bps,received_uj,loss_uj,external_in_uj,external_out_uj,residual_uj\`。イベントはF002の既存\`spend\`のみ。支出0なら行は無い。
+- \`motion_energy.svg\`：位置・速度・残量の3段表示。間引き表示のみ、生証拠は完全なCSV。\`manifest.json\`：モデル/版/seed/積分方式、Git HEAD・dirty、F001/F002/F004コードSHA256、スイートSHA256、ケースごとのCSV/JSON/SVG SHA256。
+- スイート出力：\`suite_source.py\`, \`rejections.json\` (16拒否), \`comparison.json\` (A〜F 10設定・理論参照・binary64参照・CSV独立検算), \`B-full-replay/\`, \`full_suite_replay.json\`。完全な再実行バイト照合が一致しなければテストは失敗。
+- 運動と台帳は新しい不変値として不可分commit。不正入力や有限でない派生量はrunフォルダ作成前に拒否。台帳残差は厳密0 µJ。
+- \`comparison.json.status=local_software_checks_passed\`はスイート内部のソフトウェア検査を意味し、main統合の承認・実機の裏付けではない。
+
+[実装モジュール](../soma/f004.py) / [再現手順](../experiments/F004/README.md) / [初回CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901)。
