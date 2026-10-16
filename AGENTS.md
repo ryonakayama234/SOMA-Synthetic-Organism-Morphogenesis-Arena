@@ -41,3 +41,9 @@ F003世界真値を将来のセル局所観測へ注入しないこと。F002の
 - F004の1セル1D離散理想モーター／電池接続を実装・検証済みとして正式採用。設計PR #10はmain統合済み、実装・採用記録はPR #11で統合する。旧「未実装」「Draft」「未採用」は各時点の履歴。
 - `topics/F004-actuation-energy/SPEC.md`末尾の採用範囲 → `findings/F004-validation.md`末尾の採用判断 → `experiments/F004/PLAN.md`の事前値 → 実装/契約の順に確認する。73テスト・10対照・17拒否・再実行一致、実装監査4件修正を確認済み。
 - 保持/待機電力0、速度反転をまたぐ区間仕事の相殺、dt依存のµJ切上げはモデルの制約。自律制御の消費最適化・生存実験の前に別仕様で扱う。F003統合・実機・学習・身体創発は未検証。
+
+
+## 次の研究提案（F005・2026-10-16、未実装）
+- F001〜F004は正式採用済み。F004の速度反転・正味区間仕事相殺は**既知のモデル制約**であり、バグの修正が実装済みという意味ではない。
+- F005は区間内の正のモーター仕事積算のみを対象とする提案。[Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12) → [SPEC](topics/F005-positive-work/SPEC.md) → [A〜F計画](experiments/F005/PLAN.md) → [F005未実施記録](findings/F005-validation.md)の順に読む。
+- 図は`docs/ARCHITECTURE.md`、スキーマ案は`docs/DATA_CONTRACTS.md`のF005節を参照。F005はF004の既存API・証拠を改変しない別版とし、2セル・学習・生存は後続。仕様PRと実装PRを分け、最新の生ログ・独立参照・CI・監査と採否判断を混同しない。
