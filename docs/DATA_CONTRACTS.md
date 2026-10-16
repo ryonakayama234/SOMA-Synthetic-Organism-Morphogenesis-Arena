@@ -426,3 +426,16 @@ flowchart TD
 F006が独自の世界状態を持つことはない。すべての元状態はF005のシミュレーターから取得する。比較層で統合し、**セルの知覚には完全な世界真値を渡さない**。上記フィールドは設計案。実装前に型、厳密な列順、バリデーション、浮動小数点演算順序を凍結する。
 
 [仕様](../topics/F006-timestep-diagnostics/SPEC.md) / [A〜F](../experiments/F006/PLAN.md) / [Findings](../findings/F006-validation.md)
+
+
+### F006 診断フィールドの意味と整合性ゲート（設計詳細・未実装）
+
+- `accepted_steps`: `motor_applied_n != 0` のステップ数（初期行を除外）。`rejected_steps`: 非ゼロ命令があったにもかかわらず `insufficient_balance` または `zero_balance` により適用されなかったステップ数。`zero_command`は拒否に含めない。
+- `positive_work_j`: **適用された**正仕事の全ステップ和。`candidate_motor_positive_work_j`（棄却候補の仕事を含む）と混同しない。
+- `spent_uj`: F002の受理された整数支出。イベントの合計、初期残量−最終残量、全状態の`spent_uj`合計の三者を照合。
+- `reference_x_m`, `reference_v_m_s`: 必ず参照方式`continuous_analytic`／`discrete_exact_fraction`／`f005_binary64`とペアで格納し、Bの離散仕様と連続物理の真値を取り違えない。
+- `classification`: `integration`, `budget_gate`, `quantization`, `positive_work`, `external_only`, `mixed`, `undetermined`の候補。対照A〜Eの事前分類と、実行結果からの帰属を別々のフィールドに保存すること。
+- `diagnostics.json`：各run原本への相対パスとSHA、参照の出自・式、正仕事計算誤差・整数丸め超過・受否履歴差・物理量差・許容差・支持／反証／不明を持たせる。検証不能な属性はnullと理由を明記。
+- `manifest.json`：Git HEAD / dirty、f005ソースhash、F006スイートhash、各成果物hash、実行環境を記録。再実行比較の可変メタデータは固定化または分離し、履歴出力の書き換えを防止する。
+
+以上は設計上の意味契約。実装前にフィールド型・値域・列順を確定し、出力生ログとの同期を監査する。
