@@ -87,6 +87,7 @@ def verify_saved_run(cfg, folder):
     x, v = cfg.initial_x_m, cfg.initial_v_m_s
     balance = cfg.initial_balance_uj
     events_seen = 0
+    applied_motor_steps = 0
     total_spent = 0
     max_motion_err = 0.
     max_kinetic_residual = 0.
@@ -145,6 +146,8 @@ def verify_saved_run(cfg, folder):
                 near(row["candidate_motor_work_j"], prospective, "candidate motor work")
             require(row["decision_reason"] == decision, "wrong battery decision")
             require(row["spent_uj"] == spent, "wrong quantized microjoule spend")
+            if applied != 0:
+                applied_motor_steps += 1
             balance -= spent
             total_spent += spent
             require(balance >= 0, "negative balance")
@@ -179,7 +182,8 @@ def verify_saved_run(cfg, folder):
             "max_motion_error": max_motion_err,
             "max_mechanical_residual_j": max_kinetic_residual,
             "final_x_m": x, "final_v_m_s": v,
-            "final_balance_uj": balance, "motor_steps": events_seen}
+            "final_balance_uj": balance, "spend_event_count": events_seen,
+            "applied_motor_steps": applied_motor_steps}
 
 
 def suite(output):
@@ -221,7 +225,10 @@ def suite(output):
         near(item["final_x_m"], x, name + " x", 1e-12)
         near(item["final_v_m_s"], v, name + " v", 1e-12)
         require(item["final_balance_uj"] == balance, name + " battery")
-        require(item["motor_steps"] == events, name + " event count")
+        require(item["spend_event_count"] == events, name + " spend event count")
+    require(cases["E-brake"]["applied_motor_steps"] == 10 and
+            cases["E-brake"]["spend_event_count"] == 0,
+            "braking still applies motor force while spending no battery")
     empty_cancel = read_rows(output/"F-zero-battery-cancel"/"states.csv", STATE_COLUMNS)
     near(empty_cancel[1]["v_m_s"], -.1, "empty cancellation velocity")
     near(empty_cancel[1]["x_m"], -.01, "empty cancellation position")
