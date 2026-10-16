@@ -3,7 +3,7 @@ id: DATA
 title: データの構造と流れ
 kind: contract
 status: partially_implemented
-updated: 2026-10-13
+updated: 2026-10-16
 related: [ARCHITECTURE, F001, F002, F003]
 ---
 
@@ -225,3 +225,60 @@ flowchart LR
 
 ### F003の採用判断（2026-10-15）
 監査修正・50テスト・A〜F・再現性・CI検証を経て、記載した1D二セル理想リンクの実装を採用する。設計#7はmain統合済み、実装の統合はPR #8で追跡。既存の図・スキーマ・観測境界は不変で、候補・未統合表記は過去時点の履歴。
+
+## F004：内部駆動・電池の入出力構造【2026-10-15 提案／未実装】
+
+以下は **f004.v0-proposal** の説明用案。まだ有効なAPI・既存CSVではない。F001〜F003の既存契約を変更せず、実装前レビューでフィールドと型を凍結する。
+
+~~~mermaid
+flowchart LR
+  CONFIG["config.json：1セル・外力／内部力／初期µJ"] --> CAND["F004候補ステップ"]
+  CAND --> MOTOR["内部力の正の離散仕事・費用µJ"]
+  MOTOR --> LEDGER["F002 LedgerState：spend または無支出"]
+  MOTOR --> STEP["F001 step：実際に適用した内部＋外力"]
+  LEDGER --> STATES["states.csv：時刻・残高・適用力・仕事"]
+  STEP --> STATES
+  LEDGER --> EVENTS["events.csv：受理されたF002支出"]
+  STATES --> COMP["comparison.json／motion_energy.svg"]
+  EVENTS --> COMP
+  CONFIG --> META["manifest.json：Git／実装／suite／出力のSHA"]
+  COMP --> META
+~~~
+
+~~~json
+{
+  "schema_version": "f004.v0-proposal",
+  "experiment_id": "F004-B-planned",
+  "seed": null,
+  "mass_kg": 1.0,
+  "drag_per_s": 0.0,
+  "dt_s": 0.1,
+  "duration_s": 1.0,
+  "initial_x_m": 0.0,
+  "initial_v_m_s": 0.0,
+  "motor_force_n": 1.0,
+  "external_force_n": 0.0,
+  "capacity_uj": 1000000,
+  "initial_balance_uj": 1000000
+}
+~~~
+
+| データの種類 | 候補フィールド・単位 | 注意 |
+| --- | --- | --- |
+| 設定 | 質量kg、抵抗1/s、dt/duration s、内部／外部力N、初期残高・容量µJ | 外力と内部駆動力を分ける。例の値は事前理論比較用 |
+| 世界状態 | time_s、x_m、v_m_s、balance_uj、motor_command_n、motor_applied_n、external_force_n | 真値のみ。将来のセル観測ログとは分離 |
+| 運動と費用 | proposed_motor_work_j、spent_uj、motor_accepted、拒否理由 | 仕事は台形速度、位置はF001半陰的Euler。1µJ未満正値は切り上げ |
+| F002イベント | kind=spend、source_id、amount_uj と残差 | 正の額のみ記帳、残高不足時はspendを発生させない |
+| 証拠 | states.csv、events.csv、comparison.json、motion_energy.svg、manifest.json、suite_source.py | Git SHA/dirty、モジュール・suite・保存物SHAを連結。再実行の生バイト一致 |
+
+不変条件：残量は非負の整数µJ、正常支出は常にF002の保存会計残差0。外力のみならspend=0。残高不足時は内部力だけ0として候補を捨て、外力によるF001運動を記録。入力や派生量が無効なら、世界状態と台帳の両方を更新しない。丸め境界の表現方式と最大数値範囲は実装前に仕様レビューで凍結する。
+
+この段階は**仮説と契約案**であり、F004実験ログ・実装の存在を示さない。[仕様](../topics/F004-actuation-energy/SPEC.md) / [A〜F](../experiments/F004/PLAN.md) / [Findings](../findings/F004-validation.md)。
+
+### F004 2026-10-16 事前監査のデータ・数値契約（未実装）
+- `states.csv` に`step_index`, `ledger_event_index`（spendなしはnull）、`motor_command_n`, `motor_applied_n`, `external_force_n`, `candidate_motor_work_j`, `spent_uj`, `balance_uj`, `decision_reason`を持たせ、時刻と位置・速度に対応づける。
+- `ledger_event_index`によってF002のspendイベントと当該運動ステップを1対0/1で結合する。支出0のステップはF002にイベントを出さない。
+- `decision_reason` は `zero_balance`, `zero_command`, `insufficient_balance`, `accepted_positive_work`, `accepted_nonpositive_work` など。残量0でも候補仕事0ならモーターが動く抜け道を防ぐ。
+- `candidate_motor_work_j`はステップの仮計算値。電池0の場合は仮計算を行わずnullとする。`spent_uj`は整数、`balance_uj`はF002の厳密整数。外力の仕事をspentへ算入しない。
+- 浮動小数点と1 µJ切上げにより、Wolfram理想有理数とbinary64参照はBで5 µJ、Dで4 µJ異なる。理論参照と浮動小数点の合否参照を明確に分離し、どちらも記録する。
+- 無効時は台帳と運動を不可分に拒否。入力の時刻格子は十進有理数で厳密判定。F004は最大10000ステップ。全ログと実行スクリプト・Git版・hashを対応づける。設計時点の提案契約であり、実装済みスキーマではない。

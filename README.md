@@ -70,3 +70,19 @@ F002以降は、**コード／テスト・システム図（docs/ARCHITECTURE.md
 - F002既存ワークフロー: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38731190549 — success。
 - 以上は1D理想モデル・ソフトウェアの整合性を示す。実機による結合、エネルギー相互作用、身体創発を示さない。
 - 独立第三者の監査は未了。PR #7の設計レビューと、PR #8の正式採用判断を区別する。
+
+## 次期研究候補：F004 内部駆動・エネルギー接続（2026-10-15／提案・未実装）
+
+F001（1D運動）、F002（整数µJ台帳）、F003（2セル理想リンク）はmain統合済み。次の一能力の**候補**は、単一セルの内部モーターによる正の理想機械仕事をF002残高から消費し、残高不足ならモーター力だけ停止すること。外力は電池消費に算入しない。F003との力学・エネルギー統合、資源獲得、学習・結合の自律選択は別の後続課題とする。
+
+- [F004 Issue #9（研究提案）](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/9)
+- [仮説・境界・受入基準](topics/F004-actuation-energy/SPEC.md)
+- [A〜F事前登録とWolfram理論予測](experiments/F004/PLAN.md)
+- [システム図のF004節](docs/ARCHITECTURE.md#f004内部駆動と電池の因果接続2026-10-15-設計提案未実装)
+- [データのF004節](docs/DATA_CONTRACTS.md#f004内部駆動電池の入出力構造2026-10-15-提案未実装)
+- [実験記録（未実施）](findings/F004-validation.md)
+
+**採用ゲート**：事前レビュー → 別PRで最小実装・A〜F・回帰CI → 独立監査 → findingsへ結果と限界を確定 → 採否決定。実装PRではコード、システム図、データ契約、実験記録、READMEを同時更新し、mainへの統合は採用決定後。提案だけでは検証済みとしない。
+
+### F004 設計レビュー追記（2026-10-16）
+F004は引き続き**設計段階／実験未実施**。Draft PR #10で2つの設計上の問題を事前修正：①残量0かつ仕事0での内部駆動を禁止（外力は残す）、②数学的理想値とbinary64の各ステップµJ切上げ参照値を区別。Bの計画値は理想500000 µJ・binary64参照499995 µJ、Dは理想55000 µJ・binary64参照54996 µJ。既存F001〜F003は変更しない。仕様・図・データ契約・検証記録はこのPR内で同期。[設計PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)。
