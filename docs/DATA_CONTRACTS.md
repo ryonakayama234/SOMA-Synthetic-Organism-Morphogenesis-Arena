@@ -399,3 +399,30 @@ step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,can
 
 ### f005.v1 採用済み契約の適用範囲（2026-10-16）
 `f005.v1`の上記列とスキーマは**離散理想正仕事・整数µJ台帳接続用に正式採用**。過去`f004.v1`は不変。仕事`motor_positive_work_j`は位置変位に沿った物理的な電気消費量ではなく、線形補間速度上の正の機械仕事である。時間刻みを変えると運動採否・積分近似・整数切上げ費用が変わる。ゼロ仕事の保持・制動は正残量で無料、`motor_applied_n`は反作用を持たない有効力である。形態・生存・移動効率の比較への転用禁止。[F005正式採用の条件](../topics/F005-positive-work/SPEC.md#2026-10-16-正式採用f005の限定的な研究上の位置づけ)。
+
+## F006：刻み幅比較のデータ構造と流れ（2026-10-16／提案・未実装）
+
+~~~mermaid
+flowchart TD
+  A["① sweep.json\n1ケースに共通の条件＋dt値一覧"] --> B["② dtごとに独立したF005 config.json"]
+  B --> C["③ F005の元データ\nstates.csv / events.csv / manifest.json"]
+  C --> D["④ 原本検証・独立参照と突合"]
+  A --> D
+  D --> E["⑤ comparison.csv\n1行=ケース×dt"]
+  D --> F["⑤ diagnostics.json\n参照式・差・分類・判定"]
+  E --> G["⑥ comparison.svg / manifest.json\nSHAとGit commitで原本追跡"]
+  F --> G
+~~~
+
+| 段階 | 最低限のフィールド（案） | 意味 |
+| --- | --- | --- |
+| 入力 | `schema_version=f006.v1`, `sweep_id`, `case_id`, `seed`, `source_model=f005.v1`, `common_parameters`, `dt_s_values`, `reference_id` | dt以外を固定・版を記録 |
+| 元run | f005.v1の`config.json`, `states.csv`, `events.csv`, `manifest.json` | 生ログは改変せず原本を参照 |
+| 比較1行 | `case_id`, `dt_s`, `steps`, `final_x_m`, `final_v_m_s`, `positive_work_j`, `spent_uj`, `balance_uj`, `accepted_steps`, `rejected_steps` | m/m·s^-1/J/µJの単位と経過を明示 |
+| 比較参照 | `reference_x_m`, `reference_v_m_s`, `classification` | 連続理論／厳密離散／実装参照の区別を必須に |
+| 解析 | `diagnostics.json`、原本パス・各SHA、source/suite SHA、許容差、判定 | 相互作用は混合・不明を許容 |
+| 表示 | `comparison.svg`, `manifest.json` | 人に読める図＋機械が検証できる出自 |
+
+F006が独自の世界状態を持つことはない。すべての元状態はF005のシミュレーターから取得する。比較層で統合し、**セルの知覚には完全な世界真値を渡さない**。上記フィールドは設計案。実装前に型、厳密な列順、バリデーション、浮動小数点演算順序を凍結する。
+
+[仕様](../topics/F006-timestep-diagnostics/SPEC.md) / [A〜F](../experiments/F006/PLAN.md) / [Findings](../findings/F006-validation.md)
