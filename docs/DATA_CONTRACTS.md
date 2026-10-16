@@ -312,3 +312,57 @@ step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,can
 
 ### F004 採用決定（2026-10-16）
 ユーザーの指示で`f004.v1`を正式採用。設計PR #10は先に統合済み、実装・採用記録はPR #11で統合する。採用による列・型・演算順序・既存APIの変更なし。仕事は区間の符号付き仕事であり、速度反転をまたぐ場合も正負を相殺した**後**の正部分を課金する。区間内の正の仕事だけを積分した電力費用とは異なる。`accepted_nonpositive_work`で適用モーター力非0・支出0があり得る。保持/待機消費と実モーター損失は未モデル化。[反転の実行例と後続課題](../findings/F004-validation.md#2026-10-16-採用判断と統合)。
+
+
+## F005：正仕事と符号付き仕事の分離【2026-10-16 提案・未実装】
+
+`f005.v0-proposal` は **計画用データ契約**であり、現行API・生成物ではない。F004の `f004.v1` は変えない。実装PR前にスキーマと演算順序・許容差をレビューして確定する。
+
+~~~mermaid
+flowchart LR
+  CJ["config.json 1セル・力・残高・刻み"] --> S["F001仮運動"]
+  S --> W["F005 正仕事積分候補（未実装）"]
+  W --> L["F002残高／spendまたは内部力拒否"]
+  L --> CSV["states.csv：候補値・採用値・世界真値"]
+  L --> EV["ledger/events.csv：正額支出"]
+  CSV --> COMP["comparison.json：全時刻独立参照"]
+  EV --> COMP
+  CSV --> SVG["motion_energy.svg：可視化だけ"]
+  COMP --> HASH["manifest.json：Git/ソース/成果物SHA"]
+  CJ --> HASH
+~~~
+
+### 提案設定（読みやすさ優先：項目・版は未確定）
+~~~json
+{
+  "schema_version": "f005.v0-proposal",
+  "experiment_id": "F005-A-planned",
+  "seed": null,
+  "mass_kg": 1.0,
+  "drag_per_s": 0.0,
+  "dt_s": 1.0,
+  "duration_s": 1.0,
+  "initial_x_m": 0.0,
+  "initial_v_m_s": 1.0,
+  "motor_force_n": -2.0,
+  "external_force_n": 0.0,
+  "capacity_uj": 500000,
+  "initial_balance_uj": 500000
+}
+~~~
+
+### 提案フィールド
+| データ | 候補の項目・単位 | 意味・検査 |
+| --- | --- | --- |
+| `config.json` | F004の構成＋新しいschema版 | 1セル、1D、有限な数値、時間格子整数、seed=null |
+| `states.csv` | `step_index`, `time_s`, `x_m`, `v_m_s` | 区間適用後の**世界真値** |
+| `states.csv` | `motor_command_n`, `motor_applied_n`, `external_force_n` | 指令と適用を区別。残高不足時は内部のみ0 |
+| `states.csv` | `candidate_signed_work_j`, `candidate_positive_work_j`, `motor_signed_work_j`, `motor_positive_work_j` | 候補vs採用／機械収支vs費用を厳密に分離 |
+| `states.csv` | `spent_uj`, `balance_uj`, `ledger_event_index`, `decision_reason` | 整数µJ・正額のみspend・拒否理由。候補と実際の課金を同一視しない |
+| `ledger/events.csv` | F002の`spend`イベントと各ステップの参照 | 台帳の保存残差は**厳密0** |
+| `comparison.json` | A〜F、理想値／独立binary64参照／実測差、改変検査 | 予測と観測・全ステップの判定を分ける |
+| `manifest.json` | Git HEAD/dirty、ソース・実験スイート・成果物 SHA256、seed | 証拠の対応付け。署名や改ざん耐性の保証ではない |
+
+**不変条件**：残高は非負整数µJ、正仕事だけを理想エネルギー費用として計上、外力の仕事は電池支出に含めない。モーター力が採用されなければ`motor_positive_work_j=0`だが`candidate_positive_work_j`は正の場合がある。費用計量はF001の速度更新や機械恒等式を変更しない。無効設定・非有限派生量は保存前に拒否する。
+
+[仕様](../topics/F005-positive-work/SPEC.md) / [A〜F](../experiments/F005/PLAN.md) / [未実施の記録](../findings/F005-validation.md)。
