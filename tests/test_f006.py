@@ -123,6 +123,35 @@ class F006Tests(unittest.TestCase):
             with self.assertRaises((AssertionError, ValueError)):
                 audit_suite(root, build_settings())
 
+    def test_suite_source_provenance_tampering_is_detected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "run"
+            run(root)
+            source = root / "suite_source.py"
+            source.write_bytes(source.read_bytes() + b"\n# forged\n")
+            manifest_path = root / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["suite_sha256"] = sha(source)
+            manifest["artifacts"]["suite_source.py"] = sha(source)
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaises((AssertionError, ValueError)):
+                audit_suite(root, build_settings())
+
+    def test_sweep_condition_mix_even_after_manifest_resigning(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "run"
+            run(root)
+            sweep_path = root / "sweep.json"
+            sweep = json.loads(sweep_path.read_text(encoding="utf-8"))
+            sweep["runs"]["A-dt-00"]["mass_kg"] = 2.
+            sweep_path.write_text(json.dumps(sweep), encoding="utf-8")
+            manifest_path = root / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["artifacts"]["sweep.json"] = sha(sweep_path)
+            manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+            with self.assertRaises((AssertionError, ValueError)):
+                audit_suite(root, build_settings())
+
     def test_full_byte_replay_detects_mutation(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
