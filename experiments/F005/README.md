@@ -31,3 +31,6 @@ python -m soma.f005 --config runs/F005-manual/A-reversal/config.json --output-di
 A (reversal) needs 500000 µJ; B (1 µJ balance) rejects the motor; C (non-reversal acceleration) matches F004; D (braking only) spends nothing; E (external only) spends nothing; F addresses two time grids, asymmetric reversal, microjoule rounding, invalid inputs, saved evidence tampering and deterministic replays. Negative results must be reported in `findings/F005-validation.md`.
 
 See [spec](../../topics/F005-positive-work/SPEC.md), [plan](PLAN.md), [findings](../../findings/F005-validation.md), [architecture](../../docs/ARCHITECTURE.md), [data contracts](../../docs/DATA_CONTRACTS.md).
+
+## PR #14 verifier review follow-up
+The suite now includes **13** controls: original 10 plus ordinary reversal at a microjoule ceil boundary, endpoint-power underflow and dt=0.1 splitting. The oracle integrates exact Fraction endpoint powers independently, checks the fixed binary64 cost order separately, and records `quantization` in every comparison case. Exact-endpoint arithmetic is not the exact continuous trajectory. Both candidate fields must be null initially; tiny positive-work fields cannot be zeroed while retaining valid evidence. Optimized-Python regression: `python -O -m unittest discover -s tests -p test_f005.py`.

@@ -16,6 +16,8 @@ jobs:
           python-version: '3.11'
       - name: F001-F004 regression and F005 unit tests
         run: python -m unittest discover -s tests -v
+      - name: F005 oracle remains active under optimized Python
+        run: python -O -m unittest discover -s tests -p test_f005.py -v
       - name: F005 preregistered A-F and evidence replay
         run: python -m experiments.F005.run_suite --output-dir runs/F005-ci --replay-output-dir runs/F005-replay
       - name: Upload independent comparison and complete raw evidence

@@ -79,3 +79,20 @@ Mark this feature `observed` only after obtaining successful CI **on the final p
 - この節を追記した新HEADでも5 workflowを再実行して確認する。過去HEADの成功と新HEADの成功は同一視しない。
 
 **採用判断**：基準モデルのソフトウェア実装仮説は支持。F005はまだDraft実装候補であり、独立監査と正式採用判断、設計PR #13→実装PR #14の順のmain統合は未了。
+
+## 2026-10-16 PR #14 独立レビューと修正
+
+対象：`1462d750e036f92a443e1e0d9a835f0775d967d4`。開始時の全90テストは成功し、そのHEADの全5 workflow successも確認した。次のP2相当2件はその検証をすり抜けていた。
+
+1. **保存証拠オラクルの数値不一致**（`experiments/F005/run_suite.py`）。実装で修正済みの端点パワーunderflowがオラクルには残り、u=v0=1e-200,h=1e300,f_ext=-uの正しい1µJ支出ログを `wrong battery decision` で拒否。さらに通常の反転u=-10,v0=0.2,h=duration=0.05,battery=45000でも実装0.045J→45000µJに対し、旧オラクル0.04500000000000001J→45001µJで受否が逆転した。厳密Fraction積分と固定binary64課金参照を分離して修正。
+2. **hash更新済み改変の見逃し**。初期行 `candidate_motor_positive_work_j=999` でも `independent_all_steps=true`。また絶対許容差1e-12は1e-100J→0の改変を許していた。初期候補2欄null、正仕事の正値性と相対/ULP比較を追加し、両改変を拒否する。
+
+### 検証と観測
+- ローカルPython 3.12.14：**93全テスト成功**（旧90＋新規3）、最適化PythonでもF005の20テスト成功。125通りの符号・端点組合せをFraction参照と照合。
+- A〜F：元10対照＋反例/decimal刻み3件＝**13正常対照**、**17入力拒否**、保存CSV/台帳の独立照合、**73ファイル**の完全再実行バイト一致。
+- A反転：0.5J、500000µJ支出、残高0。B：モーター拒否、残高1。追加ceil境界：45000µJ、残高0。追加underflow：1µJ、残高0。
+- Aの0.5秒分割：正仕事総量0.5J・支出500000µJ。0.1秒分割：実支出500001µJ・残高499999、正区間5。実際のbinary64端点をFraction化した積分に対するbinary64仕事誤差は約−1.4572e-17J、厳密な各区間切上げ合計500002µJと実支出の差は−1µJ。厳密数量化差は約2µJで0以上5未満。これは端点誤差・仕事評価誤差・数量化を分けた観測で、連続物理の刻み不変性ではない。
+- Wolfram厳密再検算：反転1/2J、非対称反転9/2J、微小積分10^-100J。Python実行とは別の数式検算。
+- 変更はF005検証・テスト・補足記録。`soma/f001.py`〜`soma/f005.py`の運動・費用ロジックは維持。
+
+現行HEADのCI・artifactは[PR #14 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/14/checks)とレビュー完了コメントでSHAを対応づける。上記ローカル結果をCI結果と取り違えない。F005はDraft候補を維持し、正式採用・設計PR #13と実装PR #14のmain統合は未実施。保持/待機消費0、実機電力・F003統合・自律制御は引き続き後続課題。

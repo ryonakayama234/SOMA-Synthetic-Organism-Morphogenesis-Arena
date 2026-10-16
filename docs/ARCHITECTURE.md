@@ -338,3 +338,6 @@ flowchart TD
 - The F005 `experiments/F005/run_suite.py` verifier reads saved CSV and event files and checks every timestep without using F005's step or positive-work function. SHA checks alone are insufficient; numeric semantic checks are mandatory.
 - `tests/test_f005.py` and `.github/workflows/f005.yml` exercise all F001–F004 regressions, F005 A–F, reject cases, and replay; complete raw evidence is stored as GitHub Actions artifacts.
 - A successful automated suite is not adoption, a real motor-battery model, or evidence of emergent morphology. F003 link is still not attached to F005.
+
+### F005 PR #14 独立監査後の検証経路（2026-10-16）
+上図の `VERIFY` は保存CSVから再計算する二段階の照合を含む。①入力binary64端点を厳密有理数に変換した区分積分で正仕事を確認、②仕様に固定したbinary64演算順で整数µJ課金と受否を確認する。端点パワーの浮動小数点積で符号を失わない。初期行の候補2欄はnull、正仕事が微小でもゼロへの改変を拒否する。`comparison.json`に積分誤差・厳密切上げ差・binary64支出差を分離して保存する。運動器と台帳の経路は変更しない。

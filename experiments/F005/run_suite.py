@@ -11,6 +11,7 @@ import csv
 import hashlib
 import json
 import math
+from fractions import Fraction
 from pathlib import Path
 import tempfile
 
@@ -71,6 +72,49 @@ def near(actual, expected, name, tolerance=1e-12):
             abs(actual - expected) <= tolerance, "independent oracle " + name)
 
 
+def reference_positive_work(u, v0, v1, h):
+    """Exact integral plus a separately checked f005.v1 rounding reference.
+
+    Fractions use the exact supplied binary64 endpoints, not decimal ideals.
+    The integer battery gate must use the published binary64 operation order:
+    algebraically equivalent products can differ by one microjoule after ceil.
+    This oracle never calls the implementation's work or step functions.
+    """
+    force, start, end, width = map(Fraction, (u, v0, v1, h))
+    p0, p1 = force * start, force * end
+    if p0 <= 0 and p1 <= 0:
+        exact = Fraction(0)
+        rounded = 0.
+    elif p0 >= 0 and p1 >= 0:
+        exact = width * (p0 + p1) / 2
+        rounded = (u * h) * ((v0 + v1) / 2)
+    else:
+        peak = max(p0, p1)
+        exact = width * peak * peak / (2 * abs(p1 - p0))
+        # Velocity magnitudes preserve sign even if u*v underflows/overflows.
+        positive = abs(v0 if p0 > 0 else v1)
+        negative = abs(v1 if p0 > 0 else v0)
+        scale = max(positive, negative)
+        positive_share = positive / scale
+        share = positive_share / (positive_share + negative / scale)
+        rounded = ((abs(u) * h) * positive) * share / 2
+    require(math.isfinite(rounded) and rounded >= 0 and
+            (rounded > 0 or exact == 0), "positive work oracle finite and nonzero")
+    expected = float(exact)
+    require(math.isclose(rounded, expected, rel_tol=2e-15,
+                         abs_tol=4 * math.ulp(expected)),
+            "binary64 positive work disagrees with exact Fraction integral")
+    return rounded, exact
+
+
+def near_positive(actual, expected, name):
+    require(actual is not None and math.isfinite(actual) and
+            (actual == 0 if expected == 0 else actual > 0 and
+             math.isclose(actual, expected, rel_tol=2e-15,
+                          abs_tol=4 * math.ulp(expected))),
+            "independent oracle " + name)
+
+
 def verify_saved_run(cfg, folder):
     """Detects missing/changed artifacts, then checks every saved timestep and event."""
     manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
@@ -96,6 +140,10 @@ def verify_saved_run(cfg, folder):
     total_spent = 0
     max_motion_err = 0.
     max_kinetic_residual = 0.
+    exact_positive_total = Fraction(0)
+    binary_positive_total = Fraction(0)
+    exact_ceiled_total = 0
+    positive_intervals = 0
     for k, row in enumerate(rows):
         require(row["step_index"] == k, "step index")
         near(row["time_s"], k * cfg.dt_s, "time")
@@ -105,6 +153,7 @@ def verify_saved_run(cfg, folder):
             require(row["decision_reason"] == "initial" and
                     row["ledger_event_index"] is None and
                     row["candidate_motor_work_j"] is None and
+                    row["candidate_motor_positive_work_j"] is None and
                     row["motor_applied_n"] == 0 and row["spent_uj"] == 0,
                     "initial row")
             require(all(row[name] == 0 for name in (
@@ -129,18 +178,7 @@ def verify_saved_run(cfg, folder):
                 require(math.isfinite(velocity_candidate) and
                         math.isfinite(position_candidate) and math.isfinite(prospective),
                         "oracle candidate non-finite")
-                a, b = u * v, u * velocity_candidate
-                if a <= 0 and b <= 0:
-                    prospective_positive = 0.
-                elif a >= 0 and b >= 0:
-                    prospective_positive = prospective
-                else:
-                    hi, lo = max(a, b), -min(a, b)
-                    scale = max(hi, lo)
-                    share = (hi / scale) / (hi / scale + lo / scale)
-                    prospective_positive = (hi*h*share)/2
-                require(math.isfinite(prospective_positive) and prospective_positive >= 0,
-                        "positive work oracle finite")
+                prospective_positive, _ = reference_positive_work(u, v, velocity_candidate, h)
                 needed = math.ceil(prospective_positive * 1_000_000)
                 if needed <= balance:
                     applied = u
@@ -152,16 +190,7 @@ def verify_saved_run(cfg, folder):
             xn = x + h * vn
             mid = (v + vn)/2
             motor_j = (applied*h)*mid
-            aa, bb = applied*v, applied*vn
-            if aa <= 0 and bb <= 0:
-                positive_j = 0.
-            elif aa >= 0 and bb >= 0:
-                positive_j = motor_j
-            else:
-                hi, lo = max(aa, bb), -min(aa, bb)
-                scale = max(hi, lo)
-                share = (hi/scale)/(hi/scale+lo/scale)
-                positive_j = (hi*h*share)/2
+            positive_j, exact_positive = reference_positive_work(applied, v, vn, h)
             external_j = (ext*h)*mid
             drag_j = (cfg.mass_kg*cfg.drag_per_s*v*h)*mid
             delta_j = cfg.mass_kg*vn*vn/2 - cfg.mass_kg*v*v/2
@@ -169,25 +198,29 @@ def verify_saved_run(cfg, folder):
             require(abs(residual) <= 1e-10, "mechanical identity residual")
             for name, exp in (
                 ("motor_applied_n", applied), ("motor_work_j", motor_j),
-                ("motor_positive_work_j", positive_j),
                 ("external_work_j", external_j), ("drag_work_j", drag_j),
                 ("kinetic_delta_j", delta_j), ("mechanical_residual_j", residual),
             ):
                 near(row[name], exp, name, 1e-12)
+            near_positive(row["motor_positive_work_j"], positive_j, "motor_positive_work_j")
             if prospective is None:
                 require(row["candidate_motor_work_j"] is None and
                         row["candidate_motor_positive_work_j"] is None,
                         "candidate must be null")
             else:
                 near(row["candidate_motor_work_j"], prospective, "candidate signed motor work")
-                near(row["candidate_motor_positive_work_j"], prospective_positive,
-                     "candidate positive motor work")
+                near_positive(row["candidate_motor_positive_work_j"], prospective_positive,
+                              "candidate positive motor work")
             require(row["decision_reason"] == decision, "wrong battery decision")
             require(row["spent_uj"] == spent, "wrong quantized microjoule spend")
             if applied != 0:
                 applied_motor_steps += 1
             balance -= spent
             total_spent += spent
+            exact_positive_total += exact_positive
+            binary_positive_total += Fraction(positive_j)
+            exact_ceiled_total += math.ceil(exact_positive * 1_000_000)
+            positive_intervals += int(exact_positive > 0)
             require(balance >= 0, "negative balance")
             if spent:
                 events_seen += 1
@@ -215,13 +248,26 @@ def verify_saved_run(cfg, folder):
     require(manifest["spent_uj"] == total_spent, "manifest cumulative spend")
     require(manifest["residual_uj"] == 0 and
             balance + total_spent == cfg.initial_balance_uj, "exact F002 conservation")
+    exact_rounding_excess = exact_ceiled_total - exact_positive_total * 1_000_000
+    require((exact_rounding_excess == 0 if positive_intervals == 0 else
+             0 <= exact_rounding_excess < positive_intervals),
+            "exact per-step quantization bound")
     return {"independent_all_steps": True, "ledger_event_crosscheck": True,
             "artifact_hashes": True, "integer_residual_uj": 0,
             "max_motion_error": max_motion_err,
             "max_mechanical_residual_j": max_kinetic_residual,
             "final_x_m": x, "final_v_m_s": v,
             "final_balance_uj": balance, "spend_event_count": events_seen,
-            "applied_motor_steps": applied_motor_steps}
+            "applied_motor_steps": applied_motor_steps,
+            "quantization": {
+                "exact_endpoint_integral_j": str(exact_positive_total),
+                "binary64_work_error_j": float(binary_positive_total - exact_positive_total),
+                "exact_ceiled_spent_uj": exact_ceiled_total,
+                "exact_rounding_excess_uj": str(exact_rounding_excess),
+                "binary64_spent_uj": total_spent,
+                "binary64_minus_exact_ceiled_uj": total_spent - exact_ceiled_total,
+                "positive_intervals": positive_intervals,
+            }}
 
 
 def suite(output):
@@ -244,6 +290,11 @@ def suite(output):
         "F-empty": base("F-empty", motor=-2., velocity=1., dt=1., battery=0),
         "F-tiny": base("F-tiny", motor=.001, dt=.01, duration=.02, battery=1),
         "F-drag": base("F-drag", motor=1., external=.25, drag=.2, dt=.05),
+        "F-decimal-split": base("F-decimal-split", motor=-2., velocity=1., dt=.1),
+        "F-ceil-boundary": base("F-ceil-boundary", motor=-10., velocity=.2,
+                                dt=.05, duration=.05, battery=45_000),
+        "F-underflow": base("F-underflow", motor=1e-200, external=-1e-200,
+                            velocity=1e-200, dt=1e300, duration=1e300, battery=1),
     }
     cases = {}
     for name, raw in settings.items():

@@ -6,10 +6,10 @@
 
 ## 次の一能力（研究提案：F005／2026-10-16）
 
-**現行mainはF001〜F004を正式採用済み。F005は提案段階・未実装・未実施であり、採用済みと見なさない。** F004の速度反転時に再加速の正仕事が相殺される既知制約に対し、F005では1セル1Dの区間内正モーター仕事を積算する能力だけを検証する。これを先に整備してから、F003との力学的・電池的接続、資源制約、結合の有利不利の実験へ進む。
+**現行mainはF001〜F004を正式採用済み。F005はPR #14上で実装・検証中の候補であり、正式採用・main統合は未了。** F004の速度反転時に再加速の正仕事が相殺される既知制約に対し、F005では1セル1Dの区間内正モーター仕事を積算する能力だけを検証する。これを先に整備してから、F003との力学的・電池的接続、資源制約、結合の有利不利の実験へ進む。
 
 - [F005 Issue #12（研究課題）](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12)
-- [F005 仮説と受入基準](topics/F005-positive-work/SPEC.md)／[事前A〜F計画](experiments/F005/PLAN.md)／[未実施の検証ノート](findings/F005-validation.md)
+- [F005 仮説と受入基準](topics/F005-positive-work/SPEC.md)／[事前A〜F計画](experiments/F005/PLAN.md)／[検証ノート](findings/F005-validation.md)
 - [F005 システム図](docs/ARCHITECTURE.md#f005速度反転時の正仕事積算2026-10-16-研究提案未実装)／[提案データ構造](docs/DATA_CONTRACTS.md#f005正仕事と符号付き仕事の分離2026-10-16-提案未実装)
 - 詳細は設計PR（main未統合）で監査。コードと証拠は別の実装PRで同時更新し、ユーザー判断まで採用扱いにしない。
 
@@ -19,13 +19,16 @@
 On `feat/F005-positive-work-20261016` (base: Draft design branch) the new F005 ideal one-cell 1D positive-work accounting runs independently of existing F004. **The feature remains a review candidate; `main` is unchanged and no adoption is claimed.**
 
 - [F005 module](soma/f005.py), [tests](tests/test_f005.py), [A–F independent saved-evidence suite](experiments/F005/run_suite.py), [WSL2 reproducibility](experiments/F005/README.md).
-- [Architecture diagram](docs/ARCHITECTURE.md), [data schema](docs/DATA_CONTRACTS.md), [preregistered plan](experiments/F005/PLAN.md), [findings (pending CI)](findings/F005-validation.md), [Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12).
+- [Architecture diagram](docs/ARCHITECTURE.md), [data schema](docs/DATA_CONTRACTS.md), [preregistered plan](experiments/F005/PLAN.md), [findings](findings/F005-validation.md), [Issue #12](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/12).
 - The separate `.github/workflows/f005.yml` runs all prior tests and F005 A–F and uploads raw CSV/ledger/SVG/source/hash/replay artifacts. No autonomous decision, two-cell motor coupling, hardware, or emergence is being claimed.
 
 
 
 ### F005 CI初回結果（2026-10-16、実装候補のまま）
 [監査修正済みHEADのF005 Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876548177)は**90 Pythonテスト、10正常対照、17入力拒否、保存CSV独立照合と再実行一致でsuccess**。証拠：[artifact ID 12036090522](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38876548177/artifacts/12036090522)。端点パワーを先に掛けると微小仕事が0へアンダーフローする問題を監査で発見・修正し、`findings/F005-validation.md`へ反例と限界を記録した。これは**正式採用・main統合ではない**。
+
+### PR #14 独立レビュー修正（2026-10-16）
+保存ログの検証で、通常の反転でも演算順の差から1µJずれる問題、微小仕事の誤拒否、初期候補欄・微小正仕事の改変見逃しを修正。有理数の独立積分とbinary64の課金参照を分離し、0.1秒刻みの数量化差も記録する。ローカル93テスト、13対照、17拒否、73ファイルの再実行一致を確認。現行HEADのCIは[PR #14 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/14/checks)、反例・限界は[検証ノート](findings/F005-validation.md)を参照。
 
 ## 入口：どこから読む？
 

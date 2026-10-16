@@ -384,3 +384,14 @@ step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,can
 - `ledger/events.csv`: same `EVENT_COLUMNS` as F004, accepted positive F002 spend only. The F002 conservation residual must be exactly zero µJ.
 - `manifest.json`: `schema_version=f005.v1`, Git commit and dirty flag, F001/F002/F005 code digests, suite SHA256, row/event counts and exact hashes of config, states, ledger events and SVG. `comparison.json` and replay report are suite-level and contain case-specific independent results; initial row must have zero *both signed and positive* interval work.
 - Invalid or nonfinite runs do not create valid evidence. Original F004 test suite and `f004.v1` output remain independently repeatable.
+
+### F005 comparisonの独立積分・数量化記録（PR #14監査、2026-10-16）
+`f005.v1`の保存列と課金式は維持。初期行では `candidate_motor_work_j` と `candidate_motor_positive_work_j` の両方がnull。候補/採用正仕事の比較には正値性と相対・ULP許容差を使い、1e-100Jを0Jへ改変したログを許容しない。
+
+`comparison.json` の各caseに `quantization` を追加：
+- `exact_endpoint_integral_j`：実際に採用された区間のbinary64端点を厳密有理数として積分した総和（分数字列）。理想連続軌跡の積分とは区別。
+- `binary64_work_error_j`：binary64正仕事総和−上記厳密積分（J）。
+- `exact_ceiled_spent_uj`／`exact_rounding_excess_uj`：各厳密積分をµJ切上げした合計／その数量化差（後者は分数字列）。
+- `binary64_spent_uj`／`binary64_minus_exact_ceiled_uj`：実支出合計／厳密切上げ合計との差（整数µJ）。
+- `positive_intervals`：採用された正仕事区間数N。厳密数量化差はN=0なら0、N>0なら0以上N未満と検証。binary64演算後の差にはこの厳密不等式を無条件適用しない。
+受否はbinary64課金で確定するため、この比較は同じ採用軌跡の評価であり、有理数課金で別の軌跡をシミュレートした結果ではない。

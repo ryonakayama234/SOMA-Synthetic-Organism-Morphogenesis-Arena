@@ -53,3 +53,8 @@ F003世界真値を将来のセル局所観測へ注入しないこと。F002の
 - Inspect `topics/F005-positive-work/SPEC.md` → `experiments/F005/PLAN.md` → `soma/f005.py` → `tests/test_f005.py` → `experiments/F005/run_suite.py` → `findings/F005-validation.md`. Verify CI **final HEAD** and saved raw CSV independent checks before claiming an observed result.
 - Signed midpoint work explains kinetic energy; integrated positive work governs ideal battery spend. Do not conflate them and never expose simulation world truth as learned cell observation.
 - Carry forward failed tests and reviewer findings. Do not merge design and implementation PRs or call F005 'adopted' before the explicit research acceptance gate.
+
+## PR #14 review follow-up (2026-10-16)
+- The corrected F005 verifier cross-checks an exact Fraction integral of binary64 endpoints and the separately frozen binary64 charging order; never derive integer spend from a different algebraic ordering.
+- The suite now has 13 controls, including ordinary ceil-boundary reversal, endpoint-power underflow and decimal time splitting. Initial candidate-positive work must be null; tiny positive values must not pass a zero-value tamper under an absolute 1e-12 tolerance.
+- Current local result: 93 total tests / 20 optimized F005 tests, 17 rejected inputs, 73-file suite replay. Check final-HEAD CI before claiming CI completion.

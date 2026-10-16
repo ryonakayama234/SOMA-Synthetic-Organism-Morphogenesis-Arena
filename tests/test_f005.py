@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 from dataclasses import replace
+from fractions import Fraction
 import hashlib
 import json
 import math
@@ -12,7 +13,7 @@ import unittest
 from unittest.mock import patch
 
 from soma.f005 import Config, Motion, advance, initial, positive_motor_work, save_run, simulate
-from experiments.F005.run_suite import base, suite, verify_saved_run
+from experiments.F005.run_suite import base, suite, verify_saved_run, reference_positive_work
 
 
 class TestF005(unittest.TestCase):
@@ -125,6 +126,59 @@ class TestF005(unittest.TestCase):
         self.assertEqual(len(events), 1)
         self.assertEqual(ledger.residual_uj, 0)
 
+    def test_oracle_handles_ceil_boundary_and_underflow_saved_runs(self):
+        # Previously the verifier rejected these valid runs, including an
+        # ordinary reversal: 45000 uJ was mistaken for a 45001 uJ proposal.
+        configs = (
+            self.cfg(motor=-10., velocity=.2, dt=.05, duration=.05, battery=45_000),
+            self.cfg(motor=1e-200, external=-1e-200, velocity=1e-200,
+                     dt=1e300, duration=1e300, battery=1),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            for k, cfg in enumerate(configs):
+                dest = Path(tmp)/str(k)
+                save_run(cfg, dest)
+                result = verify_saved_run(cfg, dest)
+                self.assertEqual(result["final_balance_uj"], 0)
+                self.assertEqual(result["spend_event_count"], 1)
+
+    def test_positive_work_against_exact_piecewise_fraction_integral(self):
+        # Exhaust every sign combination, including reflected/asymmetric cases.
+        for u in (-4., -1., 0., 1., 3.):
+            for va in (-3., -.5, 0., .5, 2.):
+                for vb in (-2., -.5, 0., .5, 3.):
+                    reference, exact = reference_positive_work(u, va, vb, .5)
+                    actual = positive_motor_work(u, va, vb, .5)
+                    self.assertTrue(math.isclose(actual, float(exact), rel_tol=2e-15))
+                    self.assertEqual(actual, reference)
+
+    def test_initial_candidate_and_tiny_positive_tamper_rejected_with_updated_hash(self):
+        cfg = self.cfg(motor=1e-200, external=-1e-200, velocity=1e-200,
+                       dt=1e300, duration=1e300, battery=1)
+        for index, field, value in (
+            (0, "candidate_motor_positive_work_j", "999"),
+            (1, "candidate_motor_positive_work_j", "0"),
+            (1, "motor_positive_work_j", "0"),
+        ):
+            with self.subTest(index=index, field=field), tempfile.TemporaryDirectory() as tmp:
+                dest = Path(tmp)/"run"
+                save_run(cfg, dest)
+                file = dest/"states.csv"
+                with file.open(newline="") as fp:
+                    reader = csv.DictReader(fp)
+                    fields, rows = reader.fieldnames, list(reader)
+                rows[index][field] = value
+                with file.open("w", newline="") as fp:
+                    writer = csv.DictWriter(fp, fieldnames=fields)
+                    writer.writeheader()
+                    writer.writerows(rows)
+                manifest_path = dest/"manifest.json"
+                manifest = json.loads(manifest_path.read_text())
+                manifest["artifacts"]["states.csv"] = hashlib.sha256(file.read_bytes()).hexdigest()
+                manifest_path.write_text(json.dumps(manifest))
+                with self.assertRaises(AssertionError):
+                    verify_saved_run(cfg, dest)
+
     def test_nonfinite_intermediates_rejected_atomically(self):
         cfg = self.cfg(motor=1e308, velocity=1e308, dt=1.)
         motion, ledger = initial(cfg)
@@ -178,12 +232,15 @@ class TestF005(unittest.TestCase):
     def test_suite_A_to_F_and_invalid_rejections(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = suite(Path(tmp)/"F005")
-            self.assertEqual(len(result["cases"]), 10)
+            self.assertEqual(len(result["cases"]), 13)
             self.assertEqual(len(result["rejections"]), 17)
             self.assertEqual(result["cases"]["A-reversal"]["final_balance_uj"], 0)
             self.assertEqual(result["cases"]["B-low"]["final_balance_uj"], 1)
             self.assertTrue(result["checks"]["independent_csv_oracle"])
             self.assertTrue(result["checks"]["tamper_rejection"])
+            quantized = result["cases"]["F-decimal-split"]["quantization"]
+            self.assertEqual(quantized["positive_intervals"], 5)
+            self.assertTrue(0 <= Fraction(quantized["exact_rounding_excess_uj"]) < 5)
 
 
 if __name__ == "__main__":
