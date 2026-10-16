@@ -1,0 +1,29 @@
+name: F004 battery-limited single-cell motor
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: F001 F002 F003 regression and F004 tests
+        run: python -m unittest discover -s tests -v
+      - name: F004 preregistered A-F and full evidence replay
+        run: python -m experiments.F004.run_suite --output-dir runs/F004-ci --replay-output-dir runs/F004-replay
+      - name: Upload all A-F raw traces, ledger entries, comparisons, plots, source and hashes
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F004-A-F-evidence
+          path: |
+            runs/F004-ci/
+            runs/F004-replay/
+          if-no-files-found: error
