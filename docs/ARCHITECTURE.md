@@ -388,3 +388,22 @@ flowchart TD
 ~~~
 
 F006は研究者の**後処理**専用。セル制御器や物理エンジン内部に横断比較値を戻さない。表示の補間は可視化に限定し、観測値と区別する。測定不能な寄与は`mixed`・`undetermined`で記録する。実装後のコードと図を必ず同一実装PRで更新する。
+
+## F006 実装候補の実際の流れ（PR #18、2026-10-16・未採用）
+
+~~~mermaid
+flowchart TD
+  P["事前登録A〜E：同一条件、dtのみ変更"] --> RUN["experiments/F006/run_suite.py"]
+  RUN --> F005["既存soma/f005.py\nConfig → save_run"]
+  F005 --> RAW["15組の既存F005生ログとmanifest"]
+  RAW --> ORACLE["既存F005保存証拠オラクル\n全行とイベントの独立数式検査"]
+  RAW --> ANALYZE["F006 diagnostics.py\n5系列の横断比較"]
+  ORACLE --> ANALYZE
+  REF["Wolframの厳密有理数事前参照"] --> ANALYZE
+  ANALYZE --> OUT["comparison.csv + diagnostics.json\ncomparison.svg + SHA256 manifest"]
+  OUT --> REPLAY["同条件15run再実行\n全バイト一致を検査"]
+  REPLAY --> CI["F006 GitHub Actions\n全回帰・-O・証拠artifact"]
+~~~
+
+**境界**：比較器はログを読み、物理系・セルの観測／方策に返さない。比較図は表示用であり記録済み数値の証拠はCSVとイベント。F対照の不正入力とハッシュ付替えによる改変はテストで実施し、A〜Eと混同しない。設計上のG1〜G5全体の独立監査・正式採用は未了。
+
