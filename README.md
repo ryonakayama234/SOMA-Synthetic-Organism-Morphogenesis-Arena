@@ -2,6 +2,8 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
+**最新の研究提案（2026-10-16／F006・未実装）**：F001〜F005は限定された範囲で正式採用済み。次は時間刻みの違いによる運動軌道・電池の駆動受否・整数µJ切上げを**分離診断する一能力**を提案。既存モデルは変更しない。[F006 Issue #16](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/16) / [F006仕様](topics/F006-timestep-diagnostics/SPEC.md) / [事前実験A〜F](experiments/F006/PLAN.md) / [F006図](docs/ARCHITECTURE.md) / [F006データ契約](docs/DATA_CONTRACTS.md) / [検証ノート・未実施](findings/F006-validation.md)。設計Draft PRでは実装や採用を主張しない。
+
 **現在（2026-10-16）：F001〜F003に加え、F004の「電池残量に制約された1セル1D内部駆動」を実装・検証済みとして正式採用。73テスト、A〜Fの10対照、17拒否例、保存証拠の独立照合と再実行一致、CIを確認。設計[PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)を先に統合し、実装と採用記録は[PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)で統合する。[F004検証記録](findings/F004-validation.md#2026-10-16-採用判断と統合)を参照。**
 
 ## 次の一能力（研究提案：F005／2026-10-16）
