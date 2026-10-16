@@ -82,10 +82,10 @@ class Config:
     capacity_uj: int
     initial_balance_uj: int
 
-    @classmethod
-    def from_dict(cls, raw: object) -> "Config":
-        if not isinstance(raw, dict) or raw.keys() != set(cls.__dataclass_fields__):
-            raise ValueError("F004 config keys do not match f004.v1")
+    def __post_init__(self) -> None:
+        # Every public construction path (including dataclasses.replace) must
+        # enforce the same contract before simulation or output can begin.
+        raw = asdict(self)
         if raw["schema_version"] != SCHEMA or not _safe_id(raw["experiment_id"]):
             raise ValueError("invalid schema or XML 1.0 experiment_id")
         if raw["seed"] is not None:
@@ -109,7 +109,17 @@ class Config:
         ratio = Fraction(str(raw["duration_s"])) / Fraction(str(raw["dt_s"]))
         if ratio.denominator != 1 or not 1 <= ratio.numerator <= MAX_STEPS:
             raise ValueError("duration must be an exact decimal multiple of dt, <=10000 steps")
-        return cls(**{**raw, **floats})
+        normalized_ratio = Fraction(str(floats["duration_s"])) / Fraction(str(floats["dt_s"]))
+        if normalized_ratio != ratio:
+            raise ValueError("float normalization must preserve the exact decimal time grid")
+        for name, value in floats.items():
+            object.__setattr__(self, name, value)
+
+    @classmethod
+    def from_dict(cls, raw: object) -> "Config":
+        if not isinstance(raw, dict) or raw.keys() != set(cls.__dataclass_fields__):
+            raise ValueError("F004 config keys do not match f004.v1")
+        return cls(**raw)
 
     @classmethod
     def from_json(cls, path: Path) -> "Config":
@@ -283,9 +293,13 @@ def plot_svg(rows: list[dict], title: str, capacity: int) -> str:
         low, high = min(vals), max(vals)
         if key == "balance_uj":
             low, high = 0, capacity
-        span = high - low if high != low else 1
+        # Normalize before subtracting or multiplying: finite world values can
+        # still overflow in 680*time or in high-low across opposite signs.
+        scale = max(abs(low), abs(high)) or 1
+        low_scaled, high_scaled = low / scale, high / scale
+        span = high_scaled - low_scaled if high != low else 1
         pts = " ".join(
-            f'{90 + 680*r["time_s"]/times:.3f},{bottom-(bottom-top)*(r[key]-low)/span:.3f}'
+            f'{90 + 680*(r["time_s"]/times):.3f},{bottom-(bottom-top)*((r[key]/scale-low_scaled)/span):.3f}'
             for r in samples
         )
         parts.extend([

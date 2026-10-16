@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import csv
+from dataclasses import replace
 from decimal import localcontext
+import hashlib
+import json
 import math
 from pathlib import Path
 import subprocess
@@ -10,6 +13,7 @@ import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+import xml.etree.ElementTree as ET
 
 from soma.f001 import step as f001_step
 from soma.f002 import Event, apply_event
@@ -129,6 +133,53 @@ class TestF004(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     self.cfg(dt=.03)
 
+    def test_integer_time_grid_cannot_change_during_float_normalization(self):
+        # Raw ratio is exactly 6; converting the duration to float changes its
+        # decimal spelling and previously made Config.steps silently return 5.
+        raw = base("integer-grid", motor=0, dt=2**53, duration=6 * 2**53)
+        with self.assertRaisesRegex(ValueError, "normalization"):
+            Config.from_dict(raw)
+        # Normalization must not turn an invalid raw grid into a valid one.
+        with self.assertRaises(ValueError):
+            Config.from_dict(base("offgrid", dt=2**53, duration=2 * 2**53 + 1))
+        cfg = Config.from_dict(base("integer-grid", motor=0, dt=2, duration=6))
+        self.assertEqual(cfg.steps, 3)
+        self.assertEqual(Config.from_dict(cfg.to_dict()), cfg)
+        self.assertEqual(simulate(cfg)[0][-1]["time_s"], cfg.duration_s)
+
+    def test_direct_config_and_replace_enforce_input_contract(self):
+        for changes in (
+            {"dt_s": .3}, {"mass_kg": 0}, {"motor_force_n": float("nan")},
+            {"initial_balance_uj": True}, {"seed": 1},
+            {"schema_version": "unknown"}, {"experiment_id": "bad\u0000id"},
+        ):
+            with self.subTest(changes=changes):
+                raw = {**base("direct"), **changes}
+                with self.assertRaises(ValueError):
+                    Config(**raw)
+                with self.assertRaises(ValueError):
+                    replace(self.cfg(), **changes)
+        cfg = Config(**base("direct", motor=0, dt=1, duration=3))
+        self.assertEqual(cfg.steps, 3)
+        self.assertIs(type(cfg.dt_s), float)
+
+    def test_large_finite_motion_has_finite_bounded_svg_coordinates(self):
+        cfg = Config.from_dict(dict(base("large-plot", motor=0, velocity=2,
+                                        dt=4e307, duration=1.2e308),
+                                    initial_x_m=-1e308))
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)/"run"
+            save_run(cfg, folder)
+            self.assertTrue(verify_saved_run(cfg, folder)["independent_all_steps"])
+            root = ET.parse(folder/"motion_energy.svg").getroot()
+            lines = root.findall("{http://www.w3.org/2000/svg}polyline")
+            self.assertEqual(len(lines), 3)
+            for line in lines:
+                for point in line.attrib["points"].split():
+                    x, y = map(float, point.split(","))
+                    self.assertTrue(math.isfinite(x) and math.isfinite(y))
+                    self.assertTrue(90 <= x <= 770 and 78 <= y <= 442)
+
     def test_derived_mechanical_identity(self):
         rows, _, ledger = simulate(self.cfg(drag=.2, external=.25, dt=.05))
         self.assertEqual(ledger.residual_uj, 0)
@@ -167,13 +218,56 @@ class TestF004(unittest.TestCase):
             with self.assertRaises((AssertionError, ValueError)):
                 verify_saved_run(cfg, dest)
 
+    def test_manifest_cannot_disable_artifact_integrity_checks(self):
+        cfg = self.cfg()
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp)/"run"
+            save_run(cfg, dest)
+            manifest_path = dest/"manifest.json"
+            manifest = json.loads(manifest_path.read_text())
+            valid = manifest["artifacts"]
+            inventories = [{}, None, {**valid, "extra.svg": "unused"}]
+            inventories += [{k: v for k, v in valid.items() if k != removed}
+                            for removed in valid]
+            for inventory in inventories:
+                with self.subTest(inventory=inventory):
+                    manifest["artifacts"] = inventory
+                    manifest_path.write_text(json.dumps(manifest))
+                    with self.assertRaises(AssertionError):
+                        verify_saved_run(cfg, dest)
+
+    def test_independent_oracle_checks_initial_energy_even_with_updated_hash(self):
+        cfg = self.cfg()
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp)/"run"
+            save_run(cfg, dest)
+            path = dest/"states.csv"
+            with path.open(newline="") as fp:
+                reader = csv.DictReader(fp)
+                fields, original = reader.fieldnames, list(reader)
+            manifest_path = dest/"manifest.json"
+            manifest = json.loads(manifest_path.read_text())
+            for field in ("motor_work_j", "external_work_j", "drag_work_j",
+                          "kinetic_delta_j", "mechanical_residual_j"):
+                with self.subTest(field=field):
+                    rows = [dict(row) for row in original]
+                    rows[0][field] = "123"
+                    with path.open("w", newline="") as fp:
+                        writer = csv.DictWriter(fp, fieldnames=fields)
+                        writer.writeheader()
+                        writer.writerows(rows)
+                    manifest["artifacts"]["states.csv"] = hashlib.sha256(path.read_bytes()).hexdigest()
+                    manifest_path.write_text(json.dumps(manifest))
+                    with self.assertRaisesRegex(AssertionError, "initial row"):
+                        verify_saved_run(cfg, dest)
+
     def test_suite_runs_preregistered_controls_and_refuses_invalid_inputs(self):
         with tempfile.TemporaryDirectory() as tmp:
             result = suite(Path(tmp)/"suite")
             self.assertEqual(len(result["cases"]), 10)
             self.assertEqual(result["cases"]["B-full"]["final_balance_uj"], 499_995)
             self.assertEqual(result["cases"]["D-low"]["final_balance_uj"], 54_996)
-            self.assertEqual(len(result["rejections"]), 16)
+            self.assertEqual(len(result["rejections"]), 17)
             self.assertTrue(all(record["pass"] for record in result["rejections"]))
             self.assertTrue(result["checks"]["tamper_rejection"])
 

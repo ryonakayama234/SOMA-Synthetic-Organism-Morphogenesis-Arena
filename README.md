@@ -96,3 +96,6 @@ F004は引き続き**設計段階／実験未実施**。Draft PR #10で2つの�
 - [システム図](docs/ARCHITECTURE.md#f004-実装候補2026-10-16pr-11正式採用前) / [データ契約](docs/DATA_CONTRACTS.md#f004-実装候補-f004v1-の確定予定スキーマ2026-10-16pr-11) / [仕様・仮説](topics/F004-actuation-energy/SPEC.md) / [初回検証結果・Wolfram独立理論値](findings/F004-validation.md)。
 - [初回CI成功](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901)：Python3.11の全68テスト成功、A〜F 10正常対照・16不正入力拒否、独立CSV検証と全スイート再実行一致。B残高499995µJ/D残高54996µJは実装前に記録したbinary64参照と一致。
 - 既存F001/F002/F003のAPI変更なし。エネルギー制約付き1セル1D運動のみ。F003への結合・細胞の知能・実機・進化・創発の根拠にはならない。
+
+### PR #11 実装監査の更新（2026-10-16）
+時間格子のfloat正規化でステップが欠ける問題、Config直接生成での検証迂回、巨大な有限値のSVG座標overflow、保存証拠検証の抜けを修正。通常の物理・費用式と事前参照値は維持し、境界と改変に対する5テストを追加。[4件の反例・修正・検証結果](findings/F004-validation.md#2026-10-16-pr-11-独立視点の実装監査)。Draft維持、main統合・正式採用は別途判断する。

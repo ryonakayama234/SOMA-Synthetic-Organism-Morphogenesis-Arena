@@ -75,7 +75,11 @@ def verify_saved_run(cfg, folder):
     manifest = json.loads((folder / "manifest.json").read_text(encoding="utf-8"))
     require(manifest["schema_version"] == "f004.v1", "manifest schema")
     require(manifest["experiment_id"] == cfg.experiment_id, "manifest experiment id")
-    for filename, digest in manifest["artifacts"].items():
+    artifacts = manifest.get("artifacts")
+    require(isinstance(artifacts, dict) and set(artifacts) == {
+        "config.json", "states.csv", "ledger/events.csv", "motion_energy.svg",
+    }, "manifest must hash exactly all four run artifacts")
+    for filename, digest in artifacts.items():
         require(sha(folder / filename) == digest, "saved artifact checksum: " + filename)
     require(json.loads((folder / "config.json").read_text(encoding="utf-8"))
             == cfg.to_dict(), "saved config changed")
@@ -102,6 +106,10 @@ def verify_saved_run(cfg, folder):
                     row["candidate_motor_work_j"] is None and
                     row["motor_applied_n"] == 0 and row["spent_uj"] == 0,
                     "initial row")
+            require(all(row[name] == 0 for name in (
+                "motor_work_j", "external_work_j", "drag_work_j",
+                "kinetic_delta_j", "mechanical_residual_j",
+            )), "initial row must have zero interval work and energy delta")
         else:
             u, ext, h = cfg.motor_force_n, cfg.external_force_n, cfg.dt_s
             prospective = None
@@ -249,6 +257,7 @@ def suite(output):
         ("negative-drag", {"drag_per_s": -1}),
         ("unstable-drag", {"drag_per_s": 12}),
         ("offgrid-dt", {"dt_s": .03}),
+        ("normalization-changes-grid", {"dt_s": 2**53, "duration_s": 6 * 2**53}),
         ("nonfinite-force", {"motor_force_n": float("nan")}),
         ("infinite-external", {"external_force_n": float("inf")}),
         ("bool-balance", {"initial_balance_uj": True}),

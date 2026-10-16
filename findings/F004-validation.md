@@ -2,7 +2,7 @@
 id: FIND-F004
 title: F004 内部駆動と残量の実験記録
 kind: experiment_finding
-status: implementation_candidate_initial_ci_pass
+status: implementation_candidate_review_fixed_local_pass
 updated: 2026-10-16
 feature: F004
 issue: 9
@@ -60,3 +60,23 @@ Wolfram Languageで離散運動と台形仕事の代数恒等式の残差0、お
 - **監査上の改善**：Eではモーターを10回適用しても支出イベント0。初回比較実装にあった\`motor_steps\`（実際は支出回数）の曖昧な指標を、修正コミット\`3739a125b4b2bb1be08d86c03fc200fbd68e66e6\`で**\`applied_motor_steps\`と\`spend_event_count\`に分離**。改訂HEADのCIは再確認対象。
 - [初回GitHub Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901) / [artifact 12015824529](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901/artifacts/12015824529)。そのartifactには\`runs/F004-ci/\`と\`runs/F004-replay/\`に計117ファイル、生成条件とSHA付きの生ログ・図・比較値がある。
 - **結果判定**：A〜Fのソフトウェアモデルに関する事前仮説を初回証拠は支持。一方、連続物理・モーター損失・実機・自己組織化・生存は**未検証**。最新HEADのCIと独立設計監査、ユーザーの採否判断までは**正式採用不可**。
+
+## 2026-10-16 PR #11 独立視点の実装監査
+
+対象HEAD：`60bb167747e8ec77863dd5ccb2aa9f07eb9df65f`。修正前の既存68テストは成功したが、以下4件のP2を追加の反例で再現した。
+
+| ID | 問題と修正前の反例 | 修正・回帰検証 |
+| --- | --- | --- |
+| R1 | `dt_s=9007199254740992`, `duration_s=54043195528445952`は入力では厳密6ステップ。Config.from_dictの検証後にfloat化すると十進表記が変わり、stepsが5へ切り捨てられた | 生入力とfloat正規化後で厳密時間比が一致しなければValueError。正常な整数設定のroundtripも確認。スイートの拒否例を16→17へ追加 |
+| R2 | `dataclasses.replace(valid_cfg, dt_s=.3)`が通り、duration=1秒なのに3ステップ・0.9秒で成功扱い。直接Config生成も質量・seed等の検証を迂回 | 全Config構築の検証を`__post_init__`へ集約。直接生成・replace・from_dictで時間、型、範囲、schema、IDを同じ条件で検証 |
+| R3 | motor=0、dt=duration=1e308、初速0なら物理ログは有限でも、SVGの`680*time/time_end`がinf。状態のhigh-lowにもoverflow経路がある | 時間比と状態のスケールを先に正規化。初期位置-1e308、速度2、dt=4e307、duration=1.2e308の3ステップで有限な運動を保存・独立照合し、SVG全座標が有限で描画範囲内と確認 |
+| R4 | manifest.artifactsを空にすると壊れたSVGが未照合のまま`artifact_hashes=True`。また初期行motor_work=123へ変更してhashを更新しても独立オラクルが合格 | 必須4成果物と一覧キーを厳密一致。初期行の5つの仕事・運動エネルギー差・残差をすべて0と照合。欠落/余分/空一覧、hash更新済みの初期行改変を拒否 |
+
+**ローカルで実施した検証**（Python、Linux、修正済み作業ツリー）：
+- `python -m unittest discover -s tests -v`：**73 tests / OK**（既存50＋F004 23、5テスト追加）。
+- `python -m experiments.F004.run_suite --output-dir runs/F004-audit --replay-output-dir runs/F004-audit-replay`：10対照・17拒否、全時刻CSV/台帳照合成功。58ファイルを含む各スイートの生バイト一致。B=499995 µJ、D=54996 µJで事前binary64参照を維持。
+- `python -O -m experiments.F004.run_suite --output-dir runs/F004-audit-optimized`：10対照・17拒否成功。オラクルは`assert`に依存しない。
+- 今回のWolfram Context/Language/Alphaは接続エラーで**再検算未実施**。標準ライブラリFractionによる独立有理数反復ではA=(11/20,1,1000000)、B=(11/20,1,500000)、C=(0,0,0)、D=(49/100,7/10,55000)、E=(9/20,0,1000000)。全区間の機械恒等式残差は厳密0。過去のWolfram実行記録とは区別する。
+- 修正後コードSHA256：F004=`f841a49b364750672f427c8a614b71ec0e45656e9bb50eafa0cc57ba7d63ef12`、suite=`77e52bac4c172b635c54725ececa01a04e9540ae68c1312006da057a1287d843`。GitHubでの最新コミットのCI結果・artifactは[PR #11 Checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11/checks)で確認する。上記ローカル検証と過去HEADのCIを同一視しない。
+
+**判定**：4件は修正と反例試験で解消。A〜Fの通常条件について物理・費用式と観測値は変えていない。保存hashは整合性確認であり、manifestごと書き換える攻撃に対する署名ではない。F001/F002/F003のAPIは変更なし。PR #10→#11の依存順とDraftを維持し、main統合・正式採用はユーザーの判断に残す。

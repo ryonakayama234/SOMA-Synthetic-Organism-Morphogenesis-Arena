@@ -250,7 +250,7 @@ flowchart TD
 
 ~~~mermaid
 flowchart TD
- C["設定: f004.v1、内部力u・外力Fext・残量µJ"] --> V{"有限値・格子・範囲チェック"}
+ C["設定: f004.v1、全コンストラクタで共通検証"] --> V{"有限値・範囲・float変換前後の格子一致"}
  V -->|reject| X["何も保存しない・ValueError"]
  V -->|valid| W["世界真値: Motion(x,v) + F002 LedgerState(A)"]
  W --> B{"残量=0？"}
@@ -264,10 +264,13 @@ flowchart TD
  Z --> A
  A --> S["states.csv: 各ステップの世界真値"]
  A --> L["ledger/events.csv: F002で受理した支出のみ"]
- S --> O["別式の独立CSV参照・A〜F比較"]
+ S --> O["初期行を含む独立CSV参照・必須4成果物のhash照合"]
  L --> O
  O --> M["comparison.json、SHA付きmanifest、motion_energy.svg"]
  M -.-> N["後続研究: F003結合や局所センサーは未接続"]
 ~~~
 
 実装責務：\`soma/f001.py\`＝運動更新、\`soma/f002.py\`＝エネルギー台帳、\`soma/f004.py\`＝エネルギーに依存する内部駆動の採否と不可分step。\`experiments/F004/run_suite.py\`＝**CSVを読み戻す**独立計算・比較。内部エージェントへの世界全体情報の付与、F003との統合、実電池・実モーターのモデル化はしない。初回CI 68テスト合格／10対照／16拒否は実装候補の範囲のみ。
+
+### PR #11 独立視点の実装監査修正（2026-10-16）
+Configの検証は`__post_init__`に集約し、JSON/dict、直接生成、`dataclasses.replace`で同じ条件を課す。生入力とfloat正規化後の十進有理数による時間比が同じ整数でなければ保存前に拒否する。SVGは時間と状態を先に正規化してから座標へ変換し、有限状態からの表示計算のoverflowを回避する。保存検証では4成果物の完全なhash一覧と、初期行の全仕事・運動エネルギー差・残差0を必須にする。物理更新・費用式・F001〜F003のAPIは変更しない。

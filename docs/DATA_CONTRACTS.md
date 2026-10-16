@@ -298,8 +298,14 @@ step_index,time_s,x_m,v_m_s,motor_command_n,motor_applied_n,external_force_n,can
 - 各行の\`motor_work_j\`, \`external_work_j\`, \`drag_work_j\`は（符号付き）midpoint-velocity仕事。\`mechanical_residual_j = kinetic_delta_j - (motor_work_j + external_work_j - drag_work_j)\`。世界の真値のみでありセンサー出力ではない。
 - \`ledger/events.csv\`：\`step_index,time_s,event_index,kind,source_id,target_id,amount_uj,eta_bps,received_uj,loss_uj,external_in_uj,external_out_uj,residual_uj\`。イベントはF002の既存\`spend\`のみ。支出0なら行は無い。
 - \`motion_energy.svg\`：位置・速度・残量の3段表示。間引き表示のみ、生証拠は完全なCSV。\`manifest.json\`：モデル/版/seed/積分方式、Git HEAD・dirty、F001/F002/F004コードSHA256、スイートSHA256、ケースごとのCSV/JSON/SVG SHA256。
-- スイート出力：\`suite_source.py\`, \`rejections.json\` (16拒否), \`comparison.json\` (A〜F 10設定・理論参照・binary64参照・CSV独立検算), \`B-full-replay/\`, \`full_suite_replay.json\`。完全な再実行バイト照合が一致しなければテストは失敗。
+- スイート出力：\`suite_source.py\`, \`rejections.json\` (監査後17拒否), \`comparison.json\` (A〜F 10設定・理論参照・binary64参照・CSV独立検算), \`B-full-replay/\`, \`full_suite_replay.json\`。完全な再実行バイト照合が一致しなければテストは失敗。
 - 運動と台帳は新しい不変値として不可分commit。不正入力や有限でない派生量はrunフォルダ作成前に拒否。台帳残差は厳密0 µJ。
 - \`comparison.json.status=local_software_checks_passed\`はスイート内部のソフトウェア検査を意味し、main統合の承認・実機の裏付けではない。
 
 [実装モジュール](../soma/f004.py) / [再現手順](../experiments/F004/README.md) / [初回CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38829244901)。
+
+### PR #11 監査後の補足契約（2026-10-16）
+- `Config(**fields)`、`Config.from_dict/from_json`、`dataclasses.replace`の全経路で同じ型・範囲・時間格子検証を行う。数値フィールドはfloatに正規化するが、時間比は**生入力と正規化後の両方**で同じ整数1〜10000でなければ`ValueError`。例：dt=`9007199254740992`、duration=`54043195528445952`は入力上6ステップでも正規化後の十進比が変わるため拒否する。ステップ数を切り捨てて実行しない。
+- 初期行（step_index=0）の`motor_work_j`、`external_work_j`、`drag_work_j`、`kinetic_delta_j`、`mechanical_residual_j`はすべて厳密0。初期速度が非0でも区間仕事・エネルギー**差**なので0とする。
+- `manifest.artifacts`のキーは`config.json`、`states.csv`、`ledger/events.csv`、`motion_energy.svg`の4つと厳密一致させる。空・欠落・余分な一覧を拒否し、すべてのSHA256を照合する。hash一致と独立の意味検証は別の条件であり、hashが更新されても初期行異常を許可しない。manifest自体の真正性を保証する署名方式ではない。
+- SVGは有限値の時間比と正規化した状態範囲から座標を計算する。大きい有限状態でも座標を`inf`/`nan`にしない。CSVの物理値や仕事のbinary64演算順序は変更しない。
