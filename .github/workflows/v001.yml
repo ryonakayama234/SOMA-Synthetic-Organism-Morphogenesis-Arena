@@ -1,0 +1,39 @@
+name: V001 read-only F007 replay and evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    permissions:
+      contents: read
+    env:
+      SOMA_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Full F001-F007 and V001 regression
+        run: python -m unittest discover -s tests -v
+      - name: V001 tests with Python optimization
+        run: python -O -m unittest discover -s tests -p test_v001.py -v
+      - name: V001 nine F007 cases, frame audit and full byte replay
+        run: python -m experiments.V001.run_suite --output-dir runs/V001-ci --replay-output-dir runs/V001-replay
+      - name: Publish evidence only after all checks succeed
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: V001-${{ matrix.python }}-evidence
+          if-no-files-found: error
+          path: |
+            runs/V001-ci/
+            runs/V001-replay/
