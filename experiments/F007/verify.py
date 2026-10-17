@@ -64,11 +64,26 @@ def compare(actual, expected, name: str, *, tolerance=1e-12) -> None:
                 abs(actual-expected) <= tolerance, name+": numeric mismatch "+repr((actual,expected)))
 
 
-def audit_run(directory: Path) -> dict:
+def audit_run(directory: Path, *, trusted_origin: dict | None = None) -> dict:
+    # Trusted identity MUST originate outside the saved/possibly tampered manifest.
+    # Git/source hashes validate a checkout, not the human who historically ran it.
     # Every hash is checked, then EVERY saved numerical row and event is re-derived.
     root = directory.resolve()
     m = json.loads((root/"manifest.json").read_text(encoding="utf-8"))
     c = json.loads((root/"config.json").read_text(encoding="utf-8"))
+    if trusted_origin is not None:
+        require(m.get("origin") == trusted_origin, "origin vs externally supplied trusted identity")
+        required = {
+            "soma/f001.py", "soma/f002.py", "soma/f003.py", "soma/f005.py",
+            "soma/f007.py", "topics/F007-linked-motor-work/SPEC.md",
+            "experiments/F007/PLAN.md",
+        }
+        require(set(trusted_origin["source_hashes"]) == required,
+                "trusted source dependency set")
+        project = Path(__file__).resolve().parents[2]
+        for rel, expected_hash in trusted_origin["source_hashes"].items():
+            require(hashlib.sha256((project / rel).read_bytes()).hexdigest() == expected_hash,
+                    "trusted checkout source mismatch: " + rel)
     require(m["schema_version"] == "f007.v1" and c["schema_version"] == "f007.v1",
             "schema")
     expected_files = {"config.json","states.csv","ledger/events.csv","link_events.csv","motion.svg"}
