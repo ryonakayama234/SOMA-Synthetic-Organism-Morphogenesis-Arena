@@ -69,3 +69,24 @@ Fの対照も実装前に具体化した（[PLAN](../experiments/F007/PLAN.md) �
 - `docs/ARCHITECTURE.md`, `docs/DATA_CONTRACTS.md`, README/AGENTS: 同じPR上で同期。
 
 今後のゲート：実際のCIを確認してログから結果を記入→数式/境界/出自の独立レビューと修正→研究者の明示採否。履歴は上書きせず追記する。
+
+## 2026-10-17 初回F007 CIの実測と追試待ち（PR #21）
+
+**初回HEAD `20ebfe664f45c825d9f19e64473525cf668f8d15` で観測した結果**（[GitHub Actions #39012438734](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012438734)）。
+
+| 対照・検査 | 初回CI観測 | 判定の範囲 |
+| --- | --- | --- |
+| F007 A〜E | 保存9runに含まれ、全時刻の独立離散オラクルで照合 | 事前登録の離散数理と一致 |
+| F-01〜F-04 | 電池途中枯渇・無償保持・外力のみ・速度反転を含めて一致 | 理想モデル内の支持 |
+| F-05 | 不正入力12件を拒否 | 限定された負例で一致 |
+| F-06 | 既存CSV改変検出、58ファイルの再実行byte一致 | 再現性・改変検出が成立 |
+| 既存全回帰 | Python 3.11/3.12で各120テスト合格、F007の最適化8テストも成功 | 初回HEADのみ |
+| 完全生証拠 | [3.11 artifact #12092624115](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012438734/artifacts/12092624115) / [3.12 artifact #12093860051](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012438734/artifacts/12093860051) | ZIP公開は確認、外部第三者の全バイト監査は未完了 |
+
+**Wolfram追加の独立参照**：F-01は初回62,500µJを使い、後続3ステップはAモーターを停止して惰走し、A終点1/4m、B終点3/4m。F-04は正仕事9/16J、符号付き仕事1/2J、最終共通速度−3/4m/s。F-03はAの電池0でもB外力だけで共通加速度1m/s²、B側リンク力−1N。Wolfram参照とCI結果を区別する。
+
+**初回CI後の監査改善**：保存manifestに書かれた任意の出自をそのまま信頼しないよう、`audit_run(..., trusted_origin=...)` を追加。GitHub checkoutから得た期待Git identityと依存ソースのSHA256を照合し、suite runner・別オラクルもhash対象に含めた。出自を書き換える負例テストを追加したため、**上記120テストの成功を修正後HEADへ流用しない**。最終HEADのCI、改変検査、成果物と独立監査を再確認する。
+
+既知の持越し：通常の`save_run`とスイートは新しい出力パスに直接書き込むため、途中の異常終了時に部分生成されたディレクトリが残り得る。既存成果物を上書きしないが、F006の二宛先ステージング公開と同水準の障害原子性は未実装。この点を正式採用前に改善するか、明示的に採用範囲から除外して判断すること。外部の独立レビュアー承認も未実施。
+
+**現時点の科学判断：固定離散モデルに関するH007a〜cは初回の保存証拠ではSUPPORTED候補。正式採用は未決定。** 結合による生存利益、実自走、創発は主張しない。
