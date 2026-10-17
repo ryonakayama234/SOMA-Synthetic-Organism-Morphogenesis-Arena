@@ -519,3 +519,23 @@ flowchart TD
 ## F007 限定的正式採用後のフロー（2026-10-17）
 
 旧「提案」「検証待ち」図は当時の履歴。実装済みの流れは、入力検証 → Aモーター候補力学・正仕事積分 → A電池ゲート → A/B運動・F002台帳 → *私有ステージ*内CSV/イベント/manifest生成 → 保存バイトの独立監査 → 1宛先ずつ既存結果を置換しない原子的公開 → 9条件・58ファイル再生とCI検査。CI成功時のみ証拠ZIPを公開。二宛先全体の停電原子性はなし。詳細は[最新研究判断](../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)を優先。
+
+## V001 研究用1D・2セル再生ビューア（2026-10-17／設計のみ、未実装）
+
+V001は **F007の保存ログを研究者が観察できるようにする一能力**。F008（自己運動からの負荷異常検出）や細胞制御・世界の物理挙動は変更しない。まだ再生できない提案図。
+
+~~~mermaid
+flowchart LR
+  SOURCE["F007採用済みの原本\nconfig/states/ledger/link_events/manifest"] --> CHECK["原本の独立検査\nschema / SHA / 保存行・イベント"]
+  CHECK --> FRAMES["V001: stepごとの読み取り専用フレーム投影\nxA,xB,vA,vB,link,電池,motor"]
+  FRAMES --> UI["研究者画面: 1Dレール\nステップ選択・停止・再生"]
+  FRAMES --> EVIDENCE["canonical frame記録 / 再生比較 / provenance"]
+  EVIDENCE --> JUDGE["A〜F対照・独立監査・採否"]
+  UI -. "実験原本を書き換えない" .-> SOURCE
+  WORLD["F007研究者専用の世界真値"] --> SOURCE
+  WORLD -. "細胞向けAPIにしない" .-> OBS["将来のF008局所観測は別境界"]
+~~~
+
+1D保存値を2D/3Dの実測形態として描かない。描画のためのピクセル換算と元の測定単位を分離。切断イベントを「見た目のアニメーション」で勝手に補間しない。世界真値の表示は、セルへの真値提供と異なる。
+
+[仕様（未実装）](../topics/V001-readonly-replay/SPEC.md) / [A〜F計画](../experiments/V001/PLAN.md) / [記録（未実施）](../findings/V001-validation.md) / [Issue #24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24)
