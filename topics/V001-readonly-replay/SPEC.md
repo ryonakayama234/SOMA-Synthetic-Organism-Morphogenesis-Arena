@@ -103,3 +103,9 @@ CLI想定：`python -m experiments.V001.build_view --source runs/F007-ci/E-cut -
 `{1,13/16,15/16,3/2,1/2,OFF,7/4}`。この離散出力はWolframで別式確認した理論値であり、F007の既存試験記録とV001の将来実験を混同しない。
 
 **実行順序**：既存設計Draft PR #25内で仕様レビュー → 別の実装Draft PR → 検証・独立監査 → 研究者の明示採否 → 採用時のみmain統合。
+
+## V001 実装候補の現状（2026-10-17、設計時の「未実装」記録より後）
+
+[実装Draft PR #26](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/26)で `soma/v001.py`, `experiments/V001/{build_view,verify,run_suite}.py`, `viewer_template.html`, `tests/test_v001.py`, `.github/workflows/v001.yml` を追加。実装内容は**F007の保存runを監査・型付き投影し、オフラインHTML/SVGで記録stepのみ再生する**一能力に限る。F001〜F007計算本体、F008設計、過去の証拠を変更しない。
+
+**修正後コードHEAD `a608e9f`** は[Actions #39036952305](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39036952305)で3.11/3.12各136 tests + 10 optimized、9ケース42 frame、82 artifact byte replay一致を確認。これらは保存原本からの正確な投影・生成物の範囲のみ**支持候補**。画面操作による定性的使い勝手、第三者人間レビューとユーザーの明示的正式採用判断は未実施。設計PR #25と実装PR #26はDraftのままでmain未統合。最新の結果と失敗訂正は [findings](../../findings/V001-validation.md) を優先する。

@@ -120,3 +120,7 @@ V001はPython標準ライブラリのF007原本検証（trusted originを別経�
 最初のread-only viewerを`soma/v001.py`、`experiments/V001/{build_view,verify,run_suite}.py`、`viewer_template.html`に実装。F007 `verify.audit_run`の独立保存原本検証＋trusted checkout-origin照合を通過後にだけworld truthをframeへ投影する。UIは研究者専用で、F008セルの観測APIにリンク構造を渡さない。展示用矩形/レールを実機物理とみなさない。
 
 実装PRではコード＋テスト＋V001実験ノート＋ARCHITECTURE＋DATA_CONTRACTS＋README＋AGENTSを同期。実装の検証には保存元とframeの型付き厳密一致、E-cut post-event、電池指令と適用区別、hash付替え攻撃、HTML埋込データの整合、9ケース2パスbyte replay、CIの3.11/3.12と最終HEADが必要。CI初回成功と正式採用は別。V001のユーザーによる視覚・操作評価と別視点監査を残し、**明示的採否判断までmainに統合しない**。[実装PR #26](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/26)。
+
+### V001の追試成功・失敗を保持（2026-10-17、未採用）
+
+V001実装候補のコードHEAD `a608e9ff00b052da33cd148648d7858696cbf74d`は[Actions #39036952305](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39036952305)でPython 3.11/3.12各136全回帰・10最適化成功、F001〜F007 7 workflows成功。9ケース/42frame/82ファイルbyte replay。試験追加後のregexの二重escapeにより一度失敗した履歴 #39036778439 と修正を `findings/V001-validation.md` に保持。**成功したのは保存フレームの数値・出自・生成ファイルとNode.jsによるJS構文検査**であり、ブラウザの実操作者試験・第三者人間監査・正式採用を示すものではない。実装PR #26はDraftで保留、mainには統合しない。
