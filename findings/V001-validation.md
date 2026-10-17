@@ -27,3 +27,7 @@ related: [V001, F007]
 - 採否：研究者の明示判断と限定条件
 
 [Issue #24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24)
+
+## 2026-10-17 実装方針・合格定義の事前固定（V001結果は未実施）
+
+設計Draft PR #25でPython標準ライブラリによる**F007原本監査 → frame投影 → 単独HTML/SVG再生**を実装案とした。A〜F対照、端点値と切断イベント、パース値厳密一致、canonical byte再生、改変拒否、F007既存回帰を採用ゲートとする。物理計算を変えず、ブラウザ側にシミュレーションを再実装しない。F007の既存Wolfram計算とは別にE-cut理論時系列をWolframで確認したが、**V001の実装/画面実行/CI/ユーザビリティ試験/採否はすべて未実施**。観測結果が出るまで数値・合否欄を埋めない。
