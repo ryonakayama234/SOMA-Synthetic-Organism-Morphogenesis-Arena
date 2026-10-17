@@ -2,7 +2,7 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
-**最新の研究提案（2026-10-16／F006・未実装）**：F001〜F005は限定された範囲で正式採用済み。次は時間刻みの違いによる運動軌道・電池の駆動受否・整数µJ切上げを**分離診断する一能力**を提案。既存モデルは変更しない。[F006 Issue #16](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/16) / [F006仕様](topics/F006-timestep-diagnostics/SPEC.md) / [事前実験A〜F](experiments/F006/PLAN.md) / [F006図](docs/ARCHITECTURE.md) / [F006データ契約](docs/DATA_CONTRACTS.md) / [検証ノート・未実施](findings/F006-validation.md)。設計Draft PRでは実装や採用を主張しない。
+**F006研究の最新段階（2026-10-17／限定的正式採用：fixed A〜E・15runのdt差分監査）**：独立監査のP2（証拠出所の未照合、失敗時に出力が残る）を修正し、分類を事前ラベルと観測signatureへ分離。F001〜F005本体は不変。[設計PR #17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)／[実装PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)／[仕様](topics/F006-timestep-diagnostics/SPEC.md)／[検証ノート](findings/F006-validation.md)／[再現手順](experiments/F006/README.md)。旧v1・初回CIと旧候補記述は各時点の履歴。最終監査の成功とユーザーの研究判断に基づき限定的に正式採用し、統合の実際の状態はPR #18で追跡する。
 
 **現在（2026-10-16）：F001〜F003に加え、F004の「電池残量に制約された1セル1D内部駆動」を実装・検証済みとして正式採用。73テスト、A〜Fの10対照、17拒否例、保存証拠の独立照合と再実行一致、CIを確認。設計[PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)を先に統合し、実装と採用記録は[PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)で統合する。[F004検証記録](findings/F004-validation.md#2026-10-16-採用判断と統合)を参照。**
 
@@ -144,3 +144,19 @@ F004は引き続き**設計段階／実験未実施**。Draft PR #10で2つの�
 F005は「単一セル1Dの離散正仕事積分と整数µJ台帳への接続」として採用。[F005仕様の採用範囲](topics/F005-positive-work/SPEC.md#2026-10-16-正式採用f005の限定的な研究上の位置づけ)／[A〜Fと実装監査記録](findings/F005-validation.md)／[設計PR #13](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/13)／[実装PR #14](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/14)。旧提案・Draft・未実施の節はその時点の履歴。
 
 **採用外**：位置と仕事で異なる補間軌道、時間刻み依存の駆動拒否と毎ステップ切上げ、電池1µJでの無償保持、推進反作用相手未定義。これらを解決するまで自律移動、資源到達、移動効率、生存、身体形態/協調の優劣を評価する環境としては採用しない。次の優先課題は電池制約付き運動・課金の刻み幅収束。
+
+
+### F006実装候補（2026-10-16）
+
+- [設計Draft PR #17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)を事前登録とし、[実装Draft PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)をその設計ブランチに積んでいる。どちらも`main`に未統合。
+- `experiments/F006/run_suite.py`が5系列×3刻み=15 runを`soma/f005.py`で実行。`diagnostics.py`が保存CSVをF005の独立オラクルで照合したうえで横断診断し、`comparison.csv`・`diagnostics.json`・`comparison.svg`を出力する。
+- `tests/test_f006.py`は7テスト（正常対照、異常入力、ハッシュ更新付き証拠改変、完全バイト再現）。CIは既存F001〜F005を含む100テスト、F005+F006の`python -O`を検査する。
+- [初回実装CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38916091762)は成功し、[生証拠162ファイル](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38916091762/artifacts/12052835687)を保存。最終HEADのCI・別視点監査・正式採否は別確認。
+- [再現方法](experiments/F006/README.md) ／ [検証ノート](findings/F006-validation.md) ／ [アーキテクチャ](docs/ARCHITECTURE.md) ／ [データ契約](docs/DATA_CONTRACTS.md)。
+
+
+### F006 v2修正候補の検証入口（2026-10-17）
+ローカルPython3.12で全112テスト、最適化F006 19/F005 20、15runと81ファイル再生を確認する。CIは3.11/3.12両版を別job・別artifactで検査する。v2の主な変更は原本の数値ではなく、出自の期待値照合、公開前の一時保存とrollback、分類契約。結果は[findings](findings/F006-validation.md)へ記録し、PRの最終HEAD CIと照合する。
+
+### F006 限定的正式採用（2026-10-17）
+採用範囲は `f006.v2` の**固定A〜E・15runのdt依存診断**に限る。Wolfram離散参照、3.11/3.12各112テスト・F006 19最適化テスト、139 step/126 eventの別計算、各81ファイルのバイト一致を照合。P2 2件をv2で修正して再監査し、ユーザーが採用・統合を指示した。設計[PR #17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)はmain統合済み。実装[PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)に本記録を含め、最新CI確認後にmain統合する。詳しい採用ゲート・ZIPのSHA・既知制限は[findings](findings/F006-validation.md#2026-10-17-f006-限定的な正式採用--最新研究判断)へ。**非採用**：汎用原因推論、F005物理の修正・dt不変性、実機電力、生存/創発、多セル運動。上に残る「実装候補」「未採用」「PR未統合」は時点別履歴。
