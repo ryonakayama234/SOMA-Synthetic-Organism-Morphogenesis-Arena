@@ -468,3 +468,18 @@ suite manifestはモデル/seed/sweep/run数/verdict、Git commit/dirty、F001/F
 
 ### F006 v2実装対応（2026-10-17）
 上の「F006 実装候補の確定列・出力物」はv1履歴であり、v2改訂契約が優先する。ファイル数は1suite81（15run×5＋suite6）、replay込み162で維持。新しいsource_hashesはmanifest内の9パス→hashマップで、各ソースのコピー9ファイルを出す意味ではない。audit_suiteの結果はidentity_matches_trusted_expectation=trueとhistorical_execution_attested=falseを返す。JSONのsignature_matches_referenceはbool、CSVはTrue。Git不明時はnull。一般因果帰属はnull＋理由とする。
+
+## F006 v2 限定的正式採用のデータ契約（2026-10-17）
+
+**現行契約は`f006.v2`、固定`sweep_id=F006-A-E-v2`、`seed=null`。** 上のv1候補列・スキーマは履歴であり採用済み形式ではない。F005の単一run契約・歴史的ログは不変。出力は1suite=15run×5ファイル＋suite6ファイル=81ファイル、replay込み162ファイル。
+
+| ファイル/キー | 採用済みの意味と照合 |
+| --- | --- |
+| `sweep.json` | 事前凍結A〜Eの15条件。各ケース内で`dt_s`と識別子のみ変化。モデル`f005.v1`、固定参照ID。 |
+| `comparison.csv` | 15行。位置・速度・仕事・支出・受理/拒否・参照値に加え、事前ラベル`expected_classification`と観測`signature_matches_reference`を分離する。 |
+| `diagnostics.json` | `classification_scope=fixed_preregistered_controls_only`、`causal_attribution=null`。生ログの照合、誤差比・受否・数量化の固定参照と原本hash。 |
+| `manifest.json` | suite/run model/sweep/seed/git identity、F001/F002/F005 sha、runner source sha、9依存`source_hashes`、全成果物SHA256。期待identityは未信頼manifest外から指定。 |
+| `A-dt-xx/` | 各F005 runのconfig/state CSV/ledger events/SVG/manifest。独立保存オラクルが各ステップ・残差・イベントを検査。 |
+| `suite_source.py` / `comparison.svg` | source snapshotのhash照合／SVGは表示専用でCSVに優先しない。 |
+
+**保存ルール**：私有stageで生成/再計算/バイト再生一致を完了し、Linux `renameat2(RENAME_NOREPLACE)`で公開。通常例外ではこの呼出しで公開した成果物だけをrollback。他者の既存証拠は変更しない。2宛先の一括crash-atomicは提供しない。出自hashは監査checkoutとの一致であり、歴史的実行者の暗号学的証明ではない。F003/局所知覚/創発の構造は未接続。[検証・採用記録](../findings/F006-validation.md#2026-10-17-f006-限定的な正式採用--最新研究判断)。

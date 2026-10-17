@@ -2,13 +2,30 @@
 id: FIND-F006
 title: F006 時間刻み依存の検証ノート
 kind: experiment_finding
-status: implementation_candidate
-updated: 2026-10-16
+status: accepted_limited
+updated: 2026-10-17
 feature: F006
 issue: 16
 ---
 
-# F006検証記録 — 実装候補（未採用）
+# F006検証記録 — 限定的正式採用（2026-10-17）
+
+
+## 2026-10-17 F006 限定的な正式採用 — 最新研究判断
+
+**研究上の判定：SUPPORTED / accepted_limited。** ユーザーの明示的な採用・統合指示により、F006 v2を「F005 v1の固定A〜E・15runについて、時間刻み差分の既知シグネチャと保存証拠を検証・再実行可能にするオフライン診断機能」として限定的に正式採用する。設計PR [#17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)は先行してmain統合済み。実装・本採用記録の統合はPR [#18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)に記録する。元の事前登録PLAN、期待値、旧v1実験・初回レビューの失敗記録は変更しない。下の「未採用・候補」は各時点の履歴であり、本節が現在の研究判断となる。
+
+**証拠・独立検算**（変更前v2監査対象HEAD `47875a61bda0b959a33f85f888197324d5a41298`）：
+- [GitHub Actions #38982865371](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38982865371)：PR #18用テストmerge commit `a45163674637f3439f4740286ec3fed13b742d1c`をcheckout。Python 3.11.17・3.12.15の各112通常回帰、最適化F005=20/F006=19、A〜E=15run成功。原本81ファイルと再実行81ファイルのバイト一致。F001〜F005の別workflowも成功。
+- CI artifact [3.11: 12081991667](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38982865371/artifacts/12081991667) ZIP SHA256 `9086b3692d49151b61e82c5512ce31dacd61965c24fe992dc68b5fb97e428ae5`、[3.12: 12081782132](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/38982865371/artifacts/12081782132) ZIP SHA256 `0e4aa3fec5a8a0e3adacff1cfeac7680e389d4b9358434050b6103cc7cde8dcb`。両archiveそれぞれの139ステップ、126支出イベント、状態・仕事・台帳をSOMA実行コードをimportしない別式で監査して一致。比較CSV/全artifact checksum/依存hash整合を検証。相互の生証拠内容も一致。
+- Wolfram厳密有理数の離散参照：A `x(T)=(1,3/4,5/8)m`（連続参照は1/2m、誤差比2）、B `(x,v,spent_uj)=(0,0,0),(1/2,1/2,125000),(9/16,3/4,281250)`、C支出`1/10/100µJ`、D正仕事`1/2J`対符号付き`0J`、Eモーター支出`0µJ`。これは離散モデルの理論参照で、実機観測ではない。
+- 初回独立設計・コードレビューでP2が2件（出自改変の見逃し、部分成果物公開）。v2では信頼するcheckout/外部CI identityに基づくsuite/run/参照/9依存hash照合、private staging→原本監査→バイト再実行→no-replace公開、通常例外での所有済み成果物rollback、異常・改変負例19 F006テストで修正を確認。修正後の別式・CI監査も[PR #18最終監査メモ](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18#issuecomment-6228648338)に残す。GitHubの別レビュアーアカウントによるAPPROVEは得たと主張せず、研究上の採否判断と区別する。
+
+**最終ゲート（採用範囲内）**：G1理論値PASS、G2生ログ/全ステップと会計PASS、G3固定した出自と改変検査PASS、G4通常例外/競合下の安全な公開と全バイト再生PASS、G5過去機能の回帰・別式監査PASS、G6システム図・入出力契約・findings・README同期PASS。
+
+**採用外・残存制限**：任意条件での一般因果分類やmixed/undeterminedの自動判定、F005のdt不変性、連続系への一般収束保証、実機電力/効率、セルへの世界真値提供、F003との結合、資源獲得・自律性・生存・創発を認定しない。Bの結果はbudget gateだけでなくEuler位置誤差も併存。hash一致だけでは過去の実行者・実行事実の暗号学的証明にならない。二つの出力ディレクトリは停電・強制終了に対して一括crash-atomicではなく、監査済みprimaryだけが残る可能性がある。旧v1ログは改変せず保持する。
+
+**コードの不変性**：この採用記録では `soma/f001.py`〜`soma/f005.py` とF006数値・負例コード、A〜E理論参照を変更しない。研究文書・SPECの版hashが変わるため、本記録を含むPR #18の新HEADでCIと証拠を再生成して最終確認した上でmainに統合する。
 
 ## 2026-10-17 独立監査と設計改訂（実装後監査、未採用）
 独立レビューで参照数式と実装v1の主要結果は支持された一方、#18の証拠出自改変の見逃し、失敗時に出力が残るP2が2件報告された。分類も固定対照ラベルと一般因果推論の違いを明確化する必要がある。設計v2では信頼基準・依存ソース・分類列・公開/rollback契約を明記する。これは実装前レビュー完了の遡及主張ではない。実装修正と負例・最新版CIは別途記録する。

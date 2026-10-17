@@ -1,4 +1,4 @@
-# F006 — fixed-control timestep diagnostics (v2 candidate, not adopted)
+# F006 — fixed-control timestep diagnostics (v2, limited research adoption)
 
 ## Scope
 
@@ -66,10 +66,13 @@ uncatchable crash between renames may leave the complete audited primary only. T
 
 ## Research status
 
-Implementation PR #18 is a draft stacked on design PR #17; neither is adopted
-or merged to main. GitHub Actions F006 runs all historical regressions, optimized
-Python oracle tests, 15 sweeps plus replay, and uploads source evidence. A
-separate research audit and formal adoption decision are required.
+Research decision 2026-10-17: fixed A-E/15run diagnostic only is formally adopted
+on the basis of preregistered references, independent saved-log auditing,
+Python 3.11/3.12 CI and explicit user acceptance. Design PR #17 merged to main;
+implementation/adoption record are tracked in PR #18. Historical v1 candidate
+reports and failure reviews remain in findings. GitHub Actions F006 runs all
+historical regressions, optimized Python oracle tests, 15 sweeps plus replay,
+and uploads the evidence. This acceptance is not a GitHub third-party APPROVE.
 
 ## v2 trust and interpretation contract (2026-10-17)
 

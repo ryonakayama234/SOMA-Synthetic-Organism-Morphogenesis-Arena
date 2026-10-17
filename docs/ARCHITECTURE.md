@@ -424,3 +424,23 @@ flowchart TD
 
 ### F006 v2実装対応（2026-10-17）
 run_pairが両パスの正規化・事前確認→非公開の生成/監査→全バイト比較→Linux no-replace公開を担う。通常の公開例外は自分の公開分のみrollbackする。diagnosticsの監査は信頼するcheckoutの9ソース/参照hashと外部に固定した実行identityを使い、原本manifestの出自も照合する。上のv2図が現行実装責務で、旧図の最終出力への直接生成は履歴。F005の運動/仕事・会計・観測境界は変更しない。
+
+## F006 限定的正式採用後のシステム境界（2026-10-17）
+
+上のF006提案・候補図は履歴。現行採用済みは既存F005の**オフライン検証機能だけ**。ユーザーの採用判断に従い、実装[PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)で次の責務を統合する。
+
+~~~mermaid
+flowchart TD
+    P["凍結A〜E設定と各dt"] --> R["F006 run_suite / private staging"]
+    R --> M["既存F005 v1 の運動・台帳（変更なし）"]
+    M --> LOG["15runのF005生CSV・events・config・manifest"]
+    LOG --> O["F005 saved-file独立オラクル＋F006 cross-dt参照照合"]
+    W["Wolfram厳密有理数：離散モデル参照"] --> O
+    O --> A["v2 suite/run出自・9依存hashを照合"]
+    A --> Q["81ファイル完全再実行／比較"]
+    Q --> OUT["Linux no-replace公開：comparison / diagnostics / SVG / manifest"]
+    OUT --> CI["3.11・3.12のCI artifactと研究監査"]
+    OUT -. "世界真値をセルに戻さない" .-> N["将来の局所観測／制御器（未接続）"]
+~~~
+
+固定条件のみ`expected_classification`を事前ラベルとして出し、観測からの一致は`signature_matches_reference`、汎用`causal_attribution=null`。二保存先間のcrash原子性と実機・F003統合は非採用。実証値・制限・採用判断は[findings](../findings/F006-validation.md#2026-10-17-f006-限定的な正式採用--最新研究判断)。
