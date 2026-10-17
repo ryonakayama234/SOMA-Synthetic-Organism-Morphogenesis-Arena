@@ -144,7 +144,7 @@ def suite(out: Path) -> dict:
     summaries={}
     for key,cfg in configs.items():
         manifest=save_run(cfg,out/key,identity=identity)
-        oracle=audit_run(out/key)
+        oracle=audit_run(out/key, trusted_origin=identity)
         import csv
         with (out/key/"states.csv").open(newline="",encoding="utf-8") as fp:
             rows=list(csv.DictReader(fp))
