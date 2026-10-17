@@ -2,6 +2,8 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
+**最新判断（2026-10-17）**：F007 `f007.v1` は**固定1D・2セル片側A駆動とA電池支出の離散モデル整合性に限って正式採用**。9条件のWolfram/保存データ独立照合、3.11/3.12各126全回帰＋14最適化、58ファイル再現、改ざん・失敗時保存試験を通過。[採用範囲・非採用事項](findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)を優先し、下の「設計のみ／未採用」などは当時の履歴として読む。PR #20（設計）→#21（実装）の統合状況はGitHubを正とする。**実機・創発・任意dt・二宛先crash-atomicは非採用。**
+
 **F006研究の最新段階（2026-10-17／限定的正式採用：fixed A〜E・15runのdt差分監査）**：独立監査のP2（証拠出所の未照合、失敗時に出力が残る）を修正し、分類を事前ラベルと観測signatureへ分離。F001〜F005本体は不変。[設計PR #17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)／[実装PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)／[仕様](topics/F006-timestep-diagnostics/SPEC.md)／[検証ノート](findings/F006-validation.md)／[再現手順](experiments/F006/README.md)。旧v1・初回CIと旧候補記述は各時点の履歴。最終監査の成功とユーザーの研究判断に基づき限定的に正式採用し、統合の実際の状態はPR #18で追跡する。
 
 **現在（2026-10-16）：F001〜F003に加え、F004の「電池残量に制約された1セル1D内部駆動」を実装・検証済みとして正式採用。73テスト、A〜Fの10対照、17拒否例、保存証拠の独立照合と再実行一致、CIを確認。設計[PR #10](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/10)を先に統合し、実装と採用記録は[PR #11](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/11)で統合する。[F004検証記録](findings/F004-validation.md#2026-10-16-採用判断と統合)を参照。**
@@ -170,3 +172,11 @@ F006までの限定採用後、**F003二セルリンク + F005一セルの正仕
 - [提案システム図](docs/ARCHITECTURE.md#f007-提案片側の電池で結合した2セルが動く2026-10-17設計のみ) / [提案データ構造](docs/DATA_CONTRACTS.md#f007-提案データ構造保存フロー2026-10-17未実装)
 
 **境界**：F005の有効モーター力の反作用元が未実装、半陰的Euler位置と仕事積分が異なる、dt変更で電池支出・拒否が変わる。2セルの自律結合、局所感覚、身体図式、創発は未実装。設計レビュー→**別実装PR**→独立監査→ユーザーの採否決定まで、mainと既存証拠は変更しない。
+
+### F007 実装候補（2026-10-17、検証と正式採用前）
+
+上の「F007設計のみ」はPR #20提出時点の履歴。`soma/f007.py`に`f007.v1`の2セル片側A駆動・F005正仕事・F002台帳の結合候補を追加し、`experiments/F007/verify.py`の保存ファイル独立参照、`run_suite.py`の9物理対照/12負例/改変/バイト再生、`tests/test_f007.py`、Python3.11/3.12 CIを同一実装PRに含める。
+
+[再現コマンド](experiments/F007/README.md) / [事前A〜Fと追加F-01〜F-06](experiments/F007/PLAN.md) / [研究ノート](findings/F007-validation.md) / [実装の構造](docs/ARCHITECTURE.md#f007-実装候補の実際の責務とデータフロー2026-10-17) / [確定列契約](docs/DATA_CONTRACTS.md#f007-v1-実装候補の保存契約2026-10-17)。
+
+現段階はまだ結果検証前の候補。Wolfram理論予測をSOMA観測と混ぜず、最終HEAD CIと別視点証拠監査を完了するまでは正式採用・main統合を行わない。実機の自力推進・結合による省エネ優位・身体創発の主張は対象外。

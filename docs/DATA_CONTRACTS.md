@@ -543,3 +543,25 @@ flowchart TD
 | 監査 | 保存runのconfig/source/Git identity、台帳events、raw CSV、`manifest.json` と独立参照 | CSV改変・不正出自・再実行不一致を検出 |
 
 **実験ごとのレコード生成順**：入力検証 → 候補計算 → A支出ゲート → 採用または再計算 → 世界真値を確定 → 台帳・linkイベントを記録 → 原本を保存 → 別計算で全行監査 → 図・比較JSON・出自SHA → CI再実行照合。候補仕事や棄却理由は研究者用の監査データでありセルの知覚には入れない。数値はF005規約で計算するためF006のdt依存は残る。最終の型・列順・公開方式は独立設計レビュー後に確定する。
+
+## F007 v1 実装候補の保存契約（2026-10-17）
+
+実装で固定したスキーマは`f007.v1`。上の`f007.v0-proposal`例は**設計履歴**であって採用済みデータ契約ではない。入力は`schema_version, experiment_id, seed(null), dt_s, duration_s, drag_per_s, cells[A,B], motor_force_n, link`を厳密に含み、セルは`id, mass_kg, initial_x_m, initial_v_m_s, external_force_n, capacity_uj, initial_balance_uj`を含む。`link`は`initially_attached, length_m, detach_time_s`である。
+
+| 実データ | 契約 |
+| --- | --- |
+| `states.csv` | `step_index,time_s,attached,x_a_m,x_b_m,v_a_m_s,v_b_m_s,motor_command_n,motor_applied_n,external_force_a_n,external_force_b_n,link_force_a_n,link_force_b_n,candidate_motor_work_j,candidate_motor_positive_work_j,motor_work_j,motor_positive_work_j,external_work_j,drag_work_j,link_work_j,kinetic_delta_j,mechanical_residual_j,spent_a_uj,balance_a_uj,balance_b_uj,ledger_event_index,decision_reason` |
+| `ledger/events.csv` | F002受理されたAの`spend`イベントのみ。`step_index,time_s`とF002 Entryフィールドを格納。Bへのtransferイベントはない |
+| `link_events.csv` | `time_s,kind,attached_before,attached_after`とA/Bのbefore/after x/v、`link_force_before_n`。切断の瞬間状態は不変 |
+| `config.json` | 正規化した決定論入力（seed=null）。単位m,m/s,N,kg,s,µJ |
+| `manifest.json` | モデル・実験ID・原本SHA256・依存ソースhash・Git HEAD/dirty・支出と残高・イベント件数・台帳残差 |
+| スイート | 9runを含む`comparison.json`、ソースコピー2件、全成果物SHAを含むmanifest、同条件byte replay |
+
+列順は`soma/f007.py`内の`STATE_COLUMNS`/`LEDGER_COLUMNS`/`LINK_COLUMNS`を唯一の確定列定義とする。`candidate_motor_*`はA残量0/指令0ではnull、非ゼロ指令かつ残量ありで棄却された候補は記録するが**実支出0**。開始行の候補はnull。切断時刻の行はpost-eventリンク力0、直前の内部力はlink_eventsに保存。区間の力・仕事は直前時間刻みに対応する。
+
+保存CSV/イベントは`experiments/F007/verify.py`で毎行別式再計算する。hashは完全性の一部であり、単独で正しい数式・歴史的実行者・採用を証明しない。GitHub CIの実出自と別途照合する。環境の真値をセル側センサーに直結しない。
+
+
+## F007 正式採用した保存契約の補足（2026-10-17）
+
+`f007.v1`の上記列順・整数µJ・イベント意味論を**固定9条件の離散モデル整合性として限定採用**。各runとsuiteのCSV等は完成した私有ステージで監査してから、Linux `renameat2(RENAME_NOREPLACE)`で公開する。別の実行や他者の既存出力は上書きしない。入力不正、改変と再hash、異常終了時の部分公開を負例テストで確認。保存manifestの`origin.git_commit`はCIのmerge checkout、`origin.pr_head_sha`はPRソースHEAD。SHAは歴史的実行者の暗号署名ではない。通常例外時に自作業の出力をclean upするが、二宛先の停電原子性・fsync耐久性は保証しない。[限定採用判断](../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)が優先。
