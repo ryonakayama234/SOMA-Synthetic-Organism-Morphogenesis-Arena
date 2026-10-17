@@ -114,6 +114,20 @@ class F007Tests(unittest.TestCase):
             with self.assertRaises(FileExistsError):
                 save_run(c,p)
 
+    def test_origin_tampering_cannot_be_hidden_by_manifest(self):
+        import json
+        with tempfile.TemporaryDirectory() as temp:
+            path=Path(temp)/"run"
+            fake={"git_commit":"trusted-sha","git_dirty":False,"source_hashes":{}}
+            save_run(Config.from_dict(scenarios()["B-linked"]),path,identity=fake)
+            audit_run(path,trusted_origin=fake)
+            mp=path/"manifest.json"
+            manifest=json.loads(mp.read_text(encoding="utf-8"))
+            manifest["origin"]["git_commit"]="forged-history"
+            mp.write_text(json.dumps(manifest),encoding="utf-8")
+            with self.assertRaises(AssertionError):
+                audit_run(path,trusted_origin=fake)
+
     def test_suite_byte_replay(self):
         with tempfile.TemporaryDirectory() as temp:
             a,b=Path(temp)/"one",Path(temp)/"two"
