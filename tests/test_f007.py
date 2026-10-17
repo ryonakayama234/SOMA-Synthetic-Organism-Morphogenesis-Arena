@@ -118,7 +118,8 @@ class F007Tests(unittest.TestCase):
         import json
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)/"run"
-            fake={"git_commit":"trusted-sha","git_dirty":False,"source_hashes":{}}
+            from soma.f007 import provenance
+            fake=provenance()  # Trusted checkout snapshot, not synthesized from the artifact
             save_run(Config.from_dict(scenarios()["B-linked"]),path,identity=fake)
             audit_run(path,trusted_origin=fake)
             mp=path/"manifest.json"
