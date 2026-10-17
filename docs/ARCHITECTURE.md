@@ -539,3 +539,19 @@ flowchart LR
 1D保存値を2D/3Dの実測形態として描かない。描画のためのピクセル換算と元の測定単位を分離。切断イベントを「見た目のアニメーション」で勝手に補間しない。世界真値の表示は、セルへの真値提供と異なる。
 
 [仕様（未実装）](../topics/V001-readonly-replay/SPEC.md) / [A〜F計画](../experiments/V001/PLAN.md) / [記録（未実施）](../findings/V001-validation.md) / [Issue #24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24)
+
+### V001の具体モジュール境界（設計追補：未実装）
+
+~~~mermaid
+flowchart LR
+  F007["F007保存run\nconfig / states / ledger / links / manifest"] --> VERIFY["F007 saved-oracle + 出自・hash監査"]
+  VERIFY --> PROJ["soma/v001.py\n各保存行のread-only projection"]
+  PROJ --> CANON["frames.json\ncanonical byte再生の対象"]
+  CANON --> GEN["V001 build_view.py\n単独offline viewer.htmlへ安全に埋込"]
+  GEN --> UI["ブラウザ上のSVG\n時刻ステップ操作/セル位置/結合/電池"]
+  CANON --> TEST["A〜F原本突合・byte replay・GitHub CI"]
+  UI -. "元CSV・物理演算を変更しない" .-> F007
+  F007 -. "セルへworld truthを公開しない" .-> LOCAL["F008局所観測は別機能"]
+~~~
+
+**再生はすべて保存されたstepに限定**。描画用の画面スケールと物理数値を分離し、ブラウザは新しい世界状態を算出しない。詳細はV001の[SPEC追補](../topics/V001-readonly-replay/SPEC.md)。
