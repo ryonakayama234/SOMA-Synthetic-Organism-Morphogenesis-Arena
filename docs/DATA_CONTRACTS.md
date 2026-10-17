@@ -565,3 +565,47 @@ flowchart TD
 ## F007 正式採用した保存契約の補足（2026-10-17）
 
 `f007.v1`の上記列順・整数µJ・イベント意味論を**固定9条件の離散モデル整合性として限定採用**。各runとsuiteのCSV等は完成した私有ステージで監査してから、Linux `renameat2(RENAME_NOREPLACE)`で公開する。別の実行や他者の既存出力は上書きしない。入力不正、改変と再hash、異常終了時の部分公開を負例テストで確認。保存manifestの`origin.git_commit`はCIのmerge checkout、`origin.pr_head_sha`はPRソースHEAD。SHAは歴史的実行者の暗号署名ではない。通常例外時に自作業の出力をclean upするが、二宛先の停電原子性・fsync耐久性は保証しない。[限定採用判断](../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)が優先。
+
+## V001 保存状態から再生フレームへの読み取り専用投影（2026-10-17／提案・未実装）
+
+**入力原本（実装済みF007）**：`config.json`, `states.csv`, `ledger/events.csv`, `link_events.csv`, `manifest.json`。F007 `f007.v1` のschema・実験出自・SHA検証済みのデータだけを表示対象とする。**V001の新たなファイル形式はまだ凍結していない。**
+
+~~~mermaid
+flowchart TD
+ RAW["F007保存真値（研究者専用）\nstates.csv / event CSV / manifest"] --> AUDIT["schema + SHA + 時系列・リンクイベント整合性検査"]
+ AUDIT --> FRAME["提案: V001.frame.v1\nstep/time, x/v A/B, attached, balances, motor_applied"]
+ FRAME --> RENDER["研究者向け1D表示\n物理長[m] → 画面[px]"]
+ FRAME --> EVAL["完全フレーム一致／再生検証"]
+ RAW -. "セルにworld attached・B stateを渡さない" .-> OBS["F008局所観測（別の実装境界）"]
+~~~
+
+| 種別 | 原本の列／意味 | V001での取り扱い |
+| --- | --- | --- |
+| 時間 | `step_index`, `time_s` [s] | 保存ステップのみ。推定中間時刻を「観測」と表示しない |
+| 運動 | `x_a_m`, `x_b_m` [m], `v_a_m_s`, `v_b_m_s` [m/s] | 元数値の意味・単位を変えず、描画倍率は別設定 |
+| 接続 | `attached`, `link_events.csv` | 研究者専用の世界真値。イベントとの整合を検査 |
+| 電池 | `balance_a_uj`, `balance_b_uj` [µJ] | その時刻の残量。モーターの指令と支払済み動作を区別 |
+| 駆動 | `motor_command_n`, `motor_applied_n` [N], `decision_reason` | 拒否時に命令した力を「実際に出た力」と描かない |
+| 出自 | `manifest.json` / artifact SHA256 / F007 version | 原本とフレームをID・hashで関連付け、元ファイルに書き戻さない |
+
+canonical frame exportは入力原本から再生成できる監査用表現とする。スクリーンショットのpixel一致ではなく、検証済み**元数値・step数・link event・再生export**の一致をゲートとする。ViewerのPython/JS実装選択や座標スケーリング詳細は実装前レビューで確定。
+
+[仕様](../topics/V001-readonly-replay/SPEC.md) / [対照実験](../experiments/V001/PLAN.md) / [検証ノート（未実施）](../findings/V001-validation.md)
+
+### V001提案するcanonicalフレーム契約（2026-10-17、未実装）
+
+`frames.json` の最終スキーマ・列順は実装開始前に監査して固定する。設計案は envelope `schema_version="v001.frame.v1", source_run_id, source_artifact_sha256, viewer_source_sha256, frames`、各frameに
+`step_index:int, time_s:finite number [s], x_a_m/x_b_m:finite number [m], v_a_m_s/v_b_m_s:finite number [m/s], attached:bool, balance_a_uj/balance_b_uj:int, motor_command_n/motor_applied_n:finite number [N], decision_reason:string, link_event_kind:string|null`。
+
+`source_artifact_sha256`と`viewer_source_sha256`は**誰が実行したかの署名ではなく、バイト列の出自照合情報**。F007出自の信頼は保存manifestだけから自己充足的に確定しない。オフラインの別経路（信頼するcheckout/CI）で対照する。
+
+~~~mermaid
+flowchart TD
+  CFG["F007 config + states + ledger + link_events"] --> VALID["F007独立saved-oracle / SHA・origin検証"]
+  VALID --> FRAMES["v001.frame.v1 / 保存stepを1:1投影"]
+  FRAMES --> HTML["viewer.htmlに安全に埋込\n再生・選択・メートル目盛"]
+  FRAMES --> PROOF["frames.json再生一致\nviewer manifest"]
+  HTML -. "表示だけ" .-> CFG
+~~~
+
+JSONの数値は元CSVをパースした値から再計算/物理的補間なしに出力。電池とstepは整数として保持。時刻・位置・速度は誤差許容の「近似比較」ではなく、投影経路中で元の数値が不変であることを確認する。ピクセル座標系は保存フレーム契約の外。
