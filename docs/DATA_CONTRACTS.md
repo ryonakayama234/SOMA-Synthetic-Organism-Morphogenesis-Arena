@@ -528,3 +528,18 @@ flowchart TD
 **真値と局所知覚の境界**：出力される位置/結合状態/電池残高は研究者の世界真値であり、ロボット自身の能力としては認定しない。**時間刻み**：各ステップ整数µJ切上げと受否判定はdtに依存する。出所・台帳・ログを混同しない。
 
 [仕様](../topics/F007-linked-motor-work/SPEC.md) / [実験計画](../experiments/F007/PLAN.md) / [記録](../findings/F007-validation.md)。
+
+
+### F007 事前監査で追加する観測契約（2026-10-17、未確定）
+
+[PLAN F-01〜F-06](../experiments/F007/PLAN.md) を保存CSVから検証できるよう、**実装前に**次の区別を凍結対象とする。これはまだ採用済みのフィールド名・列順ではない。
+
+| 意味 | 記録すべき区別 | 誤った実装の検出 |
+| --- | --- | --- |
+| A motor | `command_n`、`candidate_motor_positive_work_j`、`applied_n`、`motor_positive_work_j`、`decision_reason` | 電池不足で棄却した候補を実支出へ混入させない |
+| 仕事・電池 | `motor_signed_work_j` と `motor_positive_work_j`、`spent_a_uj`、A/Bそれぞれの残高 | 速度反転時の相殺・Bの誤請求を検出 |
+| 外力・拘束 | `external_force_a_n`、`external_force_b_n`、`link_force_a_n`、`link_force_b_n`、`attached` | Aモーター拒否時でもB外力とリンクが残ることを確認 |
+| 時刻イベント | `step_index`、`time_s`、`detach_before_after` | 切断瞬間の速度・位置ジャンプと二重イベントを検出 |
+| 監査 | 保存runのconfig/source/Git identity、台帳events、raw CSV、`manifest.json` と独立参照 | CSV改変・不正出自・再実行不一致を検出 |
+
+**実験ごとのレコード生成順**：入力検証 → 候補計算 → A支出ゲート → 採用または再計算 → 世界真値を確定 → 台帳・linkイベントを記録 → 原本を保存 → 別計算で全行監査 → 図・比較JSON・出自SHA → CI再実行照合。候補仕事や棄却理由は研究者用の監査データでありセルの知覚には入れない。数値はF005規約で計算するためF006のdt依存は残る。最終の型・列順・公開方式は独立設計レビュー後に確定する。
