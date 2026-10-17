@@ -180,3 +180,13 @@ F006までの限定採用後、**F003二セルリンク + F005一セルの正仕
 [再現コマンド](experiments/F007/README.md) / [事前A〜Fと追加F-01〜F-06](experiments/F007/PLAN.md) / [研究ノート](findings/F007-validation.md) / [実装の構造](docs/ARCHITECTURE.md#f007-実装候補の実際の責務とデータフロー2026-10-17) / [確定列契約](docs/DATA_CONTRACTS.md#f007-v1-実装候補の保存契約2026-10-17)。
 
 現段階はまだ結果検証前の候補。Wolfram理論予測をSOMA観測と混ぜず、最終HEAD CIと別視点証拠監査を完了するまでは正式採用・main統合を行わない。実機の自力推進・結合による省エネ優位・身体創発の主張は対象外。
+
+## 可視化の次の一能力：V001（2026-10-17／設計のみ・未実装）
+
+研究者がSOMAを「実際の位置と接続の変化を見ながら」観察できるよう、**既存F007の1D・2セル実験を読み取り専用で再生する**研究用ビューアを一能力として提案中。まだ動く画面・実験結果はなく、F008の局所負荷検出設計 [Draft PR #23](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/23) と混同しない。研究者が見る世界の真値は、細胞に教える身体構造ではない。
+
+- [V001 Issue #24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24) / [SPECと提案システム図](topics/V001-readonly-replay/SPEC.md)
+- [全体のV001システム図](docs/ARCHITECTURE.md#v001-研究用1d2セル再生ビューア2026-10-17設計のみ未実装) / [データ構造と流れ](docs/DATA_CONTRACTS.md#v001-保存状態から再生フレームへの読み取り専用投影2026-10-17提案未実装)
+- [A〜F事前登録](experiments/V001/PLAN.md) / [研究記録：全未実施](findings/V001-validation.md)
+
+V001は今ある記録を正しく**観察する機器**であり、ロボットセルの新しい運動・自律行動・創発を実装した意味ではない。将来の2D/3Dや局所ルールによるセル・オートマトン的身体形成は別の仮説・機能として扱う。仕様/図/契約/結果記録を同じPRで同期し、**実装PR・独立監査・明示的な研究者の採否判断までmain統合しない**。
