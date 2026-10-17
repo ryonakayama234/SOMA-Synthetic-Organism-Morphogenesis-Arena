@@ -192,3 +192,17 @@ F006までの限定採用後、**F003二セルリンク + F005一セルの正仕
 V001は今ある記録を正しく**観察する機器**であり、ロボットセルの新しい運動・自律行動・創発を実装した意味ではない。将来の2D/3Dや局所ルールによるセル・オートマトン的身体形成は別の仮説・機能として扱う。仕様/図/契約/結果記録を同じPRで同期し、**実装PR・独立監査・明示的な研究者の採否判断までmain統合しない**。
 
 - **V001設計追補（2026-10-17）**：F007保存ログをチェックして、`frames.json` とオフライン `viewer.html` を生成するPython標準ライブラリ方式を提案。記録stepの1:1投影、切断イベント、出自改変拒否、byte再現性を採用ゲートに固定。現在は[設計Draft PR #25](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/25)のみで、コード・UI・V001試験は**未実施**。詳しくは[SPEC追補](topics/V001-readonly-replay/SPEC.md)／[A〜F追補](experiments/V001/PLAN.md)。
+
+## V001実装候補と実際のCI（2026-10-17／**未採用**）
+
+[Issue #24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24) / [設計Draft PR #25](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/25) / [実装Draft PR #26](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/26)。
+
+**最初の実装候補**：`soma/v001.py`（F007原本の独立検証→読み取り専用フレーム投影）、`experiments/V001/build_view.py`（原本と離れたステージで`frames.json`/オフライン`viewer.html`/manifestを生成）、`experiments/V001/verify.py`（保存済み表示物の独立照合）、`viewer_template.html`（記録ステップ再生）、`run_suite.py`／`tests/test_v001.py`／`v001.yml`。既存F007本体とF008の設計は変更しない。
+
+[再現手順と画面の開き方](experiments/V001/README.md) / [具体システム図](docs/ARCHITECTURE.md) / [保存データ契約](docs/DATA_CONTRACTS.md) / [findings](findings/V001-validation.md)。
+
+**初回HEAD `3012e2e0`のCI #39036627646が成功**：3.11/3.12の各135全回帰＋9 V001最適化テスト、9ケース42保存フレーム、82ファイルの2回生成byte一致、両Python版で成果物ZIP公開。ただしこれは初回HEADの証拠であり、その後の追加試験・文書更新の最終HEADのCI結果ではない。研究者による明示的採否と第三者による画面操作評価は未完了、main未統合。過去の設計提案にある「未実装」は当時の履歴。
+
+### V001追加テスト修正後の結果（2026-10-17／未採用）
+
+追試でJavaScript構文検査の**テスト側の正規表現誤り**があり[失敗CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39036778439)となったが、テストの抽出式を修正し、[検証済みコードHEAD `a608e9f` のCI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39036952305)でPython 3.11/3.12各136全回帰、V001最適化10、9ケース42フレーム・82ファイルbyte replay一致を確認した。[保存結果と限界](findings/V001-validation.md#2026-10-17-ci追試失敗修正証拠実装候補の最新結果正式採用前)。GitHub ActionsのZIP内の`v001/E-cut/viewer.html`などをローカルで開く。描画の人間による評価・外部独立レビュー・正式採用・main統合は未了。

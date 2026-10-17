@@ -555,3 +555,25 @@ flowchart LR
 ~~~
 
 **再生はすべて保存されたstepに限定**。描画用の画面スケールと物理数値を分離し、ブラウザは新しい世界状態を算出しない。詳細はV001の[SPEC追補](../topics/V001-readonly-replay/SPEC.md)。
+
+## V001 実装ブランチの具体的な読み取り専用データフロー（2026-10-17／PR #26）
+
+**本節は設計Draft #25の「未実装」構想図より後の実装候補。正式採用前。**
+
+```mermaid
+flowchart TD
+  C["F007 9ケース設定"] --> F007["採用済みF007 save_run<br/>既存の力学・電池計算"]
+  F007 --> RAW["config/states/ledger/link_events/motion/manifest<br/>研究者専用世界真値"]
+  RAW --> CHECK["F007 verify.audit_run<br/>原本hash、信頼するcheckout出自、独立数理・イベント"]
+  CHECK --> FRAME["soma/v001.project_run<br/>保存全行を1:1 frame投影"]
+  FRAME --> RECHECK["verify_frame_projection<br/>各列・型・値を元CSVと再比較"]
+  RECHECK --> EXPORT["build_view<br/>frames.json + 単独viewer.html"]
+  EXPORT --> VERIFY["V001 audit_view<br/>再生成一致・hash・provenance"]
+  VERIFY --> PUB["独立ディレクトリへno-replace公開"]
+  PUB --> UI["ローカルブラウザSVG<br/>step・リンク・位置・速度・電池・実適用モーター"]
+  PUB --> CI["V001 A〜F + 9 F007ケース + 2パスbyte replay<br/>Python 3.11/3.12"]
+  RAW -. "world truthはセル観測へ渡さない" .-> F008["F008 セル自身の局所センサー（別機能／未実装）"]
+  UI -. "情報の読み込みのみ" .-> RAW
+```
+
+V001の描画はF007離散時刻のみ、原本に書き戻さない。ブラウザは**運動方程式を実行しない**。セルA/Bの矩形形状は見やすさのための記号であり実機の姿ではない。検証済みの単独HTMLをOSのブラウザで閲覧し、記録したstepだけ移動する。出力ディレクトリ単位のatomic no-replaceであり、2つのsuite出力をまたぐ停電時の一括原子性までは保証しない。
