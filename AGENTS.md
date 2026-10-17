@@ -110,3 +110,7 @@ F007はAのみのmotor、Bはpassive。BのF002残高を機械リンクで支出
 - 一機能：**F007の保存済み1D・2セル世界真値のread-only step replay**。既存物理・セル感覚・制御器・F008の観測境界を変更しない。
 - 状態：設計PRの段階では**未実装／未実験／未採用**。実装するなら別PRでコード＋テスト＋独立証拠＋図＋契約＋findings＋READMEを同期。レビュー・研究者の明示的採否前にmainへ統合しない。
 - 図は1D値を研究者に示す記号。SOMAが2D/3Dの姿で動く実装、自律結合、人工生命の創発の証拠ではない。世界真値をセル局所観測に漏らさない。
+
+### V001実装計画の追補（2026-10-17：設計のみ）
+
+V001はPython標準ライブラリのF007原本検証（trusted originを別経路で照合）→型付きread-only frame projection→canonical frames.json→安全に埋込んだ単独viewer.htmlを提案中。再生は保存されたstepだけ、2D/3Dやセル側観測を導入しない。主要対照はF007既存の9ケース。採用目標は全フレーム1:1、投影元数値厳密一致、E-cut時刻0.5秒のpost-event OFF、負例拒否0受容、再実行のbyte一致、3.11/3.12回帰、原本非破壊。**V001の実装・実験・CI・採用はいずれも未実施**。詳細[SPEC](topics/V001-readonly-replay/SPEC.md)と[PLAN](experiments/V001/PLAN.md)、設計Draft PR #25。
