@@ -101,3 +101,15 @@ F007の設計PR #20と実装PRは分離する。後者は設計HEADにstackし�
 F007はAのみのmotor、Bはpassive。BのF002残高を機械リンクで支出してはならない。Aの不足でモーターだけを0としてF003のリンク/各外力は再計算。切断瞬間のx/v jumpは禁止。F005の区間正仕事・semanticsを変えない。CSVからの独立参照は数式別実装であり実行モデルを呼び戻さない。F005のbinary64課金を任意dtでFraction正確値と同一と一般化しない。
 
 機械的な「リンクでBを動かす」と、「電気的にBへ移送する」、実機で地面反力を使う自己推進を区別する。CI未確認・外部レビュアー不在・まだ採用前を必ず明記する。
+
+
+## F008 next one-capability task (2026-10-17, design only)
+
+F007 is limited-adopted and merged; do **not** treat old historical Draft paragraphs as current status. F008 is currently **proposed / unimplemented / unexecuted / unadopted**:
+- Task: [Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22)
+- Hypotheses, allowed observation fields and scientific limits: [SPEC](topics/F008-local-load-detection/SPEC.md)
+- A–F preregistered controls: [PLAN](experiments/F008/PLAN.md)
+- Unexecuted findings and evidence gates: [findings](findings/F008-validation.md)
+- Cross-feature diagrams and data contracts: [architecture](docs/ARCHITECTURE.md) / [data](docs/DATA_CONTRACTS.md)
+
+Implement **only** A's local motion-response discrepancy using F007 as the unchanged world model. Never expose attachment/B/link ground truth to the cell-side API; use those exclusively in the evaluator. A disconnected cell with a hidden -1 N external force can mimic the linked motion response, so never label a residual as verified connectivity. Separate theoretical Wolfram references from actual experiment records. Future implementation requires a separate PR synchronizing code, tests, diagrams, data contracts, README/AGENTS and findings, plus CI, independent audit and the researcher's explicit adoption decision before any merge.
