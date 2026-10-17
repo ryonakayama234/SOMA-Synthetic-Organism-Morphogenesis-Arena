@@ -345,3 +345,60 @@ flowchart TD
 
 ### F005 正式採用後の責務境界（2026-10-16）
 上記のF005「implementation candidate」はレビュー時点の記録。現在の採用済み範囲は**正仕事をF002整数µJ台帳へ接続する離散計算部品のみ**。F001の位置は半陰的Euler、F005仕事は線形補間速度を積分するため、保存軌道との距離効率は保証しない。dt依存のモーター棄却・数量化、無償保持、反作用相手未定義が残る。セルの局所センサー、F003へのモーター統合、生存・身体優劣の評価環境は未承認。[採用判断と反例](../topics/F005-positive-work/SPEC.md#2026-10-16-正式採用f005の限定的な研究上の位置づけ)。
+
+## F006：時間刻み収束性の診断（2026-10-16／設計提案・未実装）
+
+**F006の新しい能力は、F005の計算を変更せず、同じ条件を複数のdtで走らせて違いと原因候補を記録すること。** F001〜F005は採用済み。図中のF006計測・照合は未実装。
+
+~~~mermaid
+flowchart LR
+  H["研究者の問い / 仮説H006"] --> CFG["F006 sweep.json\nA〜F固定条件＋dt一覧"]
+  CFG --> LOOP["F006 比較実行器\n提案・未実装"]
+  LOOP --> MODEL["F005 1セル1D運動＋正仕事＋電池\n採用済み・変更なし"]
+  MODEL --> RAW["F005各dtの原本\nstates / events / manifest"]
+  CFG --> REF["独立の理論参照\n有理数・binary64を区別"]
+  RAW --> CHECK["F006 原本検証／誤差分類\n提案・未実装"]
+  REF --> CHECK
+  CHECK --> OUT["比較CSV / diagnostics.json\n比較SVG / provenance"]
+  OUT --> NOTE["findings/F006-validation.md\n支持・反証・不明"]
+~~~
+
+**世界の真値とセルの観測の境界**：F006はオフラインの研究者用検証器。原本ログ（位置、速度、残高、受否）は解析側にだけ提供し、セルの局所観測APIや制御入力に直結させない。
+
+- **A（運動離散化）**：電池十分の場合でも、F001半陰的Eulerの位置がdtに依存する。
+- **B（受否の離散化）**：F005は残高不足時、当該ステップのモーターを丸ごと拒否する。
+- **C（会計の離散化）**：正仕事が同じでも、各ステップのµJ切上げ回数が変わる。
+- F006の合格は**診断の正確さ**。dt不変・実機妥当・自律移動の成立とは異なる。部分時間駆動、端数繰越、共通軌道などの修正は後続研究。
+
+[仕様](../topics/F006-timestep-diagnostics/SPEC.md) / [事前A〜F](../experiments/F006/PLAN.md) / [研究記録（未実施）](../findings/F006-validation.md) / [Issue #16](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/16)
+
+
+### F006 v2 証拠と公開の設計改訂（2026-10-17、未採用）
+```mermaid
+flowchart TD
+  P["出力2パスを正規化・事前検査"] --> T["非公開の一時領域で15run生成"]
+  T --> A["原本・参照・出所を監査"]
+  S["信頼するcheckout / 外部CI記録"] --> A
+  A --> R["replayを監査・全バイト比較"]
+  R --> O["no-replace renameで公開"]
+  A -->|例外| C["一時成果物を破棄"]
+  R -->|例外| C
+  O -->|通常例外| B["自分の公開分だけrollback"]
+```
+診断本体とF005保存検証器もソース照合範囲に含める。出力ラベルは事前登録のexpected_classification、観測はsignatureの参照一致と数値として分離する。セルへの経路を追加しない。2パスの公開間に強制終了すると監査済み一次出力だけが残り得るため、crash時の一括原子性は保証しない。
+
+### F006実装候補の責務境界（設計詳細・未実装）
+
+~~~mermaid
+flowchart TD
+  SET["F006 run_suite.py\n固定条件をdtごとに展開"] --> EXIST["採用済み soma/f005.py\nConfig.from_dict → save_run"]
+  EXIST --> RAW["変更しないF005原本\nconfig / states / events / manifest"]
+  RAW --> V["既存 verify_saved_run\n全行・イベント独立照合"]
+  RAW --> NEW["新規 diagnostics.py\ndt横断の比較と原因候補"]
+  V --> NEW
+  THEORY["独立の有理数・binary64参照\n事前に固定"] --> NEW
+  NEW --> OUT["comparison.csv / diagnostics.json\ncomparison.svg / manifest"]
+  OUT --> F["findings/F006-validation.md\n再現性・反証・採否"]
+~~~
+
+F006は研究者の**後処理**専用。セル制御器や物理エンジン内部に横断比較値を戻さない。表示の補間は可視化に限定し、観測値と区別する。測定不能な寄与は`mixed`・`undetermined`で記録する。実装後のコードと図を必ず同一実装PRで更新する。
