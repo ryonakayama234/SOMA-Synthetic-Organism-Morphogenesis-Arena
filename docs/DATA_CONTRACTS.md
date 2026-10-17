@@ -614,7 +614,7 @@ JSONの数値は元CSVをパースした値から再計算/物理的補間なし
 
 **入力**：既存F007 `f007.v1` 保存run。 `config.json` / `states.csv` / `link_events.csv` / `ledger/events.csv` / `motion.svg` / `manifest.json` を監査後、元の値は変えず読み取る。
 
-**出力（提案スキーマの実装済み候補）**：`frames.json` は `schema_version="v001.frame.v1"`, `experiment_id`, `f007_schema_version`, `source_hashes`, `frames`。各フレームのキーは、次の**12個**に固定：
+**出力（提案スキーマの実装済み候補）**：`frames.json` は `schema_version="v001.frame.v1"`, `experiment_id`, `f007_schema_version`, `source_hashes`, `frames`。各フレームのキーは、次の**13個**に固定：
 
 ```text
 step_index                integer, 0...N, 欠落重複なし
