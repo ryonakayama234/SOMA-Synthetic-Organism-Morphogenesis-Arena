@@ -1,0 +1,37 @@
+name: F007 linked-cell motor and battery evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: F001-F007 full regression
+        run: python -m unittest discover -s tests -v
+      - name: F007 independent oracle under optimized Python
+        run: python -O -m unittest discover -s tests -p test_f007.py -v
+      - name: Produce F007 nine runs and byte replay
+        run: python -m experiments.F007.run_suite --output-dir runs/F007-ci --replay-output-dir runs/F007-replay
+      - name: Upload F007 comparison and complete reproducibility evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F007-${{ matrix.python }}-evidence
+          path: |
+            runs/F007-ci/
+            runs/F007-replay/
+          if-no-files-found: error
