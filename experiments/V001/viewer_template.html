@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; base-uri 'none'; object-src 'none'">
+<title>SOMA — V001 read-only replay</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#e8eff5;background:#0f1724}
+*{box-sizing:border-box}body{max-width:1020px;margin:0 auto;padding:24px}
+h1{font-size:25px;margin:0 0 7px}.meta{font-size:13px;color:#a4b8c8}
+section{border:1px solid #324556;border-radius:14px;background:#172433;padding:20px;margin:18px 0}
+.row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+h2{font-size:15px;margin:0;color:#a4b8c8}#clock{font-size:26px;font-weight:750}
+#rail{width:100%;height:auto;display:block}
+.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:15px}
+button,select{color:inherit;background:#253749;border:1px solid #4b6377;border-radius:9px;padding:9px 14px;font-size:14px;cursor:pointer}
+button:hover{background:#36516a}button:disabled{opacity:.45;cursor:default}
+input[type=range]{flex:1;min-width:140px;accent-color:#69b0ed}
+.panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.panel{background:#0f1b28;padding:14px;border-radius:10px}
+.panel strong{display:block;font-size:20px;margin-top:5px;font-variant-numeric:tabular-nums}
+.mini{font-size:12px;color:#a4b8c8}
+#status{font-weight:650}#event{color:#f0c56c}code{font-size:12px;overflow-wrap:anywhere}
+footer{color:#93a8b8;font-size:12px;line-height:1.7}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <h1>SOMA <span style="color:#7ec5ff">/ V001</span></h1>
+  <div class="meta">F007 1D・2セル実験 — 読み取り専用の記録再生（実機の形態・運動ではありません）</div>
+</header>
+<section>
+  <div class="row"><div><h2>実験</h2><strong id="experiment"></strong></div><div style="text-align:right"><h2>保存時刻</h2><div id="clock"></div></div></div>
+  <svg id="rail" viewBox="0 0 900 230" role="img" aria-label="保存された1D空間のA/B位置、結合状態、メートル目盛"></svg>
+  <div class="row">
+    <span id="status" aria-live="polite"></span>
+    <span id="event" aria-live="polite"></span>
+    <span id="framecount" class="mini"></span>
+  </div>
+  <div class="controls">
+    <button id="prev" aria-label="前の保存ステップ">◀ 前へ</button>
+    <button id="play" aria-label="保存ステップを再生">▶ 再生</button>
+    <button id="next" aria-label="次の保存ステップ">次へ ▶</button>
+    <input id="seek" aria-label="保存されたステップを選択" type="range" min="0" max="0" value="0" step="1">
+    <label>速度 <select id="speed" aria-label="表示速度"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select></label>
+  </div>
+</section>
+<section>
+  <div class="panels">
+    <div class="panel"><h2>セル A</h2><strong id="a-position"></strong><div class="mini" id="a-speed"></div><div class="mini" id="a-battery"></div></div>
+    <div class="panel"><h2>セル B</h2><strong id="b-position"></strong><div class="mini" id="b-speed"></div><div class="mini" id="b-battery"></div></div>
+    <div class="panel"><h2>モーター（Aのみ）</h2><strong id="motor-applied"></strong><div class="mini" id="motor-command"></div><div class="mini" id="decision"></div></div>
+  </div>
+</section>
+<footer><div>F007保存データに含まれる時刻だけを再生します。描画用の四角形やレールは研究者向けの記号です。リンクと全状態は世界真値であり、セル自身の観測情報ではありません。</div>
+<div>Schema: <code id="schema"></code>　Source SHA256 (states.csv): <code id="source-sha"></code></div></footer>
+<script id="payload" type="application/octet-stream">__FRAME_B64__</script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const txt=(id,value)=>{$(id).textContent=String(value);};
+const NS="http://www.w3.org/2000/svg";
+function shape(tag,attrs,text){
+  const el=document.createElementNS(NS,tag);
+  for(const [key,value] of Object.entries(attrs))el.setAttribute(key,String(value));
+  if(text!==undefined)el.textContent=String(text);
+  return el;
+}
+let data;
+try {
+  const decoded=Uint8Array.from(atob($("payload").textContent.trim()),ch=>ch.charCodeAt(0));
+  data=JSON.parse(new TextDecoder().decode(decoded));
+  if(data.schema_version!=="v001.frame.v1"||!Array.isArray(data.frames)||!data.frames.length)throw Error("unsupported V001 payload");
+} catch (error) {
+  txt("status","検証済みフレームを読み込めません: "+error.message);
+  throw error;
+}
+const frames=data.frames, rail=$("rail"), seek=$("seek");
+let index=0, timer=null;
+const all=frames.flatMap(f=>[f.x_a_m,f.x_b_m]);
+const normalization=Math.max(1,...all.map(Math.abs));
+const min=Math.min(...all.map(v=>v/normalization)),max=Math.max(...all.map(v=>v/normalization));
+const gap=Math.max((max-min)*0.06,0.01);
+const low=min-gap,high=max+gap,span=high-low;
+const px=value=>70+760*((value/normalization-low)/span);
+const fmt=(value,digits=5)=>Number(value).toPrecision(digits);
+function paint(){
+  const f=frames[index];
+  txt("experiment",data.experiment_id);
+  txt("clock",fmt(f.time_s)+" s");
+  txt("framecount","Step "+f.step_index+" / "+(frames.length-1));
+  txt("status",f.attached?"● 機械結合 ON":"○ 機械結合 OFF");
+  txt("event",f.link_event_kind ? "リンクイベント: "+f.link_event_kind : " ");
+  txt("a-position",fmt(f.x_a_m)+" m");txt("b-position",fmt(f.x_b_m)+" m");
+  txt("a-speed","速度 "+fmt(f.v_a_m_s)+" m/s");txt("b-speed","速度 "+fmt(f.v_b_m_s)+" m/s");
+  txt("a-battery","電池 "+f.balance_a_uj+" µJ");txt("b-battery","電池 "+f.balance_b_uj+" µJ");
+  txt("motor-applied",fmt(f.motor_applied_n)+" N（実適用）");
+  txt("motor-command","指令 "+fmt(f.motor_command_n)+" N");
+  txt("decision","判定 "+f.decision_reason);
+  seek.value=String(index);
+  $("prev").disabled=index===0;$("next").disabled=index===frames.length-1;
+  rail.replaceChildren();
+  rail.appendChild(shape("line",{x1:55,y1:126,x2:845,y2:126,stroke:"#6f8699","stroke-width":2}));
+  for(let k=0;k<=5;k++){
+    const value=(low+span*k/5)*normalization;
+    const x=70+760*k/5;
+    rail.appendChild(shape("line",{x1:x,y1:48,x2:x,y2:166,stroke:"#334b60","stroke-dasharray":"4 5"}));
+    rail.appendChild(shape("text",{x,y:190,fill:"#b3c3cf","font-size":13,"text-anchor":"middle"},fmt(value,3)+" m"));
+  }
+  const xA=px(f.x_a_m),xB=px(f.x_b_m);
+  if(f.attached){
+    rail.appendChild(shape("line",{x1:xA,y1:114,x2:xB,y2:114,stroke:"#46c3a5","stroke-width":7,"stroke-linecap":"round"}));
+  }
+  for(const [name,x,color] of [["A",xA,"#408ecc"],["B",xB,"#19a48a"]]){
+    rail.appendChild(shape("rect",{x:x-21,y:92,width:42,height:42,rx:8,fill:color,stroke:"#e2f1ff","stroke-width":1.5}));
+    rail.appendChild(shape("text",{x,y:120,fill:"white","font-size":18,"font-weight":700,"text-anchor":"middle"},name));
+  }
+}
+function pause(){if(timer!==null){clearInterval(timer);timer=null;}txt("play","▶ 再生");}
+function change(n){index=Math.max(0,Math.min(frames.length-1,n));paint();if(index===frames.length-1)pause();}
+function toggle(){
+  if(timer!==null){pause();return;}
+  if(index===frames.length-1)index=0;
+  txt("play","❚❚ 停止");
+  timer=setInterval(()=>change(index+1),Math.max(100,600/Number($("speed").value)));
+}
+$("prev").addEventListener("click",()=>{pause();change(index-1);});
+$("next").addEventListener("click",()=>{pause();change(index+1);});
+$("play").addEventListener("click",toggle);
+seek.max=String(frames.length-1);
+seek.addEventListener("input",()=>{pause();change(Number(seek.value));});
+$("speed").addEventListener("change",()=>{if(timer!==null){pause();toggle();}});
+window.addEventListener("pagehide",pause);
+txt("schema",data.schema_version);
+txt("source-sha",data.source_hashes["states.csv"]);
+paint();
+</script>
+</body>
+</html>
