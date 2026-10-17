@@ -140,5 +140,82 @@ class F007Tests(unittest.TestCase):
             self.assertGreaterEqual(count,55)
 
 
+    def test_noncanonical_direct_config_rejected(self):
+        from dataclasses import replace
+        cfg = Config.from_dict(scenarios()["B-linked"])
+        bad = replace(cfg, steps=cfg.steps + 1)
+        with self.assertRaises(ValueError):
+            simulate(bad)
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp) / "invalid"
+            with self.assertRaises(ValueError):
+                save_run(bad, p, identity={})
+            self.assertFalse(p.exists())
+
+    def test_run_fault_atomic_after_files_written(self):
+        from unittest.mock import patch
+        cfg = Config.from_dict(scenarios()["B-linked"])
+        with tempfile.TemporaryDirectory() as temp:
+            parent = Path(temp)
+            destination = parent / "result"
+            for where in ("sha", "publish_dir"):
+                with self.subTest(where=where):
+                    # Inject a failure after the physical CSVs were staged.
+                    with patch("soma.f007." + where, side_effect=OSError("injected failure")):
+                        with self.assertRaises(OSError):
+                            save_run(cfg, destination, identity={})
+                    self.assertFalse(destination.exists())
+                    self.assertEqual(list(parent.glob(".result-stage-*")), [])
+
+    def test_run_never_clobbers_existing_empty_directory(self):
+        cfg = Config.from_dict(scenarios()["B-linked"])
+        with tempfile.TemporaryDirectory() as temp:
+            dest = Path(temp) / "result"
+            dest.mkdir()
+            (dest / "keep").write_text("do-not-touch", encoding="utf-8")
+            with self.assertRaises(FileExistsError):
+                save_run(cfg, dest, identity={})
+            self.assertEqual((dest / "keep").read_text(encoding="utf-8"), "do-not-touch")
+
+    def test_manifest_rehash_cannot_hide_micro_tamper(self):
+        import csv
+        import hashlib
+        import json
+        cfg = Config.from_dict(scenarios()["B-linked"])
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "result"
+            save_run(cfg, root, identity={})
+            path = root / "states.csv"
+            with path.open(newline="", encoding="utf-8") as fp:
+                reader = csv.DictReader(fp)
+                columns = reader.fieldnames
+                rows = list(reader)
+            self.assertEqual(rows[0]["motor_applied_n"], "0.0")
+            rows[0]["motor_applied_n"] = "5e-13"
+            with path.open("w", newline="", encoding="utf-8") as fp:
+                writer = csv.DictWriter(fp, fieldnames=columns)
+                writer.writeheader()
+                writer.writerows(rows)
+            manifest_path = root / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest["artifacts"]["states.csv"] = hashlib.sha256(path.read_bytes()).hexdigest()
+            manifest_path.write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
+            # Checksum is now valid; independent physics replay must still fail.
+            with self.assertRaises(AssertionError):
+                audit_run(root)
+
+    def test_suite_fault_atomic_on_oracle_failure(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as temp:
+            parent = Path(temp)
+            out = parent / "suite"
+            with patch("experiments.F007.run_suite.audit_run",
+                       side_effect=OSError("injected suite audit fault")):
+                with self.assertRaises(OSError):
+                    suite(out)
+            self.assertFalse(out.exists())
+            self.assertEqual(list(parent.glob(".suite-stage-*")), [])
+
+
 if __name__=="__main__":
     unittest.main()

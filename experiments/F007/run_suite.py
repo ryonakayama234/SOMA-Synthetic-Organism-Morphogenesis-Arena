@@ -12,7 +12,7 @@ from pathlib import Path
 import shutil
 import tempfile
 
-from soma.f007 import Config, provenance, save_run
+from soma.f007 import Config, provenance, publish_dir, save_run
 from experiments.F007.verify import audit_run, require
 
 
@@ -112,19 +112,29 @@ def reject_inputs() -> list[str]:
 
 
 def mutate_detection(source: Path) -> bool:
-    with tempfile.TemporaryDirectory(prefix="soma-f007-adversary-") as tmp:
-        target=Path(tmp)/"tampered"
-        shutil.copytree(source,target)
-        p=target/"states.csv"
-        data=p.read_text(encoding="utf-8")
-        require("0.625" in data,"adversarial case not found")
-        p.write_text(data.replace("0.625","0.626",1),encoding="utf-8")
-        try:
-            audit_run(target)
-        except AssertionError:
-            return True
-        raise AssertionError("failed to detect saved CSV mutation")
-
+    # The second mutation forges an internally self-consistent manifest digest:
+    # semantic replay, not just a checksum, MUST still reject it.
+    for rehash in (False, True):
+        with tempfile.TemporaryDirectory(prefix="soma-f007-adversary-") as tmp:
+            target = Path(tmp) / "tampered"
+            shutil.copytree(source, target)
+            p = target / "states.csv"
+            data = p.read_text(encoding="utf-8")
+            require("0.625" in data, "adversarial case not found")
+            p.write_text(data.replace("0.625", "0.626", 1), encoding="utf-8")
+            if rehash:
+                mp = target / "manifest.json"
+                manifest = json.loads(mp.read_text(encoding="utf-8"))
+                manifest["artifacts"]["states.csv"] = digest(p)
+                mp.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n",
+                              encoding="utf-8")
+            try:
+                audit_run(target)
+            except AssertionError:
+                continue
+            raise AssertionError("failed to detect saved CSV mutation (rehash=" +
+                                 str(rehash) + ")")
+    return True
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -138,54 +148,64 @@ def suite(out: Path) -> dict:
     for cfg in configs.values():
         simulate(cfg)
     invalid=reject_inputs()
-    out.mkdir(parents=True,exist_ok=False)
-    (out/"suite_source.py").write_bytes(Path(__file__).read_bytes())
-    (out/"oracle_source.py").write_bytes((Path(__file__).parent/"verify.py").read_bytes())
-    summaries={}
-    for key,cfg in configs.items():
-        manifest=save_run(cfg,out/key,identity=identity)
-        oracle=audit_run(out/key, trusted_origin=identity)
-        import csv
-        with (out/key/"states.csv").open(newline="",encoding="utf-8") as fp:
-            rows=list(csv.DictReader(fp))
-        last=rows[-1]
-        final={}
-        for k in ("x_a_m","x_b_m","v_a_m_s","v_b_m_s",
-                  "link_force_a_n","link_force_b_n",
-                  "motor_work_j","motor_positive_work_j"):
-            final[k]=float(last[k])
-        final["attached"]=last["attached"]=="True"
-        summaries[key]={
-            "final":final,"spent_uj":manifest["spent_uj"],
-            "spent_b_uj":cfg.cells[1].initial_balance_uj-manifest["final_balances_uj"]["B"],
-            "rejected_steps":sum(r["decision_reason"] in ("zero_balance","insufficient_balance") and
-                                 float(r["motor_command_n"])!=0 for r in rows[1:]),
-            "oracle":oracle,
+    out = Path(out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    if out.exists() or out.is_symlink():
+        raise FileExistsError(str(out))
+    stage = Path(tempfile.mkdtemp(prefix="." + out.name + "-stage-", dir=out.parent))
+    try:
+        (stage/"suite_source.py").write_bytes(Path(__file__).read_bytes())
+        (stage/"oracle_source.py").write_bytes((Path(__file__).parent/"verify.py").read_bytes())
+        summaries={}
+        for key,cfg in configs.items():
+            manifest=save_run(cfg,stage/key,identity=identity)
+            oracle=audit_run(stage/key, trusted_origin=identity)
+            import csv
+            with (stage/key/"states.csv").open(newline="",encoding="utf-8") as fp:
+                rows=list(csv.DictReader(fp))
+            last=rows[-1]
+            final={}
+            for k in ("x_a_m","x_b_m","v_a_m_s","v_b_m_s",
+                      "link_force_a_n","link_force_b_n",
+                      "motor_work_j","motor_positive_work_j"):
+                final[k]=float(last[k])
+            final["attached"]=last["attached"]=="True"
+            summaries[key]={
+                "final":final,"spent_uj":manifest["spent_uj"],
+                "spent_b_uj":cfg.cells[1].initial_balance_uj-manifest["final_balances_uj"]["B"],
+                "rejected_steps":sum(r["decision_reason"] in ("zero_balance","insufficient_balance") and
+                                     float(r["motor_command_n"])!=0 for r in rows[1:]),
+                "oracle":oracle,
+            }
+        theoretical_gates(summaries)
+        tamper=mutate_detection(stage/"B-linked")
+        comparison={"schema_version":"f007.evidence.v1","status":"supported_discrete_controls_only",
+                    "theory":"Wolfram exact rational references; not observed robot physics",
+                    "cases":summaries,"invalid_inputs_rejected":invalid,
+                    "hash_tamper_detected":tamper,"caveats":[
+                        "Effective motor force has no modeled reaction or ground contact",
+                        "Semi-implicit Euler positions differ from velocity-interpolant work trajectory",
+                        "Motor gating and per-step ceil depend on dt",
+                        "No emergence, self-propulsion, or morphological advantage inferred",
+                    ]}
+        (stage/"comparison.json").write_text(
+            json.dumps(comparison,sort_keys=True,indent=2,allow_nan=False)+"\n",encoding="utf-8")
+        allfiles=sorted(p.relative_to(stage).as_posix() for p in stage.rglob("*") if p.is_file())
+        manifest={
+            "schema_version":"f007.suite.v1","model":"f007.v1","seed":None,
+            "origin":identity,"cases":list(configs),"number_of_runs":len(configs),
+            "test_negative_cases":invalid,"tampering_detected":tamper,
+            "artifacts":{name:digest(stage/name) for name in allfiles},
+            "research_verdict":"supported_discrete_controls_only_not_formally_adopted",
         }
-    theoretical_gates(summaries)
-    tamper=mutate_detection(out/"B-linked")
-    comparison={"schema_version":"f007.evidence.v1","status":"supported_discrete_controls_only",
-                "theory":"Wolfram exact rational references; not observed robot physics",
-                "cases":summaries,"invalid_inputs_rejected":invalid,
-                "hash_tamper_detected":tamper,"caveats":[
-                    "Effective motor force has no modeled reaction or ground contact",
-                    "Semi-implicit Euler positions differ from velocity-interpolant work trajectory",
-                    "Motor gating and per-step ceil depend on dt",
-                    "No emergence, self-propulsion, or morphological advantage inferred",
-                ]}
-    (out/"comparison.json").write_text(
-        json.dumps(comparison,sort_keys=True,indent=2,allow_nan=False)+"\n",encoding="utf-8")
-    allfiles=sorted(p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file())
-    manifest={
-        "schema_version":"f007.suite.v1","model":"f007.v1","seed":None,
-        "origin":identity,"cases":list(configs),"number_of_runs":len(configs),
-        "test_negative_cases":invalid,"tampering_detected":tamper,
-        "artifacts":{name:digest(out/name) for name in allfiles},
-        "research_verdict":"supported_discrete_controls_only_not_formally_adopted",
-    }
-    (out/"manifest.json").write_text(
-        json.dumps(manifest,sort_keys=True,indent=2,allow_nan=False)+"\n",encoding="utf-8")
-    return manifest
+        (stage/"manifest.json").write_text(
+            json.dumps(manifest,sort_keys=True,indent=2,allow_nan=False)+"\n",encoding="utf-8")
+        publish_dir(stage, out)
+        return manifest
+
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
 
 
 def compare_full(a: Path, b: Path) -> int:
@@ -198,18 +218,41 @@ def compare_full(a: Path, b: Path) -> int:
 
 
 def main() -> None:
-    p=argparse.ArgumentParser()
-    p.add_argument("--output-dir",type=Path,required=True)
-    p.add_argument("--replay-output-dir",type=Path,required=True)
-    args=p.parse_args()
-    require(args.output_dir.resolve()!=args.replay_output_dir.resolve(),"distinct dirs required")
-    a=suite(args.output_dir)
-    suite(args.replay_output_dir)
-    checked=compare_full(args.output_dir,args.replay_output_dir)
-    print(json.dumps({"status":a["research_verdict"],"runs":a["number_of_runs"],
-                      "replay_files_verified":checked,"invalid_rejected":len(a["test_negative_cases"]),
-                      "tamper_detected":a["tampering_detected"]},sort_keys=True))
+    p = argparse.ArgumentParser()
+    p.add_argument("--output-dir", type=Path, required=True)
+    p.add_argument("--replay-output-dir", type=Path, required=True)
+    args = p.parse_args()
+    a_path, b_path = args.output_dir.resolve(), args.replay_output_dir.resolve()
+    require(a_path != b_path and a_path not in b_path.parents and
+            b_path not in a_path.parents, "distinct non-nested dirs required")
+    for path in (a_path, b_path):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        if path.exists() or path.is_symlink():
+            raise FileExistsError(str(path))
+    # Build + compare both trees privately, then atomically publish each complete
+    # tree without ever replacing preexisting results.
+    a_work = Path(tempfile.mkdtemp(prefix=".F007-pair-a-", dir=a_path.parent))
+    b_work = Path(tempfile.mkdtemp(prefix=".F007-pair-b-", dir=b_path.parent))
+    try:
+        a_stage, b_stage = a_work / "ready", b_work / "ready"
+        a = suite(a_stage)
+        suite(b_stage)
+        checked = compare_full(a_stage, b_stage)
+        publish_dir(a_stage, a_path)
+        try:
+            publish_dir(b_stage, b_path)
+        except BaseException:
+            # We own a_path: roll back only our own newly-published first tree.
+            shutil.rmtree(a_path)
+            raise
+        print(json.dumps({"status":a["research_verdict"],"runs":a["number_of_runs"],
+                          "replay_files_verified":checked,
+                          "invalid_rejected":len(a["test_negative_cases"]),
+                          "tamper_detected":a["tampering_detected"]},sort_keys=True))
+    finally:
+        shutil.rmtree(a_work, ignore_errors=True)
+        shutil.rmtree(b_work, ignore_errors=True)
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     main()

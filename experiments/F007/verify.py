@@ -56,12 +56,25 @@ def read_csv(path: Path, columns: tuple[str, ...], *, strings=(), flags=(), inte
     return out
 
 
+STRICT_ZERO_FIELDS = frozenset({
+    "time_s", "motor_command_n", "motor_applied_n", "external_force_a_n",
+    "external_force_b_n", "link_force_a_n", "link_force_b_n",
+    "candidate_motor_positive_work_j", "motor_positive_work_j",
+    "external_work_j", "drag_work_j", "link_work_j",
+})
+
+
 def compare(actual, expected, name: str, *, tolerance=1e-12) -> None:
     if expected is None or isinstance(expected,(bool,str,int)):
         require(actual == expected, name + ": exact mismatch " + repr((actual,expected)))
     else:
-        require(actual is not None and math.isfinite(actual) and
-                abs(actual-expected) <= tolerance, name+": numeric mismatch "+repr((actual,expected)))
+        field = name.rsplit("/", 1)[-1]
+        if expected == 0.0 and field in STRICT_ZERO_FIELDS:
+            require(actual == 0.0, name+": exact-zero invariant violated "+repr(actual))
+        else:
+            require(actual is not None and math.isfinite(actual) and
+                    abs(actual-expected) <= tolerance,
+                    name+": numeric mismatch "+repr((actual,expected)))
 
 
 def audit_run(directory: Path, *, trusted_origin: dict | None = None) -> dict:
@@ -78,7 +91,8 @@ def audit_run(directory: Path, *, trusted_origin: dict | None = None) -> dict:
             "soma/f007.py", "topics/F007-linked-motor-work/SPEC.md",
             "experiments/F007/PLAN.md",
             "experiments/F007/run_suite.py",
-            "experiments/F007/verify.py",
+            "experiments/F007/verify.py", "tests/test_f007.py",
+            ".github/workflows/f007.yml",
         }
         require(set(trusted_origin["source_hashes"]) == required,
                 "trusted source dependency set")
@@ -90,6 +104,8 @@ def audit_run(directory: Path, *, trusted_origin: dict | None = None) -> dict:
             "schema")
     expected_files = {"config.json","states.csv","ledger/events.csv","link_events.csv","motion.svg"}
     require(set(m["artifacts"]) == expected_files, "manifest artifact contract")
+    actual_files = {p.relative_to(root).as_posix() for p in root.rglob("*") if p.is_file()}
+    require(actual_files == expected_files | {"manifest.json"}, "unexpected saved file set")
     for name, digest in m["artifacts"].items():
         require(hashlib.sha256((root/name).read_bytes()).hexdigest()==digest, "sha "+name)
     # Import only field definitions, NOT runtime dynamics.

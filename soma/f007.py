@@ -6,6 +6,12 @@ mechanism and electric powertrain are not modeled. No agent, sensors or learning
 from __future__ import annotations
 
 import csv
+import ctypes
+import errno
+import os
+import shutil
+import sys
+import tempfile
 from dataclasses import asdict, dataclass
 from fractions import Fraction
 import hashlib
@@ -206,6 +212,11 @@ def motion(cfg: Config, x: tuple[float, float], v: tuple[float, float],
 
 
 def simulate(cfg: Config) -> tuple[list[dict], list[dict], list[dict], LedgerState]:
+    # Reject forged dataclass instances as well as malformed input dictionaries.
+    normalized = Config.from_dict(cfg.to_dict())
+    if cfg != normalized:
+        raise ValueError("noncanonical F007 Config")
+    cfg = normalized
     a, b = cfg.cells
     ledger = new_ledger([BatteryCell("A", a.capacity_uj, a.initial_balance_uj),
                          BatteryCell("B", b.capacity_uj, b.initial_balance_uj)])
@@ -313,12 +324,18 @@ def provenance() -> dict:
         commit, dirty = run("rev-parse", "HEAD"), bool(run("status", "--porcelain", "--untracked-files=all"))
     except (OSError, subprocess.SubprocessError):
         commit, dirty = None, None
-    return {"git_commit": commit, "git_dirty": dirty,
+    pr_head = os.environ.get("SOMA_PR_HEAD_SHA") or None
+    if pr_head is not None and (len(pr_head) != 40 or
+                                any(ch not in "0123456789abcdef" for ch in pr_head)):
+        raise ValueError("invalid SOMA_PR_HEAD_SHA")
+    return {"git_commit": commit, "git_dirty": dirty, "pr_head_sha": pr_head,
             "source_hashes": {path: sha(root / path) for path in (
                 "soma/f001.py", "soma/f002.py", "soma/f003.py",
                 "soma/f005.py", "soma/f007.py",
                 "topics/F007-linked-motor-work/SPEC.md",
-                "experiments/F007/PLAN.md", "experiments/F007/run_suite.py", "experiments/F007/verify.py")}}
+                "experiments/F007/PLAN.md", "experiments/F007/run_suite.py",
+                "experiments/F007/verify.py", "tests/test_f007.py",
+                ".github/workflows/f007.yml")}}
 
 
 def plot_svg(rows: list[dict], title: str) -> str:
@@ -344,34 +361,78 @@ def plot_svg(rows: list[dict], title: str) -> str:
             + "".join(paths) + '</svg>')
 
 
+def publish_dir(stage: Path, destination: Path) -> None:
+    """Atomically publish a complete directory without replacing existing entries.
+
+    On Linux, require renameat2(RENAME_NOREPLACE); unsupported platforms fail closed.
+    On Windows, os.rename also rejects an already-existing destination.
+    """
+    stage, destination = Path(stage), Path(destination)
+    if os.name == "nt":
+        os.rename(stage, destination)
+        return
+    if not sys.platform.startswith("linux"):
+        raise OSError("atomic no-replace directory publication requires Linux or Windows")
+    libc = ctypes.CDLL(None, use_errno=True)
+    renameat2 = getattr(libc, "renameat2", None)
+    if renameat2 is None:
+        raise OSError("renameat2(RENAME_NOREPLACE) unavailable; refusing unsafe publication")
+    renameat2.argtypes = (ctypes.c_int, ctypes.c_char_p, ctypes.c_int,
+                          ctypes.c_char_p, ctypes.c_uint)
+    renameat2.restype = ctypes.c_int
+    if renameat2(-100, os.fsencode(stage), -100, os.fsencode(destination), 1) != 0:
+        error = ctypes.get_errno()
+        if error == errno.EEXIST:
+            raise FileExistsError(error, os.strerror(error), str(destination))
+        raise OSError(error, os.strerror(error), str(destination))
+
+
 def save_run(cfg: Config, directory: Path, *, identity: dict | None = None) -> dict:
+    # Derive and check all config fields, even if a caller constructed Config directly.
+    normalized = Config.from_dict(cfg.to_dict())
+    if cfg != normalized:
+        raise ValueError("noncanonical F007 Config")
+    cfg = normalized
     rows, spends, links, ledger = simulate(cfg)
     svg = plot_svg(rows, cfg.experiment_id)
     origin = provenance() if identity is None else identity
-    # Config and physics are validated before publishing a normal run.
-    directory.mkdir(parents=True, exist_ok=False)
-    (directory / "ledger").mkdir(exist_ok=False)
-    (directory / "config.json").write_text(
-        json.dumps(cfg.to_dict(), sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    for rel, columns, data in (
-        ("states.csv", STATE_COLUMNS, rows),
-        ("ledger/events.csv", LEDGER_COLUMNS, spends),
-        ("link_events.csv", LINK_COLUMNS, links),
-    ):
-        with (directory / rel).open("w", encoding="utf-8", newline="") as fp:
-            w = csv.DictWriter(fp, fieldnames=columns)
-            w.writeheader()
-            w.writerows(data)
-    (directory / "motion.svg").write_text(svg, encoding="utf-8")
-    artifacts = ("config.json", "states.csv", "ledger/events.csv",
-                 "link_events.csv", "motion.svg")
-    manifest = {"schema_version": SCHEMA, "model": "1d_two_cell_effective_motor_rigid_link",
-                "experiment_id": cfg.experiment_id, "seed": None, "samples": len(rows),
-                "ledger_events": len(spends), "link_events": len(links),
-                "spent_uj": ledger.spent_uj, "final_balances_uj": {
-                    c.cell_id: c.balance_uj for c in ledger.cells},
-                "ledger_residual_uj": ledger.residual_uj, "origin": origin,
-                "artifacts": {rel: sha(directory / rel) for rel in artifacts}}
-    (directory / "manifest.json").write_text(
-        json.dumps(manifest, sort_keys=True, indent=2, allow_nan=False) + "\n", encoding="utf-8")
-    return manifest
+    directory = Path(directory)
+    directory.parent.mkdir(parents=True, exist_ok=True)
+    if directory.exists() or directory.is_symlink():
+        raise FileExistsError(str(directory))
+    stage = Path(tempfile.mkdtemp(prefix="." + directory.name + "-stage-", dir=directory.parent))
+    try:
+        (stage / "ledger").mkdir()
+        (stage / "config.json").write_text(
+            json.dumps(cfg.to_dict(), sort_keys=True, indent=2, allow_nan=False) + "\n",
+            encoding="utf-8")
+        for rel, columns, data in (
+            ("states.csv", STATE_COLUMNS, rows),
+            ("ledger/events.csv", LEDGER_COLUMNS, spends),
+            ("link_events.csv", LINK_COLUMNS, links),
+        ):
+            with (stage / rel).open("w", encoding="utf-8", newline="") as fp:
+                w = csv.DictWriter(fp, fieldnames=columns)
+                w.writeheader()
+                w.writerows(data)
+        (stage / "motion.svg").write_text(svg, encoding="utf-8")
+        artifacts = ("config.json", "states.csv", "ledger/events.csv",
+                     "link_events.csv", "motion.svg")
+        manifest = {"schema_version": SCHEMA, "model": "1d_two_cell_effective_motor_rigid_link",
+                    "experiment_id": cfg.experiment_id, "seed": None, "samples": len(rows),
+                    "ledger_events": len(spends), "link_events": len(links),
+                    "spent_uj": ledger.spent_uj, "final_balances_uj": {
+                        c.cell_id: c.balance_uj for c in ledger.cells},
+                    "ledger_residual_uj": ledger.residual_uj, "origin": origin,
+                    "artifacts": {rel: sha(stage / rel) for rel in artifacts}}
+        (stage / "manifest.json").write_text(
+            json.dumps(manifest, sort_keys=True, indent=2, allow_nan=False) + "\n",
+            encoding="utf-8")
+        # Inspect staged saved bytes before publishing valid-looking evidence.
+        from experiments.F007.verify import audit_run
+        audit_run(stage)
+        publish_dir(stage, directory)
+        return manifest
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
