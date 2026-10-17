@@ -160,3 +160,13 @@ F005は「単一セル1Dの離散正仕事積分と整数µJ台帳への接続�
 
 ### F006 限定的正式採用（2026-10-17）
 採用範囲は `f006.v2` の**固定A〜E・15runのdt依存診断**に限る。Wolfram離散参照、3.11/3.12各112テスト・F006 19最適化テスト、139 step/126 eventの別計算、各81ファイルのバイト一致を照合。P2 2件をv2で修正して再監査し、ユーザーが採用・統合を指示した。設計[PR #17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)はmain統合済み。実装[PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)に本記録を含め、最新CI確認後にmain統合する。詳しい採用ゲート・ZIPのSHA・既知制限は[findings](findings/F006-validation.md#2026-10-17-f006-限定的な正式採用--最新研究判断)へ。**非採用**：汎用原因推論、F005物理の修正・dt不変性、実機電力、生存/創発、多セル運動。上に残る「実装候補」「未採用」「PR未統合」は時点別履歴。
+
+## F007：次の一能力の提案（2026-10-17・**設計のみ／未実装／未採用**）
+
+F006までの限定採用後、**F003二セルリンク + F005一セルの正仕事 + F002電池台帳**の境界をつなぎ、「片側Aの電池で結合Bを動かすと何が変わるか」を一能力として事前登録する。Bに新しい電力は与えず、理想リンクの機械的な力伝達とAの支出帰属を比較する。運動可能性/省エネ優位性を目的関数で押しつけない。
+
+- [F007 Issue #19](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/19) / [F007 仮説・受入基準](topics/F007-linked-motor-work/SPEC.md)
+- [A〜F事前実験計画](experiments/F007/PLAN.md) / [実験記録（未実施）](findings/F007-validation.md)
+- [提案システム図](docs/ARCHITECTURE.md#f007-提案片側の電池で結合した2セルが動く2026-10-17設計のみ) / [提案データ構造](docs/DATA_CONTRACTS.md#f007-提案データ構造保存フロー2026-10-17未実装)
+
+**境界**：F005の有効モーター力の反作用元が未実装、半陰的Euler位置と仕事積分が異なる、dt変更で電池支出・拒否が変わる。2セルの自律結合、局所感覚、身体図式、創発は未実装。設計レビュー→**別実装PR**→独立監査→ユーザーの採否決定まで、mainと既存証拠は変更しない。
