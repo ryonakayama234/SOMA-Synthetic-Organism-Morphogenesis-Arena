@@ -609,3 +609,37 @@ flowchart TD
 ~~~
 
 JSONの数値は元CSVをパースした値から再計算/物理的補間なしに出力。電池とstepは整数として保持。時刻・位置・速度は誤差許容の「近似比較」ではなく、投影経路中で元の数値が不変であることを確認する。ピクセル座標系は保存フレーム契約の外。
+
+## V001実装候補の確定したフレーム契約（2026-10-17／PR #26、未採用）
+
+**入力**：既存F007 `f007.v1` 保存run。 `config.json` / `states.csv` / `link_events.csv` / `ledger/events.csv` / `motion.svg` / `manifest.json` を監査後、元の値は変えず読み取る。
+
+**出力（提案スキーマの実装済み候補）**：`frames.json` は `schema_version="v001.frame.v1"`, `experiment_id`, `f007_schema_version`, `source_hashes`, `frames`。各フレームのキーは、次の**12個**に固定：
+
+```text
+step_index                integer, 0...N, 欠落重複なし
+time_s                    float [s], 保存時刻
+x_a_m, x_b_m              float [m], 元CSV数値
+v_a_m_s, v_b_m_s          float [m/s]
+attached                  boolean, post-event F007真値
+balance_a_uj, balance_b_uj integer [µJ]
+motor_command_n           float [N]
+motor_applied_n           float [N]
+decision_reason           string
+link_event_kind           string or null
+```
+
+`link_event_kind` は `link_events.csv`の当該保存時刻から `attach_initial` / `detach` を投影する。E-cutの`t=0.5s`は**post-eventでattached=false**。切断のbefore/afterのx/vが同一かどうかはF007保存オラクルで照合する。UIのピクセル・表示倍率・ローカル再生速度はCSVの真値と別スキーマ。
+
+`viewer_manifest.json` は `v001.evidence.v1`で、`experiment_id`, `source_artifacts_sha256`, `trusted_f007_origin`, `viewer_sources_sha256`, `output_artifacts_sha256`, `verification` を持つ。V001はF007の研究者用世界真値を**F008/コントローラへ戻さない**。数値は投影で変換・補間せず、画面の文字や形は検証されたframeからのみ更新する。
+
+```mermaid
+flowchart LR
+  IN["F007保存真値+別経路のtrusted identity"] --> O["F007独立保存オラクル"]
+  O --> F["1行=1 frame JSON、数値を保持"]
+  F --> HTML["base64で安全に埋め込んだ単独HTML/SVG"]
+  F --> EVID["viewer manifest SHA/出自/byte replay"]
+  HTML -. "セルへ観測APIを提供しない" .-> SENSOR["将来F008"]
+```
+
+古い設計案のフィールド`source_artifact_sha256`単数形は実装候補の正式出力ではなく、現在は`source_hashes`（F007入力ファイル別）に変更。差分を確認できるよう設計時の文章は履歴として残す。
