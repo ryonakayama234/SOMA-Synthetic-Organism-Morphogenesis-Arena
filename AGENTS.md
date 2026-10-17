@@ -114,3 +114,9 @@ F007はAのみのmotor、Bはpassive。BのF002残高を機械リンクで支出
 ### V001実装計画の追補（2026-10-17：設計のみ）
 
 V001はPython標準ライブラリのF007原本検証（trusted originを別経路で照合）→型付きread-only frame projection→canonical frames.json→安全に埋込んだ単独viewer.htmlを提案中。再生は保存されたstepだけ、2D/3Dやセル側観測を導入しない。主要対照はF007既存の9ケース。採用目標は全フレーム1:1、投影元数値厳密一致、E-cut時刻0.5秒のpost-event OFF、負例拒否0受容、再実行のbyte一致、3.11/3.12回帰、原本非破壊。**V001の実装・実験・CI・採用はいずれも未実施**。詳細[SPEC](topics/V001-readonly-replay/SPEC.md)と[PLAN](experiments/V001/PLAN.md)、設計Draft PR #25。
+
+## V001の実装候補と監査指針（2026-10-17、Draft PR #26）
+
+最初のread-only viewerを`soma/v001.py`、`experiments/V001/{build_view,verify,run_suite}.py`、`viewer_template.html`に実装。F007 `verify.audit_run`の独立保存原本検証＋trusted checkout-origin照合を通過後にだけworld truthをframeへ投影する。UIは研究者専用で、F008セルの観測APIにリンク構造を渡さない。展示用矩形/レールを実機物理とみなさない。
+
+実装PRではコード＋テスト＋V001実験ノート＋ARCHITECTURE＋DATA_CONTRACTS＋README＋AGENTSを同期。実装の検証には保存元とframeの型付き厳密一致、E-cut post-event、電池指令と適用区別、hash付替え攻撃、HTML埋込データの整合、9ケース2パスbyte replay、CIの3.11/3.12と最終HEADが必要。CI初回成功と正式採用は別。V001のユーザーによる視覚・操作評価と別視点監査を残し、**明示的採否判断までmainに統合しない**。[実装PR #26](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/26)。
