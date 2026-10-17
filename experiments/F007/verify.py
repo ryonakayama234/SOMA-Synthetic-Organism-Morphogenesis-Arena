@@ -77,6 +77,8 @@ def audit_run(directory: Path, *, trusted_origin: dict | None = None) -> dict:
             "soma/f001.py", "soma/f002.py", "soma/f003.py", "soma/f005.py",
             "soma/f007.py", "topics/F007-linked-motor-work/SPEC.md",
             "experiments/F007/PLAN.md",
+            "experiments/F007/run_suite.py",
+            "experiments/F007/verify.py",
         }
         require(set(trusted_origin["source_hashes"]) == required,
                 "trusted source dependency set")
