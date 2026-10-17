@@ -96,3 +96,11 @@ Fの対照も実装前に具体化した（[PLAN](../experiments/F007/PLAN.md) �
 [CI #39012666137](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012666137) では、出自の外部期待値を検証する新テスト `test_origin_tampering_cannot_be_hidden_by_manifest` が3.11/3.12とも失敗。121テストのうち120は成功し、**原因は新しい負例テストが `source_hashes={}` という未完成の偽期待identityを「信頼済み」として渡したこと**。強化した監査器が9依存ソースの完全性を拒否した挙動は設計どおり。実験スイート自体は当該HEADでは実行されていない。
 
 修正として、テスト用の信頼するidentityをmanifestから組み立てず、`soma.f007.provenance()` がcheckout内の実ファイルから採取するように変更。以後、このidentityに対してmanifestのgit_commitだけを偽装し、監査が拒否するか確認する。失敗CIを成功と記載しない。最終HEADのCIを改めて確認する。
+
+### 修正後HEADでの追試成功（採否は別）
+
+**実装＋修正HEAD `fc3ad9b0776b020a92f9b9e6e3d632aa2e49dfcb`、[CI #39012734598](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012734598)：Python 3.11/3.12双方で121全回帰、F007最適化9テスト成功。** 9物理run、12入力負例、保存CSV改変検出、各58ファイルのbyte完全再実行一致。修正後の成果物は[3.11 #12093711422](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012734598/artifacts/12093711422)、[3.12 #12093456671](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39012734598/artifacts/12093456671)。
+
+監査改善点は `trusted_origin` をmanifestではなく信頼するcheckout側から渡し、F001/F002/F003/F005/F007、SPEC/PLAN、スイート/独立検証器の計9ファイルhashとの一致を確認すること。失敗CI #39012666137を履歴保持して修正した。研究判断は「固定の1D離散計算に限りSUPPORTED候補」であって、実機の力学や省電力の優位性は支持しない。
+
+**本研究ノートを追記したコミット自身については、文書変更後の最終CIを別途確認する。** 独立第三者によるコード/数理/生証拠の再監査、通常エラー時の段階的公開を厳密にする検討、研究者の明示的な正式採否判断は未完了。採用前Draftを保持する。
