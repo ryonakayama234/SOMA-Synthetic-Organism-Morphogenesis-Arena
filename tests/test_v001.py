@@ -129,7 +129,7 @@ class V001Test(unittest.TestCase):
         with TemporaryDirectory() as tmp:
             _,view,_=self.make_pair("E-cut",Path(tmp))
             html=(view/"viewer.html").read_text("utf-8")
-            executable=re.findall(r"<script>\\s*(.*?)\\s*</script>",html,re.S)
+            executable=re.findall(r"<script>\s*(.*?)\s*</script>",html,re.S)
             self.assertEqual(len(executable),1)
             result=subprocess.run([node,"--check","-"],input=executable[0],
                                   text=True,capture_output=True,check=False)
