@@ -444,3 +444,25 @@ flowchart TD
 ~~~
 
 固定条件のみ`expected_classification`を事前ラベルとして出し、観測からの一致は`signature_matches_reference`、汎用`causal_attribution=null`。二保存先間のcrash原子性と実機・F003統合は非採用。実証値・制限・採用判断は[findings](../findings/F006-validation.md#2026-10-17-f006-限定的な正式採用--最新研究判断)。
+
+## F007 提案：片側の電池で結合した2セルが動く（2026-10-17・設計のみ）
+
+> **まだ動かない構想図。** F003のリンク、F005の正仕事、F002の整数µJ台帳を接続する予定の境界。既存F001〜F006は現行mainのまま。
+
+~~~mermaid
+flowchart LR
+  CFG["設定: A/B質量・リンク・外力・Aモーター・電池"] --> CAND["F003型候補運動<br/>ON: 合成質量 / OFF: 独立"]
+  CAND --> WORK["F005: Aの正仕事（区間速度補間）"]
+  WORK --> GATE{"F002: A電池が足りる?"}
+  GATE -->|Yes| ACCEPT["採用 + Aのみspend"]
+  GATE -->|No| RETRY["Aモーター=0で力学再計算"]
+  ACCEPT --> TRUE["研究用世界真値: A/B運動・リンク力・残高"]
+  RETRY --> TRUE
+  TRUE --> RAW["時系列CSV・イベント・manifest・SHA"]
+  RAW --> ORACLE["独立参照 + A〜F対照 + CI"]
+  TRUE -. "感覚データに直結させない" .-> OBS["将来の局所観測（未実装）"]
+~~~
+
+このリンクは**機械仕事の授受**を扱い、F002のセル間**電力量移送**とは別。結合による加速度変化を観測するだけで「有利」と結論しない。F005の外部有効力に物理的な推進反力は未実装。F006のdt依存を引き継ぎ、形態間の効率比較は現段階の非目標。
+
+[研究仕様](../topics/F007-linked-motor-work/SPEC.md) / [事前A〜F](../experiments/F007/PLAN.md) / [検証ノート（未実施）](../findings/F007-validation.md) / [Issue #19](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/19)。

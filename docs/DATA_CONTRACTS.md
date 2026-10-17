@@ -483,3 +483,48 @@ suite manifestはモデル/seed/sweep/run数/verdict、Git commit/dirty、F001/F
 | `suite_source.py` / `comparison.svg` | source snapshotのhash照合／SVGは表示専用でCSVに優先しない。 |
 
 **保存ルール**：私有stageで生成/再計算/バイト再生一致を完了し、Linux `renameat2(RENAME_NOREPLACE)`で公開。通常例外ではこの呼出しで公開した成果物だけをrollback。他者の既存証拠は変更しない。2宛先の一括crash-atomicは提供しない。出自hashは監査checkoutとの一致であり、歴史的実行者の暗号学的証明ではない。F003/局所知覚/創発の構造は未接続。[検証・採用記録](../findings/F006-validation.md#2026-10-17-f006-限定的な正式採用--最新研究判断)。
+
+## F007 提案データ構造・保存フロー（2026-10-17・未実装）
+
+**以下は`f007.v0-proposal`の説明用構造。既存の採用済みスキーマではない。** 型・列順・不正入力拒否規則は実装前の独立レビューで確定し、新版`f007.v1`を凍結する。F003、F005、F002の既存契約はそのまま保持する。
+
+~~~mermaid
+flowchart TD
+  CFG["config.json: 2セル＋接続＋Aモーター＋電池"] --> WORLD["世界真値: A/B位置速度、link force、残高"]
+  WORLD --> STATE["states.csv: 片側指令/実適用、運動、力、支出、残高"]
+  WORLD --> EVENTS["ledger/events.csv＋link_events.csv"]
+  STATE --> CHECK["独立参照の全行照合"]
+  EVENTS --> CHECK
+  CHECK --> COMP["comparison.json＋図"]
+  CFG --> META["manifest.json: git SHA/dirty・seed・source SHA・各artifact SHA256"]
+  COMP --> META
+  WORLD -. "未実装" .-> SENSOR["セルが見られる局所観測"]
+~~~
+
+~~~json
+{
+  "schema_version": "f007.v0-proposal",
+  "experiment_id": "F007-B-theoretical",
+  "seed": null,
+  "dt_s": 0.25,
+  "duration_s": 1.0,
+  "drag_per_s": 0.0,
+  "cells": [
+    {"id": "A", "mass_kg": 1.0, "initial_x_m": 0.0, "initial_v_m_s": 0.0, "motor_force_n": 2.0, "external_force_n": 0.0, "capacity_uj": 3000000, "initial_balance_uj": 3000000},
+    {"id": "B", "mass_kg": 1.0, "initial_x_m": 0.5, "initial_v_m_s": 0.0, "external_force_n": 0.0, "capacity_uj": 1, "initial_balance_uj": 0}
+  ],
+  "link": {"initially_attached": true, "length_m": 0.5, "detach_time_s": null}
+}
+~~~
+
+| 種別 | 最小限区別すべき項目・単位 |
+| --- | --- |
+| 設定 | f007スキーマ・seed=null・dt/duration [s]・セル質量[kg]・リンク長[m]・A motor指令[N]・各外力[N]・セルごとの容量/残高[µJ] |
+| 世界状態 | step, time[s], attached, x_A/x_B[m], v_A/v_B[m/s], link_force_A/B[N] |
+| モーター | Aの`command_n`と`applied_n`、正仕事[J]、拒否理由、`spent_uj`（正味符号付き仕事とは別） |
+| 台帳 | `balance_a_uj`、`balance_b_uj`、Aのspend event、合計残差[µJ]。Bのエネルギー転送イベントは生じない |
+| 保存証拠 | config・states・ledger/events・link_events・manifest・再構成可能なSVG・比較JSON・Git/SHA256 |
+
+**真値と局所知覚の境界**：出力される位置/結合状態/電池残高は研究者の世界真値であり、ロボット自身の能力としては認定しない。**時間刻み**：各ステップ整数µJ切上げと受否判定はdtに依存する。出所・台帳・ログを混同しない。
+
+[仕様](../topics/F007-linked-motor-work/SPEC.md) / [実験計画](../experiments/F007/PLAN.md) / [記録](../findings/F007-validation.md)。
