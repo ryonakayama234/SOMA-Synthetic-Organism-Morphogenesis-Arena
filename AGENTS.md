@@ -101,3 +101,12 @@ F007の設計PR #20と実装PRは分離する。後者は設計HEADにstackし�
 F007はAのみのmotor、Bはpassive。BのF002残高を機械リンクで支出してはならない。Aの不足でモーターだけを0としてF003のリンク/各外力は再計算。切断瞬間のx/v jumpは禁止。F005の区間正仕事・semanticsを変えない。CSVからの独立参照は数式別実装であり実行モデルを呼び戻さない。F005のbinary64課金を任意dtでFraction正確値と同一と一般化しない。
 
 機械的な「リンクでBを動かす」と、「電気的にBへ移送する」、実機で地面反力を使う自己推進を区別する。CI未確認・外部レビュアー不在・まだ採用前を必ず明記する。
+
+## V001可視化器の独立設計提案（2026-10-17）
+
+研究者の希望：SOMAの外観・運動を画面で直接観察し、機能ごとにシステム図・データ構造・実験記録をGitHubで同時更新する。現在の研究本体はF007まで限定採用、F008はDraft PR #23で設計のみ。V001は別の**補助的な観測機能**の提案であり、F008を実装・採用したものではない。
+
+- [Issue #24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24) → `topics/V001-readonly-replay/SPEC.md` → `experiments/V001/PLAN.md` → `findings/V001-validation.md`。併せて `docs/ARCHITECTURE.md`／`docs/DATA_CONTRACTS.md` のV001節。
+- 一機能：**F007の保存済み1D・2セル世界真値のread-only step replay**。既存物理・セル感覚・制御器・F008の観測境界を変更しない。
+- 状態：設計PRの段階では**未実装／未実験／未採用**。実装するなら別PRでコード＋テスト＋独立証拠＋図＋契約＋findings＋READMEを同期。レビュー・研究者の明示的採否前にmainへ統合しない。
+- 図は1D値を研究者に示す記号。SOMAが2D/3Dの姿で動く実装、自律結合、人工生命の創発の証拠ではない。世界真値をセル局所観測に漏らさない。
