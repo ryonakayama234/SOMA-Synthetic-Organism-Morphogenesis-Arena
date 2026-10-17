@@ -35,3 +35,16 @@ F007の検証済み保存 `config.json`・`states.csv`・`link_events.csv`・`le
 
 ## 実施・判断
 設計時：**全未実施**。採用はPRのCIだけでは決定しない。実施時は未変更の原本/ログ、失敗例、反証を `findings/V001-validation.md` に追記する。後付けの閾値変更は禁止。
+
+## 2026-10-17 受入検証の具体化（設計追補、全未実施）
+
+最初の対象はF007の凍結済み9ケース `A-free/B-linked/C-zero/D-external/E-cut/F-01/F-02/F-03/F-04`。それ以外の任意dt・モデルを初期の正式受入対象へ拡張しない。
+
+- **A**：非接続A-freeで各stepのA/B位置・速度・リンクOFF、初期行を含む全5frameを読み直して完全比較。
+- **B**：接続B-linkedで全stepのA/B距離0.5m、リンクON、終点A 0.625m/B 1.125m（理論参照）と表示値を照合。
+- **C**：E-cut、時刻0.5sのpost-eventはOFF、同時刻のlink event前後x/vジャンプは0。理論参照時刻別{A位置,B位置,link}=`{0,0.5,ON};{0.0625,0.5625,ON};{0.1875,0.6875,OFF};{0.4375,0.8125,OFF};{0.8125,0.9375,OFF}`。**まだV001実測なし**。
+- **D**：C-zero/F-01/F-02/F-03/F-04を使い、motor commandとappliedと電池を別表示。F-01は初回62,500µJ支出後に適用力ゼロで惰走。F-04の正仕事と符号付き仕事を混同しない。
+- **E**：payload値を改変+manifestを再hash、イベント行を削除/逆順、schema/列誤り、non-finite、原本改変とsource identityの偽装を拒否。安全なテキスト処理の負例も設ける（実験名等はDOM textContent）。
+- **F**：同じ入力とコードからcanonical framesとHTMLのbyte一致。実験原本のbefore/after sha一致、既存F007完全回帰、Python3.11/3.12、保存された証拠の独立検査。
+
+採用数値閾値は既存PLANと同じ：coverage=100%、リンク/イベント不一致0、改変受容0、frame値はパースした元データと厳密一致、同条件のcanonicalファイルbyte一致。スクリーンショットの完全ピクセル一致やタイマ精度を、物理量の合否条件にしない。観測結果、失敗、操作感は後で`findings/V001-validation.md`へ追記する。
