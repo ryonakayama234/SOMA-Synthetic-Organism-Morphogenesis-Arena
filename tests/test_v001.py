@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import json
+import re
+import shutil
+import subprocess
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
@@ -112,6 +115,19 @@ class V001Test(unittest.TestCase):
             generate(source,other,trusted_origin=identity)
             for name in ("frames.json","viewer.html","viewer_manifest.json"):
                 self.assertEqual((view/name).read_bytes(),(other/name).read_bytes(),name)
+
+    def test_viewer_javascript_syntax_when_node_available(self):
+        node=shutil.which("node")
+        if node is None:
+            self.skipTest("node executable is not installed")
+        with TemporaryDirectory() as tmp:
+            _,view,_=self.make_pair("E-cut",Path(tmp))
+            html=(view/"viewer.html").read_text("utf-8")
+            executable=re.findall(r"<script>\\s*(.*?)\\s*</script>",html,re.S)
+            self.assertEqual(len(executable),1)
+            result=subprocess.run([node,"--check","-"],input=executable[0],
+                                  text=True,capture_output=True,check=False)
+            self.assertEqual(result.returncode,0,result.stderr)
 
     def test_no_invalid_output_on_failed_verification(self):
         with TemporaryDirectory() as tmp:
