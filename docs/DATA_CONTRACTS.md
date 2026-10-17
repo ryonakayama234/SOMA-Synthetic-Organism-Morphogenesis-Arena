@@ -591,3 +591,21 @@ flowchart TD
 canonical frame exportは入力原本から再生成できる監査用表現とする。スクリーンショットのpixel一致ではなく、検証済み**元数値・step数・link event・再生export**の一致をゲートとする。ViewerのPython/JS実装選択や座標スケーリング詳細は実装前レビューで確定。
 
 [仕様](../topics/V001-readonly-replay/SPEC.md) / [対照実験](../experiments/V001/PLAN.md) / [検証ノート（未実施）](../findings/V001-validation.md)
+
+### V001提案するcanonicalフレーム契約（2026-10-17、未実装）
+
+`frames.json` の最終スキーマ・列順は実装開始前に監査して固定する。設計案は envelope `schema_version="v001.frame.v1", source_run_id, source_artifact_sha256, viewer_source_sha256, frames`、各frameに
+`step_index:int, time_s:finite number [s], x_a_m/x_b_m:finite number [m], v_a_m_s/v_b_m_s:finite number [m/s], attached:bool, balance_a_uj/balance_b_uj:int, motor_command_n/motor_applied_n:finite number [N], decision_reason:string, link_event_kind:string|null`。
+
+`source_artifact_sha256`と`viewer_source_sha256`は**誰が実行したかの署名ではなく、バイト列の出自照合情報**。F007出自の信頼は保存manifestだけから自己充足的に確定しない。オフラインの別経路（信頼するcheckout/CI）で対照する。
+
+~~~mermaid
+flowchart TD
+  CFG["F007 config + states + ledger + link_events"] --> VALID["F007独立saved-oracle / SHA・origin検証"]
+  VALID --> FRAMES["v001.frame.v1 / 保存stepを1:1投影"]
+  FRAMES --> HTML["viewer.htmlに安全に埋込\n再生・選択・メートル目盛"]
+  FRAMES --> PROOF["frames.json再生一致\nviewer manifest"]
+  HTML -. "表示だけ" .-> CFG
+~~~
+
+JSONの数値は元CSVをパースした値から再計算/物理的補間なしに出力。電池とstepは整数として保持。時刻・位置・速度は誤差許容の「近似比較」ではなく、投影経路中で元の数値が不変であることを確認する。ピクセル座標系は保存フレーム契約の外。
