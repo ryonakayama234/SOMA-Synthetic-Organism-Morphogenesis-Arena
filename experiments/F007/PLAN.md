@@ -2,12 +2,16 @@
 id: EXP-F007
 title: F007事前登録：結合二セルの片側駆動と電池支出
 kind: experiment_plan
-status: preregistration_proposed
+status: executed_limited
 updated: 2026-10-17
 related: [F007]
 ---
 
 # F007 A〜F 実験計画 — 事前登録案（すべて未実施）
+
+**最新判断（2026-10-17）**：F007 `f007.v1` は**固定1D・2セル片側A駆動とA電池支出の離散モデル整合性に限って正式採用**。9条件のWolfram/保存データ独立照合、3.11/3.12各126全回帰＋14最適化、58ファイル再現、改ざん・失敗時保存試験を通過。[採用範囲・非採用事項](../../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)を優先し、下の「設計のみ／未採用」などは当時の履歴として読む。PR #20（設計）→#21（実装）の統合状況はGitHubを正とする。**実機・創発・任意dt・二宛先crash-atomicは非採用。**
+
+以下の前登録条件は事後に変更せず、実験実施前の予測値として保全する。
 
 [仕様](../../topics/F007-linked-motor-work/SPEC.md) / [Issue #19](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/19) / [未実施の結果記録](../../findings/F007-validation.md)
 

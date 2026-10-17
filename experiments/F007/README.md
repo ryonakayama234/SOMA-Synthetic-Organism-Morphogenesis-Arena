@@ -1,4 +1,6 @@
-# F007 実装候補：2セル片側駆動の実験と再実行
+# F007 v1：2セル片側駆動の実験と再実行
+
+**2026-10-17 限定的正式採用：** 9条件の離散モデル照合・保存証拠の独立監査・Python 3.11/3.12各126回帰と14最適化を通過。[採否と制限](../../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)を優先。直下のDraft等の表記は実装候補時点の履歴。
 
 **Draft / not yet formally adopted**. Issue #19, design PR #20; implementation is reviewed separately. Python 3.11/3.12, WSL2/Linux. No external Python dependencies.
 

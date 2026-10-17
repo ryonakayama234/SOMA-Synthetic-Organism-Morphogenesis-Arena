@@ -2,7 +2,7 @@
 id: FIND-F007
 title: F007 実験記録・レビュー・採否
 kind: finding
-status: not_run
+status: adopted_limited
 updated: 2026-10-17
 related: [F007, EXP-F007]
 ---
@@ -104,3 +104,16 @@ Fの対照も実装前に具体化した（[PLAN](../experiments/F007/PLAN.md) �
 監査改善点は `trusted_origin` をmanifestではなく信頼するcheckout側から渡し、F001/F002/F003/F005/F007、SPEC/PLAN、スイート/独立検証器の計9ファイルhashとの一致を確認すること。失敗CI #39012666137を履歴保持して修正した。研究判断は「固定の1D離散計算に限りSUPPORTED候補」であって、実機の力学や省電力の優位性は支持しない。
 
 **本研究ノートを追記したコミット自身については、文書変更後の最終CIを別途確認する。** 独立第三者によるコード/数理/生証拠の再監査、通常エラー時の段階的公開を厳密にする検討、研究者の明示的な正式採否判断は未完了。採用前Draftを保持する。
+
+
+## 2026-10-17 F007 限定的正式採用 — 最新の研究判断
+
+**採用（範囲限定）**：`f007.v1`の固定1D・2セル・理想剛体リンク、A片側有効モーター力、F005正仕事、F002整数µJ支出ゲートのソフトウェア／離散数理的一貫性を採用。仮説H007a〜cは事前登録9条件の範囲で**SUPPORTED (discrete software/model consistency only)**。Aが支払いBの電池は消費・移送しない。負例12件、切断イベント、全時刻の独立数式照合、保存証拠完全性を受入条件とした。
+
+**証拠**：[修正実装HEAD `90a97b8eb1ec30cf030187b7a08e399faa9127ea`](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/commit/90a97b8eb1ec30cf030187b7a08e399faa9127ea)、[最終機能修正後CI #39022049632](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39022049632)：Python 3.11/3.12各**126/126全回帰、14/14最適化F007**、9 run、12拒否負例、58ファイルのbyte replay一致、関連7 workflow成功。成果物は[3.11 #12097441434](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39022049632/artifacts/12097441434) と [3.12 #12096699318](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39022049632/artifacts/12096699318)。独立した標準ライブラリのFraction/CSV/ZIP監査（SOMAランタイムをimportしない）で保存runの全行・イベント、SHA256、Python間116ファイル同一性を検証。Wolframの9条件有理数計算と一致し、微小改変＋マニフェスト再hashの攻撃を意味検査で拒否。保存は個別ディレクトリごとにstaging→監査→renameat2 no-replace、通常の例外時の自前出力cleanup、CI成功時のみartifact公開を実装・検証した。
+
+**明示的な研究判断**：ユーザーは上記結果と制限を確認のうえ、この限定的なF007正式採用および設計PR #20→実装PR #21の順の安全なmain統合を委任した。**コードと証拠の監査は別式・別実装であって、外部の人間による第三者承認ではない。** 採用/統合は実機や科学的一般性の承認を意味しない。
+
+**非採用・限界**：地面／反力がモデル化されない有効モーター力の現実自走、実機電気消費、結合の適応・生存・省エネ優位、自律結合、感覚、学習、進化、形態創発、任意のbinary64境界と任意dtでの厳密参照、電力保持損失、二宛先をまたぐ突然の強制終了・停電時の原子的な一括確定、fsyncなしの電源断耐久性は認定しない。公開途中のプロセス即死では、二宛先のうち一つだけ**完成済み**のディレクトリが残り得る。これらは採用範囲外として記録し、欠陥が消滅したと主張しない。
+
+**履歴の読み方**：この節がF007についての**最新の採否判断**。上にある設計時の「未実装」「未実施」、初回失敗CI、過去の「Draft/未採用」記述は当時の状態を示す履歴であり、改変・消去しない。PR #20/#21の統合成否と統合時点はGitHubのマージ履歴を正とし、本文内で先取りして断言しない。F008は別途設計・採否を必要とし、この採用に含まれない。

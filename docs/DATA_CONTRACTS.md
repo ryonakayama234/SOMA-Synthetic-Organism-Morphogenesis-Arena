@@ -560,3 +560,8 @@ flowchart TD
 列順は`soma/f007.py`内の`STATE_COLUMNS`/`LEDGER_COLUMNS`/`LINK_COLUMNS`を唯一の確定列定義とする。`candidate_motor_*`はA残量0/指令0ではnull、非ゼロ指令かつ残量ありで棄却された候補は記録するが**実支出0**。開始行の候補はnull。切断時刻の行はpost-eventリンク力0、直前の内部力はlink_eventsに保存。区間の力・仕事は直前時間刻みに対応する。
 
 保存CSV/イベントは`experiments/F007/verify.py`で毎行別式再計算する。hashは完全性の一部であり、単独で正しい数式・歴史的実行者・採用を証明しない。GitHub CIの実出自と別途照合する。環境の真値をセル側センサーに直結しない。
+
+
+## F007 正式採用した保存契約の補足（2026-10-17）
+
+`f007.v1`の上記列順・整数µJ・イベント意味論を**固定9条件の離散モデル整合性として限定採用**。各runとsuiteのCSV等は完成した私有ステージで監査してから、Linux `renameat2(RENAME_NOREPLACE)`で公開する。別の実行や他者の既存出力は上書きしない。入力不正、改変と再hash、異常終了時の部分公開を負例テストで確認。保存manifestの`origin.git_commit`はCIのmerge checkout、`origin.pr_head_sha`はPRソースHEAD。SHAは歴史的実行者の暗号署名ではない。通常例外時に自作業の出力をclean upするが、二宛先の停電原子性・fsync耐久性は保証しない。[限定採用判断](../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)が優先。
