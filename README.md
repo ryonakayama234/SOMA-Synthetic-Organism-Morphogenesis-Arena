@@ -190,3 +190,5 @@ F006までの限定採用後、**F003二セルリンク + F005一セルの正仕
 - [A〜F事前登録](experiments/V001/PLAN.md) / [研究記録：全未実施](findings/V001-validation.md)
 
 V001は今ある記録を正しく**観察する機器**であり、ロボットセルの新しい運動・自律行動・創発を実装した意味ではない。将来の2D/3Dや局所ルールによるセル・オートマトン的身体形成は別の仮説・機能として扱う。仕様/図/契約/結果記録を同じPRで同期し、**実装PR・独立監査・明示的な研究者の採否判断までmain統合しない**。
+
+- **V001設計追補（2026-10-17）**：F007保存ログをチェックして、`frames.json` とオフライン `viewer.html` を生成するPython標準ライブラリ方式を提案。記録stepの1:1投影、切断イベント、出自改変拒否、byte再現性を採用ゲートに固定。現在は[設計Draft PR #25](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/25)のみで、コード・UI・V001試験は**未実施**。詳しくは[SPEC追補](topics/V001-readonly-replay/SPEC.md)／[A〜F追補](experiments/V001/PLAN.md)。
