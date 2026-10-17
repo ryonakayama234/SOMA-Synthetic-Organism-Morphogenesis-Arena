@@ -94,6 +94,12 @@ class V001Test(unittest.TestCase):
             saved=json.loads((source/"manifest.json").read_text())
             saved["artifacts"]["states.csv"]=sha256(source/"states.csv")
             (source/"manifest.json").write_text(json.dumps(saved,indent=2,sort_keys=True)+"\n")
+            # An attacker also updates *all* outward hashes. The F007
+            # saved-data numerical oracle, not the checksum, must reject it.
+            view_m=json.loads((view/"viewer_manifest.json").read_text())
+            view_m["source_artifacts_sha256"]["states.csv"]=sha256(source/"states.csv")
+            view_m["source_artifacts_sha256"]["manifest.json"]=sha256(source/"manifest.json")
+            (view/"viewer_manifest.json").write_bytes(canonical_json(view_m))
             with self.assertRaises((AssertionError, ValueError)):
                 audit_view(source,view,trusted_origin=origin)
 
