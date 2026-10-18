@@ -1,0 +1,39 @@
+name: F008 local load anomaly detection evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SOMA_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: All F001-F008 regressions
+        run: python -m unittest discover -s tests -v
+      - name: F008 local inference tests under optimized Python
+        run: python -O -m unittest discover -s tests -p test_f008.py -v
+      - name: Frozen A-E controls, independent F007 evidence and full byte replay
+        run: python -m experiments.F008.run_suite --output-dir runs/F008-ci --replay-output-dir runs/F008-replay
+      - name: Publish complete F008 evidence only after success
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F008-${{ matrix.python }}-evidence
+          path: |
+            runs/F008-ci/
+            runs/F008-replay/
+          if-no-files-found: error
