@@ -153,6 +153,48 @@ class F008Tests(unittest.TestCase):
             with self.assertRaises(AssertionError):
                 verify_suite(root, trusted_origin=forged)
 
+    def test_rehashed_scientific_summary_and_manifest_claims_are_rejected(self):
+        from experiments.F008.run_suite import local_provenance
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)/"out"
+            identity = local_provenance()
+            suite(root, origin=identity)
+            mp = root/"manifest.json"
+            cp = root/"comparison.json"
+            original_manifest = mp.read_bytes()
+            original_comparison = cp.read_bytes()
+
+            # A self-consistent SHA is not a validation of a scientific claim.
+            comparison = json.loads(original_comparison)
+            comparison["confound_cannot_prove_attachment"] = False
+            cp.write_text(json.dumps(comparison, sort_keys=True), encoding="utf-8")
+            manifest = json.loads(original_manifest)
+            manifest["artifacts"]["comparison.json"] = hashlib.sha256(cp.read_bytes()).hexdigest()
+            mp.write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
+            with self.assertRaises(AssertionError):
+                verify_suite(root, trusted_origin=identity)
+
+            cp.write_bytes(original_comparison)
+            for key, fake in (("cases", ["A-free"]), ("source", "unverified world model")):
+                with self.subTest(manifest_key=key):
+                    manifest = json.loads(original_manifest)
+                    manifest[key] = fake
+                    mp.write_text(json.dumps(manifest, sort_keys=True), encoding="utf-8")
+                    with self.assertRaises(AssertionError):
+                        verify_suite(root, trusted_origin=identity)
+
+    def test_pair_rejects_nested_paths_without_publication(self):
+        from experiments.F008.run_suite import run_pair
+        with tempfile.TemporaryDirectory() as tmp:
+            parent = Path(tmp)
+            for first, second in (
+                    (parent/"test"/"nested", parent/"test"),
+                    (parent/"test", parent/"test"/"nested")):
+                with self.subTest(first=first, second=second):
+                    with self.assertRaises(ValueError):
+                        run_pair(first, second)
+                    self.assertFalse((parent/"test").exists())
+
     def test_no_partial_publication_on_oracle_failure(self):
         with tempfile.TemporaryDirectory() as tmp:
             target=Path(tmp)/"out"
