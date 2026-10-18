@@ -129,3 +129,7 @@ Implement **only** A's local motion-response discrepancy using F007 as the uncha
 F008 `f008.local.v1` はAIの別視点数理・コード・証拠監査後、**研究者が限定的な正式採用とmain統合を明示承認**。旧「設計案／未実施／候補／未採用」は当時の履歴として保持し、[F008 findings の最新採用判断](findings/F008-validation.md)を優先。設計PR #23はmain統合済み。実装PR #27のmain統合とmain CIは最新GitHub状態で必ず再確認すること。
 
 採用範囲はF007固定1D離散モデル上の、オフラインA自己速度差・自己モーター実適用力・自己電池残量からの単体予測**加速度残差の異常検出**のみ。B/接続真値や未知外力はセルへ渡さない。B接続とD非接続+未知外力の局所全系列は区別不能。`not_excited`を結合判定に使わない。1e-12は数値対照の閾値であり実機感度ではない。独立の人間監査、実機推進、接続同定、学習と創発は未検証。AI reviewerのコメントは人間のGitHub APPROVEと同義ではない。新しい研究課題に自動着手しない。
+
+
+## F009 設計専用研究指示（2026-10-18）
+[Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28)の一能力だけ：F007外部有効力、閉鎖二セル内部対作用、地面牽引反作用の運動量収支を比較する。SPEC/PLANのA〜F・理論値・許容差を観測前に凍結。別実装Draft PRでコード・テスト・原本・図・データ契約・findings・README/AGENTSを同期。独立オラクル、Python3.11/3.12、全回帰、失敗/改変/再現性、CI HEAD証拠を残す。F001-F008変更なし、V001 PR #25/#26には触れない。世界真値や地面反力はF008セル局所APIに送らない。理想1D接地モデルは実機接触/移動/創発の証拠ではない。独立レビューと研究者採否が未完ならDraft維持、mainマージ禁止。
