@@ -207,3 +207,9 @@ python -m unittest discover -s tests -v
 python -O -m unittest discover -s tests -p test_f008.py -v
 python -m experiments.F008.run_suite --output-dir runs/F008-ci --replay-output-dir runs/F008-replay
 ```
+
+## 最新研究判断（2026-10-18）：F008の限定的正式採用を研究者が承認
+
+この節は上の「F008未採用」「実装候補」という履歴より新しい。研究者は監査P2-01/P2-02の修正、Wolfram有理数計算、Python 3.11/3.12と全回帰・保存生証拠の別式照合を踏まえて **F008 `f008.local.v1` の限定採用とmain統合を明示承認**した。対象はF007理想1D離散モデルの固定A〜E条件における**A自身の運動応答異常**の検出のみ。局所観測からの接続一意同定、実機センサ/推進、創発は非採用。
+
+[Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22)／[設計PR #23](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/23)（main統合済）／[実装PR #27](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/27)／[最新採用判断と証拠](findings/F008-validation.md)。実装PRの統合完了およびmain CIは**GitHubの最新状態を根拠に**確認すること。外部人間審査と同一支援AIの別視点監査は別扱い。旧「未採用」は当時の履歴であり、F008の最新段階はfindings末尾に記載する。

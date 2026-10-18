@@ -56,3 +56,7 @@ acceleration may still be nonzero from unknown external forces.
 See `topics/F008-local-load-detection/SPEC.md`,
 `docs/ARCHITECTURE.md`, `docs/DATA_CONTRACTS.md` and
 `findings/F008-validation.md` for preregistration and research status.
+
+## Research decision, 2026-10-18 (latest; earlier "not adopted" is historical)
+
+After independently checking the frozen deterministic A–F controls, CI artifacts and correcting two evidence/publication defects, the researcher expressly **approved limited formal F008 adoption and main integration**. This applies only to the offline, A-local residual detector in the specified 1D discrete software model. The earlier candidate wording and `science_status` values in reproducible saved evidence remain historical. GitHub PR #27 and the latest `findings/F008-validation.md` are authoritative for whether integration and main CI actually completed. Do not infer topology, general sensor robustness, physical propulsion, learning or emergence.

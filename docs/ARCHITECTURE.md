@@ -597,3 +597,7 @@ Only the researcher-side evaluator reads `W`; the detector is typed to
 `LocalObservation` and never sees connected/B/hidden external-force fields.
 The saved evidence suite is researcher-only. A completed CI check is not an
 adoption or a proof of isolation against malicious Python code.
+
+### F008 decision-state amendment (2026-10-18, researcher approval)
+
+The diagram above depicts the **historical preapproval gate**. The researcher subsequently expressly approved limited F008 adoption and main integration after P2 evidence-integrity corrections and independent AI/Fraction cross-checks. The validated implementation remains unchanged: full F007 world truth is held by the researcher-side adapter/oracle, never by `soma.f008.detect(LocalObservation)`. This acceptance is *not* a hardware/agent-isolation or morphology claim. For merged implementation, CI and final state, consult PR #27, `findings/F008-validation.md` and live main; an AI audit is not human third-party certification.
