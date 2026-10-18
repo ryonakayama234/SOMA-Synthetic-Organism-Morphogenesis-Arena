@@ -31,3 +31,7 @@ H009d：非結合でAだけ外部から+2Nを受けるとA終速度2m/s・変位
 ## 情報境界・実行ゲート
 真値は研究者向け。F008セルA局所APIへ接続真値・B状態・接地真値・反作用を渡さない。旧F001〜F008 API/証拠を変更しない。V001 PR #25/#26は独立のまま。
 Issue→設計Draft PR（SPEC/PLAN/図/契約/未実施findings/索引）→別実装Draft PR（最小実装・A〜F・負例・旧回帰・3.11/3.12 CI・raw SHA・再現）→独立視点監査→研究者明示採否。mainへの統合と正式採用は別途承認が必要。実機・生存・形態順位・創発・学習・自律結合・汎用接触ソルバーは対象外。
+
+
+## 2026-10-18 実装候補の責務（設計時の未実装記録より後）
+[実装Draft PR #30](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/30) は [設計Draft PR #29](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/29) にstackする。soma/f009.py は固定A-Fだけの離散力学モデルとCSVを生成。experiments/F009/verify.py はF009ランタイムをimportせず、Fractionで全行と源泉・反力を独立再計算。run_suite.py は二出力のbyte replay・既存出力拒否・manifest/source SHA検査を担当。Python3.11/3.12 CI、旧回帰、改ざん負例を通過した場合でも正式採用とはしない。二出力を跨ぐ停電・強制終了の原子的公開、実機接触、F008学習、身体創発は非対象。

@@ -133,3 +133,7 @@ F008 `f008.local.v1` はAIの別視点数理・コード・証拠監査後、**�
 
 ## F009 設計専用研究指示（2026-10-18）
 [Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28)の一能力だけ：F007外部有効力、閉鎖二セル内部対作用、地面牽引反作用の運動量収支を比較する。SPEC/PLANのA〜F・理論値・許容差を観測前に凍結。別実装Draft PRでコード・テスト・原本・図・データ契約・findings・README/AGENTSを同期。独立オラクル、Python3.11/3.12、全回帰、失敗/改変/再現性、CI HEAD証拠を残す。F001-F008変更なし、V001 PR #25/#26には触れない。世界真値や地面反力はF008セル局所APIに送らない。理想1D接地モデルは実機接触/移動/創発の証拠ではない。独立レビューと研究者採否が未完ならDraft維持、mainマージ禁止。
+
+
+### F009 implementation candidate handoff (2026-10-18)
+Design Draft PR #29 / implementation Draft PR #30 / Issue #28. Frozen A-F references remain in PLAN, with actual software execution in findings. Initial implementation HEAD 74180c5 passed 3.11/3.12 144 full tests +7 optimized, 6×5 rows, 20 files×2 replay; all F001-F008 workflows green. Commit containing later docs/finding updates must pass its own CI. Do not upgrade model_result_candidate_not_adopted to adoption. Review source SHA, exact-rational oracle, rehashed-tamper negative cases, preservation of F007 physics and world-vs-F008 boundary. Separate human/external review remains unperformed. No main merge, formal adoption, or Issue closure without researcher explicit decision.

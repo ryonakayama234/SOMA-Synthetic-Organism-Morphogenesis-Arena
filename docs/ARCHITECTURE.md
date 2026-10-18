@@ -618,3 +618,22 @@ flowchart TD
 ~~~
 
 実線のF009要素は**提案で未実装**。研究者は系全体の運動量と地面との交換を見る。内部作用/反作用は相殺、外部有効力/地面牽引はセル系の外力。F002/F005電池計量・F008セル側推定・V001ビューアは変更しない。[SPEC](../topics/F009-reaction-momentum/SPEC.md)。
+
+
+### F009 実装Draft #30：研究者専用の実際のデータフロー（2026-10-18、未採用）
+
+~~~mermaid
+flowchart TD
+  CASE["事前A-F: 独立の力源・結合・接地設定"] --> SIM["soma.f009.simulate 固定1Dステップ"]
+  SIM --> WORLD["研究者用A/Bの全世界真値と地面反作用"]
+  WORLD --> CSV["steps.csv / config.json"]
+  CSV --> FRACTION["verify.py: Fractionによる別式の全行再計算"]
+  SRC["Git checkout source SHA256"] --> FRACTION
+  FRACTION --> CASES["6ケース比較 / manifest / 負例"]
+  CASES --> REPLAY["run_suite: 20ファイル×2 byte replay"]
+  REPLAY --> CI["GitHub Actions: 3.11/3.12 / 旧全回帰"]
+  WORLD -. "world truth を提供しない" .-> LOCAL["既存F008 A-local APIは変更しない"]
+  OLD["既存F007外部有効力の基準"] --> FRACTION
+~~~
+
+F009はground_contactを牽引上限の理想パラメータで実現するので、現実の摩擦/車輪/支持反作用の接触解法ではない。source_shaは保存ファイル同一性の監査材料であり実行者認証ではない。設計時の図は歴史として保持する。
