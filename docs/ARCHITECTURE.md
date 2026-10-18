@@ -574,3 +574,26 @@ researcher-only and **does not import the F008 detector**. F007's
 `attached` at the 0.5 s cut is post-event, while the acceleration at the
 same row is from the preceding linked interval. No online learning, link
 identification, ground-reaction propulsion or morphology is claimed.
+
+
+### F008 provenance and review gate — 2026-10-18 audit addendum
+
+```mermaid
+flowchart LR
+  SRC["Trusted GitHub checkout: F007 + F008 source SHA"] --> ROOT["F008 origin snapshot"]
+  W["F007 saved world data"] --> AUDIT["F007 independent full-state replay"]
+  W --> PROJ["A-only allowlist projection"]
+  PROJ --> DET["A local residual detector"]
+  DET --> CSV["local.csv"]
+  CSV --> ORC["F008 independent local CSV oracle"]
+  AUDIT --> ORC
+  ROOT --> ORC
+  ORC --> GATE{"A–E / confound / tamper / same-byte replay"}
+  GATE --> EVID["Evidence artifact + CI source/merge HEAD"]
+  EVID --> REVIEW["External audit + researcher adoption gate, pending"]
+```
+
+Only the researcher-side evaluator reads `W`; the detector is typed to
+`LocalObservation` and never sees connected/B/hidden external-force fields.
+The saved evidence suite is researcher-only. A completed CI check is not an
+adoption or a proof of isolation against malicious Python code.
