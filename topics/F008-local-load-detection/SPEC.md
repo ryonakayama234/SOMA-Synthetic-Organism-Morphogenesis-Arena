@@ -54,3 +54,15 @@ flowchart LR
 
 ## 採用ゲート
 事前A〜Fを固定→設計レビュー→**別実装PR**で最小実装→Python3.11/3.12全回帰・実験A〜F・独立オラクル・負例・改変拒否・バイト再現→別視点監査→findingsに結果/限界/失敗追記→研究者の明示的採否後に限りmain統合。図、データ契約、コード/CI、findings、READMEを同じ実装PRで同期する。
+
+
+## 2026-10-18 implementation candidate (append-only; A–F predictions unchanged)
+
+A separate implementation branch adds `soma/f008.py` for A-only allowlisted observations and the fixed nominal single-cell acceleration residual, `experiments/F008/run_suite.py` for A–E runs and full replay, `experiments/F008/verify.py` for saved-data oracle, and `tests/test_f008.py`. **This is not an adoption or a change to preobserved theoretical predictions.**
+
+- Only A-local time, previous/current self velocity, A's commanded/applied effective motor force, and A battery balance may enter the detector. The nominal A mass is a predefined single-cell calibration (1 kg in frozen controls); neither B nor the link state is supplied.
+- The applied-force field is treated as locally available actuator execution feedback, an explicit idealization that must not be silently generalized to real devices.
+- If applied motor force is zero, the output is `not_excited`; no mass estimate or residual-based causal claim. Otherwise report `nominal` or `anomaly` from `observed_accel - applied/nominal_mass` (absolute tolerance 1e-12 m/s² on preregistered rational controls only).
+- B (linked) and D (unlinked, hidden A force) must have identical A-local histories but different researcher-only world truths. No result is labeled `attached` by the cell.
+- The detector is **offline processing of F007 saved states**, not a live sensor implementation or active probing. Position, mechanical work, battery and numerics of F007 stay unchanged.
+- Run, CI and independent audit evidence are tracked in `findings/F008-validation.md`; main and user research acceptance are separate gates.
