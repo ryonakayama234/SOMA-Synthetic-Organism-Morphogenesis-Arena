@@ -638,3 +638,26 @@ histories. A full same-identity byte replay and tamper cases are required.
 Case labels and world truth are used only on this **researcher evaluation**
 path. This is a deliberately narrow synthetic-sensor contract, not proof of
 hardware observability or exact performance on arbitrary dt/noisy samples.
+
+
+### F008 source provenance and trust boundary — 2026-10-18 audit refinement
+
+The outer `f008.evidence.v1` manifest's `origin` extends the unchanged
+F007 `provenance()` snapshot with `f008_source_hashes` (mapping fixed relative
+paths to SHA256). Required files are the F008 detector, suite runner, saved-data
+verifier, F008 tests, CI workflow, SPEC, PLAN, F008 README/decision log/findings,
+cross-feature architecture/data contracts, repository README and AGENTS.md.
+`verify_suite(root, trusted_origin=...)` must compare both the saved origin to
+an **external trusted checkout identity** and the recomputed checkout hash map
+to the fixed source list; never use the saved manifest to supply its own trusted
+identity. F007 independent saved-state audit and the artifact hashes are further
+checks, not substitutes for independent human review or source provenance.
+
+Agent local API is `detect(LocalObservation)` (8 allowed fields; no case or
+topology). The researcher-side adapter `analyze(world_rows)` has access to
+F007 truth for allowlisted projection; this is a software data contract, not
+a protected operating-system or adversarial code-execution security boundary.
+A researcher-only saved suite **contains** both the world source and local CSV;
+do not distribute that entire researcher bundle to an agent as if it were a
+private sensor payload. The numerical threshold `1e-12 m/s²` is frozen for
+these deterministic controls, not a calibrated general sensor noise threshold.
