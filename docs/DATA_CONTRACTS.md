@@ -565,3 +565,29 @@ flowchart TD
 ## F007 正式採用した保存契約の補足（2026-10-17）
 
 `f007.v1`の上記列順・整数µJ・イベント意味論を**固定9条件の離散モデル整合性として限定採用**。各runとsuiteのCSV等は完成した私有ステージで監査してから、Linux `renameat2(RENAME_NOREPLACE)`で公開する。別の実行や他者の既存出力は上書きしない。入力不正、改変と再hash、異常終了時の部分公開を負例テストで確認。保存manifestの`origin.git_commit`はCIのmerge checkout、`origin.pr_head_sha`はPRソースHEAD。SHAは歴史的実行者の暗号署名ではない。通常例外時に自作業の出力をclean upするが、二宛先の停電原子性・fsync耐久性は保証しない。[限定採用判断](../findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)が優先。
+
+
+## F008 提案：世界真値からセル別観測・推定・研究証拠へ【2026-10-17・未実装】
+
+~~~mermaid
+flowchart LR
+  CFG["研究設定・理論参照"] --> W["F007 世界真値：研究者のみ"]
+  W --> T["全状態ログ：既存F007を保持"]
+  W --> P["局所射影：他セルを遮断"]
+  P --> O["セルAの観測：自身のΔv / 指令 / 適用 / 電池"]
+  O --> I["単体モデルとの差：局所の残差"]
+  T --> V["研究評価器：接続の正解はここだけ"]
+  I --> V
+  V --> E["実験CSV・対照A〜F・manifest・SHA256"]
+~~~
+
+| 区分 | 提案上の情報 | 提供先・禁止情報 |
+| --- | --- | --- |
+| 世界真値 | A/B運動・リンク真値・リンク力・台帳 | 研究者専用。セルへの直接提供禁止 |
+| セル側観測 | schema_version=f008.v0-proposal、cell_id、time_s、delta_v_m_s、dt_s、own_motor_command_n、own_motor_applied_n、own_battery_uj | 自分のみ。Bの状態、attached、ケース真値は**含めない** |
+| 局所判定 | observed_accel、nominal_accel、residual、identifiable | 残差は未知負荷・未知外力の区別を保証しない。実行力0なら見かけ質量はnull |
+| 研究証拠 | config、理論参照、観測と研究真値の別CSV、評価JSON、manifest、出自・hash・再現データ | 検証用。コントローラへ逆流させない |
+
+提案列は**未確定**であり、実装前に列順・浮動小数点許容差・バージョンを凍結する。世界の真値とセルの観測が混同されていないことを、スキーマ監査と実際のログの両方で検証する。A〜Fの理論値はWolfram計算であり、**SOMA実験は未実施**。従来のF001〜F007データや採用済みAPIを変更しない。
+
+[研究Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22) / [仮説・境界](../topics/F008-local-load-detection/SPEC.md) / [事前計画](../experiments/F008/PLAN.md) / [未実施の記録](../findings/F008-validation.md)。

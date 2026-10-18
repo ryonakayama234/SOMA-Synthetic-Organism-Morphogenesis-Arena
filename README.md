@@ -180,3 +180,12 @@ F006までの限定採用後、**F003二セルリンク + F005一セルの正仕
 [再現コマンド](experiments/F007/README.md) / [事前A〜Fと追加F-01〜F-06](experiments/F007/PLAN.md) / [研究ノート](findings/F007-validation.md) / [実装の構造](docs/ARCHITECTURE.md#f007-実装候補の実際の責務とデータフロー2026-10-17) / [確定列契約](docs/DATA_CONTRACTS.md#f007-v1-実装候補の保存契約2026-10-17)。
 
 現段階はまだ結果検証前の候補。Wolfram理論予測をSOMA観測と混ぜず、最終HEAD CIと別視点証拠監査を完了するまでは正式採用・main統合を行わない。実機の自力推進・結合による省エネ優位・身体創発の主張は対象外。
+
+
+## 次の一能力 — F008 局所運動から未知の有効負荷を検知【2026-10-17・提案のみ】
+
+F007は2026-10-17に固定1D・2セルの片側駆動／電池支出を**限定採用・main統合**。次のF008は「セルが自分の速度応答だけから、単体モデルで予測できない有効負荷に気づくか」を研究する**事前登録段階**。F008の実装・実験・正式採用・main統合はまだ行っていない。接続グラフの同定、学習、実機自走を主張しない。
+
+[Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22) / [研究仕様と仮説](topics/F008-local-load-detection/SPEC.md) / [A〜F事前計画](experiments/F008/PLAN.md) / [システム図](docs/ARCHITECTURE.md#f008-提案局所運動から未知の負荷変化に気づく2026-10-17設計のみ未実装) / [データ構造](docs/DATA_CONTRACTS.md#f008-提案世界真値からセル別観測推定研究証拠へ2026-10-17未実装) / [研究記録（未実施）](findings/F008-validation.md)。
+
+GitHub進行は **Issue（問い）→ 設計Draft PR（事前登録）→ 別実装PR（試行）→ CI・証拠・独立監査 → 研究者の明示的採否 → 採用したときだけmain統合**。設計とコードの作業では、図・データの約束・findings・索引を同じPRで更新する。
