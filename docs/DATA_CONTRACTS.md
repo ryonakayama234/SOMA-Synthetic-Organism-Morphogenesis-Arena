@@ -661,3 +661,9 @@ A researcher-only saved suite **contains** both the world source and local CSV;
 do not distribute that entire researcher bundle to an agent as if it were a
 private sensor payload. The numerical threshold `1e-12 m/s²` is frozen for
 these deterministic controls, not a calibrated general sensor noise threshold.
+
+### F008 independent audit hardening (2026-10-18)
+
+The suite's `comparison.json` is **researcher-facing interpretive evidence**, not merely an opaque SHA-protected file. Independent verification must require the **complete frozen comparison contract** (schema, design reference, A/B/D/C predictions, confound warning, pending-review status) rather than trusting self-rehashed summary text. The outer `manifest.json` also fixes the exact A–E case list and evidence-source descriptor. `verify_suite` rejects deviations even if artifact SHA256 hashes are recalculated. These checks complement, but cannot replace, the row-by-row F007/F008 numerical oracle.
+
+The two byte-replay output paths must be distinct **and non-nested** after canonical path resolution; overlapping paths are rejected before creating any output. This is failure/publication integrity, not an additional physical hypothesis or new cell capability.
