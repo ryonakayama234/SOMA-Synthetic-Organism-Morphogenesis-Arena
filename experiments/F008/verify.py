@@ -132,7 +132,7 @@ def verify_suite(directory: Path, *, trusted_origin: dict) -> dict:
             "F008 source hashes differ from trusted checkout")
 
     actual = {str(p.relative_to(directory)) for p in directory.rglob("*") if p.is_file()
-              and p.name != "manifest.json"}
+              and p.relative_to(directory).as_posix() != "manifest.json"}
     require(actual == set(manifest["artifacts"]), "artifact inventory changed")
     for rel, expected_hash in manifest["artifacts"].items():
         actual_hash = hashlib.sha256((directory / rel).read_bytes()).hexdigest()
