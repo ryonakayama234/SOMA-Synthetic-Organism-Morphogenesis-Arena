@@ -79,8 +79,8 @@ class F008Tests(unittest.TestCase):
 
     def test_saved_independent_oracle_and_byte_replay(self):
         with tempfile.TemporaryDirectory() as tmp:
-            from soma.f007 import provenance
-            identity=provenance()
+            from experiments.F008.run_suite import local_provenance
+            identity=local_provenance()
             a,b=Path(tmp)/"one",Path(tmp)/"two"
             summary=suite(a,origin=identity)
             suite(b,origin=identity)
@@ -92,8 +92,8 @@ class F008Tests(unittest.TestCase):
 
     def test_tampered_local_semantics_refused_even_after_rehash(self):
         with tempfile.TemporaryDirectory() as tmp:
-            from soma.f007 import provenance
-            identity=provenance()
+            from experiments.F008.run_suite import local_provenance
+            identity=local_provenance()
             path=Path(tmp)/"out"
             suite(path,origin=identity)
             local=path/"B-linked"/"local.csv"
@@ -115,8 +115,8 @@ class F008Tests(unittest.TestCase):
 
     def test_world_source_tamper_rehashed_still_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
-            from soma.f007 import provenance
-            identity=provenance()
+            from experiments.F008.run_suite import local_provenance
+            identity=local_provenance()
             path=Path(tmp)/"out"
             suite(path,origin=identity)
             original=path/"B-linked"/"F007"/"states.csv"
@@ -133,6 +133,25 @@ class F008Tests(unittest.TestCase):
             outer.write_text(json.dumps(top),encoding="utf-8")
             with self.assertRaises(AssertionError):
                 verify_suite(path,trusted_origin=identity)
+
+    def test_f008_dependency_provenance_is_checked(self):
+        from experiments.F008.run_suite import local_provenance
+        from experiments.F008.verify import F008_SOURCE_FILES
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "out"
+            trusted = local_provenance()
+            suite(root, origin=trusted)
+            self.assertEqual(set(trusted["f008_source_hashes"]), set(F008_SOURCE_FILES))
+            forged = dict(trusted)
+            forged["f008_source_hashes"] = dict(trusted["f008_source_hashes"])
+            forged["f008_source_hashes"]["soma/f008.py"] = "0" * 64
+            # Even when caller and evidence agree on a *forged* origin,
+            # the independently recomputed checkout hashes must reject it.
+            obj=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
+            obj["origin"] = forged
+            (root/"manifest.json").write_text(json.dumps(obj), encoding="utf-8")
+            with self.assertRaises(AssertionError):
+                verify_suite(root, trusted_origin=forged)
 
     def test_no_partial_publication_on_oracle_failure(self):
         with tempfile.TemporaryDirectory() as tmp:
