@@ -591,3 +591,50 @@ flowchart LR
 提案列は**未確定**であり、実装前に列順・浮動小数点許容差・バージョンを凍結する。世界の真値とセルの観測が混同されていないことを、スキーマ監査と実際のログの両方で検証する。A〜Fの理論値はWolfram計算であり、**SOMA実験は未実施**。従来のF001〜F007データや採用済みAPIを変更しない。
 
 [研究Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22) / [仮説・境界](../topics/F008-local-load-detection/SPEC.md) / [事前計画](../experiments/F008/PLAN.md) / [未実施の記録](../findings/F008-validation.md)。
+
+
+## F008 v1 implementation candidate: local observation and evidence (2026-10-18, unadopted)
+
+Source of researcher-only world truth: unchanged `f007.v1` saved
+`config.json`, `states.csv`, `link_events.csv`, `ledger/events.csv`,
+`manifest.json`. Before projecting any A-local data, the complete F007 saved
+run is independently audited. The source is not overwritten.
+
+`f008.local.v1` = a fixed allowlisted A-only observation, frozen `dataclass(slots=True)`
+with exactly these eight input fields:
+
+| Field | Unit | Semantic origin |
+|---|---|---|
+| `step_index` | int | self sample index, contiguous |
+| `time_s` | s | local sample time |
+| `dt_s` | s | local consecutive time difference |
+| `v_prev_m_s` | m/s | prior A self velocity |
+| `v_a_m_s` | m/s | current A self velocity |
+| `motor_command_n` | N | A requested force, not automatically accepted |
+| `motor_applied_n` | N | A actuator execution feedback, idealized local permission |
+| `balance_a_uj` | µJ integer | A own battery balance |
+
+Only these eight fields enter `soma/f008.detect`; it also receives nominal
+single-cell mass (1 kg in frozen experiments), a given prior, **not** an
+inferred linked-body mass. Neither `attached`, B state, link forces,
+unknown external force, case identifier, researcher labels, nor trajectory
+position may enter that function.
+
+Per case `local.csv` has ordered columns:
+`step_index,time_s,dt_s,v_prev_m_s,v_a_m_s,motor_command_n,motor_applied_n,balance_a_uj,observed_accel_m_s2,expected_accel_m_s2,residual_m_s2,status`.
+Rows correspond to source steps 1..4; initial step 0 is the velocity baseline
+and is not itself an acceleration interval. Status values:
+`nominal` (|residual|<=1e-12 m/s²),
+`anomaly` (larger residual), and
+`not_excited` (applied force=0, prediction and residual serialized empty).
+No body attachment classification or apparent mass is output.
+
+Researcher-only `comparison.json`, case-local immutable F007 source runs and
+`manifest.json` form the `f008.evidence.v1` suite; manifest maps every
+artifact path to SHA256 and stores the trusted checkout identity. A separate
+saved-data verifier re-reads F007 CSVs, checks all A fields and equations,
+frozen A–E expectations, real linked/free truth and equal B/D A-local
+histories. A full same-identity byte replay and tamper cases are required.
+Case labels and world truth are used only on this **researcher evaluation**
+path. This is a deliberately narrow synthetic-sensor contract, not proof of
+hardware observability or exact performance on arbitrary dt/noisy samples.
