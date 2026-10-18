@@ -189,3 +189,21 @@ F007は2026-10-17に固定1D・2セルの片側駆動／電池支出を**限定�
 [Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22) / [研究仕様と仮説](topics/F008-local-load-detection/SPEC.md) / [A〜F事前計画](experiments/F008/PLAN.md) / [システム図](docs/ARCHITECTURE.md#f008-提案局所運動から未知の負荷変化に気づく2026-10-17設計のみ未実装) / [データ構造](docs/DATA_CONTRACTS.md#f008-提案世界真値からセル別観測推定研究証拠へ2026-10-17未実装) / [研究記録（未実施）](findings/F008-validation.md)。
 
 GitHub進行は **Issue（問い）→ 設計Draft PR（事前登録）→ 別実装PR（試行）→ CI・証拠・独立監査 → 研究者の明示的採否 → 採用したときだけmain統合**。設計とコードの作業では、図・データの約束・findings・索引を同じPRで更新する。
+
+
+## F008 現在地（2026-10-18：実装Draft候補、**未採用**）
+
+F007は限定採用済み。F008は[設計Draft #23](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/23)を基底とする[実装Draft #27](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/27)に、Aだけの局所速度・駆動・電池を射影して既知の単体モデルとの差を判定する候補を保存した。**main未統合、正式採否未決定**。この節以降の進捗が上記「提案のみ」の履歴を更新する。
+
+- [実装 `soma/f008.py`](soma/f008.py) / [事前A〜F](experiments/F008/PLAN.md) / [F008実験器](experiments/F008/run_suite.py) / [独立保存監査](experiments/F008/verify.py) / [手元再現](experiments/F008/README.md)。
+- [実装の責務図](docs/ARCHITECTURE.md#f008-implementation-candidate-actual-a-local-pipeline-2026-10-18-unadopted) / [確定候補のCSVと情報境界](docs/DATA_CONTRACTS.md#f008-v1-implementation-candidate-local-observation-and-evidence-2026-10-18-unadopted) / [F008 findings](findings/F008-validation.md) / [監査上の判断履歴](experiments/F008/IMPLEMENTATION_DECISIONS.md)。
+- 正規化したF007世界真値とF008の局所CSVは別に保存する。B接続とD非接続・隠れた外力−1Nの**A側全観測系列は同一**のはずであり、異常≠接続の同定。駆動不能Eは判定保留。
+- F008自身のコード・実験器・監査器・試験・workflow・仕様・図・findings・索引も出自hash対象とする。Actionsの結果は**そのコミットのrunを確認したときに限って**実施として記録する。独立した外部レビューと研究者の正式採否は別ゲート。
+
+再現コマンド（Linux / WSL2、未実行なら結果を仮定しない）：
+
+```bash
+python -m unittest discover -s tests -v
+python -O -m unittest discover -s tests -p test_f008.py -v
+python -m experiments.F008.run_suite --output-dir runs/F008-ci --replay-output-dir runs/F008-replay
+```
