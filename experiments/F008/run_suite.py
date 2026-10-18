@@ -126,8 +126,16 @@ def compare_bytes(first: Path, second: Path) -> int:
 
 
 def run_pair(first: Path, second: Path) -> dict:
-    first, second = Path(first), Path(second)
-    if first == second or first.exists() or second.exists():
+    first, second = Path(first).absolute(), Path(second).absolute()
+    resolved_first, resolved_second = first.resolve(), second.resolve()
+    # A nested destination would change the other tree's inventory and can
+    # leave behind an orphaned parent after a failed second publication.
+    if (resolved_first == resolved_second or
+            resolved_first in resolved_second.parents or
+            resolved_second in resolved_first.parents):
+        raise ValueError("require disjoint, non-nested replay destinations")
+    if (first.exists() or first.is_symlink() or
+            second.exists() or second.is_symlink()):
         raise FileExistsError("require two new distinct destinations")
     identity = local_provenance()
     created = []
