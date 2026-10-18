@@ -17,9 +17,16 @@ from soma.f007 import Config, STATE_COLUMNS, provenance, publish_dir, save_run
 from soma.f008 import COLUMNS, analyze
 from experiments.F007.run_suite import baseline
 from experiments.F007.verify import read_csv
-from experiments.F008.verify import verify_suite
+from experiments.F008.verify import f008_source_hashes, verify_suite
 
 CASES = ("A-free", "B-linked", "C-cut", "D-hidden-force", "E-empty-battery")
+
+
+def local_provenance() -> dict:
+    """Checkout-bound F007 and F008 identity; neither taken from saved evidence."""
+    identity = provenance()
+    identity["f008_source_hashes"] = f008_source_hashes()
+    return identity
 
 
 def configuration(case: str) -> dict:
@@ -95,7 +102,7 @@ def suite(destination: Path, *, origin: dict | None = None) -> dict:
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists() or destination.is_symlink():
         raise FileExistsError(str(destination))
-    identity = provenance() if origin is None else origin
+    identity = local_provenance() if origin is None else origin
     stage = Path(tempfile.mkdtemp(prefix="." + destination.name + "-stage-",
                                   dir=destination.parent))
     try:
@@ -122,7 +129,7 @@ def run_pair(first: Path, second: Path) -> dict:
     first, second = Path(first), Path(second)
     if first == second or first.exists() or second.exists():
         raise FileExistsError("require two new distinct destinations")
-    identity = provenance()
+    identity = local_provenance()
     created = []
     try:
         result = suite(first, origin=identity)
