@@ -28,6 +28,31 @@ CONTROL_ACCEL = {
 }
 TOL = 1e-12
 
+# Explicit trusted checkout dependency list. The saved manifest cannot choose it.
+F008_SOURCE_FILES = (
+    "soma/f008.py",
+    "experiments/F008/run_suite.py",
+    "experiments/F008/verify.py",
+    "tests/test_f008.py",
+    ".github/workflows/f008.yml",
+    "topics/F008-local-load-detection/SPEC.md",
+    "experiments/F008/PLAN.md",
+    "experiments/F008/README.md",
+    "experiments/F008/IMPLEMENTATION_DECISIONS.md",
+    "findings/F008-validation.md",
+    "docs/ARCHITECTURE.md",
+    "docs/DATA_CONTRACTS.md",
+    "README.md",
+    "AGENTS.md",
+)
+
+
+def f008_source_hashes() -> dict[str, str]:
+    root = Path(__file__).resolve().parents[2]
+    return {rel: hashlib.sha256((root / rel).read_bytes()).hexdigest()
+            for rel in F008_SOURCE_FILES}
+
+
 
 def read(path: Path) -> tuple[tuple[str, ...], list[dict[str, str]]]:
     with path.open(encoding="utf-8", newline="") as fp:
@@ -101,6 +126,11 @@ def verify_suite(directory: Path, *, trusted_origin: dict) -> dict:
     manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     require(manifest["schema_version"] == "f008.evidence.v1", "suite schema")
     require(manifest["origin"] == trusted_origin, "trusted checkout identity")
+    require(set(trusted_origin.get("f008_source_hashes", {})) == set(F008_SOURCE_FILES),
+            "missing or altered F008 dependency list")
+    require(trusted_origin["f008_source_hashes"] == f008_source_hashes(),
+            "F008 source hashes differ from trusted checkout")
+
     actual = {str(p.relative_to(directory)) for p in directory.rglob("*") if p.is_file()
               and p.name != "manifest.json"}
     require(actual == set(manifest["artifacts"]), "artifact inventory changed")
