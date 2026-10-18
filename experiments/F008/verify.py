@@ -28,6 +28,20 @@ CONTROL_ACCEL = {
 }
 TOL = 1e-12
 
+# Independent, frozen interpretation of the researcher-facing summary.
+# A re-signed comparison.json is not evidence unless these scientific
+# reference fields agree with the preregistration and the saved raw data.
+EXPECTED_COMPARISON = {
+    "schema_version": "f008.evidence.v1",
+    "design_ref": "F008 issue 22, design PR 23; controls A-E unchanged",
+    "expected_free_accel_m_s2": 2,
+    "expected_linked_and_hidden_force_accel_m_s2": 1,
+    "expected_cut_accel_m_s2": [1, 1, 2, 2],
+    "confound_cannot_prove_attachment": True,
+    "science_status": "model_result_pending_independent_review",
+}
+EXPECTED_SOURCE = "adopted F007 saved oracle; F008 independent local verifier"
+
 # Explicit trusted checkout dependency list. The saved manifest cannot choose it.
 F008_SOURCE_FILES = (
     "soma/f008.py",
@@ -125,6 +139,11 @@ def verify_suite(directory: Path, *, trusted_origin: dict) -> dict:
     directory = Path(directory)
     manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     require(manifest["schema_version"] == "f008.evidence.v1", "suite schema")
+    require(manifest["cases"] == list(CONTROL_ACCEL), "noncanonical case inventory")
+    require(manifest["source"] == EXPECTED_SOURCE, "noncanonical evidence source")
+    comparison = json.loads((directory / "comparison.json").read_text(encoding="utf-8"))
+    require(comparison == EXPECTED_COMPARISON,
+            "researcher-facing scientific summary disagrees with frozen plan")
     require(manifest["origin"] == trusted_origin, "trusted checkout identity")
     require(set(trusted_origin.get("f008_source_hashes", {})) == set(F008_SOURCE_FILES),
             "missing or altered F008 dependency list")
