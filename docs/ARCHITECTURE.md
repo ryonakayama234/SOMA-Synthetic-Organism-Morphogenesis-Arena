@@ -540,3 +540,64 @@ flowchart TB
 **情報境界**：観測データにリンク状態・Bの位置速度・結合全質量・世界側ケース名を含めてはならない。研究者用の全状態ログは別ファイルに残す。非接続でも外力によって同じ減速が生じ得るので、応答異常を「接続を同定した」と呼ばない。モデルはF007の外部有効力（地面反力未定義）を継承し、実機推進の証拠にはしない。
 
 [研究Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22) / [F008仕様](../topics/F008-local-load-detection/SPEC.md) / [事前実験](../experiments/F008/PLAN.md) / [実験記録（未実施）](../findings/F008-validation.md) / [データの境界](DATA_CONTRACTS.md)。
+
+
+## F008 implementation candidate: actual A-local pipeline (2026-10-18; unadopted)
+
+The earlier F008 design flow remains historical preregistration. This implements an **offline observer** over F007 saved traces, not an on-line cell controller.
+
+```mermaid
+flowchart TD
+  CFG["Fixed F008 A–E (researcher only)"] --> W["Unchanged F007 v1 physics + battery"]
+  W --> S["Saved F007 source: config / states / ledger / link_events / manifest"]
+  S --> ORACLE["Independent F007 saved-evidence audit"]
+  S --> PROJ["NEW soma/f008.project_local: strict A-only allowlist"]
+  PROJ --> OBS["A only: self velocity, clock, motor command/applied, own battery"]
+  OBS --> DET["NEW soma/f008.detect: nominal A response residual"]
+  DET --> LOCAL["F008 local.csv: observed/predicted acceleration, residual, status"]
+  S --> EVAL["Researcher-only evaluation; world topology and unknown force"]
+  LOCAL --> EVAL
+  ORACLE --> EVAL
+  EVAL --> VERIFY["Independent F008 CSV oracle; frozen A-E and B/D equivalence"]
+  VERIFY --> ART["Private stage → hash manifest → no-replace public evidence → replay"]
+  S -. "B state, attached, world force not passed to A" .-> NO["Forbidden agent information"]
+  style PROJ fill:#dbeafe,stroke:#2878bd,color:#172554
+  style OBS fill:#dbeafe,stroke:#2878bd,color:#172554
+  style DET fill:#dbeafe,stroke:#2878bd,color:#172554
+  style LOCAL fill:#dbeafe,stroke:#2878bd,color:#172554
+```
+
+`soma/f008.detect` accepts a frozen `LocalObservation` only; it cannot read
+F007 world truth. `run_suite.py` is researcher-controlled and may read full
+F007 saved source only to construct the strict projection. `verify.py` is
+researcher-only and **does not import the F008 detector**. F007's
+`attached` at the 0.5 s cut is post-event, while the acceleration at the
+same row is from the preceding linked interval. No online learning, link
+identification, ground-reaction propulsion or morphology is claimed.
+
+
+### F008 provenance and review gate — 2026-10-18 audit addendum
+
+```mermaid
+flowchart LR
+  SRC["Trusted GitHub checkout: F007 + F008 source SHA"] --> ROOT["F008 origin snapshot"]
+  W["F007 saved world data"] --> AUDIT["F007 independent full-state replay"]
+  W --> PROJ["A-only allowlist projection"]
+  PROJ --> DET["A local residual detector"]
+  DET --> CSV["local.csv"]
+  CSV --> ORC["F008 independent local CSV oracle"]
+  AUDIT --> ORC
+  ROOT --> ORC
+  ORC --> GATE{"A–E / confound / tamper / same-byte replay"}
+  GATE --> EVID["Evidence artifact + CI source/merge HEAD"]
+  EVID --> REVIEW["External audit + researcher adoption gate, pending"]
+```
+
+Only the researcher-side evaluator reads `W`; the detector is typed to
+`LocalObservation` and never sees connected/B/hidden external-force fields.
+The saved evidence suite is researcher-only. A completed CI check is not an
+adoption or a proof of isolation against malicious Python code.
+
+### F008 decision-state amendment (2026-10-18, researcher approval)
+
+The diagram above depicts the **historical preapproval gate**. The researcher subsequently expressly approved limited F008 adoption and main integration after P2 evidence-integrity corrections and independent AI/Fraction cross-checks. The validated implementation remains unchanged: full F007 world truth is held by the researcher-side adapter/oracle, never by `soma.f008.detect(LocalObservation)`. This acceptance is *not* a hardware/agent-isolation or morphology claim. For merged implementation, CI and final state, consult PR #27, `findings/F008-validation.md` and live main; an AI audit is not human third-party certification.

@@ -591,3 +591,83 @@ flowchart LR
 提案列は**未確定**であり、実装前に列順・浮動小数点許容差・バージョンを凍結する。世界の真値とセルの観測が混同されていないことを、スキーマ監査と実際のログの両方で検証する。A〜Fの理論値はWolfram計算であり、**SOMA実験は未実施**。従来のF001〜F007データや採用済みAPIを変更しない。
 
 [研究Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22) / [仮説・境界](../topics/F008-local-load-detection/SPEC.md) / [事前計画](../experiments/F008/PLAN.md) / [未実施の記録](../findings/F008-validation.md)。
+
+
+## F008 v1 implementation candidate: local observation and evidence (2026-10-18, unadopted)
+
+Source of researcher-only world truth: unchanged `f007.v1` saved
+`config.json`, `states.csv`, `link_events.csv`, `ledger/events.csv`,
+`manifest.json`. Before projecting any A-local data, the complete F007 saved
+run is independently audited. The source is not overwritten.
+
+`f008.local.v1` = a fixed allowlisted A-only observation, frozen `dataclass(slots=True)`
+with exactly these eight input fields:
+
+| Field | Unit | Semantic origin |
+|---|---|---|
+| `step_index` | int | self sample index, contiguous |
+| `time_s` | s | local sample time |
+| `dt_s` | s | local consecutive time difference |
+| `v_prev_m_s` | m/s | prior A self velocity |
+| `v_a_m_s` | m/s | current A self velocity |
+| `motor_command_n` | N | A requested force, not automatically accepted |
+| `motor_applied_n` | N | A actuator execution feedback, idealized local permission |
+| `balance_a_uj` | µJ integer | A own battery balance |
+
+Only these eight fields enter `soma/f008.detect`; it also receives nominal
+single-cell mass (1 kg in frozen experiments), a given prior, **not** an
+inferred linked-body mass. Neither `attached`, B state, link forces,
+unknown external force, case identifier, researcher labels, nor trajectory
+position may enter that function.
+
+Per case `local.csv` has ordered columns:
+`step_index,time_s,dt_s,v_prev_m_s,v_a_m_s,motor_command_n,motor_applied_n,balance_a_uj,observed_accel_m_s2,expected_accel_m_s2,residual_m_s2,status`.
+Rows correspond to source steps 1..4; initial step 0 is the velocity baseline
+and is not itself an acceleration interval. Status values:
+`nominal` (|residual|<=1e-12 m/s²),
+`anomaly` (larger residual), and
+`not_excited` (applied force=0, prediction and residual serialized empty).
+No body attachment classification or apparent mass is output.
+
+Researcher-only `comparison.json`, case-local immutable F007 source runs and
+`manifest.json` form the `f008.evidence.v1` suite; manifest maps every
+artifact path to SHA256 and stores the trusted checkout identity. A separate
+saved-data verifier re-reads F007 CSVs, checks all A fields and equations,
+frozen A–E expectations, real linked/free truth and equal B/D A-local
+histories. A full same-identity byte replay and tamper cases are required.
+Case labels and world truth are used only on this **researcher evaluation**
+path. This is a deliberately narrow synthetic-sensor contract, not proof of
+hardware observability or exact performance on arbitrary dt/noisy samples.
+
+
+### F008 source provenance and trust boundary — 2026-10-18 audit refinement
+
+The outer `f008.evidence.v1` manifest's `origin` extends the unchanged
+F007 `provenance()` snapshot with `f008_source_hashes` (mapping fixed relative
+paths to SHA256). Required files are the F008 detector, suite runner, saved-data
+verifier, F008 tests, CI workflow, SPEC, PLAN, F008 README/decision log/findings,
+cross-feature architecture/data contracts, repository README and AGENTS.md.
+`verify_suite(root, trusted_origin=...)` must compare both the saved origin to
+an **external trusted checkout identity** and the recomputed checkout hash map
+to the fixed source list; never use the saved manifest to supply its own trusted
+identity. F007 independent saved-state audit and the artifact hashes are further
+checks, not substitutes for independent human review or source provenance.
+
+Agent local API is `detect(LocalObservation)` (8 allowed fields; no case or
+topology). The researcher-side adapter `analyze(world_rows)` has access to
+F007 truth for allowlisted projection; this is a software data contract, not
+a protected operating-system or adversarial code-execution security boundary.
+A researcher-only saved suite **contains** both the world source and local CSV;
+do not distribute that entire researcher bundle to an agent as if it were a
+private sensor payload. The numerical threshold `1e-12 m/s²` is frozen for
+these deterministic controls, not a calibrated general sensor noise threshold.
+
+### F008 independent audit hardening (2026-10-18)
+
+The suite's `comparison.json` is **researcher-facing interpretive evidence**, not merely an opaque SHA-protected file. Independent verification must require the **complete frozen comparison contract** (schema, design reference, A/B/D/C predictions, confound warning, pending-review status) rather than trusting self-rehashed summary text. The outer `manifest.json` also fixes the exact A–E case list and evidence-source descriptor. `verify_suite` rejects deviations even if artifact SHA256 hashes are recalculated. These checks complement, but cannot replace, the row-by-row F007/F008 numerical oracle.
+
+The two byte-replay output paths must be distinct **and non-nested** after canonical path resolution; overlapping paths are rejected before creating any output. This is failure/publication integrity, not an additional physical hypothesis or new cell capability.
+
+### F008 limited-acceptance contract status (2026-10-18)
+
+The researcher expressly approved the fixed `f008.local.v1` A-only offline observation and anomaly-residual contract for the preregistered deterministic F007 A–F controls. The immutable `comparison.json` field `science_status=model_result_pending_independent_review` describes the **original experimental output/provenance at creation**, not live researcher-adoption status: do not rewrite original artifacts to claim adoption. Formal adoption and later main merge are recorded separately in `findings/F008-validation.md` and PR #27. World truth remains researcher-only; local field allowlist and source SHA checks remain enforced. This does not certify a real-world observation sensor or identify links.

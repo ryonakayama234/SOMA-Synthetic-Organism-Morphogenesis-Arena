@@ -113,3 +113,19 @@ F007 is limited-adopted and merged; do **not** treat old historical Draft paragr
 - Cross-feature diagrams and data contracts: [architecture](docs/ARCHITECTURE.md) / [data](docs/DATA_CONTRACTS.md)
 
 Implement **only** A's local motion-response discrepancy using F007 as the unchanged world model. Never expose attachment/B/link ground truth to the cell-side API; use those exclusively in the evaluator. A disconnected cell with a hidden -1 N external force can mimic the linked motion response, so never label a residual as verified connectivity. Separate theoretical Wolfram references from actual experiment records. Future implementation requires a separate PR synchronizing code, tests, diagrams, data contracts, README/AGENTS and findings, plus CI, independent audit and the researcher's explicit adoption decision before any merge.
+
+
+## F008 実装候補引き継ぎ（2026-10-18・PR #27、未採用）
+
+設計Draft #23の上に積んだF008実装Draft #27を優先参照。F008の提案時の「未実装」は当時の履歴。今回の*ソフトウェア候補*は `soma/f008.py` のA-only allowlist/detect、`experiments/F008/run_suite.py` の固定A〜E、`experiments/F008/verify.py` の保存独立検査、`tests/test_f008.py` と CI、及び同一PRの図・データ契約・findings・索引。
+
+- 同じA局所応答はB接続とD非接続の隠れ外力から生じる：**リンク同定を決して主張しない**。A観測にB/attached/未知外力を渡さない。
+- F008はオフライン研究用の射影であり、実時間制御や悪意ある同一プロセスのPythonの隔離を示さない。適用モーター力はAの理想局所フィードバック。停止時は not_excited。
+- 原本F007保存監査の上にF008別式ローカル検算、F008自身のソースSHA（trusted checkout）、改変拒否、A〜E理論値、同一バイト完全再現を確認。Git SHAをCI HEADとPR HEADで区別。**テスト完了・人間レビュー・採用は別物**。
+- 実行証拠は [F008 findings](findings/F008-validation.md) の最新追記を確認。main変更・正式採否・証拠の削除にはユーザー承認が必要。旧F001–F007 API/証拠は改変しない。
+
+## F008 最新判断：研究者による限定採用・統合承認（2026-10-18）
+
+F008 `f008.local.v1` はAIの別視点数理・コード・証拠監査後、**研究者が限定的な正式採用とmain統合を明示承認**。旧「設計案／未実施／候補／未採用」は当時の履歴として保持し、[F008 findings の最新採用判断](findings/F008-validation.md)を優先。設計PR #23はmain統合済み。実装PR #27のmain統合とmain CIは最新GitHub状態で必ず再確認すること。
+
+採用範囲はF007固定1D離散モデル上の、オフラインA自己速度差・自己モーター実適用力・自己電池残量からの単体予測**加速度残差の異常検出**のみ。B/接続真値や未知外力はセルへ渡さない。B接続とD非接続+未知外力の局所全系列は区別不能。`not_excited`を結合判定に使わない。1e-12は数値対照の閾値であり実機感度ではない。独立の人間監査、実機推進、接続同定、学習と創発は未検証。AI reviewerのコメントは人間のGitHub APPROVEと同義ではない。新しい研究課題に自動着手しない。
