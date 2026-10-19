@@ -1,0 +1,37 @@
+name: F011 passive grounded internal two-cell locomotion
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: SOMA full prior regressions and F011
+        run: python -m unittest discover -s tests -v
+      - name: F011 optimized rejection/physical-control tests
+        run: python -O -m unittest discover -s tests -p test_f011.py -v
+      - name: Frozen 15-case experiment, independent oracle and same-byte replay
+        run: python -m experiments.F011.run_suite --output-dir runs/F011-ci --replay-output-dir runs/F011-replay
+      - name: Upload raw F011 evidence including negative stroke control
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F011-${{ matrix.python }}-evidence
+          path: |
+            runs/F011-ci/
+            runs/F011-replay/
+          if-no-files-found: error
