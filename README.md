@@ -229,3 +229,7 @@ python -m experiments.F008.run_suite --output-dir runs/F008-ci --replay-output-d
 **研究者が現状の限界を明記した限定採用と設計PR #29 → 実装PR #30のmain統合を明示承認**。旧「提案のみ」「候補」「未採用」は当時の履歴。採用の正確な範囲・未検証事項・生証拠・実際の統合状況は[Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28)、[F009 SPECの最新判断](topics/F009-reaction-momentum/SPEC.md)、[F009 findings](findings/F009-validation.md)、[設計PR #29](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/29)、[実装PR #30](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/30)を参照。
 
 **採用する能力**：1D、理想二セル、固定質量・dt・A〜F対照の、内部対作用/既存外部有効力/上限付き理想地面牽引について、位置・速度・運動量・外力積・リンク力・研究者向け地面反作用モデル値を計算し保存/照合する`f009.momentum.v1`。Python3.11/3.12各144全回帰+F009 7 optimized、全30保存行・artifact・byte replay・改変負例、Wolfram/別式Fractionを確認。**限界**：地面反作用は観測ではなく事前定義値`-traction`。実機接触・実推進、摩擦/法線/滑り/脚/車輪、汎用条件・2D/3D、モーター電力/効率、学習・局所構造推定、身体創発/形態優位、時間刻み不変性は未検証・非採用。2出力のcrash原子性と独立の外部/人間査読も未確認。F001〜F008の既存機能/証拠とV001は変更しない。
+
+## F010 — 能動的局所応答と識別不能性（2026-10-19、**設計のみ／未実装／未採用**）
+
+[Issue #31](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/31) / [研究仕様](topics/F010-local-identifiability/SPEC.md) / [Wolfram事前実験A〜F](experiments/F010/PLAN.md) / [未実施の検証ノート](findings/F010-validation.md)。採用済F007/F008の1D世界とA局所観測を変更せず、2/1/.5 Nの複数独立試行から応答勾配・切片を推定する**提案**。一定未知外力と有効負荷の違い、および力に依存する未知外力による**識別不能な反例**を同時に検証する。セルによる自律的な能動制御、実機、接続同定、創発は実装も実証もされていない。今回の研究者承認は着手のみ。正式採用とmain統合は別途承認を必要とする。歴史的なF001〜F009採否文は上書きしない。
