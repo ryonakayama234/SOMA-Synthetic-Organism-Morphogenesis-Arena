@@ -1,8 +1,8 @@
 ---
 id: F009
 kind: research_spec
-status: proposed_not_executed
-updated: 2026-10-18
+status: adopted_limited
+updated: 2026-10-19
 issue: 28
 ---
 # F009 — 外界反力・内部力・外部有効力を区別する運動量収支
@@ -35,3 +35,10 @@ Issue→設計Draft PR（SPEC/PLAN/図/契約/未実施findings/索引）→別�
 
 ## 2026-10-18 実装候補の責務（設計時の未実装記録より後）
 [実装Draft PR #30](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/30) は [設計Draft PR #29](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/29) にstackする。soma/f009.py は固定A-Fだけの離散力学モデルとCSVを生成。experiments/F009/verify.py はF009ランタイムをimportせず、Fractionで全行と源泉・反力を独立再計算。run_suite.py は二出力のbyte replay・既存出力拒否・manifest/source SHA検査を担当。Python3.11/3.12 CI、旧回帰、改ざん負例を通過した場合でも正式採用とはしない。二出力を跨ぐ停電・強制終了の原子的公開、実機接触、F008学習、身体創発は非対象。
+
+
+## 2026-10-19 最新の研究者判断：固定1Dの離散計算能力だけを限定採用
+
+研究者は独立算術/Wolfram照合、生CSV/manifest原本およびPython3.11/3.12の最終HEAD CIを確認したうえで、F009 `f009.momentum.v1` の**固定A〜F 6条件における1D二セルの力源・外力積・運動量会計**に限って、現状の限界を明示することを条件に正式採用とmain統合を承認した。上記の「未実装・未採用」は設計当時の記録。現在の統合状態は[Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28)、[設計PR #29](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/29)、[実装PR #30](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/30)と[最新findings](../../findings/F009-validation.md)を参照する。
+
+**採用の境界**：地面反力は`-traction`という世界モデル上の値で実機測定値ではない。地面接触/法線/摩擦/滑り/脚・車輪の力学、実推進、汎用パラメータ/2D・3D、F002/F005/F007との新しいモーター電気支出接続、エネルギー効率、局所観測・認識・学習、結合優位、創発・進化は**未検証・非採用**。既存F001〜F008とV001のコード/証拠は不変。運動は半陰的Euler、時間刻み依存は解決していない。source SHAは実行者認証ではなく、2出力間のcrash-atomicityはない。AIによる異方式検算は外部人間/機関による独立査読ではない（未実施）。これらを認めた上での限定的採用であり、実在物理一般を支持した判定ではない。
