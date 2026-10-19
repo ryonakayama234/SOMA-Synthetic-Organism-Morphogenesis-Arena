@@ -83,7 +83,7 @@ def verify_raw(path,case,h,expected_rows):
                 raise ValueError('passive force/momentum/energy invariant')
         old=z
     return {'center':number(rows[-1]['x_cm_m']),
-            'ground_work':sum(number(z['ground_work_j']) for z in rows[1:]),'rows':rows}
+            'ground_work':math.fsum(number(z['ground_work_j']) for z in rows[1:]),'rows':rows}
 
 def verify_suite(root):
     root=Path(root)
