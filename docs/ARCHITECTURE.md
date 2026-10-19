@@ -601,3 +601,20 @@ adoption or a proof of isolation against malicious Python code.
 ### F008 decision-state amendment (2026-10-18, researcher approval)
 
 The diagram above depicts the **historical preapproval gate**. The researcher subsequently expressly approved limited F008 adoption and main integration after P2 evidence-integrity corrections and independent AI/Fraction cross-checks. The validated implementation remains unchanged: full F007 world truth is held by the researcher-side adapter/oracle, never by `soma.f008.detect(LocalObservation)`. This acceptance is *not* a hardware/agent-isolation or morphology claim. For merged implementation, CI and final state, consult PR #27, `findings/F008-validation.md` and live main; an AI audit is not human third-party certification.
+
+
+## F009 — 力の起源を区別する二セル運動量比較（2026-10-18、設計提案のみ）
+
+~~~mermaid
+flowchart TD
+  PLAN["研究者: F009 A-F設定"] --> NEW["提案: 内部力/外部有効力/接地牽引を分離"]
+  OLD["採用済F007: 外部有効力の既存離散基準"] --> ORACLE["研究者のみ: 独立数理比較"]
+  NEW --> CELLS["研究者真値: A/B位置,速度,力積,結合力"]
+  NEW --> GROUND["提案: 地面へ反作用力積"]
+  CELLS --> ORACLE
+  GROUND --> ORACLE
+  ORACLE --> SAVE["提案: steps.csv, 比較, SHA,再実行"]
+  CELLS -. "真値をセルAへ渡さない" .-> F008["採用済F008: 局所観測は変更しない"]
+~~~
+
+実線のF009要素は**提案で未実装**。研究者は系全体の運動量と地面との交換を見る。内部作用/反作用は相殺、外部有効力/地面牽引はセル系の外力。F002/F005電池計量・F008セル側推定・V001ビューアは変更しない。[SPEC](../topics/F009-reaction-momentum/SPEC.md)。

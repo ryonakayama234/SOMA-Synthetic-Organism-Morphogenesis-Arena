@@ -213,3 +213,8 @@ python -m experiments.F008.run_suite --output-dir runs/F008-ci --replay-output-d
 この節は上の「F008未採用」「実装候補」という履歴より新しい。研究者は監査P2-01/P2-02の修正、Wolfram有理数計算、Python 3.11/3.12と全回帰・保存生証拠の別式照合を踏まえて **F008 `f008.local.v1` の限定採用とmain統合を明示承認**した。対象はF007理想1D離散モデルの固定A〜E条件における**A自身の運動応答異常**の検出のみ。局所観測からの接続一意同定、実機センサ/推進、創発は非採用。
 
 [Issue #22](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/22)／[設計PR #23](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/23)（main統合済）／[実装PR #27](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/27)／[最新採用判断と証拠](findings/F008-validation.md)。実装PRの統合完了およびmain CIは**GitHubの最新状態を根拠に**確認すること。外部人間審査と同一支援AIの別視点監査は別扱い。旧「未採用」は当時の履歴であり、F008の最新段階はfindings末尾に記載する。
+
+
+## F009：力の源泉と二セルの運動量収支（2026-10-18、設計Draft・未実装）
+
+[Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28) / [SPEC](topics/F009-reaction-momentum/SPEC.md) / [A-F preregistration](experiments/F009/PLAN.md) / [findings: not executed](findings/F009-validation.md)。F007外部有効力と、内部対作用・地面牽引/反作用を同一1D条件で識別する研究者専用の実験計画。F001-F008の履歴およびV001 Draft #25/#26は不変。設計と実装は別Draft PR。数理予測をSOMA実測や採用と混同せず、明示的な研究者判断までmainへマージしない。
