@@ -67,6 +67,18 @@ class F011Tests(unittest.TestCase):
             manifest['files']['comparison.json']=hashlib.sha256(summary.read_bytes()).hexdigest()
             manpath.write_text(json.dumps(manifest,sort_keys=True)+'\n')
             with self.assertRaises(ValueError):verify_suite(p)
+            # A recomputed manifest must not permit forgery of a primary
+            # measured displacement while leaving the summary status intact.
+            summary.write_bytes(original)
+            manifest['files']['comparison.json']=hashlib.sha256(original).hexdigest()
+            manpath.write_text(json.dumps(manifest,sort_keys=True)+'\n')
+            self.assertEqual(verify_suite(p)['verified_cases'],15)
+            metric_forgery=json.loads(original.decode())
+            metric_forgery['results']['C-directional']['0.0025']['last_period_m']+=0.125
+            summary.write_text(json.dumps(metric_forgery,sort_keys=True)+'\n')
+            manifest['files']['comparison.json']=hashlib.sha256(summary.read_bytes()).hexdigest()
+            manpath.write_text(json.dumps(manifest,sort_keys=True)+'\n')
+            with self.assertRaises(ValueError):verify_suite(p)
 
     def test_do_not_overwrite_existing_evidence(self):
         with tempfile.TemporaryDirectory() as t:
