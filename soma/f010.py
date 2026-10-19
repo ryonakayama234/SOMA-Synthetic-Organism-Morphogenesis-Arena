@@ -7,7 +7,6 @@ unknown external force. Not online autonomous active probing.
 """
 from __future__ import annotations
 
-from dataclasses import asdict
 import math
 
 from soma.f008 import LocalObservation, validate
@@ -37,6 +36,7 @@ def _trial(observations: tuple[LocalObservation, ...]) -> tuple[float, float] | 
         raise ValueError("exactly four A-local observations per independent trial required")
     applied = []
     accelerations = []
+    command_mismatch = False
     for i, obs in enumerate(observations, start=1):
         if type(obs) is not LocalObservation:
             raise ValueError("world truth or extra observation fields prohibited")
@@ -50,10 +50,14 @@ def _trial(observations: tuple[LocalObservation, ...]) -> tuple[float, float] | 
         elif not _close(obs.v_prev_m_s, observations[i-2].v_a_m_s):
             raise ValueError("broken local velocity continuity")
         applied.append(obs.motor_applied_n)
+        if not _close(obs.motor_command_n, obs.motor_applied_n):
+            command_mismatch = True  # rejected/partially applied motor command
         accel = (obs.v_a_m_s-obs.v_prev_m_s)/obs.dt_s
         if not _finite(accel):
             raise ValueError("nonfinite local acceleration")
         accelerations.append(accel)
+    if command_mismatch:
+        return None  # preregistered gate: commanded and applied force must agree
     if any(not _close(f, applied[0]) for f in applied):
         return None  # battery rejection or motor modulation; cannot infer a fixed input
     if _close(applied[0], 0):

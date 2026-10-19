@@ -3,6 +3,7 @@ import unittest
 from dataclasses import replace
 from pathlib import Path
 import tempfile
+from unittest.mock import patch
 
 from soma.f008 import LocalObservation
 from soma.f010 import estimate
@@ -50,6 +51,26 @@ class F010Tests(unittest.TestCase):
         same = tuple(make_trial(2.,1.) for _ in range(3))
         self.assertEqual(estimate(same)["status"], "inconclusive")
         self.assertEqual(estimate((make_trial(2.,1.),))["status"],"inconclusive")
+
+    def test_command_applied_mismatch_is_inconclusive(self):
+        # Preregistered command/applied equality is separate from nonzero
+        # and distinct applied forces: a consistent partial motor is invalid.
+        levels = (2., 1., .5)
+        expected_a = (1., .5, .25)
+        mismatched = tuple(make_trial(u, a, command=u + 1.)
+                           for u, a in zip(levels, expected_a))
+        outcome = estimate(mismatched)
+        self.assertEqual(outcome["status"], "inconclusive")
+        self.assertEqual(outcome["reason"], "rejected_or_unstable_applied_excitation")
+        self.assertIsNone(outcome["alpha_per_kg"])
+        # A single rejected step within an otherwise valid three-probe suite
+        # must also make the result inconclusive, not an affine fit.
+        trials = tuple(make_trial(u, a) for u, a in zip(levels, expected_a))
+        bad = list(trials[0])
+        bad[2] = replace(bad[2], motor_command_n=3.)
+        self.assertEqual(
+            estimate((tuple(bad), *trials[1:]))["status"], "inconclusive"
+        )
 
     def test_third_force_is_independent_holdout(self):
         trials=(make_trial(2.,1.),make_trial(1.,.5),make_trial(.5,.75))
@@ -134,6 +155,33 @@ class F010Tests(unittest.TestCase):
             manifest2.write_text(json.dumps(m2,sort_keys=True,indent=2)+"\n",encoding="utf-8")
             with self.assertRaises(AssertionError):
                 verify_suite(fake2,trusted)
+
+    def test_replay_publication_failure_rolls_back_first(self):
+        from experiments.F010.run_suite import publish_dir as real_publish
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            marker = root / "preserve.txt"
+            marker.write_text("preserve", encoding="utf-8")
+            a, b = root / "raw", root / "replay"
+            calls = []
+
+            def fail_second(source, destination):
+                calls.append(destination)
+                if len(calls) == 2:
+                    raise OSError("injected replay publication failure")
+                return real_publish(source, destination)
+
+            with patch("experiments.F010.run_suite.publish_dir", side_effect=fail_second):
+                with self.assertRaisesRegex(OSError, "injected replay"):
+                    suite(a, b)
+            self.assertEqual(calls, [a, b])
+            self.assertFalse(a.exists())
+            self.assertFalse(b.exists())
+            self.assertEqual([p.name for p in root.iterdir()], ["preserve.txt"])
+            self.assertEqual(marker.read_text(encoding="utf-8"), "preserve")
+            result = suite(a, b)
+            self.assertTrue(result["byte_replay"])
+            self.assertTrue(a.is_dir() and b.is_dir())
 
     def test_overlap_rejection_preserves_existing_files(self):
         with tempfile.TemporaryDirectory() as tmp:

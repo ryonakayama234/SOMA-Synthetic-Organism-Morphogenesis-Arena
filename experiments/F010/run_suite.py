@@ -130,7 +130,6 @@ def suite(destination: Path, replay_destination: Path, *, origin: dict|None=None
     stageb=Path(tempfile.mkdtemp(prefix=".f010-B-",dir=b.parent))
     try:
         result=build(stagea,ident)
-        verify_suite(stageb,ident) if False else None
         build(stageb,ident)
         first={p.relative_to(stagea).as_posix():hashlib.sha256(p.read_bytes()).hexdigest()
                for p in stagea.rglob("*") if p.is_file()}
@@ -140,7 +139,13 @@ def suite(destination: Path, replay_destination: Path, *, origin: dict|None=None
             raise AssertionError("different bytes in identical run/replay")
         _check_pair(a,b)
         publish_dir(stagea,a)
-        publish_dir(stageb,b)
+        try:
+            publish_dir(stageb,b)
+        except Exception:
+            # Roll back only the directory published by this call. The pair is
+            # exception-safe, not power-loss-atomic across two renames.
+            shutil.rmtree(a)
+            raise
         return {**result,"byte_replay":True,"replay_files":len(first)}
     finally:
         for stage in (stagea,stageb):
