@@ -118,7 +118,7 @@ class F010Tests(unittest.TestCase):
             manifest=fake/"manifest.json"
             m=json.loads(manifest.read_text(encoding="utf-8"))
             m["artifacts"]["A-linked/u2/local.csv"]=hashlib.sha256(target.read_bytes()).hexdigest()
-            manifest.write_text(json.dumps(m,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            manifest.write_text(json.dumps(m,sort_keys=True,indent=2)+"\n",encoding="utf-8")
             with self.assertRaises(AssertionError):
                 verify_suite(fake,trusted)
             # Forge the scientific conclusion with fresh matching hash.
@@ -127,11 +127,11 @@ class F010Tests(unittest.TestCase):
             cmpfile=fake2/"comparison.json"
             comparison=json.loads(cmpfile.read_text(encoding="utf-8"))
             comparison["signatures"]["C-adaptive"]["topology_verified"]=True
-            cmpfile.write_text(json.dumps(comparison,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            cmpfile.write_text(json.dumps(comparison,sort_keys=True,indent=2)+"\n",encoding="utf-8")
             manifest2=fake2/"manifest.json"
             m2=json.loads(manifest2.read_text(encoding="utf-8"))
             m2["artifacts"]["comparison.json"]=hashlib.sha256(cmpfile.read_bytes()).hexdigest()
-            manifest2.write_text(json.dumps(m2,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            manifest2.write_text(json.dumps(m2,sort_keys=True,indent=2)+"\n",encoding="utf-8")
             with self.assertRaises(AssertionError):
                 verify_suite(fake2,trusted)
 
