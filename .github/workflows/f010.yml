@@ -1,0 +1,37 @@
+name: F010 A-only response identifiability and evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Complete SOMA regressions
+        run: python -m unittest discover -s tests -v
+      - name: F010 tests with optimized Python
+        run: python -O -m unittest discover -s tests -p test_f010.py -v
+      - name: Frozen A–E, F evidence integrity and exact same-byte replay
+        run: python -m experiments.F010.run_suite --output-dir runs/F010-ci --replay-output-dir runs/F010-replay
+      - name: Upload complete evidence only on success
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F010-${{ matrix.python }}-evidence
+          path: |
+            runs/F010-ci/
+            runs/F010-replay/
+          if-no-files-found: error
