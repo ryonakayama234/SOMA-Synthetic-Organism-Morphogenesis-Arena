@@ -114,7 +114,7 @@ def measurements(rows: list[dict]) -> dict:
        'last_period_stroke_return_m':z['r_m']-p['r_m'],
        'max_impulse_residual_ns':max(abs(x['impulse_residual_ns']) for x in rows[1:]),
        'max_energy_identity_error_j':max(abs(x['energy_defect_j']-x['expected_defect_j']) for x in rows[1:]),
-       'sum_ground_work_j':sum(x['ground_work_j'] for x in rows[1:]),
-       'sum_motor_work_j':sum(x['motor_work_j'] for x in rows[1:]),
+       'sum_ground_work_j':math.fsum(x['ground_work_j'] for x in rows[1:]),
+       'sum_motor_work_j':math.fsum(x['motor_work_j'] for x in rows[1:]),
        'max_stroke_m':max(x['r_m'] for x in rows),
        'min_stroke_m':min(x['r_m'] for x in rows)}
