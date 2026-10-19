@@ -677,3 +677,5 @@ flowchart LR
 ```
 
 Input variation is orchestrated by a **researcher-side offline experiment**, NOT by autonomous cell control. Each run resets state/battery. A/C local equivalence includes A battery and actuator feedback. `F010` cannot infer structural attachments even when `alpha=1/2`. No F009 real contact physics is imported.
+
+**F010 limited adoption decision (2026-10-19):** The offline local-signature path in the immediately preceding candidate diagram is now approved under the narrow frozen F007/F008 1D model after command/applied-force gating and normal-exception replay-publication rollback passed final implementation tests. It does not add information flow from researcher-only truth to the estimator and does not infer mechanical topology. See [dated acceptance](../findings/F010-validation.md) and Issue #31 for actual main merge verification; the earlier candidate label records the state when the diagram was proposed.
