@@ -4,6 +4,7 @@ import argparse
 import csv
 import hashlib
 import json
+import math
 from pathlib import Path
 import shutil
 import tempfile
@@ -39,7 +40,7 @@ def build_one(folder):
                 w=csv.DictWriter(f,fieldnames=COLUMNS,lineterminator='\n')
                 w.writeheader();w.writerows(rows)
             meta['observed_center_final_m']=rows[-1]['x_cm_m']
-            meta['sum_ground_work_j']=sum(x['ground_work_j'] for x in rows[1:])
+            meta['sum_ground_work_j']=math.fsum(x['ground_work_j'] for x in rows[1:])
             results[case][str(h)]=meta
             traces[(case,h)]=rows
     symmetry={}
