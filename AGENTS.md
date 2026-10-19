@@ -133,3 +133,16 @@ F008 `f008.local.v1` はAIの別視点数理・コード・証拠監査後、**�
 
 ## F009 設計専用研究指示（2026-10-18）
 [Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28)の一能力だけ：F007外部有効力、閉鎖二セル内部対作用、地面牽引反作用の運動量収支を比較する。SPEC/PLANのA〜F・理論値・許容差を観測前に凍結。別実装Draft PRでコード・テスト・原本・図・データ契約・findings・README/AGENTSを同期。独立オラクル、Python3.11/3.12、全回帰、失敗/改変/再現性、CI HEAD証拠を残す。F001-F008変更なし、V001 PR #25/#26には触れない。世界真値や地面反力はF008セル局所APIに送らない。理想1D接地モデルは実機接触/移動/創発の証拠ではない。独立レビューと研究者採否が未完ならDraft維持、mainマージ禁止。
+
+
+### F009 implementation candidate handoff (2026-10-18)
+Design Draft PR #29 / implementation Draft PR #30 / Issue #28. Frozen A-F references remain in PLAN, with actual software execution in findings. Initial implementation HEAD 74180c5 passed 3.11/3.12 144 full tests +7 optimized, 6×5 rows, 20 files×2 replay; all F001-F008 workflows green. Commit containing later docs/finding updates must pass its own CI. Do not upgrade model_result_candidate_not_adopted to adoption. Review source SHA, exact-rational oracle, rehashed-tamper negative cases, preservation of F007 physics and world-vs-F008 boundary. Separate human/external review remains unperformed. No main merge, formal adoption, or Issue closure without researcher explicit decision.
+
+
+## F009 最新の正式採用範囲と監査引き継ぎ（2026-10-19）
+
+研究者はF009 `f009.momentum.v1` を**固定1D・2セル・A〜F対照の離散運動量/力源会計**に限って正式採用し、現状の限界を記録したうえで設計PR #29 → 実装PR #30のmain統合を明示承認した。過去の「未採用」「Draft」は歴史的記録。最新の統合結果は[Issue #28](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/28)・各PR・[F009 findings](findings/F009-validation.md)で確認する。最終承認前の採用根拠は実装HEAD `e6873bcaa2f2619380793cf3157fb967020684f0` の[Actions #39135941901](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39135941901)、Wolfram/独立Fraction、全6×5生CSVの別式計算、原本ZIP、3.11/3.12全回帰。
+
+**絶対に主張しないこと**：地面反作用は`-traction`のモデル定義であり、実機の接地反力の測定ではない。一般摩擦・接触・法線・滑り/車輪/脚、実際の自走・モーター電気消費、任意物理条件やdt収束、実際の推進効率、セルの接続構造推定、局所学習、身体形成・創発・進化の検証ではない。F009世界真値は研究者用でF008セルA局所APIには送らない。F001〜F008の採用済みソース/過去の結果、および別課題V001 PR #25/#26は変更しない。2つの出力フォルダ間で停電耐性のあるatomic commitは非保証。AIの別式・別チャット監査は独立の人間・外部レビュアー査読と異なる（未実施）。
+
+mainへ反映する前に**採用記録の変更を含む最終HEADのCI**と、設計PRと実装PRの依存/差分を確認し、統合後もmain CIとIssue #28完了を確認すること。新課題へ自動移行しない。

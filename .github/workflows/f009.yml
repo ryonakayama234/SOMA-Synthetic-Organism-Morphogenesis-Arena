@@ -1,0 +1,37 @@
+name: F009 reaction-source momentum evidence
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  verify:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SOMA_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Full historical regression and F009 tests
+        run: python -m unittest discover -s tests -v
+      - name: Optimized F009 tests
+        run: python -O -m unittest discover -s tests -p test_f009.py -v
+      - name: Generate and independently verify A-F raw evidence and exact replay
+        run: python -m experiments.F009.run_suite --output-dir runs/F009-ci --replay-output-dir runs/F009-replay
+      - name: Upload immutable F009 experiment candidates
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F009-${{ matrix.python }}-evidence
+          path: |
+            runs/F009-ci/
+            runs/F009-replay/
+          if-no-files-found: error
