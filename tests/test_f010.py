@@ -32,9 +32,17 @@ class F010Tests(unittest.TestCase):
                 self.assertFalse(result["topology_verified"])
 
     def test_confound_is_identical_to_linked(self):
-        x = tuple(make_trial(u,a) for u,a in zip((2.,1.,.5),(1.,.5,.25)))
-        self.assertEqual(estimate(x),estimate(x))  # no topology input/API
-        self.assertFalse(estimate(x)["topology_verified"])
+        # Actual adopted F007 world dynamics -> adopted F008 strict projection.
+        # Verify all LOCAL observations, including battery, not world truth.
+        from soma.f008 import project_local
+        for u in (2.,1.,.5):
+            linked, _, _, _ = simulate(Config.from_dict(configuration("A-linked",u)))
+            mimic, _, _, _ = simulate(Config.from_dict(configuration("C-adaptive",u)))
+            lhs=tuple(project_local(p,q) for p,q in zip(linked,linked[1:]))
+            rhs=tuple(project_local(p,q) for p,q in zip(mimic,mimic[1:]))
+            self.assertEqual(lhs,rhs)
+        self.assertFalse(estimate(tuple(make_trial(u,a) for u,a in
+                        zip((2.,1.,.5),(1.,.5,.25))))["topology_verified"])
 
     def test_unexcited_and_non_distinct_are_inconclusive(self):
         no = tuple(make_trial(0.,0.,command=u) for u in (2.,1.,.5))
@@ -52,7 +60,7 @@ class F010Tests(unittest.TestCase):
     def test_world_field_rejected_and_time_checked(self):
         row=make_trial(2.,1.)
         with self.assertRaises(ValueError):
-            estimate(((dict(row[0].__dict__) if hasattr(row[0],"__dict__") else {"attached":True},)+row[1:],)*3)
+            estimate(((({"attached":True},)+row[1:]),)*3)
         with self.assertRaises(ValueError):
             estimate((row[:2]+row[:2],row,row))
         with self.assertRaises(ValueError):
@@ -80,6 +88,64 @@ class F010Tests(unittest.TestCase):
             (a/"A-linked"/"u2"/"local.csv").write_text("tampered",encoding="utf-8")
             with self.assertRaises((ValueError,AssertionError)):
                 verify_suite(a,origin_snapshot())
+
+
+    def test_rehashed_local_and_science_claim_forgery_rejected(self):
+        import csv
+        import hashlib
+        import json
+        import shutil
+        from experiments.F010.verify import verify_suite
+        from experiments.F010.run_suite import origin_snapshot
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            a,b=root/"raw",root/"replay"
+            suite(a,b)
+            trusted=origin_snapshot()
+            verify_suite(a,trusted)
+            # Forge a numerical A-local row and repack outer SHA.
+            fake=root/"fake-local"
+            shutil.copytree(a,fake)
+            target=fake/"A-linked"/"u2"/"local.csv"
+            with target.open(newline="",encoding="utf-8") as fp:
+                data=list(csv.DictReader(fp))
+                cols=list(data[0])
+            data[0]["observed_accel_m_s2"]="1.25"
+            with target.open("w",newline="",encoding="utf-8") as fp:
+                writer=csv.DictWriter(fp,fieldnames=cols)
+                writer.writeheader()
+                writer.writerows(data)
+            manifest=fake/"manifest.json"
+            m=json.loads(manifest.read_text(encoding="utf-8"))
+            m["artifacts"]["A-linked/u2/local.csv"]=hashlib.sha256(target.read_bytes()).hexdigest()
+            manifest.write_text(json.dumps(m,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            with self.assertRaises(AssertionError):
+                verify_suite(fake,trusted)
+            # Forge the scientific conclusion with fresh matching hash.
+            fake2=root/"fake-claim"
+            shutil.copytree(a,fake2)
+            cmpfile=fake2/"comparison.json"
+            comparison=json.loads(cmpfile.read_text(encoding="utf-8"))
+            comparison["signatures"]["C-adaptive"]["topology_verified"]=True
+            cmpfile.write_text(json.dumps(comparison,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            manifest2=fake2/"manifest.json"
+            m2=json.loads(manifest2.read_text(encoding="utf-8"))
+            m2["artifacts"]["comparison.json"]=hashlib.sha256(cmpfile.read_bytes()).hexdigest()
+            manifest2.write_text(json.dumps(m2,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            with self.assertRaises(AssertionError):
+                verify_suite(fake2,trusted)
+
+    def test_overlap_rejection_preserves_existing_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp)
+            (root/"existing").mkdir()
+            marker=root/"existing"/"keep.txt"
+            marker.write_text("do not replace",encoding="utf-8")
+            with self.assertRaises((ValueError,FileExistsError)):
+                suite(root/"existing",root/"next")
+            with self.assertRaises(ValueError):
+                suite(root/"new",root/"new"/"inside")
+            self.assertEqual(marker.read_text(encoding="utf-8"),"do not replace")
 
 
 if __name__ == "__main__":
