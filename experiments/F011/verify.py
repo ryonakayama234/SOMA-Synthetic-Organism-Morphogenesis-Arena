@@ -133,6 +133,41 @@ def verify_suite(root):
             outcome=verify_raw(root/case/str(h)/'states.csv',case,h,count)
             close(outcome['center'],item['observed_center_final_m'])
             close(outcome['ground_work'],item['sum_ground_work_j'])
+            # Recompute every published numerical summary from raw CSV.
+            # The manifest's SHA alone cannot authenticate a modified comparison.json.
+            if case == 'A-no-contact':
+                expected_summary={
+                    'status':'stroke_inconclusive','valid_rows':count,
+                    'first_invalid_step':step,'attempted_r_m':item['attempted_r_m'],
+                    'observed_center_final_m':outcome['center'],
+                    'sum_ground_work_j':outcome['ground_work']}
+            else:
+                series=outcome['rows']
+                period=round(1.2/h)
+                value=lambda index,field:number(series[index][field])
+                expected_summary={
+                    'status':'complete','valid_rows':count,
+                    'center_final_m':value(-1,'x_cm_m'),
+                    'last_period_m':value(-1,'x_cm_m')-value(-1-period,'x_cm_m'),
+                    'penultimate_period_m':value(-1-period,'x_cm_m')-value(-1-2*period,'x_cm_m'),
+                    'last_period_stroke_return_m':value(-1,'r_m')-value(-1-period,'r_m'),
+                    'max_impulse_residual_ns':max(abs(number(z['impulse_residual_ns'])) for z in series[1:]),
+                    'max_energy_identity_error_j':max(abs(number(z['energy_defect_j'])-number(z['expected_defect_j'])) for z in series[1:]),
+                    'sum_ground_work_j':outcome['ground_work'],
+                    'sum_motor_work_j':math.fsum(number(z['motor_work_j']) for z in series[1:]),
+                    'max_stroke_m':max(number(z['r_m']) for z in series),
+                    'min_stroke_m':min(number(z['r_m']) for z in series),
+                    'observed_center_final_m':outcome['center']}
+            if set(item)!=set(expected_summary):
+                raise ValueError('comparison summary fields missing or extra')
+            for field,expected in expected_summary.items():
+                if isinstance(expected,str):
+                    if item[field]!=expected:raise ValueError('comparison summary status altered')
+                elif field in ('valid_rows','first_invalid_step'):
+                    if type(item[field]) is not int or item[field]!=expected:
+                        raise ValueError('comparison summary integer altered')
+                elif abs(number(item[field])-expected)>1e-10:
+                    raise ValueError('comparison summary differs from raw CSV: '+field)
             records[case][h]=outcome['rows']
             if case=='A-no-contact':
                 last=outcome['rows'][-1]
