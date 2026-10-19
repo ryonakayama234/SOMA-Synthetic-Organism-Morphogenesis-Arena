@@ -90,7 +90,7 @@ def estimate(trials: tuple[tuple[LocalObservation, ...], ...]) -> dict:
     if not all(_finite(v) for v in (alpha, beta, holdout)):
         raise ValueError("nonfinite response fit")
     if not _close(holdout, 0.):
-        return {"**":0} if False else {
+        return {
             "schema_version": SCHEMA, "status": "non_affine_holdout",
             "reason": "third_force_contradicts_affine_model",
             "alpha_per_kg": alpha, "beta_m_s2": beta,

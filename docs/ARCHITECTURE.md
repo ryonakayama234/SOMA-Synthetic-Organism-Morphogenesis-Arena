@@ -657,3 +657,23 @@ flowchart TD
 ```
 
 **Knowledge boundary:** each fresh run may be labeled by the *researcher* but F010 inference receives only groups of typed F008 `LocalObservation` fields, no case names or F007 world config. The design intentionally compares separate trials rather than implementing online agent control. A and C are indistinguishable from A-local data including battery. No contact/ground reaction or real locomotion has been established; F009 remains separate.
+
+### F010 implementation candidate — actual proposed modules (2026-10-19, **unadopted**)
+
+```mermaid
+flowchart LR
+  RC["Researcher A–E x 2/1/0.5 N configs"] --> F007["ADOPTED F007 unchanged: motion + motor/µJ gate"]
+  F007 --> RAW["Researcher-only immutable F007 CSV + ledger + link events"]
+  RAW --> F008["ADOPTED F008 project_local strict A-only projection"]
+  F008 --> NEW["F010 candidate estimate: 2-point alpha/beta + .5 N holdout"]
+  NEW --> SIG["Response signature; topology_verified = false"]
+  RAW --> ORACLE["Researcher-only F007 independent replay + F010 Fraction oracle"]
+  SIG --> ORACLE
+  ORACLE --> ART["F010 15x evidence, manifests, same-byte replay, CI"]
+  RAW -. "FORBIDDEN: B/attachment/unknown world force" .-> NEW
+  style NEW fill:#fff0d6,stroke:#b68220
+  style SIG fill:#fff0d6,stroke:#b68220
+  style ORACLE fill:#fff0d6,stroke:#b68220
+```
+
+Input variation is orchestrated by a **researcher-side offline experiment**, NOT by autonomous cell control. Each run resets state/battery. A/C local equivalence includes A battery and actuator feedback. `F010` cannot infer structural attachments even when `alpha=1/2`. No F009 real contact physics is imported.

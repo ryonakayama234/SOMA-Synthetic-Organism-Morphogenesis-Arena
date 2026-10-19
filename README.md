@@ -233,3 +233,7 @@ python -m experiments.F008.run_suite --output-dir runs/F008-ci --replay-output-d
 ## F010 — 能動的局所応答と識別不能性（2026-10-19、**設計のみ／未実装／未採用**）
 
 [Issue #31](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/31) / [研究仕様](topics/F010-local-identifiability/SPEC.md) / [Wolfram事前実験A〜F](experiments/F010/PLAN.md) / [未実施の検証ノート](findings/F010-validation.md)。採用済F007/F008の1D世界とA局所観測を変更せず、2/1/.5 Nの複数独立試行から応答勾配・切片を推定する**提案**。一定未知外力と有効負荷の違い、および力に依存する未知外力による**識別不能な反例**を同時に検証する。セルによる自律的な能動制御、実機、接続同定、創発は実装も実証もされていない。今回の研究者承認は着手のみ。正式採用とmain統合は別途承認を必要とする。歴史的なF001〜F009採否文は上書きしない。
+
+### F010 implementation Draft candidate (2026-10-19; **not adopted**)
+
+An independent-trial A-only response estimator (`soma/f010.py`), frozen A–E 15-run F007 world harness (`experiments/F010/run_suite.py`), researcher-only independent Fraction saved-data oracle (`verify.py`), source-sha/manifest/replay workflow, tests and Python 3.11/3.12 CI have been **implemented as candidates on a separate stacked Draft PR**. This does not establish that CI ran or the experiments passed; results must be appended with actual HEAD SHA and Actions run only after observing them. [Reproduction guide](experiments/F010/README.md). Signature `inertia_like` is equally consistent with linked cells and input-dependent hidden force d(u)=-u/2. Main remains F001–F009 only until separately approved.

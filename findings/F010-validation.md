@@ -18,3 +18,7 @@ Issue [#31](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogene
 | Researcher limited adoption and main merge | NOT AUTHORIZED |
 
 Do not edit the frozen references after collecting data. Append timestamped implementation observations, failures, CI SHA/run URL and interpretation later. The F007/F008/F009 adopted code and historical evidence must not be modified. V001 draft work remains separate.
+
+## Implementation candidate created after design preregistration (2026-10-19; results unverified)
+
+Stacked implementation branch proposes `soma/f010.py`, the fixed F007 A–E × three-force runner, F008 local projection, all-row researcher-only independent Fraction oracle, test module and 3.11/3.12 workflow. The raw evidence run and final HEAD Actions **have not been observed at time of this entry**; formal acceptance has **not** occurred. Expected signatures and exact numerical values remain those preregistered above. Record any CI failures, corrections and real outputs in later dated additions. Human/external independent review not performed.
