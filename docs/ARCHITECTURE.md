@@ -637,3 +637,23 @@ flowchart TD
 ~~~
 
 F009はground_contactを牽引上限の理想パラメータで実現するので、現実の摩擦/車輪/支持反作用の接触解法ではない。source_shaは保存ファイル同一性の監査材料であり実行者認証ではない。設計時の図は歴史として保持する。
+
+## F010 preregistration — multiple A-only probes and structural non-identifiability (2026-10-19, **design only, unimplemented**)
+
+```mermaid
+flowchart TD
+  P["Researcher: independent F007 1D A-D/E trials, u=2,1,.5 N"] --> WORLD["EXISTING F007 ideal two-cell world + battery"]
+  WORLD --> TRUE["Researcher-only truth: B, attached, hidden external force"]
+  WORLD --> OBS["EXISTING F008 projector: A velocity and local applied force/balance"]
+  OBS -. "strict A-only local information" .-> EST["PROPOSED F010: alpha/beta from two force levels + held-out .5 N"]
+  EST --> SIG["PROPOSED response signature; never a topology label"]
+  SIG --> AUDIT["PROPOSED independent Fraction/SOMA evidence audit"]
+  TRUE --> AUDIT
+  AUDIT --> LOG["PROPOSED raw evidence/negative cases/manifest/replay"]
+  TRUE -. "FORBIDDEN: no world truth to estimator" .-> X["No connection/B/external force in cell API"]
+  style EST fill:#fff0d6,stroke:#b68220
+  style SIG fill:#fff0d6,stroke:#b68220
+  style AUDIT fill:#fff0d6,stroke:#b68220
+```
+
+**Knowledge boundary:** each fresh run may be labeled by the *researcher* but F010 inference receives only groups of typed F008 `LocalObservation` fields, no case names or F007 world config. The design intentionally compares separate trials rather than implementing online agent control. A and C are indistinguishable from A-local data including battery. No contact/ground reaction or real locomotion has been established; F009 remains separate.

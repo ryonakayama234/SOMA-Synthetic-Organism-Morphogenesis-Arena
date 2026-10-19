@@ -39,3 +39,5 @@ AIが参照するときに **出典の主張** と **SOMAがそこから立て�
 - 最終確認日
 
 関連：[研究憲章](../docs/PROJECT.md) / [F001](../topics/F001-single-cell-motion/SPEC.md)
+
+- **F010 (2026-10-19, preregistered design, NOT executed/adopted):** [SPEC](../topics/F010-local-identifiability/SPEC.md) | [A–F PLAN](../experiments/F010/PLAN.md) | [unexecuted findings](../findings/F010-validation.md) | [Issue #31](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/31). Two-level response slope and third-force holdout; compare constant confound with input-dependent non-identifiability. No world labels in local estimator.
