@@ -56,3 +56,27 @@ This distinction is relevant to the numerical-contact literature, including [Are
 ### Independence, publication and decision
 
 The independently coded saved-CSV oracle, independent Wolfram first step and two interpreter versions are distinct computational checks but were all orchestrated by the same AI assistant. **Independent external human scientific peer review NOT PERFORMED** and cannot be claimed. GitHub Actions artifacts have finite retention: exact source, pinned SHA, reproduction commands and scientific summary remain in repository, but full raw CSV persistence beyond artifact retention is NOT guaranteed. No actual robot/surface friction, force-feedback policy, self-body model, energy budget, morphology optimization or human visual browser test. F011's full no-contact 9.6s control stays INCONCLUSIVE under Issue #37. Formal research adoption and merging BOTH PR #43 / #44 are expressly withheld for researcher decision.
+
+## 2026-10-20 additional acceptance review — remedy for omitted *independent full time integrator*
+
+The user delegated a limited adoption / main-merge decision **only if the original goal and source semantics are actually met**, and permitted deferral of real-world limitations. In audit of the registered Issue #42 and F013 code, we found an omission: the original F013 friction root-bisection was independently written, but the rest of F013 still used a semi-implicit stepping architecture. It would be incorrect to claim the *whole trajectory* is independent of this discretization based on the single Wolfram first-step check. Therefore BEFORE any adoption the implementation Draft was extended with `experiments/F013/ode_audit.py`, without changing frozen original experiment physics/conditions/thresholds.
+
+The second numerical method is a genuinely **different coupled 4D explicit classical Runge–Kutta (RK4)** integrator for continuous ODE `dxa/dt=va`, `dxb/dt=vb`, `dva/dt=u+k(r-L)+f(va)`, `dvb/dt=-u-k(r-L)+f(vb)` (each mass 1kg). Integration is split **exactly at the frozen 0.6s motor switching times**, h=.001 and .0005s, no `soma.f013` import, no independent choice of physical coefficient. The audit adds 24 distinct postregistered diagnostic ODE runs for B/C/D/E × 3 eps × 2 steps, **in addition** to the original 36 preregistered runs. A 2mm self-consistency check between these two RK4 resolutions, C/D mirror checks and B/E stationary/isotropic negative controls are additional *postregistered audit implementation checks*, not new H13 preregistered evidence thresholds. C0 friction with slope discontinuity at v=0 does not warrant a claim of theoretical fourth-order global convergence.
+
+### Independently computed exploratory RK4 reference, 9.6s C-directional
+
+These estimates were independently computed in a standalone Python RK4 script during review, **not** fitted to the frozen F013 outcomes. The checked-in auditor's exact CI outputs and artifacts must be verified separately before adoption.
+
+| epsilon (m/s) | RK4 h=.0005 final COM (m) | RK4 h=.001 final COM (m) | F013 h=.0025 final COM (m) | RK4 minus F013 (m) |
+| --- | ---: | ---: | ---: | ---: |
+| .020 | +3.3876960621 | +3.3876990531 | +3.3930258156 | −0.0053297536 |
+| .005 | +3.4764244221 | +3.4764104859 | +3.4822192017 | −0.0057947796 |
+| .001 | +3.4945322730 | +3.4943831978 | +3.4996816262 | −0.0051493533 |
+
+**Scientific interpretation:** the separately implemented continuous-time integrator preserves sign, repeated displacement and mirrored direction with identical physical parameters. The ≈5–6mm deviations establish *finite discretization sensitivity* that must not be hidden by the old H13b loose 10% gate. Their magnitude is small against the measured ≈3.4–3.5m movement for these specific 9.6s trajectories. This strengthens the **model-level** conclusion; does NOT establish all numerical schemes, real-world friction, C1 smoothness or a universal small-dt limit.
+
+**Independent Wolfram semantic finding:** at epsilon=.001m/s, the one-sided `f(v)` slopes at v=0 for C are `-981/5=-196.2s^-1` and `-3924/5=-784.8s^-1` (per 1kg acceleration model); force limits from both sides are zero. Thus the physical coefficient-switch regularization is **C0, not C1**, even while remaining passive and continuous. Original preregistration file and all 36 controls were deliberately left unchanged. Later implementation/code comments identify this fact.
+
+The original frozen hypothesis labels H13a/h13b/h13c/h13d retain their meaning. The added ODE check is a real acceptance correction of a task-scope deficiency, not a new task. The extended output `ode_audit.json` must pass source-hash binding, stored-byte replay and *independent recomputation* by the independent CSV verifier in Python3.11/3.12. All 24 diagnostics and limits go into that record. Original F011/F012 and V001 remain unchanged; external human review and physical/hardware studies are not newly imposed.
+
+**Final acceptance after this corrective source commit still depends on exact-new-HEAD CI and researcher-director formal decision/merges**. Do not cite the earlier `f1fb8a9` success as CI validation for these new tests or data structures.
