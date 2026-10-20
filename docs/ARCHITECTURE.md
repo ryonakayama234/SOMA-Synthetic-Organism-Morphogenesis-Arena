@@ -679,3 +679,28 @@ flowchart LR
 Input variation is orchestrated by a **researcher-side offline experiment**, NOT by autonomous cell control. Each run resets state/battery. A/C local equivalence includes A battery and actuator feedback. `F010` cannot infer structural attachments even when `alpha=1/2`. No F009 real contact physics is imported.
 
 **F010 limited adoption decision (2026-10-19):** The offline local-signature path in the immediately preceding candidate diagram is now approved under the narrow frozen F007/F008 1D model after command/applied-force gating and normal-exception replay-publication rollback passed final implementation tests. It does not add information flow from researcher-only truth to the estimator and does not infer mechanical topology. See [dated acceptance](../findings/F010-validation.md) and Issue #31 for actual main merge verification; the earlier candidate label records the state when the diagram was proposed.
+
+
+## F011 design preregistration: passive grounded internal drive (2026-10-20, UNIMPLEMENTED)
+
+**Unimplemented proposal; F001–F010 limited-adopted flows are unchanged.** Issue #34 / [SPEC](../topics/F011-grounded-internal-drive/SPEC.md) / [PLAN](../experiments/F011/PLAN.md). The new model is **not** F007 external effective propulsion or F009 prescribed ground traction.
+
+```mermaid
+flowchart TB
+  R["Researcher: preregister A-F, friction, open-loop period"] --> U["PROPOSED: internal force u and passive spring"]
+  U -->|"+Fint"| A["Cell A, m=1kg"]
+  U -->|"-Fint"| B["Cell B, m=1kg"]
+  A <-->|"mechanical relative distance r"| B
+  G["PROPOSED passive directional ground, same law per cell"] -->|"ground impulse A"| A
+  G -->|"ground impulse B"| B
+  A -->|"world state/contact velocity"| G
+  B -->|"world state/contact velocity"| G
+  A --> T["RESEARCHER truth: xA/vA, xB/vB, impulses, energy"]
+  B --> T
+  G --> T
+  T --> O["PROPOSED independent CSV oracle, dt check, replay"]
+  T -. "FORBIDDEN world-truth link to cell" .-> C["Cell-side controller: NOT IMPLEMENTED"]
+  O --> F["findings: SUPPORT / CONTRADICT / INCONCLUSIVE"]
+```
+
+Direct cells-to-ground contact forces transfer momentum; internal +F/-F cannot alter total momentum. Researcher's world truth is distinct from possible future cell local sensors. Proposed 1D direction-dependent stick/slide idealization has no physically modeled normal contact, battery efficiency, learning, active anchor switching or general 2D morphology. Frozen schema in [DATA_CONTRACTS](DATA_CONTRACTS.md).
