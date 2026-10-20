@@ -749,3 +749,38 @@ flowchart TB
 ```
 
 F011 accepts prescribed open-loop internal force without finite budget; proposed F012 is **a new experimental version**, not a change to the accepted F011 model. Mechanical force links and ground reaction are physical-model interactions; integer energy allowance is an administrative ideal actuator constraint; CSV is researcher-only. Existing F008/F010 A-local data interface is NOT integrated and remains unchanged. No real current/voltage, real contact or emergent policy.
+
+## F012 implemented-candidate dataflow — 2026-10-20 (PR #40, **not adopted**)
+
+This is a SEPARATE frozen numerical experiment `soma/f012.py`, **not** a replacement for conditional limited-adopted `soma/f011.py`.
+
+```mermaid
+flowchart TB
+  R["Researcher-only: frozen budget / ground / dt / open-loop command"]
+  W["F011 passive ground + spring numerical semantics (unchanged source)"]
+  C["F012: propose internal +/-u force and candidate motion"]
+  P["F005 positive work of RELATIVE endpoint velocities"]
+  B["F012 integer µJ budget gate; reject or accept whole motor step"]
+  A["Cell A: +u, spring, passive ground"]
+  D["Cell B: -u, spring, passive ground"]
+  L["Researcher-only full world states.csv / config.json"]
+  V["Independent alternative-step physics + budget + source/summary audit"]
+  S["GitHub CI Python 3.11/3.12, byte replay and artifacts"]
+  R --> C
+  W --> C
+  C --> P --> B
+  B -->|"accepted/rejected motor"| A
+  B -->|"opposite internal force"| D
+  A <-->|"mechanical spring, internal reaction"| D
+  A -->|"ground reaction, world state"| L
+  D -->|"ground reaction, world state"| L
+  B -->|"accepted work, µJ spending, remaining budget"| L
+  L --> V --> S
+  L -. "FORBIDDEN: world truth cannot reach cell-local inference" .-> X["F008/F010 local estimator unchanged"]
+```
+
+F012 imports F011's **passive_contact** and F005's **positive_motor_work**; these prior functions/files are not changed. Its new pair dynamics and budget gate are implemented, whereas any real physical friction/contact, motor electricity, cell sensing, self-model and autonomous actuation are **NOT IMPLEMENTED**. All world data are researcher-facing. A rejected motor does **not** disable the spring or passive ground.
+
+## 2026-10-20 F012 research-director post-audit acceptance (limited; historical proposed diagram above retained)
+
+The separate F012 ideal budget gate, world-only trace, independent F012 stored-data oracle and C/D and B/E pointwise counterfactuals are **implemented**. The research director is authorized to merge design #39 followed by implementation #40 once final commit checks are green. F012 is **LIMITED ADOPTED for prescribed 1D numerical finite-positive-motor-work study**, not hardware, electrical or emergent morphology. The figure above continues to show the actual implemented F012 candidate components. F011 original source and F008/F010 local observation boundaries are unchanged. Merge SHA and exact checks are recorded in the GitHub PR/Issue timeline.
