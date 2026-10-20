@@ -29,7 +29,7 @@ SOURCE_FILES = (
     "docs/DATA_CONTRACTS.md", "README.md", "AGENTS.md",
 )
 FILES = {
-    "F007/config.json", "F007/states.csv", "F007/ledger/events.csv",
+    "config.json", "F007/config.json", "F007/states.csv", "F007/ledger/events.csv",
     "F007/link_events.csv", "F007/motion.svg", "F007/manifest.json",
     "a_local.csv", "b_packets.csv",
 }
