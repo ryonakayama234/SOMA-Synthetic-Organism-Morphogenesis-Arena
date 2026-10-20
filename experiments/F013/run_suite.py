@@ -12,10 +12,12 @@ import tempfile
 
 from soma.f013 import CASES, COLUMNS, DTS, EPSILONS, Config, StrokeLimitError, simulate, summarize
 from experiments.F013.verify import verify
+from experiments.F013.ode_audit import independent_ode_audit
 
 REPO = Path(__file__).resolve().parents[2]
 SOURCES = ("soma/f013.py", "experiments/F013/run_suite.py",
-           "experiments/F013/verify.py", "topics/F013-contact-rectification/SPEC.md",
+           "experiments/F013/verify.py", "experiments/F013/ode_audit.py",
+           "topics/F013-contact-rectification/SPEC.md",
            "experiments/F013/PLAN.md")
 
 
@@ -126,6 +128,7 @@ def build(root):
         model_limit="different smooth constitutive law; NOT real-contact or learned locomotion",
     )
     write_json(root/"comparison.json", comparison)
+    write_json(root/"ode_audit.json", independent_ode_audit(output))
     names = sorted(str(x.relative_to(root)) for x in root.rglob("*") if x.is_file())
     manifest = dict(
         schema_version="f013.evidence.v1",
