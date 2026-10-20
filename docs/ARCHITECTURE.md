@@ -704,3 +704,31 @@ flowchart TB
 ```
 
 Direct cells-to-ground contact forces transfer momentum; internal +F/-F cannot alter total momentum. Researcher's world truth is distinct from possible future cell local sensors. Proposed 1D direction-dependent stick/slide idealization has no physically modeled normal contact, battery efficiency, learning, active anchor switching or general 2D morphology. Frozen schema in [DATA_CONTRACTS](DATA_CONTRACTS.md).
+
+
+### F011 implementation candidate (2026-10-20; stacked Draft, NOT ADOPTED)
+
+Implementation modules `soma/f011.py` (frozen 1D numerical world), `experiments/F011/run_suite.py` (A–E×3 conditions and negative-stroke prefix), `experiments/F011/verify.py` (researcher-only independent raw-state oracle) and `tests/test_f011.py` keep physics, evidence and interpretation separate. Unlike F007, F011 *internal* ±F and a passive ground law do not inject a hand-coded effective propulsion force. The observer reads full world truth; no F011 cell-side sensor/controller exists.
+
+```mermaid
+flowchart LR
+  C["Frozen A–F research configuration"] --> M["NEW F011 internal ±F / spring"]
+  M --> A["Cell A"]
+  M --> B["Cell B"]
+  A --> G["NEW passive grounded Coulomb impulse"]
+  B --> G
+  G --> A
+  G --> B
+  A --> W["WORLD truth CSV"]
+  B --> W
+  G --> W
+  W --> V["Independent verifier: force/momentum/energy"]
+  V --> R["Comparison/manifest/byte replay/CI"]
+  W -. "NO WORLD truth to cell" .-> X["Local self-model/control: unimplemented"]
+```
+
+A without ground reaches preregistered stroke limit early: save prefix as INCONCLUSIVE rather than clipping. B symmetric, C anisotropic drift, D mirrored drift, E no motor. External human review / formal research adoption still pending.
+
+### F011 post-experiment scope decision (2026-10-20; separate from the original diagram/design record)
+
+The research owner authorized **limited adoption of the frozen 1D discrete passive-directional-ground rectification capability** (internally driven identical cells, prescribed asymmetry, C/D mirrored COM drift and controls B/E). The original A:no_contact 9.6s bounded-stroke case is **INCONCLUSIVE** because the prescribed r<=0.8m gate fails around 2.1s; the original full A–E completion requirement is **not passed**, but a separately documented owner exception accepts the narrower model result. All model arrows, world-truth-only evidence, frozen forces and observability boundaries above are unchanged. No agent-level selection, locomotor controller, end-stop contact, battery/power integration, hardware grounding or spontaneous morphology is implied. See [SPEC adoption addendum](../topics/F011-grounded-internal-drive/SPEC.md) and [F011 findings](../findings/F011-validation.md).

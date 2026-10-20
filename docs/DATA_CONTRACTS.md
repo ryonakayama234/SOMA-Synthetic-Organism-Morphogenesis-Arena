@@ -716,3 +716,15 @@ Scope/refs: [Issue #34](https://github.com/ryonakayama234/SOMA-Synthetic-Organis
 - `f011.evidence.v1`: per-case `config.json`, `states.csv`, `manifest.json` (SHA256 each source/data and checkout-origin metadata); root `comparison.json`, `manifest.json`, and reproducibility/CI record. Save negative results, not only positives. All measurements in SI; `ground_force` is world truth (not cell observation), energy residual explicitly accounts for semi-implicit discretization.
 - Integrity: independent saved CSV verification without calling production simulator; same frozen config and exact raw outputs compare deterministically; missing/tampered/rehashed-science claims rejected; source-SHA is not cryptographic proof of author identity; crash-atomic publication across independent directories not claimed.
 - **No new cell-local API or autonomous controller**. Only researcher reads `states.csv` or friction parameters; any future local observations require a separate allowlist and research question.
+
+
+### F011 implementation candidate raw schema (2026-10-20; not adopted)
+
+`soma/f011.py` defines the fixed order of 18 `states.csv` columns:
+`step,time_s,x_a_m,x_b_m,v_a_m_s,v_b_m_s,r_m,x_cm_m,internal_n,ground_a_n,ground_b_n,ground_work_j,motor_work_j,kinetic_j,spring_j,impulse_residual_ns,energy_defect_j,expected_defect_j`. Initial row retains blank interval-only fields. World truth only, no agent knowledge. All SI. Effective ground force is impulse/dt; this is a numerical passive Coulomb proximal law, not measured contact.
+
+`f011.comparison.v1` stores complete vs stroke_inconclusive for each of 15 cases, fixed H1–H4 status and C↔D mirror metrics. `f011.evidence.v1` stores canonical artifact and source hashes. Check `experiments/F011/verify.py` independent arithmetic/semantic (including rehashed false science) and the reproducibility guide; no data loss or smoothing at stroke violation, raw valid prefix preserved. Separate artifact directories are normal-exception rolled back, but power-loss two-directory atomicity is not certified.
+
+### F011 post-experiment evidence-contract scope decision (2026-10-20)
+
+`f011.config.v1`, `f011.states.v1`, `f011.comparison.v1` and `f011.evidence.v1` schemas remain the **unchanged** frozen implementation contracts. Formal **limited** adoption covers fixed-model C/D/B/E trace integrity, reproducibility and control results only. Full-duration A:no_contact remains `stroke_inconclusive` at ~2.1s due to the original 0.8m gate; no 9.6s complete A trace or all-controls-pass status exists, despite separate analytic COM conservation and preserved valid-prefix support. Owner acceptance is an **explicit retrospective gate exception**, not a rewrite of `comparison.json`, a version bump, a reclassification of historical negative evidence, or proof of physical contact/autonomy. Raw states continue to be researcher-only world truth. See [SPEC scope decision](../topics/F011-grounded-internal-drive/SPEC.md) and [F011 evidence/findings](../findings/F011-validation.md).
