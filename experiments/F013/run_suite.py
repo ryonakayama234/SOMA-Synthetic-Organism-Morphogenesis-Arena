@@ -177,3 +177,11 @@ if __name__ == "__main__":
     args = parser.parse_args()
     count = run(args.output_dir, args.replay_output_dir)
     print(f"F013 VERIFIED: 36 fixed cases, {count} files per destination, independent raw audit and identical replay")
+    report = json.loads((args.output_dir/"comparison.json").read_text(encoding="utf-8"))
+    print("F013 SCIENTIFIC OUTCOMES " + json.dumps({
+        "h13a": report["h13a"],
+        "per_epsilon_h13a": report["per_epsilon_h13a"],
+        "h13b": report["h13b"],
+        "c_fine": {str(e): report["results"][key("C-directional", e, .0025)] for e in EPSILONS},
+        "f013_minus_f011_center_m": report["f013_minus_f011_center_m"],
+    }, sort_keys=True))
