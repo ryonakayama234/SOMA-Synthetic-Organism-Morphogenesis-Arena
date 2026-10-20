@@ -780,3 +780,7 @@ flowchart TB
 ```
 
 F012 imports F011's **passive_contact** and F005's **positive_motor_work**; these prior functions/files are not changed. Its new pair dynamics and budget gate are implemented, whereas any real physical friction/contact, motor electricity, cell sensing, self-model and autonomous actuation are **NOT IMPLEMENTED**. All world data are researcher-facing. A rejected motor does **not** disable the spring or passive ground.
+
+## 2026-10-20 F012 research-director post-audit acceptance (limited; historical proposed diagram above retained)
+
+The separate F012 ideal budget gate, world-only trace, independent F012 stored-data oracle and C/D and B/E pointwise counterfactuals are **implemented**. The research director is authorized to merge design #39 followed by implementation #40 once final commit checks are green. F012 is **LIMITED ADOPTED for prescribed 1D numerical finite-positive-motor-work study**, not hardware, electrical or emergent morphology. The figure above continues to show the actual implemented F012 candidate components. F011 original source and F008/F010 local observation boundaries are unchanged. Merge SHA and exact checks are recorded in the GitHub PR/Issue timeline.

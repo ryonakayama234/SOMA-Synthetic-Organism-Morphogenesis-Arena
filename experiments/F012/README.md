@@ -13,3 +13,7 @@ The runner refuses preexisting, overlapping and nested output roots. It generate
 World truth is researcher-facing only. Ideal positive mechanical work and integer microjoule charging do not imply electrical battery fidelity. No real friction, autonomous body controller, learning, real hardware or independent human review is claimed. Negative observations, gate failure or timestep-sensitive comparisons belong in [findings](../../findings/F012-validation.md).
 
 The two-directory publication is deliberately not power-loss atomic; CI ZIP retention is provider-bounded. To audit, use a trusted checkout of the recorded SHA and verify saved raw artifact paths/hashes plus the independent oracle.
+
+## Subsequent post-audit decision (2026-10-20)
+
+The research director received explicit delegated authorization to accept/merge if preregistered F012 research and code semantics were actually met. **Limited F012 numerical-model adoption approved pending final HEAD CI and sequential PR merging**. A key audit defect (pointwise mirror control checked explicitly at only dt=.01 in prior unit tests) was fixed: `verify_suite` now verifies every saved sample for mirrored B/C/D/E conditions across all 48 frozen runs. Frozen input ranges, model physics, positive charging, gates and scientific classifications have **not** been altered. 3J moves but fails end-shape persistence, and has strong coarse/fine sensitivity; do not call it steady propulsion. Actual merged main and deployment status must be taken from the Issue/PR record, not this forward-looking note.

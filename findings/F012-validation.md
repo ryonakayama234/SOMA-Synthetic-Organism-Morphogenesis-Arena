@@ -46,3 +46,29 @@ Before numerical implementation, Wolfram's rational first-step reference (C, dt=
 The verifier is an independently written computational expression and uses **no import** of F012/F011/F005 production simulation, but it was designed and reviewed by the **same AI assistant system**; this is not an independent human or external institution's peer review. Artifact SHA is file-integrity provenance, not independent execution identity, and the existing per-version two-root publication is not power-loss atomic. F012 simulation includes no real electrical motor physics, self-observation, learned behavior, morphology choice, physical joining, 2D contact, or real robot experiment.
 
 **Pending decision / review:** Formal scientific adoption and design/implementation PR merge into main require the researcher's **fresh explicit authorization**. This findings append itself requires an exact updated HEAD CI check; do not cite an older CI as proof of the final documentation-inclusive commit. The post-check stronger saved-summary forgery test and cross-version artifact-byte comparison must be classified separately from the prior successful checkpoint until individually verified.
+
+## 2026-10-20 critical follow-up audit + delegated limited adoption (retrospective; no hypothesis edits)
+
+### Decision criteria vs actual evidence
+
+- **Original single question and contract PASSED:** one separately versioned finite ideal positive-work gate, source F011 and F005 unchanged, exact integer budget conservation and continuing spring/friction upon motor rejection. New explicit tests of passive continuation and stroke-guard valid prefix were added before final review.
+- **Frozen full 48-control suite PASSED:** full valid 9.6s B/C/D/E × 4 budget × 3 dt traces and source-bound independent replay, two-root byte identity, 3.11/3.12 and original F001–F011 regression. No hidden parameter tuning and no reopening of F011 A.
+- **Post-review identified control-coverage gap FIXED:** the first independent verifier checked C/D final COM/cost only; production mirror unittest had full row-by-row checks at dt=.01. Because the frozen H12d requires pointwise equality **at every dt and budget**, the verifier was strengthened at `7873dc7606c5aef952ec1602d61aae041978b4e2` to assert reflected xA/xB, COM, equal separation, command, motor acceptance, charge, balance and decision at every saved sample on **all 3 dt × 4 budget** paired C/D runs. It also checks **every B COM and E static row** (not only final). The fixed 48-case source-replay/pointwise workflow [#39362393790](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39362393790) passed in both Python3.11/3.12; all 11 legacy workflows also succeeded on that SHA. No F012 input or prior observation was modified.
+- **Physical-math step oracle PASSED:** Wolfram exact fractions first C step: Xcm=2943/100000000 m, Wsigned=1019/10000000 J, Wplus=1019/20000000 J, ceil=51 µJ, ground forces -981/5000 N, +981/1250 N, momentum residual=0 and discrete energy-defect residual against expected=0. This is an arithmetic oracle under the frozen model, not proof of actual hardware fidelity.
+
+### Observed C final COM across three grids (9.6s, as verified in GitHub Actions #39362393790)
+
+| Budget | dt=.01m | dt=.005m | dt=.0025m | Scientific interpretation |
+|---|---:|---:|---:|---|
+| 0 J | 0 | 0 | 0 | zero-energy control, static |
+| 1 J | 1.0370838920 | 1.0307560016 | 1.0275049752 | transient positive movement, no last-two-period drift |
+| 3 J | 2.7523597541 | 2.7584669402 | 3.0524230509 | **large numerical sensitivity**, final relative-shape recurrence fails .01m gate |
+| 10 J | 3.5160414549 | 3.5069738895 | 3.5023819308 | no motor rejections, recurrence and persistence supported |
+
+At dt=.0025, 1J accepted/rejected=1308/2532 (fully spent), 3J=2627/1213 (fully spent), 10J=3840/0 with 4,275,244µJ spent and 4.27397124J positive mechanical work. At dt=.01 3J budget stops at 2,999,998µJ, leaving 2µJ unused; this is expected under all-or-none step gating, not an integer overdraft. The medium/fine 3J final difference 0.2939561107m is close to the frozen 10% COM criterion and forbids any *stronger* convergence claim. The exact midpoint signed mechanical work should not substitute for `Wplus`. The distance-per-charged-J exploratory metric is not a validated general optimality result (undefined at 0 spent).
+
+### Formal research-director judgement under explicit delegated authorization
+
+**F012 is LIMITED ADOPTED for precisely the frozen 1D numerical budget-gated locomotion experiment and its verified evidence capability.** The criteria demand valid negative results and accurate classification, NOT locomotion under each budget. In particular, the 3J negative result is informative and must not be changed into a success. Structural 1D physics, ideal positive-mechanical-work-only budget, no efficiency, no autonomous sensor/policy and no hardware experiments are explicitly excluded from the current claims and naturally become future staged research questions. Those limitations are acceptable; genuine source-gate, math and verification mismatches are not. The post-review pointwise mirror audit omission was corrected and revalidated. The combined final code/documentation commit must independently pass CI before the research director merges design PR #39 then implementation PR #40. The actual main merge SHA and post-merge checks, if completed, belong in the GitHub records.
+
+**Human-independent review NOT PERFORMED:** Wolfram exact arithmetic + same-assistant alternate code are different methods but not an external researcher's audit. Artifacts in CI are retained only for the platform's lifetime; frozen source and reproduction command remain in GitHub. Do not reclassify F011 full-duration no-contact A or merge V001 based on this decision.
