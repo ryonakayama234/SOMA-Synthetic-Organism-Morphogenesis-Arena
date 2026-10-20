@@ -9,6 +9,7 @@ import unittest
 from soma.f013 import Config, passive_contact, simulate, EPSILONS, DTS, CASES, StrokeLimitError
 from experiments.F013.run_suite import build
 from experiments.F013.verify import verify
+from experiments.F013.ode_audit import independent_ode_rk4
 
 
 class TestF013(unittest.TestCase):
@@ -53,6 +54,30 @@ class TestF013(unittest.TestCase):
         self.assertAlmostEqual(z["v_b_m_s"], -.007267468045899013, delta=5e-12)
         self.assertAlmostEqual(z["x_cm_m"], .000009459769714964243, delta=5e-13)
         self.assertAlmostEqual(z["ground_work_j"], -.000027557797379149775, delta=5e-13)
+
+    def test_independent_whole_trajectory_rk4_controls(self):
+        """An alternative FULL 4D ODE solver, independent of F013 integrator."""
+        for epsilon in (.02,.005,.001):
+            c=independent_ode_rk4("C-directional",epsilon,.0005)
+            d=independent_ode_rk4("D-mirror",epsilon,.0005)
+            self.assertGreater(c["center_final_m"],0)
+            self.assertAlmostEqual(c["center_final_m"],-d["center_final_m"],delta=2e-9)
+            self.assertGreater(c["last_period_m"],.001)
+            self.assertLessEqual(abs(c["last_period_r_return_m"]),.01)
+        b=independent_ode_rk4("B-isotropic",.001,.0005)
+        e=independent_ode_rk4("E-no-drive",.001,.0005)
+        self.assertAlmostEqual(b["center_final_m"],0,delta=1e-10)
+        self.assertAlmostEqual(e["center_final_m"],0,delta=1e-10)
+
+    def test_invalid_stroke_saves_prefix_not_fake_valid_result(self):
+        from unittest.mock import patch
+        from soma.f013 import StrokeLimitError
+        with patch("soma.f013.passive_contact", side_effect=[(30.,0.),(-30.,0.)]):
+            with self.assertRaises(StrokeLimitError) as ctx:
+                simulate(Config("C-directional",.02,.01))
+        self.assertEqual(ctx.exception.step,1)
+        self.assertEqual(len(ctx.exception.valid_rows),1)
+        self.assertLess(ctx.exception.attempted_r,.2)
 
     def test_complete_36_case_independent_raw_audit_and_forgery(self):
         with tempfile.TemporaryDirectory() as temp:
