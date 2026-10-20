@@ -805,3 +805,7 @@ The earlier table is a proposal/history. The implementation candidates below are
 | Saved `manifest.json` / `f014.evidence.v1` | `schema_version,origin,cases,artifacts`; origin includes F007 provenance and explicit F014 source hashes; all file digests SHA256 | Independent replay/integrity oracle |
 
 F014's frozen `f014.config.v1` wrapper is saved separately and **not an agent input**; the complete physics and hidden external-force controls remain in inherited `F007/config.json`. The B packet's `source` framing differs from earlier illustrative `source_id` field name and is explicitly recorded here before interpreting any CI result. Real transport protocol cryptography, noisy sensors, discovery of physical linkage, and self-selected probing remain unimplemented. The first production implementation must retain exact preregistered *physics and threshold* even though file naming is revised here.
+
+### F014: 2026-10-21限定採用のデータ意味論
+
+凍結されたf014.config.v1 / f014.packet.v1 / f014.comparison.v1 / f014.evidence.v1、F008 A allowlist、およびf014.packet.v1の一つの厳密booleanによる観測のみを限定採用。source=Bの識別子は**実通信の認証ではない**。moved=falseはB運動変化が閾値以下という観測であり、機械的非結合の証明ではない。欠損(None)、時刻破綻、実行拒否を同じ『非結合』へ変換しない。L/Cの観測同値が成り立つので、返値に接続済みを示す判定は存在しない。閾値1e-10 m/sは理想的な凍結数値制御専用で、雑音/実センサーの精度ではない。人間査読・実通信・2D・自律的な身体推定を採用していない。詳細な正式判断はF014 SPEC/findings、実際の統合履歴はIssue #45。
