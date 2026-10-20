@@ -1,6 +1,6 @@
 # F013 — contact-rectification robustness (research-only, NOT ADOPTED)
 
-Related [Issue #42](../../issues/42) / [frozen SPEC](../../topics/F013-contact-rectification/SPEC.md) / [PLAN](PLAN.md) / [findings](../../findings/F013-validation.md).
+Related [Issue #42](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/42) / [frozen SPEC](../../topics/F013-contact-rectification/SPEC.md) / [PLAN](PLAN.md) / [findings](../../findings/F013-validation.md).
 
 Research question: does accepted F011's prescribed internally-driven two-identical-cell COM drift persist in a **different smooth, passive friction constitutive model**? A numerical change in this model is not automatically a F011 bug. No F011/F012 code or historical evidence is modified. World-state trajectories are **researcher-only**, never local knowledge available to cells.
 
