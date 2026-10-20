@@ -71,11 +71,11 @@ def audit_rows(case,budget,h,rows):
     balance=budget
     for index,row in enumerate(rows):
         if set(row)!=set(KEYS) or row["step"]!=index: raise ValueError("bad CSV schema/step")
-        for k,v in (("time_s",index*h),("x_a_m",xa),("x_b_m",xb),("v_a_m_s",va),
-                    ("v_b_m_s",vb),("r_m",xb-xa),("x_cm_m",(xa+xb)/2)):
-            near(row[k],v)
-        if row["balance_uj"]!=balance: raise ValueError("ledger mismatch")
         if index==0:
+            for k,v in (("time_s",0.),("x_a_m",xa),("x_b_m",xb),("v_a_m_s",va),
+                        ("v_b_m_s",vb),("r_m",xb-xa),("x_cm_m",(xa+xb)/2)):
+                near(row[k],v)
+            if row["balance_uj"]!=balance: raise ValueError("initial ledger mismatch")
             if any(row[k] is not None for k in ("motor_command_n","motor_applied_n","spent_uj","decision")):
                 raise ValueError("initial event not empty")
             continue
@@ -119,6 +119,11 @@ def audit_rows(case,budget,h,rows):
             raise ValueError("physics invariant failed")
         balance-=cost
         xa,xb,va,vb=nx,ny,nv,nw
+        for k,v in (("time_s",index*h),("x_a_m",xa),("x_b_m",xb),
+                    ("v_a_m_s",va),("v_b_m_s",vb),("r_m",xb-xa),
+                    ("x_cm_m",(xa+xb)/2)):
+            near(row[k],v)
+        if row["balance_uj"]!=balance: raise ValueError("post-step ledger mismatch")
     if balance<0 or balance+sum(x["spent_uj"] for x in rows[1:])!=budget:
         raise ValueError("budget not conserved")
     return metrics(rows)
