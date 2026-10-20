@@ -1,0 +1,39 @@
+name: F014 one-bit peer-response and independent evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: All inherited tests plus F014
+        run: python -m unittest discover -s tests -v
+      - name: Optimized F014 typed boundary and tamper tests
+        run: python -O -m unittest discover -s tests -p test_f014.py -v
+      - name: Frozen 15 F007 runs, 60 A and B intervals, saved-data oracle and byte replay
+        env:
+          SOMA_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python -m experiments.F014.run_suite --output-dir runs/F014-ci --replay-output-dir runs/F014-replay
+      - name: Upload evidence from successful runs
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F014-${{ matrix.python }}-evidence
+          path: |
+            runs/F014-ci/
+            runs/F014-replay/
+          if-no-files-found: error
