@@ -818,3 +818,19 @@ flowchart TB
 ```
 
 The motor force is internal and cancels in the two-cell momentum sum. Ground reactions transfer momentum with the environment. The numerical friction and regularization width are **researcher-set assumptions**, not discovered locomotive roles. A failed/invalid stroke does not justify extending the interval after data are observed.
+
+
+### F013 post-preregistration review: truly alternative ODE time integrator
+
+```mermaid
+flowchart LR
+  H["Same registered physical hypothesis: 2 cells + fixed passive C0 friction"] --> P["F013: semi-implicit x with implicit friction velocity root"]
+  H --> Q["Independent ODE auditor: coupled 4D explicit RK4"]
+  P --> E["36 frozen cases + saved world-truth CSV"]
+  Q --> F["24 ODE reference runs (12 cases x 2 fine grids)"]
+  E --> V["Independent CSV/energy/momentum verifier"]
+  F --> V
+  V --> R["Scientific results + numerical differences (researcher only)"]
+```
+
+The independent RK4 code imports no `soma.f013` functions and integrates the continuous-time force rather than reproducing F013's split discrete contact projection. This is post-registration numerical validation and does not revise frozen thresholds. No cell-local access to world truth.
