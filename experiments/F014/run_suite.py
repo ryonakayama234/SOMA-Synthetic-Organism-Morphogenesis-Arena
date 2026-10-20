@@ -61,6 +61,14 @@ def _json(path: Path, payload: dict) -> None:
 
 def make_run(path: Path, group: str, force: float, origin: dict) -> dict:
     path.mkdir(parents=True)
+    # Explicit frozen F014 envelope: researcher-only, never passed to inference.
+    _json(path/"config.json", {
+        "schema_version": "f014.config.v1",
+        "experiment_id": "F014-"+group+"-"+dict(FORCES)[force],
+        "case_id": group, "u_n": float(force),
+        "dt_s": .25, "duration_s": 1.,
+        "packet_threshold_m_s": THRESHOLD_M_S, "seed": None,
+    })
     save_run(Config.from_dict(configuration(group, force)), path/"F007",
              identity=origin["f007"])
     rows = read_csv(path/"F007/states.csv", STATE_COLUMNS,
