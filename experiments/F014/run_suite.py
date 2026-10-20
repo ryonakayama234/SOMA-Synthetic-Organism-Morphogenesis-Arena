@@ -118,7 +118,16 @@ def build(stage: Path, origin: dict) -> dict:
                              integers=("step_index", "spent_a_uj", "balance_a_uj",
                                        "balance_b_uj", "ledger_event_index"))
         local = tuple(project_local(a, b) for a, b in zip(converted, converted[1:]))
-        bits = tuple(PeerPacket("B", k, k*.25, True) for k in range(1, 5))
+        # Inject the dropout into the actual SAVED B-local packet sequence,
+        # not a reconstructed all-True fixture (the missing-data trial must
+        # preserve the exact model observations on the remaining steps).
+        packet_rows = read_csv(base/"b_packets.csv", PACKET_COLUMNS,
+                               strings=("source",), flags=("moved",),
+                               integers=("step_index",))
+        if len(packet_rows) != 4:
+            raise AssertionError("four saved B packets required before dropout")
+        bits = tuple(PeerPacket(r["source"], r["step_index"], r["time_s"],
+                                r["moved"]) for r in packet_rows)
         altered = bits[:1] + (None,) + bits[2:]
         dropout[tag] = estimate_trial(local, altered)
         if dropout[tag]["status"] != "inconclusive":
