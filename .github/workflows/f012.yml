@@ -1,0 +1,42 @@
+name: F012 finite positive mechanical work
+on:
+  push:
+    branches:
+      - "feat/F012-*"
+  pull_request:
+    paths:
+      - "soma/f012.py"
+      - "experiments/F012/**"
+      - "tests/test_f012.py"
+      - ".github/workflows/f012.yml"
+      - "topics/F012-finite-energy/**"
+      - "findings/F012-validation.md"
+      - "docs/ARCHITECTURE.md"
+      - "docs/DATA_CONTRACTS.md"
+      - "README.md"
+      - "AGENTS.md"
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11","3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Full regression
+        run: python -m unittest discover -s tests -v
+      - name: F012 assertions-off regression
+        run: python -O -m unittest discover -s tests -p test_f012.py -v
+      - name: F012 48 frozen raw runs, independent oracle and byte replay
+        run: python -m experiments.F012.run_suite --output-dir runs/F012-first --replay-output-dir runs/F012-replay
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: f012-research-${{ matrix.python-version }}
+          path: runs/
+          if-no-files-found: warn
