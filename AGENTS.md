@@ -1,5 +1,7 @@
 # SOMA — AI研究助手向け案内
 
+**F011研究責任者による最新決定（2026-10-20、条件付き限定正式採用とmain統合を明示承認）**：F011は**方向依存受動摩擦＋内部周期駆動の固定1D離散モデルで、C/Dが事前基準の正味移動・鏡映・数値収束を満たすという能力だけを採用**。無接地Aは約2.1sで0.8mの事前固定ストローク限界を超え、**Aの全9.6s H1および「A〜E全完走」ゲートは不成立／INCONCLUSIVE**。この例外判断は凍結済みSPEC/PLANの書き換えでも全ゲート成功認定でもない。新しい9.6s無接地有限ストローク対照が研究上必要になったら別版で事前登録する。局所セル観測へworld真値を漏らさず、創発・自律性・実機・電力・人間独立査読を主張しない。[SPECの事後判断](topics/F011-grounded-internal-drive/SPEC.md#2026-10-20-post-experiment-decision-conditional-limited-adoption-not-part-of-the-preregistration)／[FINDINGS](findings/F011-validation.md)／[Issue #34](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/34)。設計PR #35→実装PR #36の統合順、最新CI、実際のmerge SHAをGitHubで追跡。下の未承認・未採用・Draftの記述は過去時点の記録。
+
 **最新判断（2026-10-17）**：F007 `f007.v1` は**固定1D・2セル片側A駆動とA電池支出の離散モデル整合性に限って正式採用**。9条件のWolfram/保存データ独立照合、3.11/3.12各126全回帰＋14最適化、58ファイル再現、改ざん・失敗時保存試験を通過。[採用範囲・非採用事項](findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)を優先し、下の「設計のみ／未採用」などは当時の履歴として読む。PR #20（設計）→#21（実装）の統合状況はGitHubを正とする。**実機・創発・任意dt・二宛先crash-atomicは非採用。**
 
 研究段階は最新のfindingsの採否節を優先。外部人間レビュアーの承認と同一支援AIによる独立数式監査は区別する。F008は自動着手しない。

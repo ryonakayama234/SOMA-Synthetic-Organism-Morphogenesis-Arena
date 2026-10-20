@@ -2,6 +2,8 @@
 
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
+**F011 最新研究判断（2026-10-20／条件付き限定的正式採用・main統合承認）**：二つの同一セルに等大反対の周期内力を与え、研究者が固定した**方向依存の受動摩擦**を介して重心が正味移動することを、指定1D離散モデルのC/D完全試行・鏡映対照・収束・保存CSV監査に限り採用。Cは最細刻みで +3.5023819308m、Dは符号反転。**ただし無接地Aは約2.1sで固定ストローク上限を超過し、9.6s全期間H1と全対照完走の事前登録ゲートは未達・INCONCLUSIVEのまま**。これは基準を変更しない研究責任者の明示的な例外判断であり、全条件成功・実機接触・自律学習・形態創発・実電力の採用ではない。[採用範囲と逸脱記録](topics/F011-grounded-internal-drive/SPEC.md#2026-10-20-post-experiment-decision-conditional-limited-adoption-not-part-of-the-preregistration)／[検証と証拠](findings/F011-validation.md)／[Issue #34](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/34)。設計[PR #35](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/35)→実装[PR #36](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/36)の**実際の統合・CI状態はGitHubを正とする**。以下の候補・未採用表記はその時点の履歴。
+
 **最新判断（2026-10-17）**：F007 `f007.v1` は**固定1D・2セル片側A駆動とA電池支出の離散モデル整合性に限って正式採用**。9条件のWolfram/保存データ独立照合、3.11/3.12各126全回帰＋14最適化、58ファイル再現、改ざん・失敗時保存試験を通過。[採用範囲・非採用事項](findings/F007-validation.md#2026-10-17-f007-限定的正式採用--最新の研究判断)を優先し、下の「設計のみ／未採用」などは当時の履歴として読む。PR #20（設計）→#21（実装）の統合状況はGitHubを正とする。**実機・創発・任意dt・二宛先crash-atomicは非採用。**
 
 **F006研究の最新段階（2026-10-17／限定的正式採用：fixed A〜E・15runのdt差分監査）**：独立監査のP2（証拠出所の未照合、失敗時に出力が残る）を修正し、分類を事前ラベルと観測signatureへ分離。F001〜F005本体は不変。[設計PR #17](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/17)／[実装PR #18](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/18)／[仕様](topics/F006-timestep-diagnostics/SPEC.md)／[検証ノート](findings/F006-validation.md)／[再現手順](experiments/F006/README.md)。旧v1・初回CIと旧候補記述は各時点の履歴。最終監査の成功とユーザーの研究判断に基づき限定的に正式採用し、統合の実際の状態はPR #18で追跡する。

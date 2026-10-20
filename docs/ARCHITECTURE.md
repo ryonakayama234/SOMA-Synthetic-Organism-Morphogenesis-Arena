@@ -728,3 +728,7 @@ flowchart LR
 ```
 
 A without ground reaches preregistered stroke limit early: save prefix as INCONCLUSIVE rather than clipping. B symmetric, C anisotropic drift, D mirrored drift, E no motor. External human review / formal research adoption still pending.
+
+### F011 post-experiment scope decision (2026-10-20; separate from the original diagram/design record)
+
+The research owner authorized **limited adoption of the frozen 1D discrete passive-directional-ground rectification capability** (internally driven identical cells, prescribed asymmetry, C/D mirrored COM drift and controls B/E). The original A:no_contact 9.6s bounded-stroke case is **INCONCLUSIVE** because the prescribed r<=0.8m gate fails around 2.1s; the original full A–E completion requirement is **not passed**, but a separately documented owner exception accepts the narrower model result. All model arrows, world-truth-only evidence, frozen forces and observability boundaries above are unchanged. No agent-level selection, locomotor controller, end-stop contact, battery/power integration, hardware grounding or spontaneous morphology is implied. See [SPEC adoption addendum](../topics/F011-grounded-internal-drive/SPEC.md) and [F011 findings](../findings/F011-validation.md).
