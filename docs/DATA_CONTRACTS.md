@@ -769,3 +769,22 @@ Initial row contains no interval force/work, but includes energy state. Every co
 ### Post-registration F013 independent integration audit (implementation, not changed hypothesis)
 
 `ode_audit.json`, schema `f013.postregistered_ode_audit.v1`, is an additional independent coupled 4D explicit RK4 ODE solution at h=.001 and .0005s for B/C/D/E × eps=.02/.005/.001m/s (24 diagnostic runs). Each `cases[case/eps-...]` object contains both methods' `center_final_m`, `last_period_m`, `penultimate_period_m`, `last_period_r_return_m`, `min_r_m`, `max_r_m`, plus `relative_to_implicit_euler_m` at the 0.0005s reference. The verifier recalculates all 24 diagnostic runs independently and rejects falsified summaries even if file hashes are updated. This does **not** modify frozen H13a/b thresholds, or establish physical contact correctness. The force is continuous C0 but not globally C1 (direction-specific one-sided slope at zero). `f013.evidence.v1` provenance source hashes now additionally bind `experiments/F013/ode_audit.py`.
+
+
+## F014 proposed data contracts — 2026-10-20, DESIGN ONLY / NOT IMPLEMENTED
+
+[Issue #45](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/45), [frozen SPEC](../topics/F014-peer-body-observability/SPEC.md), [PLAN](../experiments/F014/PLAN.md). These are **prospective** versioned schemas. No F014 records have been saved/verified yet.
+
+| Contract | Proposed fields and meanings | Knowledge boundary |
+|---|---|---|
+| `f014.config.v1` | `schema_version`, `experiment_id`, `case_id`, `u_n` (N), `dt_s` (s), `duration_s` (s), `packet_threshold_m_s` (m/s), `seed=null`; 5 cases × 3 input levels | Researcher only; case and hidden disturbances forbidden to detector |
+| `f014.packet.v1` | `source_id="B"`, `step_index` (integer), `time_s` (s), `moved` (strict boolean); absence represented separately as missing packet, never false | Packet payload **measurement content one bit**. Framing/clock/identity are not free; no B numeric velocity, link or hidden-force field |
+| `f014.observation.v1` | adopted F008 exact allowlisted `LocalObservation` plus exactly one aligned `f014.packet.v1`; reject extras and invalid clock | Inference side; no world truth, no inferred attached flag |
+| `f014.comparison.v1` | per-case and per-force local and packet equivalence booleans, decisions `peer_motion_seen`, `peer_still`, `inconclusive`, theoretical vs observed separately | **Researcher only**, can compare ground truth, never input to inference |
+| `f014.evidence.v1` | source-checkout SHA/checksums, raw F007 `states.csv`, allowlisted `a_local.csv`, `b_packets.csv`, `comparison.json`, source manifest and replay records | Researcher-only immutable files; fraud test with recomputed hashes; byte reproduction |
+
+The fixed B motion threshold `1e-10 m/s` is calibrated only to synthetic exact controls (smallest genuine B step `1/16 m/s`), not physical hardware precision. Numeric floating comparisons for rational software-model controls use absolute `1e-12` as specified in SPEC, distinct from the bit threshold. Missing, old, duplicated, reordered or wrong-origin packets are errors/inconclusive; if A motor is not actually applied, never infer coupling from B being still.
+
+**Forbidden inference fields:** `attached`, `link_force_a_n`, `link_force_b_n`, `external_force_a_n`, `external_force_b_n`, raw B velocity, B absolute position, world case label, `topology_verified`. Producer can access F007 truth **only to construct and archive the measurement projection**; independent verifier can access truth offline.
+
+The raw-file convention, final field types, validation and source binding must be checked during implementation; this design does not itself establish a functioning API. Existing F007–F013 contracts and evidence are unchanged.
