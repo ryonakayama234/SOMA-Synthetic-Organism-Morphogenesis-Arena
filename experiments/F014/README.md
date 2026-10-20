@@ -18,7 +18,7 @@ Output directories MUST be absent, separate, and non-nested. The suite builds, a
 
 L linked, G unlinked ghost, C unlinked coforced, N unlinked free, E unexcited; each at 2, 1 and 0.5 N, four 0.25s steps per run. Exactly **15 runs, 60 observed intervals** plus 3 deterministic step-2 packet-dropout diagnostics. These are numeric simulation runs, not live or noisy sensor readings.
 
-Within each run directory: `F007/config.json`, `F007/states.csv` and F007 ledger/link/SVG/manifest artifacts, `a_local.csv` (adopted F008 A allowlist), `b_packets.csv` (framed B-origin 1-boolean observation). Global `comparison.json` carries researcher-only case labels and verdict; `manifest.json` hashes all evidence and the full source-inventory hashes via `origin`.
+Within each run directory: `config.json` (f014.config.v1 research-only frozen envelope), `F007/config.json`, `F007/states.csv` and F007 ledger/link/SVG/manifest artifacts, `a_local.csv` (adopted F008 A allowlist), `b_packets.csv` (framed B-origin 1-boolean observation). Global `comparison.json` carries researcher-only case labels and verdict; `manifest.json` hashes all evidence and the full source-inventory hashes via `origin`.
 
 `soma.f014.estimate_trial` accepts only typed `LocalObservation` and `PeerPacket`; it reports `peer_motion_seen`, `peer_still`, or `inconclusive`, NEVER `attached`. Raw B speed, world forces and topology are confined to the producer adapter and independently to the verifier. A missing B packet is `None`, not `False`, and invalid packet metadata is rejected. The one bit is the sensor payload, not the total transport framing.
 
