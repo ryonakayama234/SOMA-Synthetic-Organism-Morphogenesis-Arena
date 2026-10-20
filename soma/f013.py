@@ -1,4 +1,6 @@
-"""F013: preregistered *alternative* smooth passive-friction two-cell model.
+"""F013: preregistered alternative continuous C0 passive-friction two-cell model.
+
+Direction-dependent tanh regularization is not C1 at velocity zero.
 
 Researcher-only ideal 1D world, never an autonomous cell interface. No import
 of F011/F012 simulation and no changes to their accepted semantics.
