@@ -788,3 +788,24 @@ The fixed B motion threshold `1e-10 m/s` is calibrated only to synthetic exact c
 **Forbidden inference fields:** `attached`, `link_force_a_n`, `link_force_b_n`, `external_force_a_n`, `external_force_b_n`, raw B velocity, B absolute position, world case label, `topology_verified`. Producer can access F007 truth **only to construct and archive the measurement projection**; independent verifier can access truth offline.
 
 The raw-file convention, final field types, validation and source binding must be checked during implementation; this design does not itself establish a functioning API. Existing F007–F013 contracts and evidence are unchanged.
+
+
+### F014 candidate implementation records (2026-10-20; supersedes PROPOSED table's code status, not frozen science)
+
+The earlier table is a proposal/history. The implementation candidates below are concrete schemas, **not yet adopted**, with source-code contracts:
+
+| Data | Implemented fields | Consumer |
+| --- | --- | --- |
+| F014 run `config.json` / `f014.config.v1` | `schema_version,experiment_id,case_id,u_n,dt_s,duration_s,packet_threshold_m_s,seed=null`; exact frozen controls | Researcher-only envelope; source hash and content checked independently, forbidden to estimator |
+| F007 `F007/config.json` / `states.csv` | Unchanged `f007.v1`; case, hidden disturbance and `attached` live here | Researcher-side producer/independent oracle **only** |
+| `a_local.csv` | F008 `COLUMNS` exact; `step_index,time_s,dt_s,v_prev_m_s,v_a_m_s,motor_command_n,motor_applied_n,balance_a_uj,observed_accel_m_s2,expected_accel_m_s2,residual_m_s2,status` | Researcher archive; F014 estimator uses exclusively typed F008 `LocalObservation` (eight primitive fields) |
+| `b_packets.csv` / `f014.packet.v1` | **Framing**: `source` constant `B`, `step_index` int, `time_s` s; **single measurement bit**: `moved` strict bool. The implemented transport name is `source` (not the earlier proposed `source_id`) | F014 estimator typed `PeerPacket`; missing is `None` not False; source/index/clock/boolean validated |
+| `f014.comparison.v1` | `schema_version,status,step_statuses,interpretation`, no `attached`/topology field in estimator output | Estimator returns peer evidence **only** |
+| Saved researcher `comparison.json` | `schema_version,science_status,researcher_truth_only,fixed_cases,force_levels_n,intervals,outcomes,dropout_diagnostics,A_local_LGC_byte_equal,L_G_peer_bits_differ,L_C_full_observation_equal,topology_identified` | Independent verifier; **never fed back to estimator** |
+| Saved `manifest.json` / `f014.evidence.v1` | `schema_version,origin,cases,artifacts`; origin includes F007 provenance and explicit F014 source hashes; all file digests SHA256 | Independent replay/integrity oracle |
+
+F014's frozen `f014.config.v1` wrapper is saved separately and **not an agent input**; the complete physics and hidden external-force controls remain in inherited `F007/config.json`. The B packet's `source` framing differs from earlier illustrative `source_id` field name and is explicitly recorded here before interpreting any CI result. Real transport protocol cryptography, noisy sensors, discovery of physical linkage, and self-selected probing remain unimplemented. The first production implementation must retain exact preregistered *physics and threshold* even though file naming is revised here.
+
+### F014: 2026-10-21限定採用のデータ意味論
+
+凍結されたf014.config.v1 / f014.packet.v1 / f014.comparison.v1 / f014.evidence.v1、F008 A allowlist、およびf014.packet.v1の一つの厳密booleanによる観測のみを限定採用。source=Bの識別子は**実通信の認証ではない**。moved=falseはB運動変化が閾値以下という観測であり、機械的非結合の証明ではない。欠損(None)、時刻破綻、実行拒否を同じ『非結合』へ変換しない。L/Cの観測同値が成り立つので、返値に接続済みを示す判定は存在しない。閾値1e-10 m/sは理想的な凍結数値制御専用で、雑音/実センサーの精度ではない。人間査読・実通信・2D・自律的な身体推定を採用していない。詳細な正式判断はF014 SPEC/findings、実際の統合履歴はIssue #45。

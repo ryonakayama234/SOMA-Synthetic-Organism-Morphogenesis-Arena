@@ -858,3 +858,32 @@ flowchart TD
 ```
 
 **Existing boundary:** F007 mechanics and A-only F008/F010 observational streams are adopted within fixed ideal worlds. The B packet projection, F014 estimator and F014 results shown dotted/PROPOSED do not exist at preregistration. World `attached`, `external_force_*`, `link_force_*`, B's numeric velocities, researcher case labels and ground truth must never reach F014 inference. A packet containing a movement bit is not a physical joint; co-motion under separate external forces can mimic a rigid link. F011–F013 passive-grounded internal-drive models are NOT wired to this F014 design.
+
+
+## F014 implementation candidate — real code path (2026-10-20; NOT adopted)
+
+The older F014 diagram above is the **historical preregistration state**. On the stacked implementation branch, these components now exist; CI evidence and scientific acceptance must be checked separately.
+
+```mermaid
+flowchart LR
+  C["Researcher-only frozen L/G/C/N/E x 3 configs"] --> W["UNCHANGED F007 world + F002 ledger"]
+  W --> P["Researcher adapter: F008 A allowlist"]
+  W --> Q["Researcher adapter: B delta-velocity > 1e-10 m/s"]
+  Q --> T["B-origin framed packet: exactly one boolean payload"]
+  P --> E["NEW F014 estimate_trial: typed A only"]
+  T --> E
+  E --> D["Peer motion seen / peer still / inconclusive"]
+  W --> R["Researcher-only saved raw truth + F007 auditor"]
+  P --> V["Independent saved-data F014 verifier"]
+  T --> V
+  R --> V
+  D --> V
+  V --> X["Researcher-only evidential review + replay + CI"]
+  W -. "FORBIDDEN: attachment, external forces, B speed" .-> E
+```
+
+Implementation: [`soma/f014.py`](../soma/f014.py), [15-run producer](../experiments/F014/run_suite.py), [non-producer oracle](../experiments/F014/verify.py), [tests](../tests/test_f014.py), [Actions](../.github/workflows/f014.yml) and [WSL2 guide](../experiments/F014/README.md). The new project addition is *distributed evidence about B's motion*, not a discovered topology. Truth-side adapter and verifier do access researcher-only raw F007; estimator cannot. F011–F013 physical/contact models remain separate and untouched.
+
+### F014: 2026-10-21限定採用と実装済み知識境界
+
+上のF014図は設計時と実装候補当時の履歴。新しいF014推論コードはF008の型付きA局所観測とBの測定真偽値+フレームだけを消費する。F007の機械接続・隠れ外力・B速度の数値は研究者側のプロジェクション・保存データ独立監査に閉じる。L/Gの部分的区別とL/Cの識別不能性を同時に実証した範囲で限定正式採用。身体全体の同定、因果的力伝達、発信源真正性、実機・ノイズ・自律探査は非採用。人間独立査読は未実施。採用/統合の正確な状態はIssue #45とGitHub PR #46/#47を参照。
