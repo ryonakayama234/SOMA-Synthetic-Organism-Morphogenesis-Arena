@@ -737,3 +737,15 @@ Version proposal `f012.energy.v1`, exclusively researcher-facing. Inputs: strict
 Planned `states.csv` order to freeze before implementation: `step,time_s,x_a_m,x_b_m,v_a_m_s,v_b_m_s,r_m,x_cm_m,motor_command_n,motor_applied_n,motor_candidate_positive_j,motor_positive_j,motor_signed_j,spent_uj,balance_uj,decision,ground_a_n,ground_b_n,ground_work_j,kinetic_j,spring_j,impulse_residual_ns,energy_defect_j,expected_defect_j`. Initial row (step 0) has no interval values; integer budget retained. Mechanically signed work is F011 end-velocity discrete convention; positive work is linearly interpolated relative-velocity integral; ceil(positive work *1e6) per accepted step is bounded by positive integer microjoules. Never call this experimentally measured electricity. Unaccepted step recalculates passive model with zero motor.
 
 Planned suite: `config.json`, `states.csv` per frozen case; root `comparison.json`, `manifest.json`, `source` hashes and replay, explicit stroke-failure prefixes. World truth may be used by researcher/oracle only. No new cell-local observation contract. Proposed verifier must recompute each row and all science-summary metrics, not trust a rehashed comparison JSON or trust the artifact's own claimed source SHA.
+
+## F012 implemented candidate — `f012.energy.v1` (2026-10-20, not adopted)
+
+Actual `soma/f012.py` controls: `Config(case_id,budget_uj,dt_s)` validates exactly `B-isotropic/C-directional/D-mirror/E-no-drive`, budgets 0,1000000,3000000,10000000 integer µJ, dt=.01/.005/.0025 float, fixed 9.6s. Strict config serialized with `schema_version`, `seed=null`, masses/spring/ground/friction/stroke/actuator constants and charge rule. The source file is separate from all accepted F001–F011 interfaces.
+
+Output researcher-only ordered `states.csv`:
+```text
+step,time_s,x_a_m,x_b_m,v_a_m_s,v_b_m_s,r_m,x_cm_m,motor_command_n,motor_applied_n,motor_candidate_positive_j,motor_positive_j,motor_signed_j,spent_uj,balance_uj,decision,ground_a_n,ground_b_n,ground_work_j,kinetic_j,spring_j,impulse_residual_ns,energy_defect_j,expected_defect_j
+```
+The initial row lacks interval force/work/gate entries; later rows have valid finite values. `decision` in `zero_command/zero_balance/accepted_positive_work/accepted_nonpositive_work/insufficient_balance`. Full exact integer `budget_uj = sum(spent_uj)+final_balance_uj`. Signed motor work uses F011's endpoint velocity convention; positive ideal mechanical work uses F005's **linearly interpolated relative velocity**; rejected candidate incurs **no** charge, and passive mechanics are independently recomputed.
+
+Saved `48 x (config.json,states.csv)`, plus `comparison.json`, `manifest.json`, two independent byte-identical output roots, Python3.11/3.12 CI artifact ZIPs. SHA256 manifest lists raw files and source-checkout hashes; independent verifier uses trusted checkout not the saved manifest's self-asserted origin, recomputes every row and every summary field and checks C/D cost mirror. It is not cryptographic author identity nor real electricity evidence. No F008/F010 knowledge leak. Archived artifact availability is time-limited by GitHub.
