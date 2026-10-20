@@ -836,4 +836,25 @@ flowchart LR
 The independent RK4 code imports no `soma.f013` functions and integrates the continuous-time force rather than reproducing F013's split discrete contact projection. This is post-registration numerical validation and does not revise frozen thresholds. No cell-local access to world truth.
 
 
-**Formal research status:** F013 model-level numerical contact robustness is LIMITED ADOPTED as decided in Issue #42; the timeline of real PR merges and exact main SHA is authoritative in that Issue, not inferred from this research diagram. **No** runtime F013 local perception, decision-making, physical hardware contact or emergent roles are implemented. 
+**Formal research status:** F013 model-level numerical contact robustness is LIMITED ADOPTED as decided in Issue #42; the timeline of real PR merges and exact main SHA is authoritative in that Issue, not inferred from this research diagram. **No** runtime F013 local perception, decision-making, physical hardware contact or emergent roles are implemented.
+
+
+## F014 design preregistration — one-bit peer observability (2026-10-20, PROPOSED / UNIMPLEMENTED)
+
+[Issue #45](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/45) / [SPEC](../topics/F014-peer-body-observability/SPEC.md) / [PLAN](../experiments/F014/PLAN.md) / [FINDINGS](../findings/F014-validation.md).
+
+```mermaid
+flowchart TD
+    H["Researcher presets L/G/C/N/E control and hidden forces"] --> W["ADOPTED F007: 1D world simulator (world truth)"]
+    W --> A["ADOPTED F008 A-local allowlisted observation"]
+    W -. "PROPOSED: project B-local delta-velocity only" .-> S["B motion sensor: binary moved bit"]
+    S -. "PROPOSED: framed packet, one measurement bit" .-> J["PROPOSED F014 co-response evaluator"]
+    A -. "PROPOSED input" .-> J
+    J -. "PROPOSED inference, not attachment truth" .-> O["Peer motion seen / peer still / inconclusive"]
+    W --> R["Researcher-only raw world truth"]
+    O --> V["Researcher-only independent verifier (PROPOSED)"]
+    R --> V
+    V --> F["F014 evidence and adoption decision (UNEXECUTED)"]
+```
+
+**Existing boundary:** F007 mechanics and A-only F008/F010 observational streams are adopted within fixed ideal worlds. The B packet projection, F014 estimator and F014 results shown dotted/PROPOSED do not exist at preregistration. World `attached`, `external_force_*`, `link_force_*`, B's numeric velocities, researcher case labels and ground truth must never reach F014 inference. A packet containing a movement bit is not a physical joint; co-motion under separate external forces can mimic a rigid link. F011–F013 passive-grounded internal-drive models are NOT wired to this F014 design.
