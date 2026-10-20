@@ -784,3 +784,56 @@ F012 imports F011's **passive_contact** and F005's **positive_motor_work**; thes
 ## 2026-10-20 F012 research-director post-audit acceptance (limited; historical proposed diagram above retained)
 
 The separate F012 ideal budget gate, world-only trace, independent F012 stored-data oracle and C/D and B/E pointwise counterfactuals are **implemented**. The research director is authorized to merge design #39 followed by implementation #40 once final commit checks are green. F012 is **LIMITED ADOPTED for prescribed 1D numerical finite-positive-motor-work study**, not hardware, electrical or emergent morphology. The figure above continues to show the actual implemented F012 candidate components. F011 original source and F008/F010 local observation boundaries are unchanged. Merge SHA and exact checks are recorded in the GitHub PR/Issue timeline.
+
+
+## F013 separate contact-rectification study — LIMITED ADOPTED within ideal 1D scope after formal 2026-10-20 review
+
+The adopted F011/F012 models remain byte-unchanged. F013 evaluates a *different* smooth dissipative passive friction law; its world-state output is only available to the researcher's offline verifier. There is no F013 local sensor, agent controller, battery or body design. The new code does not depend on importing F011/F012 physics.
+
+```mermaid
+flowchart TB
+    R["Researcher: 36 frozen conditions B/C/D/E × eps × dt"]
+    F["EXISTING F011: accepted fixed velocity-proximal Coulomb model"]
+    N["PROPOSED F013: smooth tanh passive friction + independent implicit solver"]
+    A["Cell A: +internal drive, spring"]
+    B["Cell B: -internal drive, spring"]
+    G["Model ground: independent passive reactions"]
+    T["Researcher-only full truth: per-step x,v,r,forces,work"]
+    V["PROPOSED independent stored-CSV physics, symmetry and provenance audit"]
+    J["SUPPORTED / CONTRADICTED / INCONCLUSIVE; researcher decision"]
+    L["Cell-local inference / self-model: NOT IMPLEMENTED here"]
+    R --> N
+    R -. "frozen original reference" .-> F
+    N --> A
+    N --> B
+    A <-->|mechanical spring and ±u| B
+    A <-->|ground reaction| G
+    B <-->|ground reaction| G
+    A -.-> T
+    B -.-> T
+    G -.-> T
+    T --> V --> J
+    F -. "independent comparison of saved results" .-> J
+    T -. "world-truth leak forbidden" .-> L
+```
+
+The motor force is internal and cancels in the two-cell momentum sum. Ground reactions transfer momentum with the environment. The numerical friction and regularization width are **researcher-set assumptions**, not discovered locomotive roles. A failed/invalid stroke does not justify extending the interval after data are observed.
+
+
+### F013 post-preregistration review: truly alternative ODE time integrator
+
+```mermaid
+flowchart LR
+  H["Same registered physical hypothesis: 2 cells + fixed passive C0 friction"] --> P["F013: semi-implicit x with implicit friction velocity root"]
+  H --> Q["Independent ODE auditor: coupled 4D explicit RK4"]
+  P --> E["36 frozen cases + saved world-truth CSV"]
+  Q --> F["24 ODE reference runs (12 cases x 2 fine grids)"]
+  E --> V["Independent CSV/energy/momentum verifier"]
+  F --> V
+  V --> R["Scientific results + numerical differences (researcher only)"]
+```
+
+The independent RK4 code imports no `soma.f013` functions and integrates the continuous-time force rather than reproducing F013's split discrete contact projection. This is post-registration numerical validation and does not revise frozen thresholds. No cell-local access to world truth.
+
+
+**Formal research status:** F013 model-level numerical contact robustness is LIMITED ADOPTED as decided in Issue #42; the timeline of real PR merges and exact main SHA is authoritative in that Issue, not inferred from this research diagram. **No** runtime F013 local perception, decision-making, physical hardware contact or emergent roles are implemented. 

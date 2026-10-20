@@ -753,3 +753,19 @@ Saved `48 x (config.json,states.csv)`, plus `comparison.json`, `manifest.json`, 
 ## 2026-10-20 F012 data-contract decision (post-audit)
 
 The researcher-delegated limited adoption covers **only** `f012.energy.v1` frozen B/C/D/E × budgets × dts, ideal positive-work charge, experimental CSV and evidence verification. Every saved B COM and E static row and matched C/D reflected xA/xB, r, COM, motor command, applied motor, balance and per-step charge are audited at all three dt values and every budget; no relaxation of frozen thresholds. File artifact retention is provider-bounded; reproduce with `python -m experiments.F012.run_suite` using a trusted checkout of the recorded PR/main commit. It is not crash-atomic publication across two destination roots, and this limitation does not imply real electrical energy consumption. See F012 Issue #38/PR #40 for merged source SHA and post-merge checks.
+
+
+## F013 continuous C0 passive-friction experiment — LIMITED ADOPTED within frozen numerical scope (2026-10-20 formal decision)
+
+Independent version `f013.config.v1`: case in B-isotropic/C-directional/D-mirror/E-no-drive; `eps_m_s` in {.02,.005,.001} m/s; `dt_s` in {.01,.005,.0025} s, fixed initial x=(-.25,+.25)m, v=(0,0)m/s, m=1kg per cell, L=.5m, k=20N/m, g=9.81m/s², u=±1N each 0.6s except E=0, 9.6s total, valid r [.2,.8]m; seed=null. Inputs restricted to 36 preregistered cases, no post-hoc parameter scan.
+
+`f013.states.v1`: ordered CSV columns exactly:
+```text
+step,time_s,x_a_m,x_b_m,v_a_m_s,v_b_m_s,r_m,x_cm_m,motor_n,ground_a_n,ground_b_n,ground_work_j,motor_work_j,kinetic_j,spring_j,impulse_residual_ns,energy_defect_j,expected_defect_j
+```
+Initial row contains no interval force/work, but includes energy state. Every complete or invalid-prefix condition stores `config.json` + `states.csv`; output `f013.comparison.v1` includes primary period displacement (m), recurrence, per-epsilon dt results, declared H13 labels and F011 reference value. `f013.evidence.v1` manifest hashes raw files and trusted checkout source/spec/plan/runner/verifier; it is SHA provenance, not trusted-actor signing. Saved verifier independently checks the contact *implicit equation*, Newtonian momentum, semi-implicit energy defect, every-row mirror, frozen control, summaries and tamper/rehash. Independent same-byte replay is required. World-state CSV and coefficients are researcher-only; NO cell-local F013 API or real sensor.
+
+
+### Post-registration F013 independent integration audit (implementation, not changed hypothesis)
+
+`ode_audit.json`, schema `f013.postregistered_ode_audit.v1`, is an additional independent coupled 4D explicit RK4 ODE solution at h=.001 and .0005s for B/C/D/E × eps=.02/.005/.001m/s (24 diagnostic runs). Each `cases[case/eps-...]` object contains both methods' `center_final_m`, `last_period_m`, `penultimate_period_m`, `last_period_r_return_m`, `min_r_m`, `max_r_m`, plus `relative_to_implicit_euler_m` at the 0.0005s reference. The verifier recalculates all 24 diagnostic runs independently and rejects falsified summaries even if file hashes are updated. This does **not** modify frozen H13a/b thresholds, or establish physical contact correctness. The force is continuous C0 but not globally C1 (direction-specific one-sided slope at zero). `f013.evidence.v1` provenance source hashes now additionally bind `experiments/F013/ode_audit.py`.
