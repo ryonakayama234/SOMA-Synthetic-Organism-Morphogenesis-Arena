@@ -46,6 +46,14 @@ class TestF013(unittest.TestCase):
             self.assertAlmostEqual(x["r_m"],y["r_m"],delta=2e-9)
             self.assertAlmostEqual(x["x_cm_m"],-y["x_cm_m"],delta=2e-9)
 
+    def test_wolfram_independent_first_step_reference(self):
+        """Post-preregistration Wolfram high-precision independent arithmetic check."""
+        z=simulate(Config("C-directional", .02, .01))[1]
+        self.assertAlmostEqual(z["v_a_m_s"], .009159421988891862, delta=5e-12)
+        self.assertAlmostEqual(z["v_b_m_s"], -.007267468045899013, delta=5e-12)
+        self.assertAlmostEqual(z["x_cm_m"], .000009459769714964243, delta=5e-13)
+        self.assertAlmostEqual(z["ground_work_j"], -.000027557797379149775, delta=5e-13)
+
     def test_complete_36_case_independent_raw_audit_and_forgery(self):
         with tempfile.TemporaryDirectory() as temp:
             path=Path(temp)/"dataset"
