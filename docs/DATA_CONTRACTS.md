@@ -796,7 +796,8 @@ The earlier table is a proposal/history. The implementation candidates below are
 
 | Data | Implemented fields | Consumer |
 | --- | --- | --- |
-| F007 `config.json` / `states.csv` | Unchanged `f007.v1`; case, hidden disturbance and `attached` live here | Researcher-side producer/independent oracle **only** |
+| F014 run `config.json` / `f014.config.v1` | `schema_version,experiment_id,case_id,u_n,dt_s,duration_s,packet_threshold_m_s,seed=null`; exact frozen controls | Researcher-only envelope; source hash and content checked independently, forbidden to estimator |
+| F007 `F007/config.json` / `states.csv` | Unchanged `f007.v1`; case, hidden disturbance and `attached` live here | Researcher-side producer/independent oracle **only** |
 | `a_local.csv` | F008 `COLUMNS` exact; `step_index,time_s,dt_s,v_prev_m_s,v_a_m_s,motor_command_n,motor_applied_n,balance_a_uj,observed_accel_m_s2,expected_accel_m_s2,residual_m_s2,status` | Researcher archive; F014 estimator uses exclusively typed F008 `LocalObservation` (eight primitive fields) |
 | `b_packets.csv` / `f014.packet.v1` | **Framing**: `source` constant `B`, `step_index` int, `time_s` s; **single measurement bit**: `moved` strict bool. The implemented transport name is `source` (not the earlier proposed `source_id`) | F014 estimator typed `PeerPacket`; missing is `None` not False; source/index/clock/boolean validated |
 | `f014.comparison.v1` | `schema_version,status,step_statuses,interpretation`, no `attached`/topology field in estimator output | Estimator returns peer evidence **only** |
