@@ -35,3 +35,8 @@ Prediction: a B-local binary moved-bit separates linked L from unlinked ghost G,
 | Formal scientific adoption / main merge | NOT AUTHORIZED |
 
 When F014 is actually implemented, **append** numerical observations, failures, source hashes and CI URL in a dated later section; do not edit away this design-only snapshot or retrospectively modify threshold, cases, and hypotheses. Observe L/C observational equivalence as negative scientific evidence; do not claim this sensor proves mechanical coupling.
+
+
+## 2026-10-20 — implementation proposal created; awaiting exact-HEAD GitHub CI evidence
+
+Separate stacked branch `feat/F014-peer-body-observability-20261020` adds isolated typed F014 inferencer, the F007 frozen 15-run producer, researcher-only B velocity-bit projection, independent saved-data oracle, tests, byte replay and Python 3.11/3.12 workflow. Original F014 mathematical forecasts, thresholds and fixed cases are unchanged. This section is an **implementation milestone, not an observed F014 result**. Before any support claim, inspect a successful exact implementation SHA's CI log/artifacts, falsified-data tests, all regression suites and compare raw 60 peer observations; append a dated observed evidence and counterexample table. No external independent human review, real sensor, autonomy, topology identification or formal scientific adoption has occurred at this writing.
