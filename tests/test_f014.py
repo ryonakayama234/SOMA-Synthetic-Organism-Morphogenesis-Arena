@@ -112,11 +112,11 @@ class F014Tests(unittest.TestCase):
             config_file=fake_cfg/"C-coforced"/"u1"/"config.json"
             cfg=json.loads(config_file.read_text(encoding="utf-8"))
             cfg["packet_threshold_m_s"]=.2
-            config_file.write_text(json.dumps(cfg,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            config_file.write_text(json.dumps(cfg,sort_keys=True,indent=2)+"\n",encoding="utf-8")
             mp_cfg=fake_cfg/"manifest.json"
             manifest_cfg=json.loads(mp_cfg.read_text(encoding="utf-8"))
             manifest_cfg["artifacts"]["C-coforced/u1/config.json"]=hashlib.sha256(config_file.read_bytes()).hexdigest()
-            mp_cfg.write_text(json.dumps(manifest_cfg,sort_keys=True,indent=2)+"\\n",encoding="utf-8")
+            mp_cfg.write_text(json.dumps(manifest_cfg,sort_keys=True,indent=2)+"\n",encoding="utf-8")
             with self.assertRaises(AssertionError):
                 verify_suite(fake_cfg,origin_snapshot())
             # Science conclusion forgery with matching SHA cannot bypass oracle.
