@@ -2,12 +2,14 @@ name: F012 finite positive mechanical work
 on:
   push:
     branches:
+      - main
       - "feat/F012-*"
   pull_request:
     paths:
       - "soma/f012.py"
       - "experiments/F012/**"
       - "tests/test_f012.py"
+      - "tests/test_f012_audit.py"
       - ".github/workflows/f012.yml"
       - "topics/F012-finite-energy/**"
       - "findings/F012-validation.md"
