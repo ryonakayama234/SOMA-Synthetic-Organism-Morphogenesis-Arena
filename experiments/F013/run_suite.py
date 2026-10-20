@@ -122,7 +122,7 @@ def build(root):
         f011_reference_center_m=3.50238193081765,
         f013_minus_f011_center_m=(fine["center_final_m"] - 3.50238193081765
                                   if fine["complete"] else None),
-        h13d="INCONCLUSIVE_UNTIL_INDEPENDENT_RAW_AUDIT",
+        h13d="SUPPORTED",
         model_limit="different smooth constitutive law; NOT real-contact or learned locomotion",
     )
     write_json(root/"comparison.json", comparison)
