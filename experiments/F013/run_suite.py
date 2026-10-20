@@ -188,3 +188,14 @@ if __name__ == "__main__":
         "c_fine": {str(e): report["results"][key("C-directional", e, .0025)] for e in EPSILONS},
         "f013_minus_f011_center_m": report["f013_minus_f011_center_m"],
     }, sort_keys=True))
+
+    alt = json.loads((args.output_dir/"ode_audit.json").read_text(encoding="utf-8"))
+    print("F013 POSTREGISTERED ALTERNATIVE ODE " + json.dumps({
+        "method": alt["method"],
+        "C": {f"{eps:g}": {
+            "rk4_fine_center_m": alt["cases"][f"C-directional/eps-{eps:g}"]["0.0005"]["center_final_m"],
+            "rk4_coarse_center_m": alt["cases"][f"C-directional/eps-{eps:g}"]["0.001"]["center_final_m"],
+            "rk4_minus_f013_center_m": alt["cases"][f"C-directional/eps-{eps:g}"]["relative_to_implicit_euler_m"],
+            "final_period_m": alt["cases"][f"C-directional/eps-{eps:g}"]["0.0005"]["last_period_m"],
+        } for eps in EPSILONS},
+    }, sort_keys=True))
