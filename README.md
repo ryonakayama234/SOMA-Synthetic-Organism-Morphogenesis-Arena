@@ -1,5 +1,8 @@
 # SOMA — Synthetic Organism Morphogenesis Arena
 
+**F012 DESIGN ONLY (2026-10-20; researcher authorized work, not adoption/main merge):** [Issue #38](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/38). [Frozen SPEC](topics/F012-finite-energy/SPEC.md), [48-case PLAN](experiments/F012/PLAN.md), [UNEXECUTED findings](findings/F012-validation.md). Finite integer-µJ positive-mechanical-work budget for F011's separate 1D B/C/D/E ground dynamics; no change to F011 or V001. Speculation about F012 outcomes is NOT observed evidence.
+
+
 > 身体の構造を知らない小さな機械が、相互作用と環境条件から新しい身体機能を発見するための研究室。
 
 **F011 最新研究判断（2026-10-20／条件付き限定的正式採用・main統合承認）**：二つの同一セルに等大反対の周期内力を与え、研究者が固定した**方向依存の受動摩擦**を介して重心が正味移動することを、指定1D離散モデルのC/D完全試行・鏡映対照・収束・保存CSV監査に限り採用。Cは最細刻みで +3.5023819308m、Dは符号反転。**ただし無接地Aは約2.1sで固定ストローク上限を超過し、9.6s全期間H1と全対照完走の事前登録ゲートは未達・INCONCLUSIVEのまま**。これは基準を変更しない研究責任者の明示的な例外判断であり、全条件成功・実機接触・自律学習・形態創発・実電力の採用ではない。[採用範囲と逸脱記録](topics/F011-grounded-internal-drive/SPEC.md#2026-10-20-post-experiment-decision-conditional-limited-adoption-not-part-of-the-preregistration)／[検証と証拠](findings/F011-validation.md)／[Issue #34](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/34)。設計[PR #35](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/35)→実装[PR #36](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/36)の**実際の統合・CI状態はGitHubを正とする**。以下の候補・未採用表記はその時点の履歴。
