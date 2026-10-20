@@ -10,10 +10,12 @@ import hashlib
 import json
 import math
 from pathlib import Path
+from experiments.F013.ode_audit import independent_ode_audit
 
 REPO = Path(__file__).resolve().parents[2]
 SRC = ("soma/f013.py", "experiments/F013/run_suite.py",
-       "experiments/F013/verify.py", "topics/F013-contact-rectification/SPEC.md",
+       "experiments/F013/verify.py", "experiments/F013/ode_audit.py",
+       "topics/F013-contact-rectification/SPEC.md",
        "experiments/F013/PLAN.md")
 CASES = {
     "B-isotropic": (.04, .04, True),
@@ -298,6 +300,10 @@ def verify(root: Path):
         eq(report["f013_minus_f011_center_m"],delta,1e-11)
     if report.get("h13d") != "SUPPORTED":
         raise AssertionError("forged verification status")
+    ode_saved = json.loads((root/"ode_audit.json").read_text(encoding="utf-8"))
+    ode_expected = independent_ode_audit(results)
+    if ode_saved != ode_expected:
+        raise AssertionError("independent whole-trajectory ODE audit mismatches saved evidence")
     return dict(h13a=decision,eps_results=groups,h13b=computed,
                 c_fine={str(e):results[key("C-directional",e,.0025)] for e in EPS},
                 f011_comparison_delta_m=delta)
