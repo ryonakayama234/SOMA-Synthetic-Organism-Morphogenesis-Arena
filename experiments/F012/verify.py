@@ -11,7 +11,7 @@ BUDGETS=(0,1000000,3000000,10000000)
 DTS=(.01,.005,.0025)
 SOURCES=("soma/f012.py","soma/f011.py","soma/f005.py",
          "experiments/F012/verify.py","experiments/F012/run_suite.py",
-         "tests/test_f012.py",".github/workflows/f012.yml",
+         "tests/test_f012.py","tests/test_f012_audit.py",".github/workflows/f012.yml",
          "topics/F012-finite-energy/SPEC.md","experiments/F012/PLAN.md")
 KEYS=("step","time_s","x_a_m","x_b_m","v_a_m_s","v_b_m_s",
       "r_m","x_cm_m","motor_command_n","motor_applied_n",
@@ -172,7 +172,19 @@ def verify_suite(root,checkout):
                 label="%s__%suj__dt%s"%(c,b,str(h))
                 cfg=json.loads((root/label/"config.json").read_text(encoding="utf-8"))
                 mp,mm,active=CASES[c]
-                if cfg.get("schema_version")!="f012.energy.v1" or cfg.get("case_id")!=c or cfg.get("budget_uj")!=b or cfg.get("dt_s")!=h or cfg.get("seed") is not None or cfg.get("mu_plus")!=mp or cfg.get("mu_minus")!=mm or cfg.get("motor_amplitude_n")!=(1. if active else 0.) or cfg.get("duration_s")!=9.6 or cfg.get("spring_n_m")!=20.:
+                if (set(cfg)!=set(("schema_version","case_id","budget_uj","dt_s","duration_s","seed","m_kg","g_m_s2","initial_x_a_m","initial_x_b_m","initial_v_a_m_s","initial_v_b_m_s","rest_m","spring_n_m","period_s","motor_amplitude_n","mu_plus","mu_minus","min_stroke_m","max_stroke_m","charge_rule","ground_rule"))
+                    or cfg.get("schema_version")!="f012.energy.v1" or cfg.get("case_id")!=c
+                    or cfg.get("budget_uj")!=b or cfg.get("dt_s")!=h or cfg.get("seed") is not None
+                    or cfg.get("mu_plus")!=mp or cfg.get("mu_minus")!=mm
+                    or cfg.get("motor_amplitude_n")!=(1. if active else 0.)
+                    or cfg.get("duration_s")!=9.6 or cfg.get("spring_n_m")!=20.
+                    or cfg.get("m_kg")!=1. or cfg.get("g_m_s2")!=9.81
+                    or cfg.get("initial_x_a_m")!=-.25 or cfg.get("initial_x_b_m")!=.25
+                    or cfg.get("initial_v_a_m_s")!=0. or cfg.get("initial_v_b_m_s")!=0.
+                    or cfg.get("rest_m")!=.5 or cfg.get("period_s")!=1.2
+                    or cfg.get("min_stroke_m")!=.2 or cfg.get("max_stroke_m")!=.8
+                    or cfg.get("charge_rule")!="ceil_per_accepted_interval_positive_relative_mechanical_work_uj"
+                    or cfg.get("ground_rule")!="f011_velocity_implicit_directional_coulomb"):
                     raise ValueError("wrong experiment input")
                 measured=audit_rows(c,b,h,read_csv(root/label/"states.csv"))
                 advertised=comp["outcomes"][label]

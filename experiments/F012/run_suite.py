@@ -75,7 +75,20 @@ def main():
     args=parser.parse_args()
     checkout=Path(__file__).resolve().parents[2]
     n=run_pair(args.output_dir,args.replay_output_dir,checkout)
+    checked=verify_suite(args.output_dir,checkout)
     print("F012 48/48 runs: independent saved-data oracle; %d files byte-matched x2"%n)
+    for budget in BUDGETS_UJ:
+        fine=checked["C-directional__%suj__dt0.0025"%budget]
+        medium=checked["C-directional__%suj__dt0.005"%budget]
+        last,prior=fine["last_period_m"],fine["penultimate_period_m"]
+        period_ok=(last*prior>0 and min(abs(last),abs(prior))>.001
+                   and abs(abs(last)-abs(prior))<=.5*max(abs(last),abs(prior))
+                   and abs(fine["stroke_return_m"])<=.01)
+        convergence=abs(fine["center_final_m"]-medium["center_final_m"])<=max(.002,.1*abs(fine["center_final_m"]))
+        print("OBSERVED C budget=%s uj, final_cm=%.10f m, last=%.8f m, prior=%.8f m, stroke_return=%.8f m, spent=%s uj, positive=%.8f J, accepted=%s, rejected=%s, persistence=%s, dt_convergence=%s"%
+              (budget,fine["center_final_m"],last,prior,fine["stroke_return_m"],
+               fine["spent_uj"],fine["positive_work_j"],fine["accepted_steps"],
+               fine["rejected_steps"],period_ok,convergence))
 
 
 if __name__=="__main__":main()
