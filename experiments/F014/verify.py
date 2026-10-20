@@ -103,6 +103,19 @@ def verify_suite(directory: Path, trusted_origin: dict) -> dict:
             prefix = group + "/" + tag
             folder = root/prefix
             audit_run(folder/"F007", trusted_origin=trusted_origin["f007"])
+            frozen = json.loads((folder/"config.json").read_text(encoding="utf-8"))
+            require(set(frozen) == {
+                "schema_version", "experiment_id", "case_id", "u_n",
+                "dt_s", "duration_s", "packet_threshold_m_s", "seed"},
+                "F014 envelope schema")
+            require(frozen["schema_version"] == "f014.config.v1" and
+                    frozen["experiment_id"] == "F014-"+group+"-"+tag and
+                    frozen["case_id"] == group and frozen["seed"] is None,
+                    "F014 envelope identity")
+            for key, target in (("u_n", force), ("dt_s", .25),
+                                ("duration_s", 1.),
+                                ("packet_threshold_m_s", 1e-10)):
+                eq(frozen[key], target, "F014 envelope "+key)
             config = json.loads((folder/"F007/config.json").read_text(encoding="utf-8"))
             require(config["schema_version"] == "f007.v1" and
                     config["experiment_id"] == "F014-"+group+"-"+tag,
