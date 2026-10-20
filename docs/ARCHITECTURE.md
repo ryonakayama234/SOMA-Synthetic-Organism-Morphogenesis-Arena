@@ -883,3 +883,7 @@ flowchart LR
 ```
 
 Implementation: [`soma/f014.py`](../soma/f014.py), [15-run producer](../experiments/F014/run_suite.py), [non-producer oracle](../experiments/F014/verify.py), [tests](../tests/test_f014.py), [Actions](../.github/workflows/f014.yml) and [WSL2 guide](../experiments/F014/README.md). The new project addition is *distributed evidence about B's motion*, not a discovered topology. Truth-side adapter and verifier do access researcher-only raw F007; estimator cannot. F011–F013 physical/contact models remain separate and untouched.
+
+### F014: 2026-10-21限定採用と実装済み知識境界
+
+上のF014図は設計時と実装候補当時の履歴。新しいF014推論コードはF008の型付きA局所観測とBの測定真偽値+フレームだけを消費する。F007の機械接続・隠れ外力・B速度の数値は研究者側のプロジェクション・保存データ独立監査に閉じる。L/Gの部分的区別とL/Cの識別不能性を同時に実証した範囲で限定正式採用。身体全体の同定、因果的力伝達、発信源真正性、実機・ノイズ・自律探査は非採用。人間独立査読は未実施。採用/統合の正確な状態はIssue #45とGitHub PR #46/#47を参照。
