@@ -1,0 +1,39 @@
+name: F013 smooth-contact rectification robustness
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'feat/F013-*'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Full regression tests (F001-F013)
+        run: python -m unittest discover -s tests -v
+      - name: Optimized frozen F013 checks
+        run: python -O -m unittest discover -s tests -p test_f013.py -v
+      - name: Frozen 36-case experiment and independent raw-data verification
+        run: python -m experiments.F013.run_suite --output-dir runs/F013-ci --replay-output-dir runs/F013-replay
+      - name: Upload complete evidence and byte replay
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F013-${{ matrix.python }}-evidence
+          path: |
+            runs/F013-ci/
+            runs/F013-replay/
+          if-no-files-found: error
