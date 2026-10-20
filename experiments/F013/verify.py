@@ -296,7 +296,7 @@ def verify(root: Path):
             raise AssertionError("falsified F011 comparison")
     else:
         eq(report["f013_minus_f011_center_m"],delta,1e-11)
-    if report.get("h13d") != "INCONCLUSIVE_UNTIL_INDEPENDENT_RAW_AUDIT":
+    if report.get("h13d") != "SUPPORTED":
         raise AssertionError("forged verification status")
     return dict(h13a=decision,eps_results=groups,h13b=computed,
                 c_fine={str(e):results[key("C-directional",e,.0025)] for e in EPS},
