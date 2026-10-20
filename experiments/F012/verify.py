@@ -196,9 +196,35 @@ def verify_suite(root,checkout):
                 checked[label]=measured
     for b in BUDGETS:
         for h in DTS:
-            x=checked["C-directional__%suj__dt%s"%(b,str(h))]
-            y=checked["D-mirror__%suj__dt%s"%(b,str(h))]
+            label=lambda c: "%s__%suj__dt%s"%(c,b,str(h))
+            x=checked[label("C-directional")]
+            y=checked[label("D-mirror")]
             near(x["center_final_m"],-y["center_final_m"],1e-9)
             if x["spent_uj"]!=y["spent_uj"] or x["balance_uj"]!=y["balance_uj"]:
                 raise ValueError("cost mirror broken")
+            # PRE-REGISTERED pointwise invariants: not merely final COM/cost.
+            # Source CSV was independently replayed above; this is a separate
+            # cross-condition counterfactual audit at ALL 48 frozen conditions.
+            crows=read_csv(root/label("C-directional")/"states.csv")
+            drows=read_csv(root/label("D-mirror")/"states.csv")
+            brows=read_csv(root/label("B-isotropic")/"states.csv")
+            erows=read_csv(root/label("E-no-drive")/"states.csv")
+            if not len(crows)==len(drows)==len(brows)==len(erows):
+                raise ValueError("missing paired counterfactual step")
+            for index,(cr,dr,br,er) in enumerate(zip(crows,drows,brows,erows)):
+                near(cr["x_a_m"],-dr["x_b_m"],1e-9)
+                near(cr["x_b_m"],-dr["x_a_m"],1e-9)
+                near(cr["x_cm_m"],-dr["x_cm_m"],1e-9)
+                near(cr["r_m"],dr["r_m"],1e-9)
+                near(br["x_cm_m"],0.0,1e-10)
+                for k in ("v_a_m_s","v_b_m_s","x_cm_m"):
+                    near(er[k],0.0,1e-10)
+                if index:
+                    for k in ("motor_command_n","motor_applied_n"):
+                        near(cr[k],dr[k],1e-12)
+                    for k in ("spent_uj","balance_uj","decision"):
+                        if cr[k]!=dr[k]:
+                            raise ValueError("pointwise mirror budget/command mismatch: "+k)
+                elif cr["balance_uj"]!=dr["balance_uj"]:
+                    raise ValueError("mirrored initial balances disagree")
     return checked

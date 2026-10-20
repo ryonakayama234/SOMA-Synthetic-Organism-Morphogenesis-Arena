@@ -78,6 +78,14 @@ def main():
     checked=verify_suite(args.output_dir,checkout)
     print("F012 48/48 runs: independent saved-data oracle; %d files byte-matched x2"%n)
     for budget in BUDGETS_UJ:
+        for h in DTS:
+            item=checked["C-directional__%suj__dt%s"%(budget,str(h))]
+            efficiency=(abs(item["center_final_m"])/(item["spent_uj"]/1e6)
+                        if item["spent_uj"] else None)
+            print("GRID C budget=%suj dt=%s final=%.10fm spent=%suj positive=%.8fJ accepted=%s rejected=%s abs_cm_per_charged_j=%s"%
+                  (budget,h,item["center_final_m"],item["spent_uj"],
+                   item["positive_work_j"],item["accepted_steps"],
+                   item["rejected_steps"],str(efficiency) if efficiency is not None else "undefined"))
         fine=checked["C-directional__%suj__dt0.0025"%budget]
         medium=checked["C-directional__%suj__dt0.005"%budget]
         last,prior=fine["last_period_m"],fine["penultimate_period_m"]
