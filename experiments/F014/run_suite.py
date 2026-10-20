@@ -113,8 +113,6 @@ def build(stage: Path, origin: dict) -> dict:
             (base/"a_local.csv").read_bytes() == (stage/group/tag/"a_local.csv").read_bytes()
             for group in ("G-ghost", "C-coforced"))
         # Deliberately drop the second B packet without rerunning the world.
-        with (base/"F007/states.csv").open(newline="", encoding="utf-8") as fp:
-            raw = list(csv.DictReader(fp))
         converted = read_csv(base/"F007/states.csv", STATE_COLUMNS,
                              strings=("decision_reason",), flags=("attached",),
                              integers=("step_index", "spent_a_uj", "balance_a_uj",
