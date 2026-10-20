@@ -125,7 +125,7 @@ def build(root):
         f013_minus_f011_center_m=(fine["center_final_m"] - 3.50238193081765
                                   if fine["complete"] else None),
         h13d="SUPPORTED",
-        model_limit="different smooth constitutive law; NOT real-contact or learned locomotion",
+        model_limit="different continuous C0 directional tanh constitutive law (not globally C1); NOT real contact or learned locomotion",
     )
     write_json(root/"comparison.json", comparison)
     write_json(root/"ode_audit.json", independent_ode_audit(output))
