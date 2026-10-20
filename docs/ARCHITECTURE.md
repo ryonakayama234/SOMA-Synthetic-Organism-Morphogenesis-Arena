@@ -786,7 +786,7 @@ F012 imports F011's **passive_contact** and F005's **positive_motor_work**; thes
 The separate F012 ideal budget gate, world-only trace, independent F012 stored-data oracle and C/D and B/E pointwise counterfactuals are **implemented**. The research director is authorized to merge design #39 followed by implementation #40 once final commit checks are green. F012 is **LIMITED ADOPTED for prescribed 1D numerical finite-positive-motor-work study**, not hardware, electrical or emergent morphology. The figure above continues to show the actual implemented F012 candidate components. F011 original source and F008/F010 local observation boundaries are unchanged. Merge SHA and exact checks are recorded in the GitHub PR/Issue timeline.
 
 
-## F013 separate contact-rectification study — 2026-10-20 IMPLEMENTATION CANDIDATE, NOT ADOPTED
+## F013 separate contact-rectification study — LIMITED ADOPTED within ideal 1D scope after formal 2026-10-20 review
 
 The adopted F011/F012 models remain byte-unchanged. F013 evaluates a *different* smooth dissipative passive friction law; its world-state output is only available to the researcher's offline verifier. There is no F013 local sensor, agent controller, battery or body design. The new code does not depend on importing F011/F012 physics.
 
@@ -834,3 +834,6 @@ flowchart LR
 ```
 
 The independent RK4 code imports no `soma.f013` functions and integrates the continuous-time force rather than reproducing F013's split discrete contact projection. This is post-registration numerical validation and does not revise frozen thresholds. No cell-local access to world truth.
+
+
+**Formal research status:** F013 model-level numerical contact robustness is LIMITED ADOPTED as decided in Issue #42; the timeline of real PR merges and exact main SHA is authoritative in that Issue, not inferred from this research diagram. **No** runtime F013 local perception, decision-making, physical hardware contact or emergent roles are implemented. 

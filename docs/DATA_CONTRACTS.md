@@ -755,7 +755,7 @@ Saved `48 x (config.json,states.csv)`, plus `comparison.json`, `manifest.json`, 
 The researcher-delegated limited adoption covers **only** `f012.energy.v1` frozen B/C/D/E × budgets × dts, ideal positive-work charge, experimental CSV and evidence verification. Every saved B COM and E static row and matched C/D reflected xA/xB, r, COM, motor command, applied motor, balance and per-step charge are audited at all three dt values and every budget; no relaxation of frozen thresholds. File artifact retention is provider-bounded; reproduce with `python -m experiments.F012.run_suite` using a trusted checkout of the recorded PR/main commit. It is not crash-atomic publication across two destination roots, and this limitation does not imply real electrical energy consumption. See F012 Issue #38/PR #40 for merged source SHA and post-merge checks.
 
 
-## F013 smooth passive-friction experiment — 2026-10-20 IMPLEMENTATION CANDIDATE, NOT ADOPTED
+## F013 continuous C0 passive-friction experiment — LIMITED ADOPTED within frozen numerical scope (2026-10-20 formal decision)
 
 Independent version `f013.config.v1`: case in B-isotropic/C-directional/D-mirror/E-no-drive; `eps_m_s` in {.02,.005,.001} m/s; `dt_s` in {.01,.005,.0025} s, fixed initial x=(-.25,+.25)m, v=(0,0)m/s, m=1kg per cell, L=.5m, k=20N/m, g=9.81m/s², u=±1N each 0.6s except E=0, 9.6s total, valid r [.2,.8]m; seed=null. Inputs restricted to 36 preregistered cases, no post-hoc parameter scan.
 

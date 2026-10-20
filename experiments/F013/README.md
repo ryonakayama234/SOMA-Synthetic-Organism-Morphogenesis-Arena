@@ -1,4 +1,4 @@
-# F013 — contact-rectification robustness (research-only, NOT ADOPTED)
+# F013 — contact-rectification robustness (research-only, LIMITED ADOPTED for fixed ideal 1D conditions)
 
 Related [Issue #42](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/42) / [frozen SPEC](../../topics/F013-contact-rectification/SPEC.md) / [PLAN](PLAN.md) / [findings](../../findings/F013-validation.md).
 
@@ -16,7 +16,7 @@ The last command refuses replacing either output directory; use two new empty pa
 
 `states.csv` fields are specified in [docs/DATA_CONTRACTS.md](../../docs/DATA_CONTRACTS.md) with SI units. F013 has no rechargeable electrical budget or autonomous controller. F011's original no-contact full-period A issue #37 remains INCONCLUSIVE. The result cannot demonstrate real friction, robust gaits in new terrains, self-organization or discovered organs.
 
-Do not merge to main or declare formal adoption without the researcher's explicit approval. CI success means the frozen computer model and evidence path passed checks; it does not prove H13a or real-world validity.
+The researcher delegated formal scientific adoption and merge judgement after the F013 gate review. LIMITED ADOPTION was approved in Issue #42 only for frozen ideal 1D physics; merge is authorized conditional on final exact-head CI and tracked main integration. The Issue's GitHub timeline is authoritative for actual merge completion. CI success means the frozen computer model and evidence path passed checks; it does not prove H13a or real-world validity.
 
 ## Post-registration independent whole-trajectory audit
 
