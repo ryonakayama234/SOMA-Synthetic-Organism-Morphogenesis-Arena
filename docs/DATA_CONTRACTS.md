@@ -809,3 +809,36 @@ F014's frozen `f014.config.v1` wrapper is saved separately and **not an agent in
 ### F014: 2026-10-21限定採用のデータ意味論
 
 凍結されたf014.config.v1 / f014.packet.v1 / f014.comparison.v1 / f014.evidence.v1、F008 A allowlist、およびf014.packet.v1の一つの厳密booleanによる観測のみを限定採用。source=Bの識別子は**実通信の認証ではない**。moved=falseはB運動変化が閾値以下という観測であり、機械的非結合の証明ではない。欠損(None)、時刻破綻、実行拒否を同じ『非結合』へ変換しない。L/Cの観測同値が成り立つので、返値に接続済みを示す判定は存在しない。閾値1e-10 m/sは理想的な凍結数値制御専用で、雑音/実センサーの精度ではない。人間査読・実通信・2D・自律的な身体推定を採用していない。詳細な正式判断はF014 SPEC/findings、実際の統合履歴はIssue #45。
+
+## F015：複数試行の介入・局所観測のデータ契約案（2026-10-21・未実装）
+
+[Issue #48](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/48) / [F015 SPEC](../topics/F015-active-body-probing/SPEC.md) / [PLAN](../experiments/F015/PLAN.md)。**提案のみ**：以下の型名・版・出力形式は採用済みAPIではない。
+
+~~~mermaid
+flowchart LR
+  PRE["① intervention schedule
+u: [2,1,0] N; reset each"] --> W["② F007 world
+researcher truth only"]
+  W --> A["③ A local
+F008.LocalObservation"]
+  W --> B["③ B local 1-bit
+F014.PeerPacket"]
+  A --> I["④ F015 paired trial comparator
+PROPOSED"]
+  B --> I
+  W --> O["Researcher-only oracle"]
+  I --> O
+  O --> LOG["⑤ evidence manifest + findings"]
+~~~
+
+| Version / record | Contents | Strict boundary |
+|---|---|---|
+| `f015.probe.v1` (proposed) | three independent commands 2,1,0N; 4 synchronized steps/command; reset flag; distinct trial IDs; checks | only predeclared controls; no adaptive optimization |
+| `A` observed stream (existing) | `F008.LocalObservation` 4 items/trial; requested/applied A motor, A speed/time/ledger fields | forbid attached/world forces/B numeric values |
+| `B` observed stream (existing) | `F014.PeerPacket(source=B,step_index,time_s,moved: bool)` | payload exactly one bool; framing extra bits, missing is not False |
+| `f015.comparison.v1` (proposed) | `observation_signature_changed` / `observation_signature_same` / `inconclusive`; A-only and A+B comparisons separate | never return connected/attached/topology_verified |
+| `f015.evidence.v1` (proposed) | `probe_schedule.json`, per-trial `F007/states.csv`, `a_local.csv`, `b_packets.csv`, `comparison.json`, `manifest.json`, per-artifact SHA and code SHA | truth-case labels only in researcher-side raw record; immutable replay |
+| `scientific verdict` | H15a-e classified SUPPORTED / CONTRADICTED / INCONCLUSIVE / UNEXECUTED | uncertainty and scope retained |
+
+**Special:** u=0 is intentional OFF with a valid reset, while `E-disabled` has zero battery and a rejected positive command for u>0. Do not reinterpret the legacy F014 single-trial `inconclusive` for u=0 as a physical connection classification. All numeric tolerances, reset requirements, and one-bit threshold are frozen before F015 run.
+
