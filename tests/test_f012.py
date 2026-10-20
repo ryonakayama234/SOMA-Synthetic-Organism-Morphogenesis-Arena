@@ -1,6 +1,7 @@
 """F012 fixed-model and counterfactual regression. No emergent intelligence claim."""
 import math
 import unittest
+from unittest.mock import patch
 
 from soma.f012 import Config, simulate, measurements, StrokeLimitError
 
@@ -52,6 +53,26 @@ class F012Tests(unittest.TestCase):
             self.assertGreaterEqual(m["quantization_excess_j"], -1e-10)
             self.assertLess(m["quantization_excess_j"], len(rows) / 1_000_000 + 1e-10)
             self.assertTrue(all(x["ground_work_j"] <= 1e-11 for x in rows[1:]))
+
+    def test_motor_refusal_does_not_freeze_passive_mechanics(self):
+        rows = simulate(Config("C-directional", 1_000_000, .005))
+        moving_with_motor_off = [
+            (prev, now) for prev, now in zip(rows, rows[1:])
+            if now["motor_command_n"] != 0 and now["motor_applied_n"] == 0
+            and abs(now["x_a_m"] - prev["x_a_m"]) +
+                abs(now["x_b_m"] - prev["x_b_m"]) > 1e-9
+        ]
+        self.assertTrue(moving_with_motor_off, "rejected drive must retain passive motion")
+
+    def test_stroke_guard_reports_valid_prefix_without_clipping(self):
+        cfg = Config("C-directional", 0, .01)
+        with patch("soma.f012._step", return_value=(-.9, .9, 0., 0., 0., 0.)):
+            with self.assertRaises(StrokeLimitError) as caught:
+                simulate(cfg)
+        self.assertEqual(caught.exception.step, 1)
+        self.assertAlmostEqual(caught.exception.attempted_r, 1.8)
+        self.assertEqual(len(caught.exception.valid_rows), 1)
+        self.assertEqual(caught.exception.valid_rows[0]["step"], 0)
 
     def test_invalid_contract(self):
         for args in (("C-directional", 3.0, .01),
