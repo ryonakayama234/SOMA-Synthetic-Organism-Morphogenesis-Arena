@@ -26,3 +26,7 @@ issue: 57
 | Limited scientific adoption / main merge | NOT AUTHORIZED |
 
 **Append, never overwrite:** date, reviewed base/design/source SHA, deterministic seeds, phase counts, paired outcomes, CI run URL, archived artifact hashes, failed/negative trials, independently audited claims, review and disposition. Existing F016 results remain distinct.
+
+
+## 2026-10-21 pre-freeze external-literature check (no experiment)
+AAMAS 2019 [Lowe et al., *On the Pitfalls of Measuring Emergent Communication*](https://ifaamas.org/Proceedings/aamas2019/pdfs/p693.pdf) distinguishes sender's positive signaling from recipient's positive listening. Added proposed **H17f** offline `do(symbol)` policy-fork test to detect causal behavioral influence, not just information–action correlation or outcome change. This is literature-derived experimental design, **NOT F017 observation**, and all F017 empirical gates remain UNEXECUTED.
