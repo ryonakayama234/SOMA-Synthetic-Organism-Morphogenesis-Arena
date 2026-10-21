@@ -887,3 +887,29 @@ Implementation: [`soma/f014.py`](../soma/f014.py), [15-run producer](../experime
 ### F014: 2026-10-21限定採用と実装済み知識境界
 
 上のF014図は設計時と実装候補当時の履歴。新しいF014推論コードはF008の型付きA局所観測とBの測定真偽値+フレームだけを消費する。F007の機械接続・隠れ外力・B速度の数値は研究者側のプロジェクション・保存データ独立監査に閉じる。L/Gの部分的区別とL/Cの識別不能性を同時に実証した範囲で限定正式採用。身体全体の同定、因果的力伝達、発信源真正性、実機・ノイズ・自律探査は非採用。人間独立査読は未実施。採用/統合の正確な状態はIssue #45とGitHub PR #46/#47を参照。
+
+## F015：能動介入と身体関係の条件付き識別（2026-10-21・設計のみ／未実装）
+
+**Issue [#48](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/48) / [SPEC](../topics/F015-active-body-probing/SPEC.md) / [PLAN](../experiments/F015/PLAN.md) / [UNEXECUTED findings](../findings/F015-validation.md)。** 以下は**将来のデータフロー**であり、`main`の実装済みF014や既存物理を変更しない。
+
+~~~mermaid
+flowchart TB
+  CTRL["研究者が事前固定: u=2,1,0 N / full reset"] --> WORLD["F007 1D truth: A/B/attached/dA,dB
+(15-run future; NOT IMPLEMENTED F015)"]
+  WORLD --> A["F008 A local allowlist
+IMPLEMENTED F008"]
+  WORLD --> B["B-local delta velocity -> moved boolean
+IMPLEMENTED F014 projector reusable"]
+  A --> PAIR["F015 trial-pair signature comparator
+PROPOSED ONLY"]
+  B --> PAIR
+  WORLD --> AUDIT["Researcher-only truth / independent oracle
+PROPOSED F015"]
+  PAIR --> AUDIT
+  AUDIT --> EVIDENCE["F015 immutable CSV/JSON + hypothesis verdict
+NOT RUN"]
+  WORLD -. "FORBIDDEN: topology, external forces, B numeric speed" .-> PAIR
+~~~
+
+観測者Aはuを自分のコマンド履歴として知る。F-fixed（外力固定）のように識別できる場合と、T-tracking（外力がuに追随）のように**すべての介入でも識別できない場合**を区別し、`connected`を出さない。u=0単独は結合不在の証拠ではない。F011–F013地面物理／V001 viewerと混ぜない。
+
