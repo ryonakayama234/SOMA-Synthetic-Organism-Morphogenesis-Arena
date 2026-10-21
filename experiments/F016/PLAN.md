@@ -37,3 +37,17 @@ A/Bの質量・リンク・F007モーター・電池・資源は同一とし、�
 3. source上の全ての負力・整数µJ丸め・正仕事・資源獲得・遮蔽を独立計算する。
 4. 実験全seed/割付/閾値/予測/棄却条件を**初回F016 simulationより前**に固定して設計をマージ、別実装PRを作る。
 5. テストを通したことを「新しい通信創発」や「実機で有益な通信」と言い換えない。
+
+## 2026-10-21 凍結：離散物理で再計算した試行登録（旧表は成立性段階の履歴）
+**FROZEN BEFORE F016 IMPLEMENTATION. UNEXECUTED at this commit.** 真の規範は [SPEC](../../topics/F016-communication-value/SPEC.md)。A0/K/S/T/H/I × resource directions [R,L,R,L] = **24 primary trials** with full reset (4 episodes each). Resource x=±0.625m, B at0.1m, dt=.25s, T=1s, target tolerance 1e-12m, reward 3,000,000µJ. A motor ±2N, step motor work [62500,187500,312500,437500]µJ; total 1,000,000µJ. B sender spend 0/50000/2000000µJ; baseline F002 combined ledger replays each F007 motor expenditure exactly once and the reward once. Shuffled bits fixed [R,R,L,L], constant bits all R, inverted bits negate B sensor bit. No RNG (trial ID 0..3, F007 config seed=null). F007 physics unchanged.
+
+| group | success / 4 predicted | net µJ mean predicted |
+|---|---:|---:|
+| A0 no packet | 2 | 500000 |
+| K constant-right | 2 | 450000 |
+| S independently shuffled | 2 | 450000 |
+| T truthful B bit / low cost | 4 | 1950000 |
+| H truthful B bit / high cost | 4 | 0 |
+| I inverted | 0 | -1050000 |
+
+**Additional non-primary negatives**: packet None fallback, forged source, wrong step/time, insufficient B energy, tampered source truth or swapped outcome, provenance manifest tamper including recomputed hash. Verify full saved CSV per 24 trials, independent referee formula, symmetry, F002 ledger residual 0, same-byte 2-root reproducibility, 3.11/3.12 CI and inherited workflow tests. Classification SUPPORTED/CONTRADICTED/INCONCLUSIVE based on frozen tolerance; retain failures. No evidence or adoption claimed here.
