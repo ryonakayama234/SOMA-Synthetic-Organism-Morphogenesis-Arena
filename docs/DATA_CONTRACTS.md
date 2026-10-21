@@ -944,3 +944,7 @@ flowchart LR
 **Candidate numeric meaning:** Per-episode A terminal acquisition is 3,000,000 µJ on target ±0.625m (tolerance 1e−12m); F007 actual motor work 1,000,000 µJ; delivered B packet 50,000 µJ. Learner feedback excludes B fee, while experiment score `net_uj=A_acquired_uj−A_motor_spent_uj−B_sender_spent_uj` includes it. Initial/discovery and reversal test splits, thresholds and learning α/ε are still **awaiting independent preregistration audit**; no `soma/f017.py` or empirical output exists.
 
 **Leakage guard:** deny researcher `resource_right`, `target_x_m`, `encoding`, `reversed`, `trial`, `seed`, `reached`, `net_uj`, `attached` and all F007 world states from A's observe and learn parameters. Evidence-only policy snapshots can be logged externally; they cannot be fed back as privileged inputs.
+
+
+#### Proposed F017 off-world audit record, NOT an adopted API
+`f017.causal_probe.v1` (researcher-only): `policy_snapshot_hash`, `encoding_id` (investigator-only), `checkpoint`, `do_symbol` 0/1, `draw_count=256`, matched independent exploration sequence hash, `count_action_plus2`, `p_plus2`, `D`, provenance. Data is produced by a clone and is never fed to A or executed on F007. H17f measures causal listening (message-to-policy influence), independently of `net_uj` (task outcome). Currently **UNEXECUTED / PROPOSED**.
