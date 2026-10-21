@@ -871,3 +871,33 @@ flowchart LR
 
 The versioned `f015.comparison.v1`, `f015.probe.v1` and `f015.evidence.v1` candidate fields and strict source/projection contracts above were exercised in [implementation CI #39538071630](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39538071630) on `9725c556741b373184a53e6a407644644ff75952`, with all 15 trial identities and 138 artifacts authenticated against independently recalculated F007 state/ledger and 60 A+60 B rows. The numeric reference remains a *researcher-frozen ideal*; the status is a reference comparison not a connected-topology signal. LIMITED ADOPTION APPROVED **only within these frozen model conditions**, subject to documentation-inclusive final CI and actual merge/record; earlier design-only headings are archival and are not rewritten.
 
+
+## F016 正味行為価値の候補データ契約（2026-10-21 / UNFROZEN・UNEXECUTED）
+
+[F016成立性](../topics/F016-communication-value/FEASIBILITY.md) / [候補実験](../experiments/F016/PLAN.md) / [記録](../findings/F016-validation.md) / [Issue #52](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/52)。
+
+これは**将来のschema候補**で、現行mainに f016.* APIは存在しない。全値の単位、公開範囲、truth境界を明記しただけである。
+
+| 候補データ | 型・単位 | 消費者／意味 |
+|---|---|---|
+| ResearchEpisodeConfig | resource_x_m: float ±0.5; mA=mB=1kg; link_length_m=0.1; dt_s=0.25; T_s=1; energy_reward_uj=3000000; comm_cost_uj∈{0,50000,2000000} | **研究者専用truth**。Aに資源位置を渡さない |
+| BLocalResourceBit | source_id="B"; step=0; measured_side: bool; sent_at_s: 0; valid/missingを区別 | Aが読めるのは**Bの局所センサーの方向符号だけ**。F014 PeerPacket(moved)と非互換 |
+| AAllowedObservation | A自身のx/v/指令/実適用/電池残量 + 検証済みBLocalResourceBit | None | controllerはresource_x_m、connected真値、外力、B座標/速度、将来獲得Jを読めない |
+| ResourceOutcome（truth） | x_a_final_m, resource_x_m, reached: bool（許容差0.01m）、acquired_uj | **研究者専用**。数値物理と資源判定を生CSVから監査 |
+| EnergySidecar（提案） | F007 motor spent_a_uj, B communication_spend_uj, A acquire_uj, balances_uj, residual_uj | F002会計則を再利用し、F007 motor spent二重計上を拒否 |
+| Comparison（提案） | group, target_side, success, net_gain_uj, paired_delta_uj, seed, status | A-only、定数bit、独立シャッフル、真B-bit低費用/高費用、欠損/改ざんを分ける |
+| Evidence manifest（提案） | code SHA, physics/producer/verifier source hashes, config hash, artifact SHA256, Python version, replay status | 実行した場合のみ生成。現時点F016エビデンスは存在しない |
+
+~~~mermaid
+flowchart LR
+  T["researcher truth\nresource / physics"] --> B["B local bit"]
+  B --> A["A decision\nallowed inputs"]
+  T --> P["F007 numerical trace"]
+  A --> P
+  P --> K["researcher-only resource + energy audit"]
+  T --> K
+  K --> R["paired comparison + provenance\nNOT IMPLEMENTED"]
+~~~
+
+検証要求：payloadとframeの情報量を分ける、NoneをFalseに変換しない、無受信と定数bitを別対照にする、整数µJ丸め、A/B別の費用負担、実際のA座標だけで到達を判定する。理論値 0.5/1.95/0.45/0 J は**予測**であり観測されたCSVではない。
+
