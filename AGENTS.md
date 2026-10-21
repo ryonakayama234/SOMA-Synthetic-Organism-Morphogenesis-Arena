@@ -201,3 +201,14 @@ After original preregistration Issue #45 / design Draft PR #46, the stacked impl
 ## F014 2026-10-21 scientific limited adoption and delegated integration
 
 The research owner explicitly waived external human independent review as an impractical mandatory gate and delegated accept/merge authority if frozen requirements and semantics are satisfied. F014 is LIMITED ADOPTED only for the preregistered 15-run ideal F007 1D peer movement-bit and L/C non-identifiability study. Necessary: L/G A-only equality and bit separation; L/C total permitted observation equality; inconclusive dropouts and rejected motor; no world truth leakage; independent oracle, rehashed tamper and summary forgery negatives, two byte-identical evidence roots, Python 3.11/3.12 all 14 CI workflows. Inspect exact final HEAD before merge; merge design #46 then implementation #47 and inspect main CI. Never claim independent human review, actual radio/link causality, a learned body schema, grounded locomotion or hardware. Preserve historical no-execution preregistration notes as dated evidence, and update Issue #45 with real integration outcome.
+
+
+## F016 feasibility candidate / 2026-10-21 — DO NOT CLAIM EXPERIMENT
+
+[Issue #52](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/52) selects a narrow prerequisite to Issue #51 body–communication co-emergence: whether B-local, costly 1bit information changes A's physical resource acquisition enough to offset sender cost. Its initial **theory-only** feasibility model, candidate test groups, concept diagram, proposed data schema and evidence ledger are in:
+- [FEASIBILITY](topics/F016-communication-value/FEASIBILITY.md) — assumptions, A-only vs truthful/shuffled/high-cost counterfactuals, Wolfram exact-value precheck.
+- [PLAN](experiments/F016/PLAN.md) — NOT FROZEN, NO RUNS.
+- [FINDINGS](findings/F016-validation.md) — theory only; never call it observed F016 simulation.
+- [ARCHITECTURE](docs/ARCHITECTURE.md) and [DATA_CONTRACTS](docs/DATA_CONTRACTS.md) — proposed truth/observation boundaries only.
+
+Must keep legacy F001–F015 source, accepted evidence and F011 #37 + V001 #24/#25/#26 untouched. Next research task is independent review and frozen F016 preregistration before *any* F016 simulator implementation. Real experiment must account F007 actual applied motor spend and F002 sender spend / post-task acquire exactly once (integer µJ), verify parity, no truth leakage to A, two-root saved-evidence reproducibility, forged-science negative controls and Python3.11/3.12 inherited CI. A knowingly assigned 1bit meaning is a **positive control**, not emergent messaging or topology identification. Do not merge this design proposal, PR #53 or any implementation without an evidence/decision gate.
