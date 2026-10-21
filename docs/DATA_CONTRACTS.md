@@ -916,3 +916,31 @@ Initial candidate on source `3fc7b0a7e43af26441715b511476234fe94c7a66` successfu
 
 ### F016 data adoption (2026-10-21)
 `f016.action.v1`, `f016.suite.v1` and `f016.evidence.v1` are **LIMITED ADOPTED** in exactly frozen 24-case F007 ideal-1D terminal task scope after design PR #54 and implementation PR #55 main merge `146e51db0e2356ed671599266b6c4acd7b7ec954`; [post-main 16/16 checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235) include separate Python 3.11/3.12 independent 49-file audit and 2-root byte replay. Earlier proposed/pending sections are dated design history. Use the controller-only `ResourceBit | None` input; `f007_config`, true resource target, world `states`, F002 ledger and task success remain researcher-only. No adoption of physical radio, generalized sensor/communication protocol, topology verification or spontaneously emergent meaning.
+
+### F017 — proposed typed contracts; NO CODE, NO LOGS, NO API ADOPTION (2026-10-21)
+
+See [candidate F017 SPEC](../topics/F017-signal-action-learning/SPEC.md), [PLAN](../experiments/F017/PLAN.md), [UNEXECUTED findings](../findings/F017-validation.md). Record shapes below are **candidate names and allowed fields**, not an implemented data schema.
+
+~~~mermaid
+flowchart LR
+    B["B sender only: local resource sign"] --> R["RawPeerSymbol.v1: {source_id, step_index, time_s, symbol 0|1}"]
+    R --> A["A.learn_policy.v1: raw symbol or None -> action ±2N"]
+    A --> P["F007 saved physics: position/velocity/motor spend"]
+    P --> O["A-only settled feedback: {acquired_uj,motor_spent_uj}"]
+    O --> A
+    P --> V["Researcher evidence: mapping/target/trial/true state"]
+    V --> X["Independent auditor / manifest / CI"]
+~~~
+
+| Proposed record | Controller-visible? | Candidate fields | Guard |
+|---|---|---|---|
+| `f017.symbol.v1` | YES, B packet only | source_id='B', step_index=0, time_s=0.0, symbol:int 0 or 1 | Reject bool disguised as int; None is absent packet, not bit 0; no true direction label |
+| `f017.receiver.v1` | YES, private A state | two opaque contexts × two ±2N action values, Q scores, exploration RNG owned by A; action return is float ±2.0 | No target/mapping/trial/phase/seed/body truth fields |
+| `f017.feedback.v1` | YES, A local terminal only | own_action_n; own acquired_uj, motor_spent_uj | **No reached, net_uj, sender fee, true target or researcher success** |
+| `f017.episode.v1` | NO (investigator-only) | config/phase/seed/encoding/target/packet/action, full F007 states, F002 ledger, Q snapshots, acquired/motor/sender fee, net_uj, reached | Strict separation from calls into A |
+| `f017.suite.v1` | NO | all 8×2 paired allocations by arm/phase, aggregates, counts, uncertainty | Hidden training/holdout and secret flip not readable by policy |
+| `f017.evidence.v1` | NO | frozen preregistration SHA, source/file hashes, source-bound manifest, two-root byte replay and forged negative audit results | Do not trust hashes alone; independently verify physical/world/ledger semantics |
+
+**Candidate numeric meaning:** Per-episode A terminal acquisition is 3,000,000 µJ on target ±0.625m (tolerance 1e−12m); F007 actual motor work 1,000,000 µJ; delivered B packet 50,000 µJ. Learner feedback excludes B fee, while experiment score `net_uj=A_acquired_uj−A_motor_spent_uj−B_sender_spent_uj` includes it. Initial/discovery and reversal test splits, thresholds and learning α/ε are still **awaiting independent preregistration audit**; no `soma/f017.py` or empirical output exists.
+
+**Leakage guard:** deny researcher `resource_right`, `target_x_m`, `encoding`, `reversed`, `trial`, `seed`, `reached`, `net_uj`, `attached` and all F007 world states from A's observe and learn parameters. Evidence-only policy snapshots can be logged externally; they cannot be fed back as privileged inputs.
