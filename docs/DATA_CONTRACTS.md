@@ -916,3 +916,23 @@ Initial candidate on source `3fc7b0a7e43af26441715b511476234fe94c7a66` successfu
 
 ### F016 data adoption (2026-10-21)
 `f016.action.v1`, `f016.suite.v1` and `f016.evidence.v1` are **LIMITED ADOPTED** in exactly frozen 24-case F007 ideal-1D terminal task scope after design PR #54 and implementation PR #55 main merge `146e51db0e2356ed671599266b6c4acd7b7ec954`; [post-main 16/16 checks](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235) include separate Python 3.11/3.12 independent 49-file audit and 2-root byte replay. Earlier proposed/pending sections are dated design history. Use the controller-only `ResourceBit | None` input; `f007_config`, true resource target, world `states`, F002 ledger and task success remain researcher-only. No adoption of physical radio, generalized sensor/communication protocol, topology verification or spontaneously emergent meaning.
+
+## F017 提案データ契約【候補・未凍結／未実装】
+
+[Issue #57](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/57) / [SPEC](../topics/F017-learned-signal/SPEC.md) / [PLAN](../experiments/F017/PLAN.md) / [UNEXECUTED findings](../findings/F017-validation.md)。
+
+`f017.experience.v0-candidate` は**構想上のschema名**であり現在の安定APIではない。実装時に変更するなら初回simulator実行前に事前登録を更新する。
+
+| データ境界 | 候補フィールド（型・単位） | 読み取り許可と禁止 |
+|---|---|---|
+| 実験設定(研究者のみ) | `group: str`, `seed: int`, `phase: enum`, `encoding: normal/inverted`, `target_x_m: float`, `training_split: bool` | 学習セルに渡さない |
+| 受信器入力(A) | `symbol: bool/None`, `source_id: str`, `step_index: int`, `time_s: float` | 符号「意味」や方向ラベル、seed/trial番号を含めない。偽source/time拒否 |
+| A原始行為 | `motor_force_n: -2.0/+2.0` | F007に渡す。真値入力なし |
+| A局所結果 | `acquired_uj: nonnegative int`, `motor_spent_uj: nonnegative int` | F002/F007の保存台帳からセンサー射影。B通信費・正解target/scoreは渡さない |
+| A学習状態（Aプライベート） | `q_by_symbol_action`, `exploration_rng_state`, `learner_update_count` | Q初期対称、エピソード間維持、test freeze/介入phaseを明示 |
+| world / auditのみ | `target_x_m`, `b_local_sign`, `encoding_flip`, `reached`, `communication_spent_uj`, `net_uj`, F007 states, F002 events | 研究者・独立監査のみ。**Aへ逆流禁止** |
+| 証拠由来 | `source_sha256`, `spec_sha256`, `artifact_sha256`, `manifest_sha256`, `python_version` | 初回F017 sim前に保存形式を確定する |
+
+データ方向: `world truth -> B local sensor -> opaque symbol -> A action -> F007 world + F002 ledgers -> A-own feedback -> learner`。同時に `world truth / F007 / F002 / learner trace -> independent saved-data auditor`。learnerには `reached`や`net_uj`の研究者集計、反転フラグ、正解行為や過去未来のtargetを渡さない。
+
+**現時点の欠落:** field-level Python型、raw JSON/CSV定義、policy更新式、seed/split/thresholdの凍結、独立oracle、F017生データ、CI。いずれも未実装。採用済み`f016.action.v1`の動作やmessage schemaを上書きしない。
