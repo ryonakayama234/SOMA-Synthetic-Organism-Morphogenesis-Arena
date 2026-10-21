@@ -145,17 +145,26 @@ def verify_world(row, arm, seed, encoding, phase, i, bit, scrambled, q, updates,
     same_q(row["Q_after"],snapshot(q,updates),"post-feedback Q")
     return updates
 
-def calc_probe(q, arm, seed, encoding, phase):
-    rand=random.Random(rng_seed(f"causal|{seed}|{encoding}|{arm}|{phase}"))
-    count=[0,0]
+def calc_probe(q, rng):
+    """Independently replay cloned matching action RNG state on opaque symbols."""
+    original=rng.getstate()
+    fingerprint=digest(repr(original).encode("ascii"))
+    researcher=random.Random()
+    researcher.setstate(original)
+    pos=[0,0]
     for _ in range(256):
-        explore=rand.random()<.125
-        tie=rand.randrange(2)
+        shared=researcher.getstate()
         for symbol in (0,1):
-            x=q[str(symbol)]
-            a=tie if explore or x[0]==x[1] else (0 if x[0]>x[1] else 1)
-            count[symbol]+=int(a==1)
-    return count
+            draw=random.Random()
+            draw.setstate(shared)
+            scores=q[str(symbol)]
+            if draw.random()<.125 or scores[0]==scores[1]:
+                ix=draw.randrange(2)
+            else:
+                ix=0 if scores[0]>scores[1] else 1
+            pos[symbol]+=int(ix==1)
+        researcher.random()
+    return pos,fingerprint
 
 def verify_suite(root: Path) -> dict:
     root=Path(root)
@@ -215,11 +224,14 @@ def verify_suite(root: Path) -> dict:
                                                  "hit":int(row["reached"])})
                             observed+=1
                         if phase in ("holdout","final"):
-                            probe_count=calc_probe(q,arm,seed,encoding,phase)
+                            probe_rng=(random.Random(rng_seed(f"policy|{seed}|{encoding}|{arm}"))
+                                       if arm=="R" else rng)
+                            probe_count,rng_sha=calc_probe(q,probe_rng)
                             probes.append({"arm":arm,"seed":seed,"encoding":encoding,
                                            "checkpoint":phase,"plus_counts":probe_count,
                                            "D":(probe_count[1]-probe_count[0])/256,
-                                           "snapshot":snapshot(q,updates)["q"],"draws":256})
+                                           "snapshot":snapshot(q,updates)["q"],"draws":256,
+                                           "checkpoint_rng_sha256":rng_sha})
         require(data.readline()=="","excess F017 episodes")
     for arm in ARMS:
         for phase,n in PHASES:
