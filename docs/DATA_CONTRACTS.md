@@ -842,3 +842,32 @@ PROPOSED"]
 
 **Special:** u=0 is intentional OFF with a valid reset, while `E-disabled` has zero battery and a rejected positive command for u>0. Do not reinterpret the legacy F014 single-trial `inconclusive` for u=0 as a physical connection classification. All numeric tolerances, reset requirements, and one-bit threshold are frozen before F015 run.
 
+## F015 `f015.comparison.v1` の実装候補契約（2026-10-21／未採用）
+
+[Issue #48](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/48) / [凍結仕様](../topics/F015-active-body-probing/SPEC.md) / [実験手順](../experiments/F015/README.md)。以前の提案スキーマに対する **候補コードの確定予定列** を示す。CIと科学審査前で採用済みではない。
+
+| レコード | フィールド・型／単位 | 責務・境界 |
+|---|---|---|
+| `ProbeTrial` | `a_local: tuple[F008.LocalObservation, ×4]`、`b_packets: tuple[F014.PeerPacket \\| None, ×4]` | 真値・力・B数値速度なし。パケット欠損はFalseへ変換しない |
+| `analyze_probe` | `tuple[ProbeTrial,×3]` （u = 2,1,0 N順） | 各試行初速度0、時刻.25/.5/.75/1.0 s、A battery 非増加を厳密検査 |
+| `comparison: f015.comparison.v1` | `a_only_status`, `a_plus_peer_status`, `a_max_abs_residual_m_s2`, `peer_mismatch_steps`, `peer_incremental_discrimination`, `interpretation` | Status は `observation_signature_same/changed/inconclusive` のみ。対照 `a_A=u/2` は実験固定仮定 |
+| `probe_schedule.json` | `f015.probe.v1`, `forces_n=[2,1,0]`, `dt_s=.25`, `duration_s=1`, `full_reset_each_trial=true`, `packet_threshold_m_s=1e-10` | 研究者固定のスケジュール／未学習 |
+| `各15試行` | `config.json`, `F007/{config.json,states.csv,ledger/events.csv,link_events.csv,motion.svg,manifest.json}`, `a_local.csv`, `b_packets.csv` | F007生真値は研究者用だけ。a_local列はF008と同一、B packetは source/step/time/moved だけ |
+| `全体記録` | `comparison.json`, `manifest.json`（`f015.evidence.v1`, source+artifact SHA256） | 正解caseは研究者用。リプレイは別の出力ルートにバイト単位で同一化 |
+
+~~~mermaid
+flowchart LR
+  CFG["F015 probe_schedule.json"] --> RAW["F007 configs/traces (truth)"]
+  RAW --> OBS["A-local + B boolean"]
+  OBS --> CMP["F015 status + incremental value"]
+  RAW --> AUD["Independent verifier (not inference)"]
+  CMP --> AUD
+  AUD --> E["comparison + manifest + reproducibility"]
+~~~
+
+新規APIは結合構造を返さず、例外を欠損と混同しない。F014単独試行のu0=inconclusive仕様は残したまま、F015の事前に励起した**複数試行系列**でu0観測を比較する。意図的u0とE電池拒否は別。全て限定1Dモデル内の候補であり、実体配線・センサー騒音・独立外部査読を表さない。
+
+### F015 2026-10-21 tested schema and scientific decision
+
+The versioned `f015.comparison.v1`, `f015.probe.v1` and `f015.evidence.v1` candidate fields and strict source/projection contracts above were exercised in [implementation CI #39538071630](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39538071630) on `9725c556741b373184a53e6a407644644ff75952`, with all 15 trial identities and 138 artifacts authenticated against independently recalculated F007 state/ledger and 60 A+60 B rows. The numeric reference remains a *researcher-frozen ideal*; the status is a reference comparison not a connected-topology signal. LIMITED ADOPTION APPROVED **only within these frozen model conditions**, subject to documentation-inclusive final CI and actual merge/record; earlier design-only headings are archival and are not rewritten.
+
