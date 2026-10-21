@@ -948,3 +948,11 @@ flowchart LR
 
 #### Proposed F017 off-world audit record, NOT an adopted API
 `f017.causal_probe.v1` (researcher-only): `policy_snapshot_hash`, `encoding_id` (investigator-only), `checkpoint`, `do_symbol` 0/1, `draw_count=256`, matched independent exploration sequence hash, `count_action_plus2`, `p_plus2`, `D`, provenance. Data is produced by a clone and is never fed to A or executed on F007. H17f measures causal listening (message-to-policy influence), independently of `net_uj` (task outcome). Currently **UNEXECUTED / PROPOSED**.
+
+
+### F017 proposed actual candidate evidence records (2026-10-22; adoption PENDING)
+- `f017.episode.v1` saved inside deterministic `episodes.jsonl.gz` (gzip `mtime=0`): `arm,seed,encoding,phase,index,target_right,target_x_m,packet,action_n,Q_before,Q_after,states,motor_events,link_events,f002_events,motor_spent_uj,communication_spent_uj,acquired_uj,reached,net_uj,balance_a_uj,balance_b_uj,ledger_residual_uj`. **INVESTIGATOR-ONLY full record**, never sent to A.
+- A's public typed API remains just `RawPeerSymbol(source_id=B,step_index=0,time_s=0,symbol:0|1)` or `None`, `Receiver.observe(packet)->action_n` and `Receiver.learn(own_action_n,own_acquired_uj,own_motor_spent_uj)`. No access to trial/seed/phase, encoding/inversion, true direction or `net_uj`. No B sender fee or F007 world states can cross the A boundary.
+- `f017.suite.v1` saved as `summary.json`: `episode_count=23296`, per-arm/per-phase count/hits/net sums, researcher-only `clusters` per seed/encoding/holdout and `causal_probes` (`plus_counts[0/1], D, Q snapshot, draws=256`). `allocation.json` stores exact per-phase paired world and independent scrambled sequences.
+- `f017.evidence.v1` in `manifest.json` source-commit+SHA256 inventory and artifact byte hashes, with two-root byte replay and separately run SHA-rehashed malicious physical-score negative. Analyzer computes preregistered H17a-f candidates and seed-cluster 95% bootstrap; these are **not evidence of generalized communication emergence**.
+- Current status: candidate source, schema implementation under PR #60; verify numerical data/CI before calling it observed, frozen experiment design itself already merged as PR #59.

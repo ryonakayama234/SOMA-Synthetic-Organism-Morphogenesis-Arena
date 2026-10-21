@@ -30,3 +30,10 @@ issue: 57
 
 ## 2026-10-21 pre-freeze external-literature check (no experiment)
 AAMAS 2019 [Lowe et al., *On the Pitfalls of Measuring Emergent Communication*](https://ifaamas.org/Proceedings/aamas2019/pdfs/p693.pdf) distinguishes sender's positive signaling from recipient's positive listening. Added proposed **H17f** offline `do(symbol)` policy-fork test to detect causal behavioral influence, not just information–action correlation or outcome change. This is literature-derived experimental design, **NOT F017 observation**, and all F017 empirical gates remain UNEXECUTED.
+
+
+## 2026-10-22 — post-freeze implementation candidate; observed H17a–f outcomes not yet authorized
+- [Design PR #59](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/59) merged to main as PRE-EXPERIMENT frozen specification; body-emergence-first charter preserved. This entry does not alter any preregistered acceptance gate.
+- [Implementation Draft #60](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/60) implements `soma/f017.py`, `experiments/F017/run_suite.py`, `verify.py`, `analyze.py`, rehashed-falsification test, 3.11/3.12 CI and immutable two-root artifact design. Planned 23,296 software worlds, NOT physical robots.
+- An early implementation CI iteration failed source-inventory equivalence in verifier before results could be accepted. The producer/verifier source allowlists were brought into agreement; retain the error and corresponding Actions history rather than erase it. This is **SOFTWARE DIAGNOSTIC**, not H17 success/failure.
+- **NO current numeric F017 claim in this entry:** inspect exact FINAL source SHA, CI, separately saved audits and bootstrap before appending observational verdicts. Formal acceptance/main merge reserved for later evidence decision.

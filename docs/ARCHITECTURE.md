@@ -1041,3 +1041,24 @@ flowchart TD
 
 ### F017 design-only causal listening audit (pre-execution)
 In addition to the F017 main diagram above, the researcher-only audit may clone a frozen A policy at an unseen holdout checkpoint and vary just `do(symbol=0/1)` with matched RNG and fixed input. Compare resulting ±2N action distributions WITHOUT running F007, changing original learning state, paying a B transmission fee or disclosing the intervention to A. This separates causal response of A's policy from independent physical resource advantage. The B sender rule remains externally specified; both sending and listening emerging spontaneously are **NOT TESTED**. [H17f candidate](../topics/F017-signal-action-learning/SPEC.md).
+
+
+### F017 executable candidate pipeline (2026-10-22, NOT ADOPTED)
+~~~mermaid
+flowchart TD
+  T["Researcher-only per-phase hidden target / mapping / seed"] --> B["B ideal local resource-sign projector"]
+  B --> X["Researcher maps to opaque bit 0/1; B pays .05J"]
+  X --> V["Validated RawPeerSymbol or None"]
+  V --> A["Receiver.observe -> -2N/+2N (Q policy, no ground truth)"]
+  A --> W["UNMODIFIED F007 fixed linked 1D; 4 steps"]
+  W --> L["Separate F002 sidecar: replay actual motor spends, B fee, 3J terminal acquisition"]
+  L --> F["Only A acquired and A motor spent to Receiver.learn"]
+  F --> A
+  T --> R["Researcher-only paired world ground truth and phase"]
+  W --> R
+  L --> R
+  R --> O["Independent SAVED-file oracle + SHA verification + forged rehash negative"]
+  O --> S["Holdout/flip analyses; 8-seed paired bootstrap; append-only findings"]
+  A -. "No source packet, mapping flag, target or B fee leak" .-> R
+~~~
+**Status: implementation candidate only.** `experiments/F017/run_suite.py` creates 23,296 1D worlds using F007 and F002, `experiments/F017/verify.py` independently recalculates raw world/learned Q/reward and `analyze.py` applies the frozen gates. Paired counterfactual listener forks operate OFF-WORLD. A's policy has no researcher target or trial flags. This is NOT sender-rule co-emergence, real radio/ground, role formation or morphology. [Frozen SPEC](../topics/F017-signal-action-learning/SPEC.md) / [PLAN](../experiments/F017/PLAN.md).
