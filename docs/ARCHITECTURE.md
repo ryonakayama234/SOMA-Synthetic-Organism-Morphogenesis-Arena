@@ -1074,3 +1074,7 @@ flowchart LR
  C -. "No F007 world advance, no B fee, no learning" .-> A
 ~~~
 The full learned PRNG state, not a freshly seeded unrelated probe generator, is the paired intervention checkpoint. This is an OFF-WORLD policy causal test, **not** evidence that the sender B developed communication incentives.
+
+
+### F017 2026-10-22 limited-adopted topology of the software module (no body emergence)
+The frozen single-function `RawPeerSymbol → Receiver.observe → fixed ideal F007/F002 task → only A-local feedback to Receiver.learn` path is **LIMITED ADOPTION APPROVED** under H17a–f, [recorded 23,296-run findings](../findings/F017-validation.md). Researcher-only `target/encoding/phase` do not enter receiver. Off-world full learned Q+RNG cloned `do(symbol)` probe is an audit path only. B has no learned send policy; signal route is ideal, predetermined, charged to B. This diagram is **not** a spontaneously attached or morphologically evolving body and cannot be used to claim physical communication or group-level agent evolution. Final merge and post-main CI are separately verified milestones.

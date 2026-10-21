@@ -1,8 +1,8 @@
 ---
 id: FIND-F017
 kind: validation
-status: unexecuted_design_candidate
-updated: 2026-10-21
+status: limited_adoption_approved_premerge
+updated: 2026-10-22
 issue: 57
 ---
 # F017 — 追記型研究・実験台帳
@@ -81,3 +81,29 @@ AAMAS 2019 [Lowe et al., *On the Pitfalls of Measuring Emergent Communication*](
 - The initial fully passing experiment on `8694cd36` measured positive listening using matched off-world **independent research-seeded** action noise, holding learned Q fixed. This detects a valid causal behavioral effect but did not literally clone the receiver's **trained RNG state** as the frozen H17f protocol stipulated. Preserve its original D numbers as historical observations; they must not be relabeled as trained-RNG-fork values.
 - Corrective implementation **after** the first result and **without altering frozen hypotheses, sample counts, threshold values or F007 physics** now deep-clones the entire receiver (Q and actual PRNG checkpoint), takes matched 256 paired `do(symbol)` draws with original learner unchanged, and makes independently reconstructed saved-state RNG fingerprints a required audit field. `analyze.py` now also enforces the H17f *directional sign reversal* across both symbol encodings and the secret reversal, not just magnitude.
 - This is a prospective **measurement-protocol fidelity repair**, transparently documented after first observation, NOT an independently preregistered replication or extra validation of physical generalization. Formal limited adoption requires fresh final-source 3.11/3.12 CI and new archived artifacts to confirm no changed outcome or gate failure. Until that run, **the corrected H17f result and integration are PENDING**.
+
+
+## 2026-10-22 — FORMAL RESEARCH VERDICT: F017 LIMITED ADOPTION APPROVED (premerge source audit)
+
+**Scientific decision: SUPPORT H17a,b,c,d,e,f IN THE FROZEN, DESIGNER-DEFINED F007 IDEAL 1D TASK AND ADOPT THE F017 RECEIVER-SIDE UNKNOWN-SYMBOL→EMBODIED-ACTION VALUE-LEARNING MODULE WITH THAT PRECISE SCOPE ONLY.** User researcher on 2026-10-22 expressly supported integration if the predefined meaning is actually met; do not extend the adopted claim to communication/body emergence.
+
+### Final corrected causal-policy audit, not the initial off-world approximation
+- Exact premerge full candidate HEAD `cc0fe6ed606c1c0e9f963d27ceea2c01967aae87`, [GitHub Actions #39693731056](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39693731056): **17/17 workflows SUCCESS**; 3.11 and 3.12 each completed **23,296** frozen F007 numerical worlds, saved-world independent Q/RNG/F002/kinematics auditor, rehashed malicious net-score rejection and two-root byte-for-byte replay. Final full-Q+RNG trained-checkpoint causal intervention audits succeeded on both Python versions. Archived [3.11 artifact #12389897730](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39693731056/artifacts/12389897730), [3.12 artifact #12389148653](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39693731056/artifacts/12389148653).
+- **Observed physical task outcomes UNCHANGED by off-world causal probe repair:** I first holdout `490/512=0.95703125` hit, `+1.82109375 J` mean net; N no bit `247/512=0.482421875`, `+0.447265625 J`; I−N `+1.373828125 J`, paired 8-seed bootstrap exploratory CI95 `[+1.3328125,+1.420703125] J`. Other primary frozen controls K/S/L/F all >20 percentage points below I and paired delta CI lower bounds >0.
+- Secret semantic reversal with **same Q, never reset**: immediate frozen probe `22/256=0.0859375`, `−0.7921875 J` net, then after per-block 64 continued feedback episodes, final holdout `480/512=0.9375`, `+1.7625 J` net. Both initial encodings separately `0.95703125` hit.
+- **Corrected and independently verified full-PRNG-snapshot paired policy forks H17f:** mean `D=P(+2N|do(bit=1))-P(+2N|do(bit=0))` at first holdout `encoding0=+0.8671875`, `encoding1=−0.87060546875`; after secret inversion/final holdout `encoding0=−0.88037109375`, `encoding1=+0.884765625`. Matched `L/F` no-learning controls `D=0`; `D` values change sign both across encodings and across secret reversal. The original pre-repair independent-probe-noise figures above remain historical and must not be silently overwritten.
+
+### Acceptance by the frozen gates
+- **H17a SUPPORTED** (I unseen holdout ≥0.7; margin ≥0.2 vs N/K/S/L/F; independent seed-cluster paired net 95% lower >0).
+- **H17b SUPPORTED** (both encoding labels learned, preferences invert).
+- **H17c SUPPORTED** (no-feedback, frozen Q, constant/scrambled signals and reset-every-episode R do not reproduce learning).
+- **H17d SUPPORTED** (secret inversion sharply worsens old policy; continued embodied feedback re-adapts the SAME policy).
+- **H17e SUPPORTED as same-author independent saved-evidence integrity** (F007 ideal numeric world trace, F002 integer budget and sender fee, Q and actual PRNG update reconstruction, source/artifact hashes, false-score SHA-rehash rejection, byte replay, cross-version source-head CI). **NOT independent external human peer review.**
+- **H17f SUPPORTED after documented protocol repair** (trained full Q+PRNG checkpoint forks, matched 256 off-world draws, exact signal-only intervention, sign reversal, no behavioral effect of signal for untrained controls). Original H17f seed method discrepancy transparently preserved and corrected before adoption.
+
+### Exact scope and exclusions
+**ADOPTED CAPABILITY:** `soma.f017.RawPeerSymbol` validation, `Receiver.observe/learn/end_without_learning` two-symbol (+None), two-action ε-greedy online receiver, A-local own acquired and spent energy reward, reversal without reset, **only when evaluated under original F007 fixed 1D linked A/B external effective motor and F002 sidecar, ideal B-origin direction sensor and exactly defined scenario**. Researcher assigns B as sender, all encodings, symbol transmission, physical coupling and 3 J reward. B **pays 0.05 J without modeled B-private return**; there is no demonstrated B incentive to send.
+
+**NOT ADOPTED OR DEMONSTRATED:** B learning, invention of a signal/protocol, self-chosen communicator roles, voluntary sending, A/B mutually optimized benefits, sensor noise/dropout/delay, 2D/3D mechanics, uncertain connectivity, spontaneous aggregation/attachment/detachment, adaptive morphology, hardware locomotion/power generation, generalized semantic grounding or biological evolution. Testing all episodes from one artificially balanced paired 1D task is not generalization to unseen task families. Only eight independent investigator world seeds; holdouts have 512 task episodes but are not 512 independent environment models. No external human review.
+
+**Integration decision:** LIMITED ADOPTION SCIENTIFICALLY APPROVED by this dated research review. Merge of implementation PR #60 into main is authorized if its final documentation-inclusive source SHA passes the same complete CI matrix with no source changes to F001–F016. New main needs post-merge workflow confirmation; keep the source-head evidence and initial protocol-repair sequence immutable. Do not alter frozen success thresholds after data.
