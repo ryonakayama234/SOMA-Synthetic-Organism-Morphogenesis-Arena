@@ -37,3 +37,42 @@ AAMAS 2019 [Lowe et al., *On the Pitfalls of Measuring Emergent Communication*](
 - [Implementation Draft #60](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/60) implements `soma/f017.py`, `experiments/F017/run_suite.py`, `verify.py`, `analyze.py`, rehashed-falsification test, 3.11/3.12 CI and immutable two-root artifact design. Planned 23,296 software worlds, NOT physical robots.
 - An early implementation CI iteration failed source-inventory equivalence in verifier before results could be accepted. The producer/verifier source allowlists were brought into agreement; retain the error and corresponding Actions history rather than erase it. This is **SOFTWARE DIAGNOSTIC**, not H17 success/failure.
 - **NO current numeric F017 claim in this entry:** inspect exact FINAL source SHA, CI, separately saved audits and bootstrap before appending observational verdicts. Formal acceptance/main merge reserved for later evidence decision.
+
+
+## 2026-10-22 — FIRST F017 VERIFIED FULL SIMULATION and independent saved-world analysis
+
+**OBSERVED, NOT WOLFRAM FEASIBILITY THEORY.** Frozen experimental design [PR #59](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/59) was merged BEFORE running this implementation. Frozen SPEC/PLAN contain 8 independent world-order seeds × 2 symbol encodings × 7 arms × 208 episodes = **23,296 real F007 numerical episode calls** (NOT robot hardware); six primary arms plus R no-memory diagnostic.
+
+- Reviewed implementation exact source HEAD **`8694cd36a3ba657d2ca5b297b34553475068da5d`**. [GitHub Actions #39688112315](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39688112315) reports **all 17/17 workflows SUCCESS**. F017 Python **3.11 and 3.12 both SUCCESS** on the identical source SHA, including full inherited tests, optimized falsification tests, 23,296 world episodes each, independently verified saved F007 position/velocity/motor work, F002 A/B ledger and 0 residual, hidden B mapping, exact A-policy Q recurrences and independent A RNG reconstruction. Rehashed corrupted `net_uj` embedded in gzip and rehashed in manifest was independently rejected. Separate same-input evidence roots byte-replayed identically per Python version. Saved 3.11 archive [artifact #12387094551](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39688112315/artifacts/12387094551), saved 3.12 [artifact #12386599058](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39688112315/artifacts/12386599058).
+- **Software failure history preserved:** earlier CI attempts [#39687424347](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39687424347) and [#39687751315](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39687751315) rejected producer/verifier source SHA inventory mismatch before accepting any F017 results. Corrected inventory to match both pipelines and attached new independent negative; the first fully passing final-source run above is the authoritative observed run. These software errors were not counted as hypotheses falsifications.
+
+### Primary observed numeric contrasts (each arm initial frozen unseen holdout: 8×2×32=512 episodes)
+
+| arm | hit / 512 | hit rate | mean net J / episode |
+|---|---:|---:|---:|
+| I informative B raw bit + receiver learns | 490 | 95.703125% | +1.82109375 |
+| N no packet; receiver learns on None | 247 | 48.2421875% | +0.447265625 |
+| K constant symbol 1 | 263 | 51.3671875% | +0.491015625 |
+| S scrambled balanced symbol | 234 | 45.703125% | +0.32109375 |
+| L informative but Q frozen/no learning | 271 | 52.9296875% | +0.537890625 |
+| F informative but feedback withheld | 250 | 48.828125% | +0.41484375 |
+| R secondary reset-Q every episode | 271 | 52.9296875% | +0.537890625 |
+
+**Independent eight-world-seed paired bootstrap, 10k deterministic resamples (two symbol encodings bundled within each independent seed):** mean I−N net delta **+1.373828125 J**; exploratory 95% percentile interval **[+1.3328125,+1.420703125] J**. Relative to each primary negative control N/K/S/L/F, lower 95% bound >0; I holdout success >0.70 and each hit-rate difference >0.20. Two initial encoding-specific hit rates both **0.95703125**, not a hardcoded truth decoder. Only eight independent world seeds; intervals do not establish robustness to different physics/tasks.
+
+### Unannounced reversal and causal receiver use
+
+- Learned I pre-flip holdout: **0.95703125** hit rate and **+1.82109375 J** mean net.
+- Secret bit inversion at fixed Q, immediate frozen probe: **0.0859375** hit rate, **−0.7921875 J** net.
+- Same Q retained, after 64 training episodes per block under reversal, final unseen holdout: **0.9375** hit rate, **+1.7625 J** net. Do not confuse post-flip improvement with resetting the learner or researcher directly providing the reversed mapping.
+- Off-world matched `do(symbol)` intervention on cloned Q policy: `D` for I before inversion, encoding0 **+0.8681640625**, encoding1 **−0.87744140625**; after inversion the causal direction reverses (see saved `causal_probes`). No-learning L/F have `D=0`. Thus learned reception *causally changes A's motor choice* in the ideal task; mere sender symbol–action correlations are not enough.
+
+### Preregistered H17 candidate-gate classifications, SCOPE-LIMITED
+- **H17a SUPPORTED**: informative signal + actual own-action feedback beats no-bit, constant, shuffled, frozen policy, no-feedback groups on unseen terminal action and net energy.
+- **H17b SUPPORTED**: both unknown symbol assignments; symmetric label reversal effects.
+- **H17c SUPPORTED**: accumulated feedback is needed, reset-Q arm does not acquire holdout advantage.
+- **H17d SUPPORTED**: abrupt inversion disrupts policy, un-reset Q relearns by repeated embodied reward.
+- **H17e SUPPORTED as source-bound software evidence only**: frozen raw F007/F002 physics/ledger, independent Q/RNG oracle, wrong-result rehash negatives, CI, two-root byte replay.
+- **H17f SUPPORTED**: matched offline `do(symbol)` tests detect positive listening; no-feedback/frozen-Q lack signal-caused motor policy difference.
+
+**Important exclusion**: The experiment intentionally supplies a nonlearning sender B, a 1-bit observability mask, fixed 1D attached two-cell world and reward schedule, external effective motor power, ideal zero-latency message, and no body choice. Therefore this is **receiver-side learned association in a constructed toy world**, NOT spontaneously evolved communication, spontaneous signal emission, physical radio, role choice, body/morphology formation, real metabolic survival, proof of generic semantics or external human peer review. Same-assistant independent source verifier is **not** human peer review. **Candidate limited adoption review may be considered only after documentation-inclusive final SHA CI. No F017 main merge or formal scientific adoption has been authorized here.** Append future review separately; never retroactively change frozen thresholds.
