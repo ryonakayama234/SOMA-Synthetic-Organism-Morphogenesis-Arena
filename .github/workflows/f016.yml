@@ -1,0 +1,41 @@
+name: F016 1bit task-value independent evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Inherited and F016 unittest regression
+        run: python -m unittest discover -s tests -v
+      - name: Optimized F016 causal falsification and replay
+        run: python -O -m unittest discover -s tests -p test_f016.py -v
+      - name: Produce 24 frozen worlds + independent audit
+        run: |
+          python -m experiments.F016.run_suite --output-root runs/F016-ci
+          python -m experiments.F016.verify --root runs/F016-ci
+          python -m experiments.F016.run_suite --output-root runs/F016-replay
+          diff -rq runs/F016-ci runs/F016-replay
+      - name: Publish source-bound F016 raw evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F016-${{ matrix.python }}-evidence
+          path: |
+            runs/F016-ci/
+            runs/F016-replay/
+          if-no-files-found: error

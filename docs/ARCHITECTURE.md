@@ -966,3 +966,22 @@ flowchart TD
 
 ### F016 preregistration correction (2026-10-21, pre-experiment)
 The F016 diagram above is **conceptual, not implemented**. [Frozen SPEC](../topics/F016-communication-value/SPEC.md) sets F007 discrete 1-second terminal resource coordinates ±0.625m (prior ±0.5m continuous-time target withdrawn) and a researcher-side observability mask: B can observe initial resource-relative direction, A cannot. That mask is an assumed ideal sensor interface, **not demonstrated occlusion optics in 1D**. F016 will separately replay F007 motor expenditures into F002 and charge B communication / grant A 3J resource reward; existing F007 source stays untouched. Compare A0/K/S/T/H/I fixed 24 primary runs; science ledger records any negative result. Actual implementation status still UNEXECUTED at this document version.
+
+### F016 candidate implementation boundary (2026-10-21, pending exact-HEAD CI)
+```mermaid
+flowchart TD
+  R["Researcher-only world resource at ±0.625m"] --> S["B local resource-side bit projector"]
+  S --> P["Typed ResourceBit B/time 0 / true-or-control"]
+  P --> A["A.choose_force: packet or None -> ±2N only"]
+  A --> F["UNMODIFIED F007 ideal linked 2-cell 1D"]
+  F --> U["Unaltered F007 state + A motor spend"]
+  U --> T["F002 independent sidecar: replay motor once, charge B packet, award A 3J only if xA matches"]
+  R --> V["Researcher-only independent oracle"]
+  T --> V
+  V --> E["24 truth-trace CSV+JSON, source hashes, manifest, falsification and replay"]
+  R -. "never provide resource position or topology" .-> A
+```
+Candidate `soma/f016.py` is **not** an accepted API; used source/model only in its implementation branch. The packet meaning is fixed, transmission time is ideal zero latency and only B energy cost is modeled. This is NOT evidence of naturally invented communication/physical radio or confirmed linkedness. Earlier conceptual F016 diagram is design history. [Frozen SPEC](../topics/F016-communication-value/SPEC.md) / [experiment README](../experiments/F016/README.md).
+
+### F016 actual execution boundary (2026-10-21, initial source SHA 3fc7b0a7)
+[Observed 24-run findings](../findings/F016-validation.md) report that the implementation-candidate truth→B sensor sign→A fixed command→F007 motion→F002 sidecar→independent audit path executed on ideal frozen 1D assumptions. Source-behavior and the separate 24 saved-world audit passed Python3.11/3.12. The diagram above has now been executed **only for** the explicit idealized B-local direction observation mask with instant costly packet and researcher-scored terminal resource. Do not label this an autonomous communication protocol, actual body topology discovery, radio, contact physics or morphological self-organization. Human external peer review absent; formal adoption and post-main CI depend on final SHA. [Run #39581144450](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39581144450).
