@@ -913,3 +913,24 @@ NOT RUN"]
 
 観測者Aはuを自分のコマンド履歴として知る。F-fixed（外力固定）のように識別できる場合と、T-tracking（外力がuに追随）のように**すべての介入でも識別できない場合**を区別し、`connected`を出さない。u=0単独は結合不在の証拠ではない。F011–F013地面物理／V001 viewerと混ぜない。
 
+## F015 実装候補の責務境界（2026-10-21／最終HEAD-CI確認前）
+
+[研究Issue #48](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/48) / [実験再生](../experiments/F015/README.md) / [記録](../findings/F015-validation.md)。下のフローは **F015専用ブランチに追加済みの候補コード**（実測値はCI・独立監査待ち）。これより前の「F015提案のみ」図は設計履歴として保持する。
+
+~~~mermaid
+flowchart TD
+  U["研究者が事前登録した3指令: 2/1/0 N\n各試行フルリセット"] --> W["既存F007運動＋電池真値\n5条件×3＝15 runs"]
+  W --> P["研究者限定プロジェクタ"]
+  P --> A["既存F008: A LocalObservationだけ"]
+  P --> B["既存F014: B moved boolean + source/time"]
+  A --> I["soma/f015.py\n3独立試行の理想応答比較"]
+  B --> I
+  I --> C["A-only vs A+bit 判別寄与/不確定\nNO connected field"]
+  W --> AUD["experiments/F015/verify.py\n保存世界真値と独立数式の監査"]
+  C --> AUD
+  AUD --> LOG["source/file SHA256 + 全原本CSV\n改ざん負例・byte replay・CI"]
+  W -. "禁止: リンク真値/外力/B数値速度の流出" .-> I
+~~~
+
+**科学的境界:** `soma/f015.py` はF007の実装も`soma/f014.py`も変更しない。参照 `a_A=u/2` は既知と仮定された理想2質点モデルであり、自己生成の身体構造認識ではない。A-onlyでもF-fixedとLを区別できるならB bit独自の価値を誇張しない。T-trackingの一致は「結合真偽を識別できない」という重要な反証例。
+

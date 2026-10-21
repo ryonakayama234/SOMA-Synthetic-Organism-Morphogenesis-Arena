@@ -34,3 +34,10 @@ Analytical B increment each step: L/T = u/8 m/s; F = 1/4 m/s. Thus at u2 F and L
 | Scientific adoption / merged main | NOT AUTHORIZED |
 
 When execution is separately undertaken, **APPEND** real outcomes with dates, SHA, CI, independent audit findings and interpretation. Do not replace this preregistration or hide falsification/counterexample.
+
+## 2026-10-21 — F015 implementation PR milestone (NOT YET OBSERVED)
+
+A separate implementation branch, stacked on the frozen F015 design PR, introduces `soma/f015.py`, dedicated 15-trial F007 producer, an independently coded F007 saved-file oracle + F015 projection/science re-derivation, negative/tamper tests, and Python 3.11/3.12 inherited CI. The immutable H15a–e preregistered hypotheses and force schedule are unchanged. This is **code creation and a review gate, not measured evidence**. The exact final implementation commit, actual Actions runs, per-step observations, false-science rejection and byte replay must be separately checked before status can change. No external human peer review claimed.
+
+**Nuanced prediction to test:** F-fixed and L differ already in the A-only local trajectory at u=1 and u=0; the B one-bit at u=0 differs too, but may provide **zero unique additional discrimination** given the entire A-only schedule. The negative result must be retained even if the primary held-force identification is supported. T-tracking remains fully non-identifying for topology.
+
