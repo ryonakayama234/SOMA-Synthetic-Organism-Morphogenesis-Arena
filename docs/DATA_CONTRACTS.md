@@ -901,3 +901,5 @@ flowchart LR
 
 検証要求：payloadとframeの情報量を分ける、NoneをFalseに変換しない、無受信と定数bitを別対照にする、整数µJ丸め、A/B別の費用負担、実際のA座標だけで到達を判定する。理論値 0.5/1.95/0.45/0 J は**予測**であり観測されたCSVではない。
 
+### F016 pre-experiment frozen contract correction (2026-10-21)
+The F016 proposed schema above was a *non-binding feasibility sketch*. [Frozen SPEC](../topics/F016-communication-value/SPEC.md): target ±0.625m not ±0.5m; A/B 1kg; initial xA=0,xB=.1, 4×dt=.25s; A motor ±2N; initial balances each 10MµJ, capacity 20MµJ; resource gain 3MµJ; B spend 0/50k/2MµJ; destination test |xA−target|≤1e-12m; six groups A0/K/S/T/H/I × target [R,L,R,L]. Sidecar must replay the **actual F007 per-step A motor spent once** into the F002 ledger, then B sender spend and A acquire, and validate residual/balance and per-episode net acquired−motor−message. A sees only local observation + valid B `resource_side_right` bool packet (source=B, step=0, time=0); payload is *not* F014 moved bit. Researcher truth remains excluded. No F016 implementation or observations existed when frozen.
