@@ -1,7 +1,7 @@
 ---
 id: FIND-F017
 kind: validation
-status: limited_adoption_approved_premerge
+status: limited_adopted_merged_main
 updated: 2026-10-22
 issue: 57
 ---
@@ -107,3 +107,12 @@ AAMAS 2019 [Lowe et al., *On the Pitfalls of Measuring Emergent Communication*](
 **NOT ADOPTED OR DEMONSTRATED:** B learning, invention of a signal/protocol, self-chosen communicator roles, voluntary sending, A/B mutually optimized benefits, sensor noise/dropout/delay, 2D/3D mechanics, uncertain connectivity, spontaneous aggregation/attachment/detachment, adaptive morphology, hardware locomotion/power generation, generalized semantic grounding or biological evolution. Testing all episodes from one artificially balanced paired 1D task is not generalization to unseen task families. Only eight independent investigator world seeds; holdouts have 512 task episodes but are not 512 independent environment models. No external human review.
 
 **Integration decision:** LIMITED ADOPTION SCIENTIFICALLY APPROVED by this dated research review. Merge of implementation PR #60 into main is authorized if its final documentation-inclusive source SHA passes the same complete CI matrix with no source changes to F001–F016. New main needs post-merge workflow confirmation; keep the source-head evidence and initial protocol-repair sequence immutable. Do not alter frozen success thresholds after data.
+
+## 2026-10-22 — FINAL F017 main integration, verified post-merge CI
+
+**FINAL DISPOSITION: LIMITED ADOPTED and MAIN-MERGED.** The prior frozen design [PR #59](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/59) was independently merged before any F017 world run. The scoped implementation [PR #60](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/60) was explicitly reviewed and **actually merged** at commit `08b5ffe3563c6773f9bb77e843411dc46a4af1b0` after *documentation-inclusive* candidate head `6517753acbf888441e915be61a145ad4b99dca53` passed all 17 workflows (both Python versions) including complete full-learned-RNG causal intervention and source-bound saved-evidence audit.
+
+- **Authoritative post-merge main CI** [Actions #39694731552](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39694731552) on exactly `08b5ffe3563c6773f9bb77e843411dc46a4af1b0` reports **17/17 workflows SUCCESS**. Python3.11 and Python3.12 each independently executed and authenticated 23,296 ideal numerical F007/F002 episodes, held-out/reversal/online adaptation and policy-RNG-fork analyses, independent saved-data Q/RNG/ledger physics verifier, SHA-rehashed malicious score rejection and two-root byte replay. Archived reproducible raw evidence [3.11 artifact #12389614125](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39694731552/artifacts/12389614125) / [3.12 artifact #12389844293](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39694731552/artifacts/12389844293).
+- **Scientific findings remain unchanged:** I first unseen holdout 490/512 = 95.703125%, +1.82109375 J net; N no bit 247/512 = 48.2421875%, +0.447265625 J net; I−N +1.373828125 J, paired eight-cluster bootstrap CI [1.3328125,1.420703125] J. Secret bit inversion immediate 22/256 = 8.59375%, final learned-without-reset 480/512 = 93.75%. Corrected matched trained-Q+exact-RNG intervention has reversed signed D; unlearned L/F D=0. H17a–f SUPPORTED **under frozen strictly ideal 1D task**, no post-hoc gate changes.
+- **DO NOT REINTERPRET LIMITED ADOPTION** as B creating messages voluntarily, natural protocol invention, individual B payoff improvement, spontaneous link/body formation, physical radio, electrical generation, general unknown tasks, or independent human peer review. All previous pre-freeze, UNEXECUTED and premerge notes above are dated history, not current status. F001–F016 original implementation and findings remain unchanged.
+- This final history entry is a documentation-only post-main write and therefore creates a new documentation source SHA. A second post-documentation push CI run, if present, is separately verified and its URL may be added in the completion Issue without changing this experimental claim.
