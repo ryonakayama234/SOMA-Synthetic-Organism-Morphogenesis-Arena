@@ -938,3 +938,31 @@ flowchart TD
 
 The F015 implementation candidate was **executed and verified** on source HEAD `9725c556741b373184a53e6a407644644ff75952`, [Actions #39538071630](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39538071630): 15 frozen software trials, 60 A-local + 60 B boolean observations, independent saved-world ledger and reference audit, false-science negatives, 138 saved files byte-identical across independent runs. F-fixed differs from linked reference in **A-only** after u decreases; the B-bit has **zero extra discrimination** here, and T-tracking still mimics L fully. The proposed-only diagram directly above retains its date; this paragraph is a newer verified implementation milestone. **Scientific acceptance limited to ideal F007 observation response signature, conditional on docs-inclusive final CI and actual main merge; no topology verification or autonomous morphology.**
 
+
+## F016 成立性レビュー：1bit通信は「知識」ではなく「行為」を変えるか（2026-10-21 / PROPOSED / UNEXECUTED）
+
+[F016 feasibility](../topics/F016-communication-value/FEASIBILITY.md) / [候補実験](../experiments/F016/PLAN.md) / [未実験の記録](../findings/F016-validation.md) / [Issue #52](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/52)。
+
+次図は**設計検討の概念図**。F016のモジュール・センサー・通信路・資源獲得はまだ実装されていない。F007既存剛体リンクの世界を今後の実装案として利用するだけで、F011–F013の接地/内部反力世界とは統合しない。
+
+~~~mermaid
+flowchart TD
+  CFG["研究者：左右資源位置、支出条件、物理初期状態\ntruth only"] --> PHYS["F007理想1D剛体二セル\n既存 physics + motor account"]
+  CFG --> TARGET["資源位置 ±0.5m\n理想3J acquire（提案）"]
+  PHYS --> LOCALB["B局所センサー（提案）\n開始時の資源方向だけ"]
+  LOCALB --> TX["B sender: 1bit payload\nF002 spend：0.05J / 2J（提案）"]
+  TX --> RX["A allowed sensor + bit\n不正/欠損を区別"]
+  PHYS --> LOCALA["A自身の位置・速度・motor履歴のみ"]
+  LOCALA --> RX
+  RX --> ACTION["A固定指令 ±2Nを一回選択\n学習/創発なし"]
+  ACTION --> PHYS
+  PHYS --> EVAL["研究者専用: A終点 vs 資源位置\nF002 acquireと収支監査"]
+  TARGET --> EVAL
+  EVAL --> LOG["比較群別 raw traces / event ledger / provenance\nF016 FROZEN AFTER REVIEW; NOT YET RUN"]
+  CFG -. "禁止：target位置、世界真値、接続真値、未来の成果" .-> RX
+~~~
+
+区別すべき2系統：**Aの意思決定入力**はAローカルとB由来1bitだけ、**研究者オラクル**は真値から到達結果と台帳整合性を評価する。bit内容はF014のB移動bitと別物であり、F015の身体関係識別不能性を解決したことにはならない。
+
+### F016 preregistration correction (2026-10-21, pre-experiment)
+The F016 diagram above is **conceptual, not implemented**. [Frozen SPEC](../topics/F016-communication-value/SPEC.md) sets F007 discrete 1-second terminal resource coordinates ±0.625m (prior ±0.5m continuous-time target withdrawn) and a researcher-side observability mask: B can observe initial resource-relative direction, A cannot. That mask is an assumed ideal sensor interface, **not demonstrated occlusion optics in 1D**. F016 will separately replay F007 motor expenditures into F002 and charge B communication / grant A 3J resource reward; existing F007 source stays untouched. Compare A0/K/S/T/H/I fixed 24 primary runs; science ledger records any negative result. Actual implementation status still UNEXECUTED at this document version.
