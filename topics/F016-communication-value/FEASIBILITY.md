@@ -57,3 +57,6 @@ F014/F015の「観測を分類できるか」とは異なり、結果は**Aの�
 **GO（設計成立性）**: 独立な位置到達/資源成果、知識非対称性、有限費用、正・負対照を一貫して定義できる。
 **未通過**: source-accurate F007離散計算、F002台帳合成と獲得イベント、事前登録SPEC/PLANの凍結、CI、原本保存、反証監査、独立再現、正式採用。
 別設計Draft PRで数値条件・全seed・停止条件を凍結してから、**独立の実装PR**でコード/数値試験を開始する。採否は結果が出てから。
+
+## 2026-10-21 correction / preregistration supersedes earlier continuous-time target
+The earlier **±0.5 m resource location** and B offsets (+0.4/-0.6) were a continuous-time feasibility sketch and **are invalid for the actual F007 semi-implicit Euler dt=.25s path**. Wolfram exact discrete step audit (before F016 simulator code) establishes A final displacement ±5/8=±0.625m, terminal v=±1m/s, F005/F007 positive midpoint work exactly 1J. The frozen [F016 SPEC](SPEC.md) replaces the target with ±0.625m, B offsets +0.525/-0.725m. All theoretical payoff numbers remain unchanged because F007 1J work remains unchanged. Do **not** silently rewrite the earlier dated feasibility prediction: it is a correction-bearing historical source; the SPEC is normative.
