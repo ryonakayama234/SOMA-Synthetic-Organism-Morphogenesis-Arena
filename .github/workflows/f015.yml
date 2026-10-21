@@ -1,0 +1,39 @@
+name: F015 frozen active-body probe / independent evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Inherited and F015 unittest regression
+        run: python -m unittest discover -s tests -v
+      - name: Optimized F015 type and tamper tests
+        run: python -O -m unittest discover -s tests -p test_f015.py -v
+      - name: 15 F007 trials, 60 local/peer readings, independent oracle, byte replay
+        env:
+          SOMA_PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python -m experiments.F015.run_suite --output-dir runs/F015-ci --replay-output-dir runs/F015-replay
+      - name: Publish immutable evidence archives
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F015-${{ matrix.python }}-evidence
+          path: |
+            runs/F015-ci/
+            runs/F015-replay/
+          if-no-files-found: error
