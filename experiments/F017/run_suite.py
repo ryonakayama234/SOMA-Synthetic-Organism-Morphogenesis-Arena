@@ -71,19 +71,30 @@ def provenance() -> dict:
             "source_hashes":{p:hash_bytes((root/p).read_bytes()) for p in SOURCE_FILES}}
 
 def causal_probe(receiver: Receiver, seed: int, encoding: int, arm: str, phase: str) -> dict:
-    """Off-world matched common uniform/tie draws; no A/world state mutation."""
-    q=receiver.snapshot()["q"]
-    rng=random.Random(rng_seed(f"causal|{seed}|{encoding}|{arm}|{phase}"))
+    """Fork FULL learned policy, including its exact RNG checkpoint, for do(bit).
+
+    Each of 256 draws forks both opaque-bit counterfactuals from an identical
+    trained Q and PRNG state; advance only an OFF-WORLD research RNG between
+    draws. Neither original A's Q/PRNG nor actual physics/ledger is mutated.
+    """
+    checkpoint=copy.deepcopy(receiver)
+    q=checkpoint.snapshot()["q"]
+    checkpoint_state=checkpoint._rng.getstate()
+    state_hash=hash_bytes(repr(checkpoint_state).encode("ascii"))
+    researcher_rng=random.Random()
+    researcher_rng.setstate(checkpoint_state)
     pos=[0,0]
     for _ in range(256):
-        explore=rng.random()<receiver.epsilon
-        tie=rng.randrange(2)
+        shared_state=researcher_rng.getstate()
         for symbol in (0,1):
-            scores=q[str(symbol)]
-            ix=tie if explore or scores[0]==scores[1] else (0 if scores[0]>scores[1] else 1)
-            pos[symbol]+=int(ix==1)
+            fork=copy.deepcopy(checkpoint)
+            fork._rng.setstate(shared_state)
+            force=fork.observe(RawPeerSymbol("B",0,0.0,symbol))
+            fork.end_without_learning()
+            pos[symbol]+=int(force==2.0)
+        researcher_rng.random()
     return {"checkpoint":phase,"plus_counts":pos,"D":(pos[1]-pos[0])/256,
-            "snapshot":q,"draws":256}
+            "snapshot":q,"draws":256,"checkpoint_rng_sha256":state_hash}
 
 def episode(arm: str, seed: int, encoding: int, phase: str, i: int,
             target_right: int, scrambled: int, receiver: Receiver) -> dict:
