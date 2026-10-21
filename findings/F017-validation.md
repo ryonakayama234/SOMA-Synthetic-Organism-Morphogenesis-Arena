@@ -12,7 +12,7 @@ issue: 57
 - **Antecedent observed evidence:** F016's *fixed decoding* ideal 1D 24-trial comparison was limited-adopted. Source: [F016 findings](F016-validation.md), [post-main workflows](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235). It does NOT demonstrate F017 learning.
 - **Hypotheses:** H17a new-sequence learning advantage; H17b symmetry under symbol renaming; H17c experience necessity; H17d secret reversal recovery; H17e physical/ledger/record integrity.
 - **Counterfactuals:** no bit, constant, scrambled, informative/no-learning, informative/no-feedback; independent policy/world PRNG, exact paired target sequence, non-reset reversal stage.
-- **Theoretical precheck only:** Wolfram \`J(p)=3p-1.05\`, break-even vs 0.50 J A-only at \`p>31/60\`; this is NOT F017 observation. Physical target ±0.625m and 1J motor are inherited deliberately ideal F016 conditions.
+- **Theoretical precheck only:** Wolfram `J(p)=3p-1.05`, break-even vs 0.50 J A-only at `p>31/60`; this is NOT F017 observation. Physical target ±0.625m and 1J motor are inherited deliberately ideal F016 conditions.
 - **Status:** proposal before independent design audit, freeze, implementation, CI, raw trace generation, measurements, or adoption. Counts and candidate thresholds are stated in SPEC+PLAN and must be reviewed before first simulator execution.
 
 | Gate | Actual state |
