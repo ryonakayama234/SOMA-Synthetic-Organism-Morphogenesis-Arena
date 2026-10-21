@@ -22,7 +22,7 @@ PHASES = (("train",64),("holdout",32),("probe",16),("adapt",64),("final",32))
 ARMS = ("I","N","K","S","L","F","R")
 SOURCE_FILES = ("soma/f002.py","soma/f007.py","soma/f016.py","soma/f017.py",
                 "experiments/F017/run_suite.py","experiments/F017/verify.py",
-                "tests/test_f017.py",".github/workflows/f017.yml",
+                "tests/test_f017.py","tests/test_f017_experiment.py",".github/workflows/f017.yml",
                 "topics/F017-signal-action-learning/SPEC.md",
                 "experiments/F017/PLAN.md","findings/F017-validation.md",
                 "docs/ARCHITECTURE.md","docs/DATA_CONTRACTS.md")
