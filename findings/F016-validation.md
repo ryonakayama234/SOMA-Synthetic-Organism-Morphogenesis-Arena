@@ -27,3 +27,8 @@ issue: 52
 | 研究者正式採用 / main merge | **NOT AUTHORIZED** |
 
 今後は日付、source SHA、CI URL、全条件の**実測値と失敗**を追記する。理論予測を実験結果に上書きしない。
+
+## 2026-10-21 — Wolfram PRE-EXECUTION discrete correction / F016 SPEC freeze
+The previous continuous-time analytical target ±0.5m was **incorrect for the adopted F007 semi-implicit-Euler stepper** at dt=.25. In exact rational Wolfram step recurrence v'=v+u dt/(mA+mB), x'=x+v' dt, after 4 steps x=±5/8m (not ±1/2m), v=±1m/s; trapezoidal positive motor work by step [1/16,3/16,5/16,7/16]J sums to 1 J, not motor force × discrete displacement. The study *preregistered* target is corrected to ±0.625m in [SPEC](../topics/F016-communication-value/SPEC.md) and [PLAN](../experiments/F016/PLAN.md) **before** first F016 simulation. Earlier theoretical payoff numbers persist at true target ±.625m. This is theory-only and NOT observed F016 data.
+
+**Frozen predicted 24 primary episodes:** A0/K/S/T/H/I 4 each, target [R,L,R,L], bit shuffle [R,R,L,L], predicted successful counts 2/2/2/4/4/0 and expected µJ per episode 500000/450000/450000/1950000/0/-1050000. Full source-bound saved-model audit and test status **UNEXECUTED** at preregistration. No F016 scientific acceptance.
