@@ -1014,3 +1014,7 @@ flowchart TD
 ~~~
 
 **Data/control distinctions:** A observes only opaque symbol (not fixed F016 resource-direction bool), own chosen action and settled own ledger feedback. Trainer is an independent experimental-layer feedback switch: frozen holdouts have no learn call, not a phase flag passed to A. B does NOT learn. Mapping reversal is made only by investigator after a frozen no-learning holdout; the same A policy state persists. Researcher-only world, true attachment, F007 global state and cross-cell net score NEVER enter A policy. Diagram represents a future, not implemented, module; F016's limited-adopted fixed decoder remains unchanged.
+
+
+### F017 design-only causal listening audit (pre-execution)
+In addition to the F017 main diagram above, the researcher-only audit may clone a frozen A policy at an unseen holdout checkpoint and vary just `do(symbol=0/1)` with matched RNG and fixed input. Compare resulting ±2N action distributions WITHOUT running F007, changing original learning state, paying a B transmission fee or disclosing the intervention to A. This separates causal response of A's policy from independent physical resource advantage. The B sender rule remains externally specified; both sending and listening emerging spontaneously are **NOT TESTED**. [H17f candidate](../topics/F017-signal-action-learning/SPEC.md).
