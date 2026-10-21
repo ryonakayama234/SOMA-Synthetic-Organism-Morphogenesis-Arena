@@ -1,12 +1,26 @@
-# F016: communication net action value (design feasibility only)
+# F016 — 1bit communication net physical-action value
 
-Status (2026-10-21): **NO F016 SIMULATION CODE, NO OUTPUT, NO CI, NO ADOPTION.**
+**IMPLEMENTATION CANDIDATE / NOT SCIENTIFICALLY ADOPTED.** Do not treat this page as observed F016 simulator results until exact-HEAD CI passes and source-bound artifacts are audited.
 
-- Study proposal: [Issue #52](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/52).
-- Candidate physical/task feasibility: [FEASIBILITY](../../topics/F016-communication-value/FEASIBILITY.md).
-- Proposed controls and measurements: [PLAN](PLAN.md).
-- Theory-only Wolfram precheck and immutable future evidence log: [FINDINGS](../../findings/F016-validation.md).
-- Related long-term body/communication co-emergence question: [Issue #51](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/51).
+Study: [Issue #52](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/52) / [frozen SPEC](../../topics/F016-communication-value/SPEC.md) / [preregistered PLAN](PLAN.md) / [append-only findings](../../findings/F016-validation.md).
+The older ±0.5m continuous-time feasibility idea was corrected to ±0.625m before implementation. Motor positive work remains 1J.
 
-**Do not execute an F016 suite until SPEC/PLAN are reviewed, frozen and merged separately.**
-Any implementation must preserve F001–F015 adopted code/observations and V001/F011 follow-up backlog.
+Implemented candidate:
+- `soma/f016.py`: typed B-local 1bit projector, A fixed 2N sign policy, reused F007 ideal linked physics, F002 sidecar with B-sender fee, A recorded motor expenses and A end-position-dependent resource gain.
+- `run_suite.py`: 6 frozen groups ×4 independent full resets =24 runs, CSV+JSON raw world truth per episode and source-bound SHA256 manifest, no source alteration.
+- `verify.py`: separate source- and saved-world-data verifier with independent dyadic Euler recurrence, event/ledger arithmetic, per-step physics, behavior outcomes, truth boundary and rehashed false-science rejection.
+- `tests/test_f016.py`: observations, 24 frozen controls, sender insufficiency, packet forgery, two-root byte replay and rehashed outcomes/positions.
+- `.github/workflows/f016.yml`: Python 3.11/3.12 entire inherited unittest suite + F016 -O, saved-evidence generation, full independent audit and two-root directory diff.
+
+WSL2/bash usage from checked-out **implementation branch**:
+```bash
+python -m unittest discover -s tests -p test_f016.py -v
+python -m experiments.F016.run_suite --output-root runs/F016-ci
+python -m experiments.F016.verify --root runs/F016-ci
+python -m experiments.F016.run_suite --output-root runs/F016-replay
+diff -rq runs/F016-ci runs/F016-replay
+```
+
+Outputs must not preexist; `runs/` is ignored. Manifest git SHA/dirty and source file hashes are captured before run. Cross-root byte identity is audited, not inferred.
+
+**Boundary:** B bit's resource-side meaning is researcher specified; F007 motor is ideal external effective force; 1D resource sensing is an exogenous visibility mask, not a physical camera/optical simulation; communication has positive sender energy fee but is ideal instantaneous/delay-free. No radio, true self-organized signal, body-topology recognition, shape morphogenesis or external human peer review.
