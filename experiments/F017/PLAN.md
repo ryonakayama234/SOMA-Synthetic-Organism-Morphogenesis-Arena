@@ -1,7 +1,7 @@
 ---
 id: F017-PLAN
 kind: experiment_plan
-status: candidate_unfrozen_unexecuted
+status: frozen_before_first_world_run
 updated: 2026-10-21
 issue: 57
 ---
@@ -34,3 +34,8 @@ Each H17a–e receives separately SUPPORTED / CONTRADICTED / INCONCLUSIVE / UNEX
 
 ## Additional causal intervention arm — offline policy forks, NOT extra physical episodes
 At both unseen holdout checkpoints save A-policy snapshots (Q and exploration state) independently of any investigator truth. Clone each snapshot twice with matched independent RNG draws; replace only the validated message's *opaque symbol* 0↔1. Take 256 actions for each do-symbol condition WITHOUT executing F007 physics or learning. Record action distributions, signed causal response D, sampling method and source hashes. Also fork a no-feedback/frozen-Q policy. Neither probe branch can affect the primary training stream. Distinguish (a) a message actually influencing the A action policy from (b) task outcome advantage. This follows the positive-listening distinction in [Lowe et al. 2019](https://ifaamas.org/Proceedings/aamas2019/pdfs/p693.pdf). See proposed H17f threshold in SPEC. **No probe has been run.**
+
+
+## 2026-10-22 preregistration freeze
+**FROZEN PRE-EXECUTION, F017 SIMULATION UNEXECUTED AT THIS COMMIT.**
+The dated final [SPEC](../../topics/F017-signal-action-learning/SPEC.md) appendix defines the exact deterministic SHA256-based world and scramble phase-balanced permutations, 8 seeds × 2 encodings, 6 primary arms plus the secondary R every-episode-reset/no-memory ablation: 23,296 F007 episodes in total. All groups run fresh physics in each episode; only the receiver's Q and RNG persist in arms I,N,K,S. H17a–f gates are frozen. This design is subject to independent post-run audit; negative outcomes will be kept, never used to change this frozen plan.
