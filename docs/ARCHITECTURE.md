@@ -988,3 +988,40 @@ Candidate `soma/f016.py` is **not** an accepted API; used source/model only in i
 
 ### F016 final main integration and limitation (2026-10-21)
 The F016 truth→B-local initial resource-side bit→A fixed ±2N policy→unmodified F007 two-body 1D→F002 combined sidecar→researcher-side frozen terminal task oracle **now executes as an ADOPTED LIMITED ideal numerical module** on main merge `146e51db0e2356ed671599266b6c4acd7b7ec954`; [post-main F016 run](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235) and all 16 inherited/new workflows succeeded. Diagram segments describing this F016 design as *future/proposed* are archived context. Persistent physical-model boundary: F007 motor is external effective force, B sensor access is a manually assigned observation mask, bit meaning is fixed, and payload delivery ideal zero-latency; no learned body's dynamic reconfiguration, real radio or sensor simulation.
+
+## F017 設計候補：経験で獲得する受信bitの行為的意味【未実装・未検証】
+
+[Issue #57](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/57) / [SPEC](../topics/F017-learned-signal/SPEC.md) / [PLAN](../experiments/F017/PLAN.md) / [findings: UNEXECUTED](../findings/F017-validation.md)。
+
+**実線の既存F007/F002物理機構と、点線のF017提案（受信器・学習）を区別。** F016の固定意味を入力しない。下図は実験データではない。
+
+~~~mermaid
+flowchart TD
+  subgraph WORLD["研究者側: 世界真値（Aから隔離）"]
+    TARGET["資源±0.625m / 未知の符号変換"]
+    BB["B局所観測への射影\n0/1 原信号"]
+    EVAL["独立の成果評価 / 監査"]
+    TARGET --> BB
+  end
+  subgraph LEARN["受信セルA: F017提案（未実装）"]
+    BIT["無名0/1/None + source/time"] -.-> Q["Q(bit, motor)\n初期対称・経験保持"]
+    Q -.-> ACTION["±2N 力指令"]
+    FEEDBACK["A自身の資源獲得量と\n実モーター支出"] -.-> Q
+  end
+  subgraph ENGINE["既存数値環境 (F007 / F002)"]
+    F007["F007: 1Dリンク+運動 / motor work"]
+    F002["F002: A電池・資源獲得 / B送信費"]
+  end
+  BB -.->|"外生的な通常/反転操作\n意味ラベルは隠す"| BIT
+  ACTION -.-> F007
+  F007 --> F002
+  F002 -.->|"A局所の結果だけ"| FEEDBACK
+  F007 --> EVAL
+  F002 --> EVAL
+  TARGET --> EVAL
+~~~
+
+- **Aの生涯経験**だけ保持。各エピソードでF007世界/セル電池はreset。原始的な±2N動作が既知でも、bitの意味は未知。
+- フィードバックは「正解bit」ではなくAが獲得した資源・支出したモーター仕事。B送信費、資源座標、符号反転の真値は研究者側のscore/監査だけに残す。
+- 意味学習の成立判定は、独立のholdout・no-bit/constant/shuffled/feedback-ablated対照・反転介入による行為変化で行う。
+- 長期#51の「身体×通信共創発」のGate Bに進む**候補**で、B送信器・役割交換・形態を共適応させたことにはならない。
