@@ -1,0 +1,44 @@
+name: F017 unknown-symbol embodied learning evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  frozen-evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11','3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Inherited and F017 full unittest
+        run: python -m unittest discover -s tests -q
+      - name: Optimized F017 falsification smoke
+        run: python -O -m unittest discover -s tests -p "test_f017*.py" -q
+      - name: Frozen 23,296 worlds with independent saved-data oracle and analysis
+        run: |
+          python -m experiments.F017.run_suite --output-root runs/F017-ci
+          python -m experiments.F017.verify --root runs/F017-ci
+          python -m experiments.F017.analyze --root runs/F017-ci | tee runs/F017-analysis.txt
+          python -m experiments.F017.run_suite --output-root runs/F017-replay
+          diff -rq runs/F017-ci runs/F017-replay
+      - name: Upload independent raw evidence and analysis
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F017-${{ matrix.python }}-frozen-evidence
+          path: |
+            runs/F017-ci/
+            runs/F017-replay/
+            runs/F017-analysis.txt
+          if-no-files-found: error
