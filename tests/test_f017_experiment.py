@@ -6,7 +6,7 @@ import copy
 import random
 import unittest
 from soma.f017 import Receiver
-from experiments.F017.run_suite import episode, schedule, rng_seed
+from experiments.F017.run_suite import causal_probe, episode, schedule, rng_seed
 from experiments.F017.verify import verify_world, init_q, permutation
 
 
@@ -32,6 +32,23 @@ class F017EvidenceUnitTests(unittest.TestCase):
         self.assertEqual(updated,1)
         self.assertEqual(rec["motor_spent_uj"],1_000_000)
         self.assertEqual(rec["ledger_residual_uj"],0)
+
+    def test_offworld_full_policy_rng_clone_does_not_advance_main_learner(self):
+        receiver=Receiver(exploration_seed=rng_seed("policy|0|0|I"))
+        for sym in (0,1,0,1):
+            from soma.f017 import RawPeerSymbol
+            action=receiver.observe(RawPeerSymbol("B",0,0.0,sym))
+            reward=3_000_000 if (sym==0 and action==-2.0 or sym==1 and action==2.0) else 0
+            receiver.learn(own_action_n=action,own_acquired_uj=reward,
+                           own_motor_spent_uj=1_000_000)
+        original_q=receiver.snapshot()
+        original_rng=receiver._rng.getstate()
+        a=causal_probe(receiver,0,0,"I","holdout")
+        self.assertEqual(a,causal_probe(receiver,0,0,"I","holdout"))
+        self.assertEqual(receiver.snapshot(),original_q)
+        self.assertEqual(receiver._rng.getstate(),original_rng)
+        self.assertEqual(a["draws"],256)
+        self.assertEqual(len(a["checkpoint_rng_sha256"]),64)
 
     def test_rehashed_narrative_forgery_rejected_by_independent_semantics(self):
         for field in ("net_uj","action_n","target_right","position","q_update","packet"):
