@@ -56,6 +56,12 @@ def analyze(root: Path):
               for phase in ("holdout","final") for encoding in (0,1))
           and all(abs(intervention[f"{arm}/{phase}/encoding{encoding}"])<=.10
                   for arm in ("L","F") for phase in ("holdout","final")
+                  for encoding in (0,1))
+          and all(intervention[f"I/{phase}/encoding0"]*
+                  intervention[f"I/{phase}/encoding1"] < 0
+                  for phase in ("holdout","final"))
+          and all(intervention[f"I/holdout/encoding{encoding}"]*
+                  intervention[f"I/final/encoding{encoding}"] < 0
                   for encoding in (0,1)))
     return {"schema":"f017.analysis.v1","auditor":audited,
             "holdout_I_hit_rate":first,"holdout_by_encoding":enc,
