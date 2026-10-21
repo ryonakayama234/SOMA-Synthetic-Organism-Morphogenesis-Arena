@@ -1,3 +1,5 @@
+**Current status (2026-10-21): F016 LIMITED ADOPTED in fixed ideal F007 1D task scope; actual design #54 and implementation #55 merged, post-main [Actions #39582766235](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235) 16/16 SUCCESS.** See [final append-only findings](../../findings/F016-validation.md) and frozen [SPEC](../../topics/F016-communication-value/SPEC.md). Subsequent 'candidate' wording below is historical. This is not a hardware communication or spontaneous semantic evolution claim.
+
 # F016 — 1bit communication net physical-action value
 
 **IMPLEMENTATION CANDIDATE / NOT SCIENTIFICALLY ADOPTED.** Do not treat this page as observed F016 simulator results until exact-HEAD CI passes and source-bound artifacts are audited.

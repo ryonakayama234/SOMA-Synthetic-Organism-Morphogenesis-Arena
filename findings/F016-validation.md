@@ -1,7 +1,7 @@
 ---
 id: FIND-F016
 kind: validation
-status: observed_candidate_under_review
+status: limited_adopted_main_20261021
 updated: 2026-10-21
 issue: 52
 ---
@@ -61,3 +61,9 @@ Independent Wolfram exact dyadic recurrence: `v_k = F*k/8`, `x_k=F*k*(k+1)/64`m 
 
 ### Restricted candidate decision
 **RECOMMEND LIMITED ADOPTION** of `f016.action.v1` and the 24-case independent comparison/evidence harness ONLY as an ideal 1D researcher-fixed B-bit → A-action → terminal-position/resource-scoring numerical module, if documentation-inclusive final source HEAD CI and actual GitHub integration/post-main CI succeed. Not recommended: general communication ability, natural semantic origin, real electromagnetic energy, physical body recognition, 2D/3D or morphology emergence. Prior to an actual merge, the above reviewed `3fc7b0a7` source evidence is factual, but current updated documentation **changes the source SHA**, so exact-final-HEAD verification is required again before formal integration. Preserve prior pre-run notes above, rather than rewriting them as results.
+
+## 2026-10-21 — FINAL ACTUAL MERGE and main CI; limited adoption scope authoritative
+- Frozen [design PR #54](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/54) successfully merged `bd0effcd3dc4b9fd5d1b4d25f2d4a0e7acff93dc` (all 15 design-HEAD workflows succeeded). [Implementation PR #55](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/55) after source-head review and scope-restricted scientific decision merged **`146e51db0e2356ed671599266b6c4acd7b7ec954`**. This is confirmed GitHub merge status, not inferred from comments or hypothetical authorization.
+- [Post-main F016 Actions #39582766235](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235): main `146e51db...` **16/16** workflows completed successful. Python 3.11/3.12 both F016 evidence jobs SUCCESS, including 197 full +6 optimized F016 tests, 24 frozen A0/K/S/T/H/I episodes, 49 file/source SHA256 audit, rehashed false-science negative controls and two-root byte-identical replay. [Main 3.11 artifact #12337931463](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235/artifacts/12337931463) / [3.12 #12336773011](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235/artifacts/12336773011).
+- Observed numerical comparison unchanged from pre-main: A0=+500000, K=+450000, S=+450000, T=+1950000, H=0, I=−1050000 µJ/trial. Supported: **a correct fixed-meaning costly 1bit B-local resource sign can improve this specific 1D terminal task**, while costly, fake or shuffled bit can lose the advantage. Not supported: naturally invented signal semantics, real communication hardware, self-developed body schema, self-assembly, sensor visibility as real optical physics, arbitrary dt, general unknown tasks or external human peer review.
+- **Formal outcome: LIMITED ADOPTED in this precise scientific scope.** Older UNEXECUTED, CANDIDATE or FINAL-CI-PENDING sections above remain dated provenance; this newest section supersedes their status, not their original evidence. F011 open #37 and V001 draft remain independent.
