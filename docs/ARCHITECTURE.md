@@ -988,3 +988,29 @@ Candidate `soma/f016.py` is **not** an accepted API; used source/model only in i
 
 ### F016 final main integration and limitation (2026-10-21)
 The F016 truth→B-local initial resource-side bit→A fixed ±2N policy→unmodified F007 two-body 1D→F002 combined sidecar→researcher-side frozen terminal task oracle **now executes as an ADOPTED LIMITED ideal numerical module** on main merge `146e51db0e2356ed671599266b6c4acd7b7ec954`; [post-main F016 run](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39582766235) and all 16 inherited/new workflows succeeded. Diagram segments describing this F016 design as *future/proposed* are archived context. Persistent physical-model boundary: F007 motor is external effective force, B sensor access is a manually assigned observation mask, bit meaning is fixed, and payload delivery ideal zero-latency; no learned body's dynamic reconfiguration, real radio or sensor simulation.
+
+### F017 candidate architecture — receiver learns symbolic action value (2026-10-21; NOT IMPLEMENTED)
+
+**STATUS: DESIGN DRAFT / NO F017 DATA.** [F017 SPEC](../topics/F017-signal-action-learning/SPEC.md) / [PLAN](../experiments/F017/PLAN.md) / [findings](../findings/F017-validation.md) / [Issue #57](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/57).
+
+~~~mermaid
+flowchart TD
+ W["Investigator world: hidden target sign, trial order and secret symbol mapping"] --> B["B-only local resource-side sensor (ideal F016 mask)"]
+ B --> M["Researcher-controlled mapping: opaque symbol 0 or 1"]
+ M --> P["Verified B packet / absent-packet control"]
+ P --> A["A receiver: observe(raw symbol / None); choose ±2 N"]
+ Q["A private Q(symbol, action), experience-based"] --> A
+ A --> F["UNCHANGED F007 ideal fixed 1D two-cell physics"]
+ F --> E["F002 independent sidecar: A work, B fee, A resource acquisition"]
+ E --> L["Allowlisted A own feedback: acquired_uj + motor_spent_uj"]
+ L --> Q
+ W --> T["Researcher-only truth & experiment allocation"]
+ E --> V["Independent saved-world auditor / physical, ledger, leakage and hash verification"]
+ T --> V
+ Q -. "Policy snapshot for research audit only" .-> V
+ V --> R["Append-only findings; heldout and reversal comparisons; no F017 observations yet"]
+ W -. "FORBIDDEN: true target, mapping, reversal, episode id, topology" .-> A
+ E -. "FORBIDDEN: B fee and net score to learner" .-> A
+~~~
+
+**Data/control distinctions:** A observes only opaque symbol (not fixed F016 resource-direction bool), own chosen action and settled own ledger feedback. Trainer is an independent experimental-layer feedback switch: frozen holdouts have no learn call, not a phase flag passed to A. B does NOT learn. Mapping reversal is made only by investigator after a frozen no-learning holdout; the same A policy state persists. Researcher-only world, true attachment, F007 global state and cross-cell net score NEVER enter A policy. Diagram represents a future, not implemented, module; F016's limited-adopted fixed decoder remains unchanged.
