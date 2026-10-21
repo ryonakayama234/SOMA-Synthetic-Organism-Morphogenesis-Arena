@@ -2,8 +2,8 @@
 id: F017
 title: Unknown binary signal to embodied action — candidate preregistration
 kind: preregistration
-status: candidate_unfrozen_unexecuted
-updated: 2026-10-21
+status: frozen_before_first_f017_world_run
+updated: 2026-10-22
 issue: 57
 depends_on: [F002, F007, F016]
 ---
@@ -58,3 +58,15 @@ Lowe et al. (AAMAS 2019), [On the Pitfalls of Measuring Emergent Communication](
 **H17f (proposed additional falsification gate):** Snapshot identical learned A-policy Q and RNG state at initial and reversed unseen holdouts; for each snapshot perform *offline* paired `do(symbol=0)` vs `do(symbol=1)` with identical A-local/world state and matched independent exploration draws, **without advancing the actual F007 world, charging B or updating Q**. Estimate `D = P(A chooses +2N | do(symbol=1)) - P(A chooses +2N | do(symbol=0))` over 256 matched policy draws/snapshot. Pre-freeze candidate gate `|D| >= 0.50` in informative learned initial holdout, with sign reversed between opposite encodings and after reversal re-adaptation; `|D| <= 0.10` for untrained/no-feedback policies. This isolates **message-caused policy change** from merely correlated messages. Report outcome benefit separately: an agent can react to a bit without that reaction helping its embodied task. Probe results are *researcher-only*, never sent back to A; use a cloned, immutable learner state and deterministic paired RNG. H17f is **UNEXECUTED**, not a derived observation.
 
 This adds a pre-execution criterion to the candidate design; H17a–e remain as proposed. Scientific acceptance cannot rest on significance of message–action correlations alone.
+
+
+## 2026-10-22 final PRE-RUN FREEZE: reproducible allocations and ablations
+
+**FROZEN BEFORE FIRST F017 WORLD SIMULATION; NOT AN OBSERVED RESULT.** This dated section supersedes the older "candidate/unfrozen" status while leaving historical proposal text intact. Experimental evidence, H17 verdicts and scientific adoption do not exist at freeze.
+- Investigator seeds `0..7`; two hidden encodings `0,1`; primary arms I,N,K,S,L,F. A separate full-length **R** no-memory reset-Q ablation is explicitly secondary. Six primary arms ×8×2×208 = 19,968 F007 episodes; R adds 3,328, total **23,296**.
+- Phases `train:64`, `holdout:32`, `probe:16`, `adapt:64`, `final:32`. Each phase has exactly half targets right. For each world seed / phase / index i (0-based), sort the SHA256 bytes of ASCII `f017.v1|world|{seed}|{phase}|{i}`, breaking ties by index, and make the first n/2 indices RIGHT, remaining LEFT. All arms/encodings receive exactly the same target ordering for paired comparisons.
+- Independent `S` scrambled payload: same sign-balanced procedure using `f017.v1|scramble|{seed}|{phase}|{i}`, no reroll to force an observed correlation. `K`: always symbol integer 1; `N`: no packet. `I,L,F,R`: B-local `int(target_right) XOR encoding XOR int(phase in {probe,adapt,final})`. A never sees seed, phase, encoding or the target.
+- Independent policy RNG seed = unsigned big-endian SHA256 integer of ASCII `f017.v1|policy|{seed}|{encoding}|{arm}`; each R episode independently reinitializes Q and RNG with `f017.v1|reset|{seed}|{encoding}|{phase}|{i}`. Use Python `random.Random`, verify reproducibility under 3.11/3.12 and save schedule digest.
+- Receiver may update Q ONLY in train/adapt of I,N,K,S; R updates Q once before discarding it. L and F withhold every learning feedback call (functionally identical frozen-Q mechanisms, not independent confirmation). Holdout/probe/final never update any Q. After secret reversal I/N/K/S retain learned Q and PRNG state.
+- Existing frozen candidate gates H17a–f remain as stated, α=.25 ε=.125, source-bound paired independent data audit and 256 matched causal-listening draws. Uncertainty resamples eight world seeds (both encodings bundled) using 10,000 fixed deterministic seed-level bootstrap draws; with only eight independent seeds, scientific scope must remain narrow.
+- The researcher sets resources, ideal F007 mechanics, sender-role B and observability mask. **No body/emergent communication claims.** No first-world-run data was consulted to freeze this design.
