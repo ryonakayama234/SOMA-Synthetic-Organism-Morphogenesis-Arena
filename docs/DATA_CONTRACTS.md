@@ -882,7 +882,7 @@ The versioned `f015.comparison.v1`, `f015.probe.v1` and `f015.evidence.v1` candi
 |---|---|---|
 | ResearchEpisodeConfig | resource_x_m: float ±0.5; mA=mB=1kg; link_length_m=0.1; dt_s=0.25; T_s=1; energy_reward_uj=3000000; comm_cost_uj∈{0,50000,2000000} | **研究者専用truth**。Aに資源位置を渡さない |
 | BLocalResourceBit | source_id="B"; step=0; measured_side: bool; sent_at_s: 0; valid/missingを区別 | Aが読めるのは**Bの局所センサーの方向符号だけ**。F014 PeerPacket(moved)と非互換 |
-| AAllowedObservation | A自身のx/v/指令/実適用/電池残量 + 検証済みBLocalResourceBit | None | controllerはresource_x_m、connected真値、外力、B座標/速度、将来獲得Jを読めない |
+| AAllowedObservation | A自身のx/v/指令/実適用/電池残量 + 検証済みBLocalResourceBit or None | controllerはresource_x_m、connected真値、外力、B座標/速度、将来獲得Jを読めない |
 | ResourceOutcome（truth） | x_a_final_m, resource_x_m, reached: bool（許容差0.01m）、acquired_uj | **研究者専用**。数値物理と資源判定を生CSVから監査 |
 | EnergySidecar（提案） | F007 motor spent_a_uj, B communication_spend_uj, A acquire_uj, balances_uj, residual_uj | F002会計則を再利用し、F007 motor spent二重計上を拒否 |
 | Comparison（提案） | group, target_side, success, net_gain_uj, paired_delta_uj, seed, status | A-only、定数bit、独立シャッフル、真B-bit低費用/高費用、欠損/改ざんを分ける |
