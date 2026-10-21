@@ -29,6 +29,7 @@ jobs:
         run: |
           python -m experiments.F017.run_suite --output-root runs/F017-ci
           python -m experiments.F017.verify --root runs/F017-ci
+          python -m experiments.F017.attack_test --root runs/F017-ci
           python -m experiments.F017.analyze --root runs/F017-ci | tee runs/F017-analysis.txt
           python -m experiments.F017.run_suite --output-root runs/F017-replay
           diff -rq runs/F017-ci runs/F017-replay
