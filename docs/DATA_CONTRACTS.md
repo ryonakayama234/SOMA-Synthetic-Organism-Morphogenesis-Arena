@@ -867,3 +867,7 @@ flowchart LR
 
 新規APIは結合構造を返さず、例外を欠損と混同しない。F014単独試行のu0=inconclusive仕様は残したまま、F015の事前に励起した**複数試行系列**でu0観測を比較する。意図的u0とE電池拒否は別。全て限定1Dモデル内の候補であり、実体配線・センサー騒音・独立外部査読を表さない。
 
+### F015 2026-10-21 tested schema and scientific decision
+
+The versioned `f015.comparison.v1`, `f015.probe.v1` and `f015.evidence.v1` candidate fields and strict source/projection contracts above were exercised in [implementation CI #39538071630](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39538071630) on `9725c556741b373184a53e6a407644644ff75952`, with all 15 trial identities and 138 artifacts authenticated against independently recalculated F007 state/ledger and 60 A+60 B rows. The numeric reference remains a *researcher-frozen ideal*; the status is a reference comparison not a connected-topology signal. LIMITED ADOPTION APPROVED **only within these frozen model conditions**, subject to documentation-inclusive final CI and actual merge/record; earlier design-only headings are archival and are not rewritten.
+

@@ -934,3 +934,7 @@ flowchart TD
 
 **科学的境界:** `soma/f015.py` はF007の実装も`soma/f014.py`も変更しない。参照 `a_A=u/2` は既知と仮定された理想2質点モデルであり、自己生成の身体構造認識ではない。A-onlyでもF-fixedとLを区別できるならB bit独自の価値を誇張しない。T-trackingの一致は「結合真偽を識別できない」という重要な反証例。
 
+### F015 2026-10-21 observed/limited-adoption decision
+
+The F015 implementation candidate was **executed and verified** on source HEAD `9725c556741b373184a53e6a407644644ff75952`, [Actions #39538071630](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39538071630): 15 frozen software trials, 60 A-local + 60 B boolean observations, independent saved-world ledger and reference audit, false-science negatives, 138 saved files byte-identical across independent runs. F-fixed differs from linked reference in **A-only** after u decreases; the B-bit has **zero extra discrimination** here, and T-tracking still mimics L fully. The proposed-only diagram directly above retains its date; this paragraph is a newer verified implementation milestone. **Scientific acceptance limited to ideal F007 observation response signature, conditional on docs-inclusive final CI and actual main merge; no topology verification or autonomous morphology.**
+

@@ -61,3 +61,10 @@ F014の単試行 `estimate_trial` はu=0をinconclusiveとする仕様のまま�
 
 ## 分離と採用ゲート
 この事前登録とWolframの有理数チェックは実験結果ではない。**別implementation PR**でのみF015コード・15-run証拠・独立audit・CI・観測に基づくfindings追記を行う。F001–F014、V001 Draft、F011 no-ground Issue #37を無改変。採用は理想1Dモデルの条件付き介入/識別境界に限定し、実世界の因果識別や通信・ノイズ・自律学習・形態創発を含めない。外部人間査読は実施しない限り主張しない。
+
+## 2026-10-21 — Post-experiment limited scientific acceptance (append-only; not new preregistration)
+
+[Observed evidence](../../findings/F015-validation.md) on implementation HEAD `9725c556741b373184a53e6a407644644ff75952` supports H15a–e **only for the fixed ideal F007 1D numerical experiment**: L/F/T identical at u2, held F differs already via A-only at u1/u0, tracking T retains full L equivalence under all u. B one-bit **adds zero unique discrimination** given the complete A-only schedule; this absence of gain is an important negative result. Typed `f015.comparison.v1` is accepted only as an explicit ideal-reference *observation-signature* comparison, never connected topology or general body schema learning. E/transport missing remain INCONCLUSIVE. Python3.11/3.12 191 full +5 optimized tests each, 15 runs, 60+60 observations, 138-file byte replay and rehashed forgery negatives checked at the cited SHA. Wolfram symbolic checks are not new model runs; same-author auditor is not external human peer review.
+
+**Decision:** LIMITED ADOPTION APPROVED, **conditional on final documentation-inclusive CI and actual merge verification**. All earlier front-matter/status and design-only notes are preserved as historical snapshots. No hardware claims, spontaneous morphogenesis, self-directed probe planning, full causal identification without nuisance assumptions, physical energy/ground, sensor noise or external human peer review. The two PRs must be merged in order after final CI; record resulting SHA and post-main Actions in Issue #48. If the final exact-HEAD run fails, integration is not authorized until fixed and re-audited.
+
