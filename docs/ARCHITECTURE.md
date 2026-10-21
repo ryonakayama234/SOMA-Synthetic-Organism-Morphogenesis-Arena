@@ -964,3 +964,5 @@ flowchart TD
 
 区別すべき2系統：**Aの意思決定入力**はAローカルとB由来1bitだけ、**研究者オラクル**は真値から到達結果と台帳整合性を評価する。bit内容はF014のB移動bitと別物であり、F015の身体関係識別不能性を解決したことにはならない。
 
+### F016 preregistration correction (2026-10-21, pre-experiment)
+The F016 diagram above is **conceptual, not implemented**. [Frozen SPEC](../topics/F016-communication-value/SPEC.md) sets F007 discrete 1-second terminal resource coordinates ±0.625m (prior ±0.5m continuous-time target withdrawn) and a researcher-side observability mask: B can observe initial resource-relative direction, A cannot. That mask is an assumed ideal sensor interface, **not demonstrated occlusion optics in 1D**. F016 will separately replay F007 motor expenditures into F002 and charge B communication / grant A 3J resource reward; existing F007 source stays untouched. Compare A0/K/S/T/H/I fixed 24 primary runs; science ledger records any negative result. Actual implementation status still UNEXECUTED at this document version.
