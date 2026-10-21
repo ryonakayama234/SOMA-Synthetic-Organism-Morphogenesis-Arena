@@ -50,3 +50,11 @@ With correct-action probability p, ideal fixed-action cost 1 J and B fee .05 J, 
 
 ## Governance / immutable evidence
 One design-only Draft PR must contain SPEC, PLAN, UNEXECUTED findings, architecture figure, data contracts, README/AGENTS index, with zero changes to F001–F016. Audit and **freeze/merge design first**. Separately implement `soma/f017.py`, producer, saved-data independent auditor and tests on a later implementation Draft PR; no scientific adoption or main merge without recorded actual source-HEAD CI, artifact checks and researcher judgment. Negative data and dated historical proposals append-only.
+
+
+## Design-review addition: test **causal listening**, not message correlation (pre-freeze)
+Lowe et al. (AAMAS 2019), [On the Pitfalls of Measuring Emergent Communication](https://ifaamas.org/Proceedings/aamas2019/pdfs/p693.pdf), distinguish positive signaling from positive listening and show why mere message correlations or reward changes are insufficient to characterize learned communication. F017's B signal is **researcher-assigned positive signaling**; no emergent sender rule is claimed.
+
+**H17f (proposed additional falsification gate):** Snapshot identical learned A-policy Q and RNG state at initial and reversed unseen holdouts; for each snapshot perform *offline* paired `do(symbol=0)` vs `do(symbol=1)` with identical A-local/world state and matched independent exploration draws, **without advancing the actual F007 world, charging B or updating Q**. Estimate `D = P(A chooses +2N | do(symbol=1)) - P(A chooses +2N | do(symbol=0))` over 256 matched policy draws/snapshot. Pre-freeze candidate gate `|D| >= 0.50` in informative learned initial holdout, with sign reversed between opposite encodings and after reversal re-adaptation; `|D| <= 0.10` for untrained/no-feedback policies. This isolates **message-caused policy change** from merely correlated messages. Report outcome benefit separately: an agent can react to a bit without that reaction helping its embodied task. Probe results are *researcher-only*, never sent back to A; use a cloned, immutable learner state and deterministic paired RNG. H17f is **UNEXECUTED**, not a derived observation.
+
+This adds a pre-execution criterion to the candidate design; H17a–e remain as proposed. Scientific acceptance cannot rest on significance of message–action correlations alone.
