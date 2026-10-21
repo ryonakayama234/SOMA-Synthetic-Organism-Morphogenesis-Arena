@@ -2,7 +2,8 @@
 
 No sender policy, world state, or topology truth is passed to this receiver.
 This is receiver-side experience learning, not emergent communication or body formation.
-DESIGN UNFROZEN: code candidate only, no F017 experiment/adoption claims.
+DESIGN FROZEN; implementation evaluated only in limited ideal 1D F007/F002 task.
+Not evidence of spontaneous signaling, body emergence or hardware.
 """
 from __future__ import annotations
 

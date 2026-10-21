@@ -1062,3 +1062,15 @@ flowchart TD
   A -. "No source packet, mapping flag, target or B fee leak" .-> R
 ~~~
 **Status: implementation candidate only.** `experiments/F017/run_suite.py` creates 23,296 1D worlds using F007 and F002, `experiments/F017/verify.py` independently recalculates raw world/learned Q/reward and `analyze.py` applies the frozen gates. Paired counterfactual listener forks operate OFF-WORLD. A's policy has no researcher target or trial flags. This is NOT sender-rule co-emergence, real radio/ground, role formation or morphology. [Frozen SPEC](../topics/F017-signal-action-learning/SPEC.md) / [PLAN](../experiments/F017/PLAN.md).
+
+### F017 causal-listening auditor wiring correction (2026-10-22)
+~~~mermaid
+flowchart LR
+ A["A learner after training Q + PRNG state"] --> F0["Frozen full fork: do(B bit=0)"]
+ A --> F1["Frozen full fork: do(B bit=1)"]
+ F0 --> C["Matched ±2N action distribution; 256 draws"]
+ F1 --> C
+ C --> V["Separate saved-evidence oracle reconstructs RNG state and recomputes D"]
+ C -. "No F007 world advance, no B fee, no learning" .-> A
+~~~
+The full learned PRNG state, not a freshly seeded unrelated probe generator, is the paired intervention checkpoint. This is an OFF-WORLD policy causal test, **not** evidence that the sender B developed communication incentives.
