@@ -989,3 +989,8 @@ flowchart LR
 | `f018.evidence.v1` | NO | frozen design/source SHAs, raw state/ledger/resource event SHA256 inventory, independent mechanical and F002 µJ audit, rehashed-score attack, deterministic replay across roots and Python3.11/3.12 workflow URLs. |
 
 Numerical `net_i = acquired_i - motor_spent_i - join_spent_i`; `delta_i = net_i(join) - net_i(separate)` for a fork with identical exogenous world and action settings. **Join fee is a declared accounting/model choice** (zero included), not real latch work. Mechanical midpoint motor work vs semi-implicit end-point displacement must not be confused. This data contract does *not* authorize extra inputs to F017's learned symbol receiver; no auto-link or invisible energy transfer.
+
+
+### F018 pre-freeze counterfactual estimator separation (2026-10-22)
+
+The initial F018 "joined minus free" delta is **conditional on an investigator-fixed motor protocol**. It is NOT an individual participation/incentive estimate if a cell can instead remain idle. Distinguish researcher-only `delta_fixed_i_uj` from `delta_outside_i_uj` (joined return minus best *feasible* nonjoined/idle individual action with explicitly declared action menu). For example the hand-placed B-resource case has A `delta_fixed=+900000µJ`, yet `net_join_A=-1100000µJ` and with zero-upkeep idle=0, `delta_outside_A=-1100000µJ`. Never label the first positive number "voluntary joining" and never pass oracle-max outside outcomes into cell policy.
