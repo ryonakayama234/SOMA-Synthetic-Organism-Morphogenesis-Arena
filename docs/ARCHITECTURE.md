@@ -1078,3 +1078,27 @@ The full learned PRNG state, not a freshly seeded unrelated probe generator, is 
 
 ### F017 2026-10-22 limited-adopted topology of the software module (no body emergence)
 The frozen single-function `RawPeerSymbol → Receiver.observe → fixed ideal F007/F002 task → only A-local feedback to Receiver.learn` path is **LIMITED ADOPTION APPROVED** under H17a–f, [recorded 23,296-run findings](../findings/F017-validation.md). Researcher-only `target/encoding/phase` do not enter receiver. Off-world full learned Q+RNG cloned `do(symbol)` probe is an audit path only. B has no learned send policy; signal route is ideal, predetermined, charged to B. This diagram is **not** a spontaneously attached or morphologically evolving body and cannot be used to claim physical communication or group-level agent evolution. Final merge and post-main CI are separately verified milestones.
+
+
+## F018 proposed boundary — bilateral attachment intent and per-cell causal energy value (2026-10-22; DESIGN ONLY)
+
+**UNIMPLEMENTED / NO F018 EXPERIMENT / NOT ADOPTED.** [Issue #61](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/61) / [SPEC](../topics/F018-attachment-value/SPEC.md) / [PLAN](../experiments/F018/PLAN.md) / [findings](../findings/F018-validation.md). F017 fixed receiver is *not* wired into F018. Initial contacts are researcher-prepared; no spontaneous approach, mutual learned consent or physical connector.
+
+~~~mermaid
+flowchart TB
+  S["Researcher predeclares paired initial worlds and spatial resource geometry"] --> M["Same start state and motor action: four request pairs"]
+  LA["Cell A local request: YES/NO (fixed test action)"] --> G{"Both YES and F003-eligible?"}
+  LB["Cell B local request: YES/NO (fixed test action)"] --> G
+  M --> G
+  G -->|"yes"| J["F003 ideal attached mechanics"]
+  G -->|"no"| U["F003 unlinked mechanics"]
+  J --> E["Mechanical trajectory + positive motor work + cell-specific resource hits"]
+  U --> E
+  E --> L["F002 bookkeeper: A/B balances, acquisition, spend, optional explicit join fee"]
+  L --> W["Researcher-only paired forks and signed individual deltas"]
+  W --> V["Saved-data independent auditor / frozen gates / findings"]
+  W -.->|"NEVER accessible to cell choice"| LA
+  W -.->|"NEVER accessible to cell choice"| LB
+~~~
+
+**Responsibilities**: The proposal changes *choice availability* and independent researcher-side evaluation, not underlying F003 link physics. Zero-jump eligible initial state, no ad hoc impulses or teleport; F007 external-effective-force and F011 grounded internal force must not be conflated. Mechanical link does not imply automatic F002 electrical transfer. Forbid **any bonus for attachment**. Only resource geometry/motion/declared costs may affect net balance. The future self-learning component that chooses YES/NO from local history is a **distinct later experiment**, not an F018 outcome.
