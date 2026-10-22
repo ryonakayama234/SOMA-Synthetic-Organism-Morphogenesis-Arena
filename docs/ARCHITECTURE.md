@@ -1160,3 +1160,27 @@ flowchart TD
 Each paired arm receives the **same fresh original** resource field, not a field depleted by a different counterfactual arm. Within-step interpolation is an event ordering *approximation*, not F007's continuous physics. Historical diagrams remain time-scoped and are not rewritten to imply present F019 capabilities.
 
 **F019 design-question update (pre-freeze, 2026-10-22):** this proposed causal pipeline primarily measures how a fixed connected/unconnected configuration changes *resource encounter time, claimant, depletion and per-cell ledger* under identical exogenous field forks. A jointly positive attachment incentive is only a secondary question, not a required outcome. The diagram and module boundary are unchanged. [Long-horizon dynamic-body note](research-notes/2026-10-22-temporary-morphology-and-resource-access.md) is separate ideation, **not** a dashed F019 component or implemented capability.
+
+
+## F019 implementation-candidate wiring (2026-10-22, not yet adopted)
+
+This section reflects code in **the separate F019 implementation PR**, not capabilities on main until reviewed/merged. The earlier dashed preregistration diagram is retained as historical intent. Researcher-only world data never reaches a future cell controller.
+
+~~~mermaid
+flowchart LR
+  GEN["soma.f019.field_for | SHA256 fixed external patches"] --> SCN["512 prescribed scenarios"]
+  SCN --> FORK["7 independent worlds per scenario"]
+  FORK --> GATE["F018 AttachmentIntent / resolve_attachment step0"]
+  GATE --> MOTOR["F007 1D positions, positive motor work"]
+  MOTOR --> ENTRY["F019 closed-interval first entry and single winner"]
+  GEN --> ENTRY
+  ENTRY --> LEDGER["F002 per-cell acquire/spend and depletion"]
+  MOTOR --> RAW["states.csv and link events"]
+  LEDGER --> RAW
+  RAW --> VERIFY["independent F019 raw-file geometry/physics/ledger oracle"]
+  VERIFY --> ATTACK["rehash adversarial negatives and byte replay"]
+  RAW --> SCORE["YY vs NN patch owner/time and outside payoff summary"]
+  SCORE --> FIND["append-only findings: implementation candidate"]
+~~~
+
+The F019 module cannot change F007 trajectories via acquired energy in this frozen ample-initial-battery world; acquisition is posted after the step and the motor never needs the harvested supply. There is no biological metabolism, electrical contact or dynamic topology. Source SHA and full fields are auditor-only.

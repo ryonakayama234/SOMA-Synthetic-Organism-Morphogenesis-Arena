@@ -40,3 +40,7 @@ The previous framing highlighted whether untuned patches reproduce F018's bilate
 ## 2026-10-22 preregistration freeze — before first F019 world (append-only)
 
 Committed design commits freeze the previously ambiguous generator and edge semantics in [PLAN](../experiments/F019/PLAN.md), with exactly 512 candidate main scenarios / 3584 counterfactual worlds. This entry records **no execution, evidence, positive effect, or acceptance**. A separate implementation PR will be required, and review beyond same-assistant computational auditing remains outstanding. Frozen technical criteria do **not** require any positive link or owner-switch result.
+
+## 2026-10-22 implementation-candidate source addition — before CI verification
+
+Separate implementation branch adds F019 patch-field sampling, within-step harvest, same-field paired outcomes, raw evidence producer, independent verifier, 10 deliberately rehashed corruption cases, unit tests, workflow and source/architecture/contracts documentation. **These are proposed source capabilities; no GitHub Actions result, numeric outcome, effect-size claim, independent external review or scientific adoption is asserted here.** The preregistered 512 worlds? No: 512 independent-parameter *scenarios*, seven arms each, 3584 worlds. This corrects any accidental conflation of conditions and counterfactual worlds. On successful exact-source CI, append observed counts and reviewer notes; do not overwrite this entry.
