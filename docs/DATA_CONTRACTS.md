@@ -963,3 +963,34 @@ The saved `f017.suite.v1.causal_probes` payload now also includes `checkpoint_rn
 
 ### F017 2026-10-22 restricted adoption decision and evidence contract
 The F017 receiver's `RawPeerSymbol` strict frame and value-only `Receiver.observe/learn/end_without_learning` behavior, saved `f017.episode.v1` and `f017.suite.v1` records, `checkpoint_rng_sha256` trained full-policy fork proof and `f017.evidence.v1` source/hash verification are **LIMITED ADOPTION APPROVED for frozen ideal F007/F002 1D only** after [final corrected-source 17/17 Actions](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39693731056) and [formal findings](../findings/F017-validation.md). The producer/exported evidence fields holding `target_right`, `target_x_m`, `reached`, `net_uj`, `seed`, `phase`, mapping, full Q/audit hashes are **researcher-only**, not extra `Receiver` inputs. No guarantee exists for real communication channels, a B-return value, self-chosen links or body topology.
+
+
+## F018 candidate data contract — bilateral choice and independent per-cell net (2026-10-22, NOT IMPLEMENTED)
+
+[Issue #61](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/61) / [SPEC](../topics/F018-attachment-value/SPEC.md). Names below are **proposals, not existing Python types or experiment logs**. Every record needs `schema_version`, units, strict input validation and provenance.
+
+~~~mermaid
+flowchart LR
+  A["A AttachmentIntent {cell_id, step_index, request_attach}"] --> G["World gate AND + F003 eligible"]
+  B["B AttachmentIntent {cell_id, step_index, request_attach}"] --> G
+  G --> P["F003 two-cell physical states"]
+  P --> R["Spatial resource event and motor work"]
+  R --> L["F002 integer-µJ ledger A/B"]
+  L --> O["Researcher-only PairedAttachmentOutcome: ΔA, ΔB, Δsum"]
+  O --> D["Raw traces / manifest / independent audit"]
+~~~
+
+| Proposed entity | Visible to agent? | Fields / units / guard |
+|---|---|---|
+| `f018.intent.v1` | YES, own request only | `cell_id`, `step_index=0`, `request_attach` strict bool. No hidden world, paired reward, partner's secret utility. |
+| `f018.world.v1` | NO (investigator) | initial x/v, F003-eligibility, agent request pair, motor-owner mask, motor force N, dt s, exogenous spatial resource field, link cost µJ, exact branch identifier and source SHA. |
+| `f018.cell_event.v1` | Own settled local events only in future policy | own `acquired_uj`, `motor_spent_uj`, `join_spent_uj`; not others' private ledger, evaluator's hit, counterfactual outcomes, or resource/scene ID. |
+| `f018.paired.v1` | NO | YES/YES, YES/NO, NO/YES, NO/NO *same world*; separate cell-level `net_a_uj`, `net_b_uj`, `delta_a_uj`, `delta_b_uj`, `delta_sum_uj`, `pareto_gain`, explicit invalid/reject and no-resource/no-drive controls. |
+| `f018.evidence.v1` | NO | frozen design/source SHAs, raw state/ledger/resource event SHA256 inventory, independent mechanical and F002 µJ audit, rehashed-score attack, deterministic replay across roots and Python3.11/3.12 workflow URLs. |
+
+Numerical `net_i = acquired_i - motor_spent_i - join_spent_i`; `delta_i = net_i(join) - net_i(separate)` for a fork with identical exogenous world and action settings. **Join fee is a declared accounting/model choice** (zero included), not real latch work. Mechanical midpoint motor work vs semi-implicit end-point displacement must not be confused. This data contract does *not* authorize extra inputs to F017's learned symbol receiver; no auto-link or invisible energy transfer.
+
+
+### F018 pre-freeze counterfactual estimator separation (2026-10-22)
+
+The initial F018 "joined minus free" delta is **conditional on an investigator-fixed motor protocol**. It is NOT an individual participation/incentive estimate if a cell can instead remain idle. Distinguish researcher-only `delta_fixed_i_uj` from `delta_outside_i_uj` (joined return minus best *feasible* nonjoined/idle individual action with explicitly declared action menu). For example the hand-placed B-resource case has A `delta_fixed=+900000µJ`, yet `net_join_A=-1100000µJ` and with zero-upkeep idle=0, `delta_outside_A=-1100000µJ`. Never label the first positive number "voluntary joining" and never pass oracle-max outside outcomes into cell policy.
