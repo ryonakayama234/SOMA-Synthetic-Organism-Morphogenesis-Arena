@@ -59,3 +59,22 @@ Frozen 90-scenario / 630-world protocol is now explicitly published in the desig
 **At this checkpoint, CI and actual F018 experiment data have NOT been inspected or accepted.** The Wolfram new dual-terminal-patch rational precheck gives A=+1.9J and B=+2.9J versus restricted unjoined A-motor {-2,0,+2} outside choices at radius .01m, fee .1J, +2N. This is a **theoretical/engineered terminal-resource example only**, separate from any future simulated measurement. Same original B-only patch theory gives A joined -1.1J, fixed-action delta +.9J, but outside delta -1.1J. Both must be verified on exact saved-world data.
 
 Follow-up science decision must classify whether the built system satisfies all saved-world gates and whether any Pareto-positive region survives predeclared widths and sign reversal. Do not infer policy incentive discovery, Nash equilibrium, stable morphology, environmental generalization or physical power conservation from synthetic F002 bookkeeping.
+
+## 2026-10-22 first F018 executed candidate evidence — NOT ADOPTED
+
+**Actual implementation source SHA `26160c5155d4954b07505f65960acb2e1cd62da2`** and [GitHub Actions #39737330499](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39737330499): frozen F018 CI **SUCCESS on Python 3.11 AND 3.12**. Both ran inherited regression tests, optimized F018 negatives, 90 deterministic factorial scenes / 630 four-step F007 worlds (360 primary consent and 270 NN outside options), 630 saved-data mechanical/resource/F002 integer-ledger audits with zero µJ residual, three rehashed score/physics/ledger tampering negatives, and byte-identical two-root replay. GitHub evidence: [3.11 raw archive](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39737330499/artifacts/12408055374), [3.12 raw archive](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39737330499/artifacts/12408035550).
+
+| Resource layout, 18 deterministic scenes each | Both `Δfixed >0` | Both `Δoutside >0` |
+|---|---:|---:|
+| NONE | 0/18 | 0/18 |
+| B_LINK | 18/18 | **0/18** |
+| A_SOLO | 0/18 | 0/18 |
+| DUAL_LINK | 18/18 | **18/18** |
+| DUAL_SOLO | 0/18 | 0/18 |
+| **Total** | **36/90** | **18/90** |
+
+**Actual measured individual examples at +2N, 0.01m patch radius, 0.1J fee per cell:** `DUAL_LINK` joined net A=+1,900,000µJ/B=+2,900,000µJ, `Δfixed` A=+3,900,000µJ/B=+2,900,000µJ, and `Δoutside` A=+1,900,000µJ/B=+2,900,000µJ. `B_LINK` joined net A=-1,100,000µJ/B=+2,900,000µJ, `Δfixed` A=+900,000µJ/B=+2,900,000µJ, but `Δoutside_A=-1,100,000µJ`. These are **SOMA F018 observed saved-world results**, numerically consistent with the separate Wolfram rational theory.
+
+The 18 dual-benefit cases are **only** the deliberately engineered DUAL_LINK resource positions crossed with force sign, radius, and fee; they are not 18 independent random discoveries or ecological generalization. Terminal harvest, omniscient restricted A-only outside menu, no approach, no B motor, no learned consent, no equilibrium, no real physics hardware or spontaneous persistent body. The mechanism merely permits and measures prescribed connection. This was audited by code written by the same assistant, **not external human peer review**.
+
+**Provenance:** observations above belong to SHA `26160c5`; the current hardening/docs commit changes source hashes. A final exact-SHA CI and independent adoption judgment are still required. No F018 main merge or formal research acceptance is claimed.

@@ -120,6 +120,16 @@ def check_world(world: dict, saved_states: list[dict],
     if attached:
         if len(link) != 1 or link[0]["kind"] != "attach_initial":
             fail("joined link event")
+        first = link[0]
+        equal(first["attached_before"], False, "link prestate")
+        equal(first["attached_after"], True, "link poststate")
+        close(first["time_s"], 0.0, "link event time")
+        for key,value in (("x_a_before_m",0.0),("x_a_after_m",0.0),
+                          ("x_b_before_m",0.1),("x_b_after_m",0.1),
+                          ("v_a_before_m_s",0.0),("v_a_after_m_s",0.0),
+                          ("v_b_before_m_s",0.0),("v_b_after_m_s",0.0),
+                          ("link_force_before_n",0.0)):
+            close(first[key],value,"no-snap link event "+key)
     elif link:
         fail("nonconsenting world has link event")
 
@@ -290,6 +300,18 @@ def verify(root: Path) -> dict:
         check=True, capture_output=True,text=True).stdout.strip()
     if current_sha != provenance["git_commit"] or provenance["git_dirty"] is not False:
         fail("source commit provenance")
+    expected_sources = {
+        "soma/f001.py","soma/f002.py","soma/f005.py","soma/f007.py",
+        "soma/f018.py","experiments/F018/run_suite.py",
+        "experiments/F018/verify.py","experiments/F018/analyze.py",
+        "experiments/F018/attack_test.py","tests/test_f018.py",
+        "tests/test_f018_experiment.py",".github/workflows/f018.yml",
+        "experiments/F018/PLAN.md","topics/F018-attachment-value/SPEC.md",
+        "findings/F018-validation.md","docs/ARCHITECTURE.md",
+        "docs/DATA_CONTRACTS.md","README.md",
+    }
+    if set(provenance["source_hashes"]) != expected_sources:
+        fail("source hash inventory incomplete")
     for name, digest in provenance["source_hashes"].items():
         if sha(source_root/name) != digest:
             fail("source byte hash " + name)
@@ -350,6 +372,24 @@ def verify(root: Path) -> dict:
         expected_ids |= {prefix+f"outside-{u:+d}" for u in (-2,0,2)}
         if ids != expected_ids:
             fail("incorrect arm/outside lineage")
+        # Freeze treatment *actions*, not merely treatment names/scores.
+        for world in matching:
+            if world["scenario"] != example:
+                fail("within-pair scene mutation")
+            label = world["world_id"][len(prefix):]
+            if label.startswith("primary-"):
+                equal(world["arm"], label[len("primary-"):], "primary arm")
+                equal(world["motor_force_n"], 2.0*example["motor_sign"],
+                      "primary fixed A-motor")
+            else:
+                if not label.startswith("outside-"):
+                    fail("unknown treatment label")
+                equal(world["arm"], "NN", "outside consent")
+                try:
+                    action = float(int(label[len("outside-"):]))
+                except ValueError:
+                    fail("unregistered outside action label")
+                equal(world["motor_force_n"], action, "outside A-motor")
         primary = {arm: observed_nets[prefix+"primary-"+arm]
                    for arm in ("YY","YN","NY","NN")}
         outside = {u: observed_nets[prefix+f"outside-{u:+d}"]

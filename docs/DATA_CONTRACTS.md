@@ -996,7 +996,7 @@ Numerical `net_i = acquired_i - motor_spent_i - join_spent_i`; `delta_i = net_i(
 The initial F018 "joined minus free" delta is **conditional on an investigator-fixed motor protocol**. It is NOT an individual participation/incentive estimate if a cell can instead remain idle. Distinguish researcher-only `delta_fixed_i_uj` from `delta_outside_i_uj` (joined return minus best *feasible* nonjoined/idle individual action with explicitly declared action menu). For example the hand-placed B-resource case has A `delta_fixed=+900000µJ`, yet `net_join_A=-1100000µJ` and with zero-upkeep idle=0, `delta_outside_A=-1100000µJ`. Never label the first positive number "voluntary joining" and never pass oracle-max outside outcomes into cell policy.
 
 
-## F018 v1 actual implementation candidate contract — pre-CI (2026-10-22)
+## F018 v1 actual implementation candidate contract — source-bound evidence under review (2026-10-22)
 
 The earlier F018 table above is a **proposal/historical** record; its `motor-owner mask` and generic cell event names are NOT runtime properties of this v1 candidate. The actual implementation at `soma/f018.py` and `experiments/F018/` uses these narrower shapes:
 
