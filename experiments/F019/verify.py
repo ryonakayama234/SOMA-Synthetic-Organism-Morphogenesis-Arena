@@ -75,7 +75,10 @@ def original_field(seed: int, count: int, r: float) -> dict:
         for draw in range(10000):
             data = f"F019-field-v1|seed={seed}|patch={n}|draw={draw}".encode("ascii")
             number = int.from_bytes(hashlib.sha256(data).digest()[0:8], "big")
-            center = (number % 121 - 60) / 40.
+            # Preserve the frozen v1 producer's exact IEEE-754 serialization path.
+            # Dividing by 40 is mathematically equal, but can differ by one ulp
+            # and fails byte-exact seed-scene replay; this is not a model change.
+            center = (number % 121 - 60) * .025
             if abs(center) <= r or abs(center - .1) <= r:
                 continue
             patches.append(dict(patch_id=f"P{n}", center_m=center,
