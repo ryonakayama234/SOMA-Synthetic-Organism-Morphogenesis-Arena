@@ -2,7 +2,7 @@
 id: F018
 title: 接続同意ゲートと個体別の結合利得
 kind: preregistration
-status: proposed_unfrozen
+status: frozen_v1
 updated: 2026-10-22
 issue: 61
 depends_on: [F002, F003, F005, F007]
@@ -11,7 +11,7 @@ related: [F017, PROJECT]
 
 # F018 — 身体境界を選択できるか：結合に自分の利益がある条件
 
-**DESIGN FEASIBILITY ONLY / NOT FROZEN / NO F018 SIMULATION / NOT ADOPTED.**
+**DESIGN FROZEN v1 / NO F018 SIMULATION AT DESIGN FREEZE / NOT ADOPTED.**
 [Issue #61](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/61) / [experiment PLAN](../../experiments/F018/PLAN.md) / [UNEXECUTED findings](../../findings/F018-validation.md) / [charter](../../docs/PROJECT.md).
 
 ## One question
@@ -65,3 +65,9 @@ Revised candidate estimand hierarchy (all researcher-only):
 3. Actual simultaneous individual choice/Nash stability or spontaneous spatial approach **requires separate agent-policy study** and cannot be concluded from either quantity alone.
 
 **Revised H18b candidate gate**: Report both fixed-policy and outside-option deltas; a positive `Δ_fixed` together with negative `Δ_outside` must be classified **insufficient for voluntary incentive**. It is scientifically acceptable if no settings produce robustly positive outside-option deltas; that negative finding indicates missing resource/physical conditions, not a license to inject a direct 'join reward'. Future consent learning requires this landscape first.
+
+## Design freeze decision (2026-10-22, before implementation)
+
+**F018 v1 numeric/sampling protocol is frozen in [PLAN](../../experiments/F018/PLAN.md).** The earlier feasibility notes and candidate controls remain historical. No experiment ran before this freeze. The scope is deliberately narrower than the earlier wish list: F007 A-only external effective drive, both signed motor directions, finite 90-scenario terminal-patch grid, 630 world forks, two separately measured per-cell deltas, plus disk-independent audit. This does NOT include motor owner swapping or physical docking and does not demonstrate informed learned consent. The terminal resource harvest is explicitly exogenous and model-chosen.
+
+Wolfram exact arithmetic independent PRECHECK (not code measurements): A drive +2N, 4 steps × 1/4s: joined A=5/8m B=29/40m; solo A=5/4m; joined motor positive work=1J; solo=2J. With *two separate* 3J terminal patches at both joined endpoints and 0.1J joining cost each, theory predicts joined own accounts A=+1.9J, B=+2.9J; restricted solo/idle motor choices {-2,0,+2} give max zero individually for radius=0.01m, hence both positive outside deltas. With a B-only patch, A own joined net=-1.1J despite +0.9J fixed-action advantage. The dual patch environment is engineered for testing capability and cannot establish broad natural incentive.
