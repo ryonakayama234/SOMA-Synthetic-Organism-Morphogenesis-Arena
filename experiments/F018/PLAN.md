@@ -33,3 +33,14 @@ Step 1: prove the selection gate, invariant mechanics and per-cell accounting un
 - Natural variance due to resource jitter is an investigator-only factor. A policy should never receive scene ID, full trajectories, winner label or `delta`.
 - Swap cell/motor assignment to prevent an accidental permanently privileged sender/driver. Separate `net_A`, `net_B` and `net_A+net_B` even when only one gains.
 - Jointly favorable conditions do not prove a viable *multi-agent decision equilibrium* without training both agents and testing incentives against unilateral deviation, which is out of scope.
+
+
+## Pre-execution reviewer addendum: outside-option control required (2026-10-22)
+
+The original engineered 'B near' resource patch gives a positive fixed-action fork delta for both cells **while driver A's absolute joined return is negative**. If the agent can decline motion, it could avoid the loss altogether; therefore no voluntary attachment incentive has been established even in the theoretical example.
+
+Before freezing, explicitly include `no_motor` and available non-joined motor actions in the counterfactual menu, and compute two separate tables:
+- `DeltaFixed_i`: hold same motor effort fixed, change physical link only.
+- `DeltaOutside_i`: join-protocol individual return minus best feasible unjoined *individual* option including idle.
+
+A positive fixed-action delta but a negative outside-option delta is **not** an indication of self-interested joining. Compare both cells' outside options, not just sum. Optimizing independent actions across both cells is a bounded additional model/experiment design choice and must not use future information unavailable to local controllers. True strategic equilibrium and learned policies remain out of F018 scope.
