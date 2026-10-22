@@ -1019,7 +1019,7 @@ Data conservation and replay obligations: chronological positive integer F002 ev
 
 ## F019 proposed resource/ecology contracts (2026-10-22; DESIGN DRAFT ONLY / NO IMPLEMENTATION)
 
-[Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [draft SPEC](../topics/F019-resource-ecology/SPEC.md) / [proposed PLAN](../experiments/F019/PLAN.md) / [UNEXECUTED findings](../findings/F019-validation.md). The following are **candidate** names/schemas and MUST be revised/frozen **before** the first F019 world run. Existing F018 schema and saved evidence stay unchanged.
+[Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [draft SPEC](../topics/F019-resource-ecology/SPEC.md) / [proposed PLAN](../experiments/F019/PLAN.md) / [UNEXECUTED findings](../findings/F019-validation.md). The following are **candidate** names/schemas and MUST be revised/frozen **before** the first F019 world run. Existing F018 schema and saved evidence stay unchanged. **Research framing:** primary estimands are paired per-patch first-entry/claimant state (including unclaimed and winner switches) and per-cell acquired/net resource; Pareto outside gains are secondary. The proposed records already contain patch IDs, world IDs, timing and owners necessary to derive these comparisons; no new learner inputs or runtime interface is authorized.
 
 | Candidate record | Fields and units | Who can read it |
 |---|---|---|

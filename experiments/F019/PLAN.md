@@ -1,6 +1,6 @@
 ---
 id: EXP-F019
-title: 経路資源生態系・実験事前登録ドラフト
+title: 身体構造による資源アクセス差・実験事前登録ドラフト
 kind: experimental_plan
 status: DRAFT_UNFROZEN_UNEXECUTED
 updated: 2026-10-22
@@ -12,7 +12,7 @@ issue: 64
 [Question and falsifiers](../../topics/F019-resource-ecology/SPEC.md) / [Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [findings](../../findings/F019-validation.md).
 
 ## Scientific aim and limitation
-Determine whether independent bounded patches, harvested at path entry and depleted for later visitors, support or falsify individual linkage benefit beyond F018's terminal location tuning. F018's externally effective A-only motor and investigator-chosen consent remain; this study is about ecological affordance, **not learned action or spontaneous body formation**.
+Measure **how connectivity changes who encounters and owns finite external resources, when encounters happen, and how each cell's net energy changes** across matched counterfactual worlds. Remove F018's terminal-location tuning as a confound; do not center the experimental validity test on finding mutual benefit. F018's externally effective A-only motor and researcher-chosen step-0 consent remain; this study measures morphology-conditioned ecological access, **not learned action, repeated reconfiguration, or spontaneous body formation**.
 
 ## Candidate world (requires independent preregistration review before freeze)
 - Existing F018 mechanics: two 1kg cells at 0 and 0.1m, rigid 0.1m link only when initial eligible and both intentions YES; dt=0.25s for four steps; no physical docking/collision, zero drag, no unrelated forces, A-only signed ±2N externally effective motor, valid F002 upfront fee and F005 work accounting.
@@ -26,13 +26,13 @@ Determine whether independent bounded patches, harvested at path entry and deple
 | ID | Proposed falsification gate | Evidence before claim |
 |---|---|---|
 | H19a | Resource obtained iff geometric first-entry and positive undepleted supply; ties deterministic; no repeated claim | Saved positions, entry fraction/time and depletion ledger recomputed *without importing producer* |
-| H19b | Main paired fields remain independent of predicted terminal geometry; A/B deltas calculated in identical fields; negative region allowed | Generator source/hash, seed list, per-seed sign tables, F018 tuned-vs-untuned separation |
+| H19b | Under trajectory-blind fields, same-field forks reveal per-patch winner (A/B/unclaimed), earliest encounter and owner changes, along with separate A/B payoff distributions; asymmetry/null effects retained | Generator source/hash, seed list, paired per-patch winner tables, independently reconstructed event order, per-seed deltas and F018 tuned-vs-untuned separation |
 | H19c | Failed consent yields no link/no fee; no-resource and drive-off controls behave as reference F018/F007; mirrored force symmetry | Consent gate tests; no-resource and mirror trajectories; physical work/source equality |
 | H19d | Source-bound raw data withstand full counterfactual audit and reject adversarial rehashed edits | 3.11/3.12 inherited+F019 CI, independent from-disk verifier, two-root byte replay, mutated-then-rehashed negatives |
 
-**Main estimands (no expectation of positive sign):** per-cell net [µJ], `delta_fixed_{A,B}` and `delta_outside_{A,B}` [µJ], Pareto proportion per independent environment, claimed patches, unclaimed resource total, motor and fee costs, resource-induced inequity, and technical residuals. Conditions swept within the same base seed are not independent samples; report seed-block variability and exact counts, with uncertainty intervals only if their sampling interpretation is justified.
+**Main estimands (no expectation of positive sign):** patch-level `winner ∈ {A,B,unclaimed}` in each world, same-patch **YY-vs-NN winner switches** (counting transitions to/from unclaimed), first-entry time where observed and paired encounter-status changes, each cell's acquired energy/net [µJ], `delta_fixed_{A,B}` and `delta_outside_{A,B}` [µJ], claimed/remaining resource, motor/join costs, resource-induced inequity and technical residuals. **Secondary exploratory estimand:** mutually positive outside-option fraction, never a code-adoption threshold. A time difference is reported only when both encounters exist; no-encounter is recorded explicitly rather than imputed. Conditions swept within the same base seed are not independent samples; report seed-block variability and exact counts, with uncertainty intervals only if their sampling interpretation is justified.
 
-**Positive evidence limitation:** evidence of a Pareto-positive region under trajectory-blind finite resources is a *conditional physical/economic opportunity* in an artificial 1D world, **not** voluntary policy agreement. No requirement that positivity must appear; zero support gets a negative verdict, not redesign of the resource formula.
+**Interpretation boundary:** a connectivity-dependent change in claimant identity is a causal effect of fixed morphology **under these paired-world assumptions**, not proof of cooperation. A Pareto-positive region, if any, is only a conditional physical/economic opportunity in an artificial 1D world, **not** voluntary agreement. Asymmetric, neutral, negative, and zero mutual-benefit outcomes all remain valid scientific data; none triggers post-hoc generator redesign.
 
 ## Specific boundary and attack tests
 1. Both step endpoints outside a narrow patch but linear segment crosses it: the patch is claimed exactly once. Reverse travel and stationary initial occupancy tests.

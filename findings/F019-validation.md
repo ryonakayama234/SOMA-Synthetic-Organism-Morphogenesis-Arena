@@ -32,3 +32,7 @@ With mA=mB=1kg, force 2N on A, dt=1/4s, four ideal semi-implicit steps and zero 
 
 ## Decision rule
 A negative Pareto region under valid untuned worlds is a **valid negative scientific result**. Adopt a bounded resource/harvest measurement API only when technical invariants hold, even if the scientific incentive hypothesis fails; keep the substantive "emergent morphology" claim unapproved. Later investigators append source SHA, exact sample universe, raw artifact identifiers, statistical aggregation rule, verdict, limitations and reviewer objections without replacing these pre-experiment entries.
+
+## 2026-10-22 — pre-freeze research-question refinement (no observations)
+
+The previous framing highlighted whether untuned patches reproduce F018's bilateral positive link benefit. Before any F019 freeze or world run, the study's **primary** question was broadened to *connectivity-dependent resource encounter, claimant identity/ownership, depletion sequence and individual net energy*. Both-cell positive outside-option deltas remain a **secondary, exploratory** observation. Neither winner switches nor bilateral gains are required for technical adoption. No physical mechanics, candidate generator, sampling count, or data-safety gates were changed; the earlier rationale and UNEXECUTED entries are preserved above as history. See [current SPEC](../topics/F019-resource-ecology/SPEC.md), [PLAN](../experiments/F019/PLAN.md) and [future-only research memo](../docs/research-notes/2026-10-22-temporary-morphology-and-resource-access.md).

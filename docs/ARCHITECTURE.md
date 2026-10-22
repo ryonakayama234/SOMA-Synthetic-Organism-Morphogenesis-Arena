@@ -1158,3 +1158,5 @@ flowchart TD
 ~~~
 
 Each paired arm receives the **same fresh original** resource field, not a field depleted by a different counterfactual arm. Within-step interpolation is an event ordering *approximation*, not F007's continuous physics. Historical diagrams remain time-scoped and are not rewritten to imply present F019 capabilities.
+
+**F019 design-question update (pre-freeze, 2026-10-22):** this proposed causal pipeline primarily measures how a fixed connected/unconnected configuration changes *resource encounter time, claimant, depletion and per-cell ledger* under identical exogenous field forks. A jointly positive attachment incentive is only a secondary question, not a required outcome. The diagram and module boundary are unchanged. [Long-horizon dynamic-body note](research-notes/2026-10-22-temporary-morphology-and-resource-access.md) is separate ideation, **not** a dashed F019 component or implemented capability.

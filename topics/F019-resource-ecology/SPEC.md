@@ -1,6 +1,6 @@
 ---
 id: F019
-title: 経路資源の競合と非調整生態系における結合価値
+title: 経路資源場における身体構造・資源アクセス・個体別収支
 kind: research_preregistration_draft
 status: DESIGN_DRAFT_UNFROZEN_UNEXECUTED
 updated: 2026-10-22
@@ -9,22 +9,22 @@ depends_on: [F001, F002, F003, F005, F007, F018]
 related: [PROJECT, F018, RESEARCH_PROCESS]
 ---
 
-# F019: 身体形成を「ゴールに合わせた資源配置」なしに評価する
+# F019: 身体構造が資源へのアクセスと個体別収支をどう変えるか
 
 **SELECTED RESEARCH QUESTION / DESIGN DRAFT / NOT FROZEN / NO CODE / NO OBSERVATIONS / NOT ADOPTED.**
 [Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [PLAN](../../experiments/F019/PLAN.md) / [UNEXECUTED findings](../../findings/F019-validation.md) / [charter](../../docs/PROJECT.md).
 
 ## One question
-In the existing F018 two identical contact-ready 1D cells, can a jointly positive **individual outside-option advantage** of a mechanical link occur under a *trajectory-independent*, finite, competing spatial resource field with harvesting **during travel**, or was the F018 18/90 positive result dependent on intentionally placing patches at the ideal linked **terminal** positions?
+In the existing F018 two contact-ready 1D cells, **how does the investigator-fixed connected versus unconnected body state causally change each cell's encounter time, resource claimant/ownership, finite-resource depletion, and individual net energy** under the *same trajectory-blind, exogenous resource field* harvested **along travel**?
 
-The scientific instrument is the new path-dependent, depletable environment. This is NOT the first autonomous joining agent. Zero jointly positive scenes is an informative result.
+The primary contribution is a causally auditable **environment/harvest instrument**, not a search for universally advantageous attachment. Linked/solo ownership switches, unequal benefits, mutual gains, mutual losses, and no difference are all legitimate observations. A jointly positive individual outside-option region is an **exploratory substantive subquestion**, not a technical acceptance gate. F019 does not implement learning, dynamic/repeated attachment, or a spontaneously assembled body.
 
 ## Why F019 now
-F018 v1 (limited adopted) measured 630 worlds across 90 fixed factorial scenes. Both individuals had positive `delta_outside` in 18/90, and all 18 were constructed DUAL_LINK terminal endpoint patches. There is no test of unplanned spatial resources or sustained viability. Adding a learner now could memorize a designer-controlled label and be mislabeled emergence. First break the tailored terminal-reward confound.
+F018 v1 (limited adopted) measured 630 worlds across 90 fixed factorial scenes. Both individuals had positive `delta_outside` in 18/90, and all 18 were constructed DUAL_LINK terminal endpoint patches. There is no test of unplanned spatial resources or sustained viability. Adding a learner now could memorize a designer-controlled label and be mislabeled emergence. First remove that terminal-reward confound and measure what connectivity actually changes about access, claimant identity, and individual accounting before asking an agent to choose connectivity.
 
 ## H19 hypotheses (proposals, **not** post-hoc acceptance claims)
 - **H19a — environmental causality:** For each declared finite patch, an encounter is defined by the earliest within-step path-entry event, with one winner, irreversible depletion, no duplicate claims and auditable tie resolution. A resource event has a geometric cause, not a link-conditioned bonus.
-- **H19b — generalization test:** A preregistered trajectory-blind field generator permits estimating the *distribution* of F018's per-cell `delta_fixed` and restricted `delta_outside`, partitioned by environment. Presence of a positive Pareto region remains an open question; its absence is not a software failure.
+- **H19b — morphology-conditioned access:** In preregistered trajectory-blind resource fields, paired connected/unconnected forks permit estimating each patch's first claimant (including unclaimed), entry timing where observed, changes in resource ownership, and the distribution of both cells' `delta_fixed` / restricted `delta_outside`. Positive, negative, asymmetric, and null effects must all be retained; mutual Pareto benefit is secondary and not a software gate.
 - **H19c — negative controls:** no-resource, drive-off, nonconsensual intents, zero/large join fee, spatial reflections and manipulated resource timing yield interpretable signed outcomes, with F018 reference dynamics unchanged.
 - **H19d — evidence integrity:** independent saved-file recalculation detects changes to entry time/order, winner, depletion, motor spend, position, counterfactual summary, or per-cell ledger even after all file hashes are recalculated. Replay is byte-identical across clean roots and source-identified Python versions.
 
@@ -43,13 +43,16 @@ For an investigator-only benchmark with restricted unjoined A motor menu `U={-2,
 `delta_outside_i = net_i(YY,u_fixed) - max_{u in U} net_i(NN,u)`.
 The two individual maxima can refer to different hypothetical worlds and are NOT a jointly executable noncooperative equilibrium or locally learnable values.
 
-Report: A and B signed deltas, combined net, resource claims, unique claimed patches, patch-removal/early-arrival ordering, waste/remaining, number of mutually positive conditions, and stratified per-seed counts. Mechanically induced A-to-B mobility is not automatically B-owned motor agency or organismality.
+Report: per-patch winner (`A`, `B`, `unclaimed`) and first entry, changes in winner/entry across the same-field connected versus unconnected forks, each cell's acquired resource and signed deltas, combined net, unique claimed patches, waste/remaining, resource concentration/inequity, mutually positive conditions (secondary), and seed-stratified counts. Entry-time comparisons are conditional on a well-defined encounter in both worlds; absent encounters are not assigned fictional times. Mechanically induced A-to-B mobility is not automatically B-owned motor agency or organismality.
 
 ## Falsifiers and boundaries
-- A linked positive in hand-constructed calibration scenes **alone** does not support ecological generalization; a region discovered only after changing environment seeds does not support a preregistered result.
+- A linked positive in hand-constructed calibration scenes **alone** does not support ecological generalization; a region discovered only after changing environment seeds does not support a preregistered result. Ownership switches or null effects must not be converted post hoc into proof of cooperation.
 - Claims without path entry, claims after depletion, more than one claimant, hidden reward for consenting, shadow world differing in initial resources, cross-cell accounting leakage, or nonreproducible saved events fail H19a/d.
 - A positive aggregate with negative individual A or B fails a bilateral incentive claim. A non-positive region with intact controls and oracle is **accepted negative scientific evidence**.
 - F019 does **not** establish 2D bodies, physical docking/contact, actual ground/drive reaction, B motor, real electrical efficiency, resource perception, informed consent, population selection, learning, evolution, or spontaneous morphology.
+
+## Searchable future direction (NOT F019 scope)
+[Temporal morphology, repeated cooperation, resource transport and temporary tools — research note](../../docs/research-notes/2026-10-22-temporary-morphology-and-resource-access.md). This separate unfrozen ideation records possibilities without preassigning cell roles or changing F019's frozen-to-be mechanics. In particular F019 has **only a step-0 attachment decision and no mid-run detach/rejoin**.
 
 ## Next work — gated, not silently preimplemented
 1. Independent design review and **freeze before simulation**: physical/event edge semantics, condition count/seeds, source and tolerances, exact gates and primary vs calibration partition.
