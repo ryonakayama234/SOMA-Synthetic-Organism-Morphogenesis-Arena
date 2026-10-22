@@ -994,3 +994,23 @@ Numerical `net_i = acquired_i - motor_spent_i - join_spent_i`; `delta_i = net_i(
 ### F018 pre-freeze counterfactual estimator separation (2026-10-22)
 
 The initial F018 "joined minus free" delta is **conditional on an investigator-fixed motor protocol**. It is NOT an individual participation/incentive estimate if a cell can instead remain idle. Distinguish researcher-only `delta_fixed_i_uj` from `delta_outside_i_uj` (joined return minus best *feasible* nonjoined/idle individual action with explicitly declared action menu). For example the hand-placed B-resource case has A `delta_fixed=+900000µJ`, yet `net_join_A=-1100000µJ` and with zero-upkeep idle=0, `delta_outside_A=-1100000µJ`. Never label the first positive number "voluntary joining" and never pass oracle-max outside outcomes into cell policy.
+
+
+## F018 v1 actual implementation candidate contract — pre-CI (2026-10-22)
+
+The earlier F018 table above is a **proposal/historical** record; its `motor-owner mask` and generic cell event names are NOT runtime properties of this v1 candidate. The actual implementation at `soma/f018.py` and `experiments/F018/` uses these narrower shapes:
+
+| Runtime type/file | Exact content and units | Visibility |
+|---|---|---|
+| `AttachmentIntent` | `cell_id: A\|B`, `step_index: 0` strict int, `request_attach: bool` strict (not integer 0/1) | fixed researcher action in this study; a future learner could own its own request |
+| `f018.v1` scenario | `scenario_id, layout, motor_sign, terminal_radius_m, join_fee_uj, patches`; each patch `id, center_m, radius_m, amount_uj`; validated against entire frozen 90-condition generator | researcher only |
+| `worlds.jsonl` | `world_id, scenario, arm, motor_force_n, attached, link_events, claims, net_uj, acquired_uj, motor_spent_uj, join_spent_uj`. Per-cell maps keyed A/B; signed net values **µJ** | researcher only |
+| `states.csv` | `world_id` plus inherited F007 `STATE_COLUMNS` for each of 0 through 4 steps, m, m/s, N, J and µJ as named | researcher truth only |
+| `events.jsonl` | `world_id`, `step_index` plus F002 `Entry` fields and `balance_a_uj, balance_b_uj`. Acquisition is external-in, spend is external-out, immutable event order | settled bookkeeping; no full-world policy input |
+| `ledger.jsonl` | `world_id, initial_total_uj, acquired_uj, spent_uj, loss_uj, residual_uj, balance_a_uj, balance_b_uj, event_count` | audit only |
+| `summary.jsonl` | `scenario_id, primary_net_uj, outside_net_uj, outside_best_uj, outside_best_motors_n, delta_fixed_uj, delta_outside_uj, pareto_fixed, pareto_outside, net_sum_join_uj, net_sum_separate_uj` | researcher counterfactual only |
+| `f018.evidence.v1` manifest | `scenarios=90, worlds=630, primary_worlds=360, outside_worlds=270, steps_per_world=4, random_seed=null, stochastic_draws=0, counts, provenance{git_commit, git_dirty=false, source_hashes}, artifact_sha256` | audit only |
+
+Frozen formula: `net_i_uj = acquired_i_uj - motor_spent_i_uj - join_spent_i_uj`. `delta_fixed_i = net_i(YY, motor = 2*sign) - net_i(NN, same motor)`; `delta_outside_i = net_i(YY, fixed motor) - max_u net_i(NN,u)`, `u∈{-2,0,+2}N`. A is the **only motor owner**; B may receive terminal resource, and is never automatically given A energy. All patch resources are exogenous terminal harvest (t=1s), not contact/pass-through harvest. No direct link reward.
+
+Data conservation and replay obligations: chronological positive integer F002 events, no negative/private balance or capacity overflow; no spurious spend on unilateral rejected request; F007 motor costs charged **after upfront join fee**; exact F007 physical link geometry and work audit; both independent saved-data semantics and SHA256 integrity; 2-root byte replay, falsified-and-rehashed negative evidence. The summary and entire resource layout are **forbidden controller inputs**. [Source-bound run guide](../experiments/F018/README.md).

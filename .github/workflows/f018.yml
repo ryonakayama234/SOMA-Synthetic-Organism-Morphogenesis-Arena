@@ -1,0 +1,46 @@
+name: F018 bilateral attachment value and independent evidence
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  frozen-evidence:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Inherited and F018 regression tests
+        run: python -m unittest discover -s tests -q
+      - name: Optimized F018 schema and auditor negative tests
+        run: python -O -m unittest discover -s tests -p "test_f018*.py" -q
+      - name: Frozen 630 worlds, source-bound independent oracle, byte replay
+        run: |
+          python -m experiments.F018.run_suite --output-root runs/F018-a
+          python -m experiments.F018.verify --root runs/F018-a
+          python -m experiments.F018.attack_test --root runs/F018-a
+          python -m experiments.F018.analyze --root runs/F018-a | tee runs/F018-report.json
+          python -m experiments.F018.run_suite --output-root runs/F018-b
+          python -m experiments.F018.verify --root runs/F018-b
+          diff -rq runs/F018-a runs/F018-b
+      - name: Upload complete frozen evidence
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: F018-${{ matrix.python }}-raw-evidence
+          path: |
+            runs/F018-a/
+            runs/F018-b/
+            runs/F018-report.json
+          if-no-files-found: error

@@ -1102,3 +1102,29 @@ flowchart TB
 ~~~
 
 **Responsibilities**: The proposal changes *choice availability* and independent researcher-side evaluation, not underlying F003 link physics. Zero-jump eligible initial state, no ad hoc impulses or teleport; F007 external-effective-force and F011 grounded internal force must not be conflated. Mechanical link does not imply automatic F002 electrical transfer. Forbid **any bonus for attachment**. Only resource geometry/motion/declared costs may affect net balance. The future self-learning component that chooses YES/NO from local history is a **distinct later experiment**, not an F018 outcome.
+
+
+## F018 concrete candidate implementation wiring — not yet validated (2026-10-22)
+
+The older F018 proposal diagram above is historical. The new `soma/f018.py` implements researcher-fed strict step-0 `AttachmentIntent`, two-YES and F003 geometry/velocity eligibility (without snapping), and per-arm F007 ideal attached vs free motion. F018 explicitly invokes existing F007 motor-work/F002 spending, inserts upfront F002 join fees, and adds **terminal-only** resource events, **not continuous path crossing**. The separate verifier is independent of F007/F018 application logic.
+
+~~~mermaid
+flowchart TD
+  I["Off-world frozen 90 scenes: layout/sign/radius/fee"] --> C["4 consent pairs + 3 NN motor options each"]
+  A["A step-0 request: bool"] --> G{"soma.f018.resolve_attachment AND valid F003 link geometry"}
+  B["B step-0 request: bool"] --> G
+  C --> G
+  G -->|YY+eligible| J["Existing F007: fixed ideal 1D attached; upfront fees"]
+  G -->|otherwise| U["Existing F007: independent 1D dynamics; no join fee"]
+  J --> T["t=1s terminal harvest, per-patch nearest claimant"]
+  U --> T
+  T --> E["F002 per-cell integer-µJ ledger: join/motor/acquire"]
+  E --> D["90 paired Δfixed and Δoutside tables, A and B separately"]
+  D --> R["Raw states.csv / worlds.jsonl / events.jsonl / ledger.jsonl / summary.jsonl"]
+  R --> V["Independent verifier without importing producer/F007, semantic attack tests"]
+  V --> Z["source-bound SHA manifest + two-root replay + CI + research review"]
+  D -. "NO paired/oracle payoff enters a local controller" .-> A
+  D -. "NO paired/oracle payoff enters a local controller" .-> B
+~~~
+
+**Still absent**: an actually responding learned YES/NO local policy; B-owned motor actuation; contact/collision/docking; ecological/generalizable resource distributions; private-local observation input to a learner; a stable connected morphology; real grounded/electric powertrain. F007 motor is A-only external-effective-force. Paired `delta_outside` uses an omniscient investigator-side max over the **restricted** A-motor options -2/0/+2N, not a claim about what a local decision maker can discover. [Code](../soma/f018.py) / [reproduction](../experiments/F018/README.md) / [F018 frozen PLAN](../experiments/F018/PLAN.md).

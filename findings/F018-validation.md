@@ -50,3 +50,12 @@ Potential confounders to investigate: nominal contact precondition (not discover
 The worked Wolfram near-B case (`Δ_A_fixed=+0.9J`) **fails a voluntary-action sanity check**: A receives `net_A(join)=-1.1J`, whereas a feasible no-motor individual outside option would return 0J under zero baseline upkeep, hence `Δ_A_outside=-1.1J`. This is a *theoretical counterexample to equating fixed-action improvement with voluntary self-interest*. It does not falsify H18 in an unrun SOMA world; the experiment must pre-register outside options and test whether any positive individual participation region truly exists.
 
 **Status remains UNFROZEN/UNEXECUTED**, no simulation or empirical evidence. The negative observation is about the *model interpretation of the theory*, and is preserved for audit before creating motor/attachment decision modules.
+
+
+## Implementation candidate checkpoint — 2026-10-22 (NOT A SCIENCE RESULT)
+
+Frozen 90-scenario / 630-world protocol is now explicitly published in the design PLAN before any F018 simulator run; prior free-form proposals and their Wolfram values are retained above as historical research motivation. The new implementation branch proposes `soma/f018.py`, saved-raw `run_suite.py`, independent `verify.py`, `attack_test.py`, `analyze.py`, two-Python test/CI and synchronized system/data diagrams.
+
+**At this checkpoint, CI and actual F018 experiment data have NOT been inspected or accepted.** The Wolfram new dual-terminal-patch rational precheck gives A=+1.9J and B=+2.9J versus restricted unjoined A-motor {-2,0,+2} outside choices at radius .01m, fee .1J, +2N. This is a **theoretical/engineered terminal-resource example only**, separate from any future simulated measurement. Same original B-only patch theory gives A joined -1.1J, fixed-action delta +.9J, but outside delta -1.1J. Both must be verified on exact saved-world data.
+
+Follow-up science decision must classify whether the built system satisfies all saved-world gates and whether any Pareto-positive region survives predeclared widths and sign reversal. Do not infer policy incentive discovery, Nash equilibrium, stable morphology, environmental generalization or physical power conservation from synthetic F002 bookkeeping.
