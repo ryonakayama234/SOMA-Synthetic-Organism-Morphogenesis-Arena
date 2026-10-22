@@ -2,12 +2,19 @@
 from __future__ import annotations
 import argparse
 import json
+from collections import Counter
 from pathlib import Path
 from .verify import verify
 
 def analyze(root: Path) -> dict:
     audit = verify(root)
     rows = [json.loads(t) for t in (Path(root)/"summary.jsonl").read_text("utf-8").splitlines()]
+    transitions = Counter(
+        f"{p['winner_nn'] or 'unclaimed'}->{p['winner_yy'] or 'unclaimed'}"
+        for record in rows for p in record["patch_comparison"])
+    # Every declared patch must have exactly one pairwise claimant comparison.
+    if sum(transitions.values()) != sum(len(row["patch_comparison"]) for row in rows):
+        raise AssertionError("paired-patch transition accounting")
     by_seed = {}
     for seed in range(32):
         batch = [row for row in rows if row["base_seed"] == seed]
@@ -24,6 +31,7 @@ def analyze(root: Path) -> dict:
         "worlds_independently_verified": audit["verified_worlds"],
         "scenarios": len(rows), "independent_environment_seeds": 32,
         "total_patch_owner_switches": sum(r["winner_switch_count"] for r in rows),
+        "patch_owner_transitions_NN_to_YY": dict(sorted(transitions.items())),
         "both_outside_positive_scenarios_exploratory": sum(r["pareto_outside"] for r in rows),
         "seed_blocks": by_seed,
         "interpretation": ("These are researcher-fixed, non-learning 1D toy-world causal "
