@@ -53,3 +53,15 @@ These illustrate a mathematically possible **sign crossover**, not spontaneous a
 
 ## Not claimed
 No spontaneous approach, self-chosen policy, multiagent learning, genuine connector, environmental survival competition, communication evolution, actual watts or hardware energy, 2D/3D, actual body schema. F017 fixed 1D signal receiver remains an independent validated component, not a ready-to-plug autonomous attach learner.
+
+
+## 2026-10-22 independent feasibility critique: forced-action advantage ≠ voluntary private incentive (design amendment, STILL UNFROZEN)
+
+**Critical theoretical counterexample**: In the B-resource Wolfram construction above, `Δ_A(join vs *forced solo motor*)=+0.9J`, but A's actual joined `net_A=-1.1J`. If `motor_off` is a legal alternative giving 0J, A is **strictly better off doing nothing**. Thus the `(+0.9,+2.9)J` fixed-action difference **does not demonstrate that both independently rational cells would voluntarily agree to attach**. Avoid presenting it as a natural aggregation incentive; the two worked cases are feasibility checks for *conditional physical payoffs only*. This correction is pre-first-run and changes no observed data.
+
+Revised candidate estimand hierarchy (all researcher-only):
+1. `Δ_i_fixed = net_i(join, fixed motor protocol) - net_i(separate, same motor protocol)` — causal mechanical/resource effect with action held fixed.
+2. `Δ_i_outside = net_i(join, joint protocol) - max(net_i(separate,idle),net_i(separate,available_individual_actions))` — minimum necessary individual participation advantage versus viable *outside options*. Include no-motion baseline; never assume constant motor action must be executed.
+3. Actual simultaneous individual choice/Nash stability or spontaneous spatial approach **requires separate agent-policy study** and cannot be concluded from either quantity alone.
+
+**Revised H18b candidate gate**: Report both fixed-policy and outside-option deltas; a positive `Δ_fixed` together with negative `Δ_outside` must be classified **insufficient for voluntary incentive**. It is scientifically acceptable if no settings produce robustly positive outside-option deltas; that negative finding indicates missing resource/physical conditions, not a license to inject a direct 'join reward'. Future consent learning requires this landscape first.
