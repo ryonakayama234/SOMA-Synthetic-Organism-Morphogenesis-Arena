@@ -43,3 +43,10 @@ These calculations were evaluated by Wolfram Language on 2026-10-22; **NOT extra
 | Independent human physics review | NONE |
 
 Potential confounders to investigate: nominal contact precondition (not discovered approach), free vs linked numerical-work convention, resource patch discretization, individual sacrifice masked by group net, actuator ownership asymmetry, selective cost accounting, game-theoretic mutual consent and absent learning.
+
+
+## 2026-10-22 pre-execution feasibility falsification insight (still NO F018 simulation)
+
+The worked Wolfram near-B case (`Δ_A_fixed=+0.9J`) **fails a voluntary-action sanity check**: A receives `net_A(join)=-1.1J`, whereas a feasible no-motor individual outside option would return 0J under zero baseline upkeep, hence `Δ_A_outside=-1.1J`. This is a *theoretical counterexample to equating fixed-action improvement with voluntary self-interest*. It does not falsify H18 in an unrun SOMA world; the experiment must pre-register outside options and test whether any positive individual participation region truly exists.
+
+**Status remains UNFROZEN/UNEXECUTED**, no simulation or empirical evidence. The negative observation is about the *model interpretation of the theory*, and is preserved for audit before creating motor/attachment decision modules.
