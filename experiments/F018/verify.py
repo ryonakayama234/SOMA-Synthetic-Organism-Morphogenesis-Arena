@@ -164,10 +164,11 @@ def check_world(world: dict, saved_states: list[dict],
     if fee:
         for c in ("A", "B"):
             make_event(0, "spend", fee, c)
-    # Reset ledger to the signed pre-fee initial state for oracle transaction order:
-    # fee entries above already reflect post-fee balance and are compared later.
+    # Fee events are validated before motion, but excluded from F007's
+    # own motor event_index field because F007 received post-fee balances.
 
     previous_kinetic = 0.0
+    motor_event_index = 0  # F007 ledger starts *after* F018 join fee, separately.
     for k, record in enumerate(saved_states):
         if set(record) != {"world_id", *STATE_FIELDS}:
             fail("unexpected F007 state columns")
@@ -202,6 +203,20 @@ def check_world(world: dict, saved_states: list[dict],
             if cost:
                 make_event(k, "spend", cost, "A")
                 motor_spent += cost
+                motor_event_index += 1
+            # F007's diagnostic ledger_event_index is its own MOTOR ledger,
+            # which omits the separate upfront F018 join fee events.
+            equal(record["ledger_event_index"],
+                  str(motor_event_index) if cost else "",
+                  "F007 per-step motor event index")
+            equal(record["decision_reason"],
+                  "accepted_positive_work" if cost else "zero_command",
+                  "F007 physical motor decision reason")
+            if motor == 0.:
+                equal(record["candidate_motor_work_j"], "",
+                      "zero-command nullable candidate motor work")
+                equal(record["candidate_motor_positive_work_j"], "",
+                      "zero-command nullable candidate positive work")
             close(record["motor_applied_n"], motor if motor else 0., "motor applied")
             close(record["motor_work_j"], work, "motor work")
             close(record["motor_positive_work_j"], positive, "positive motor work")
@@ -218,6 +233,19 @@ def check_world(world: dict, saved_states: list[dict],
             close(record["motor_applied_n"], 0, "initial applied")
             close(record["balance_a_uj"], balances["A"], "initial fee A")
             close(record["balance_b_uj"], balances["B"], "initial fee B")
+            # Explicitly audit *all* F007 initial state columns, including nulls.
+            # These are easy to tamper with and must not be accepted after rehashing.
+            equal(record["candidate_motor_work_j"], "",
+                  "initial candidate motor work must be null")
+            equal(record["candidate_motor_positive_work_j"], "",
+                  "initial candidate positive work must be null")
+            equal(record["ledger_event_index"], "",
+                  "initial motor event index must be null")
+            equal(record["decision_reason"], "initial", "initial decision reason")
+            for key in ("motor_work_j", "motor_positive_work_j",
+                        "kinetic_delta_j", "mechanical_residual_j",
+                        "spent_a_uj"):
+                close(record[key], 0.0, "initial "+key)
         close(record["x_a_m"], x_a, "position A")
         close(record["x_b_m"], x_b, "position B")
         close(record["v_a_m_s"], v_a, "velocity A")

@@ -78,3 +78,11 @@ Follow-up science decision must classify whether the built system satisfies all 
 The 18 dual-benefit cases are **only** the deliberately engineered DUAL_LINK resource positions crossed with force sign, radius, and fee; they are not 18 independent random discoveries or ecological generalization. Terminal harvest, omniscient restricted A-only outside menu, no approach, no B motor, no learned consent, no equilibrium, no real physics hardware or spontaneous persistent body. The mechanism merely permits and measures prescribed connection. This was audited by code written by the same assistant, **not external human peer review**.
 
 **Provenance:** observations above belong to SHA `26160c5`; the current hardening/docs commit changes source hashes. A final exact-SHA CI and independent adoption judgment are still required. No F018 main merge or formal research acceptance is claimed.
+ 
+## Independent code-review correction before adoption — 2026-10-22
+
+The GitHub Codex automated review on implementation PR #63 at `c5045da` identified a **P1 semantic evidence-auditor gap**: some archived F007 `states.csv` fields (`decision_reason`, `ledger_event_index`, nullable candidate motor-work fields, and initial diagnostic values) were not checked, so rehashed forgeries in those fields could pass verification even while score and trajectory totals stayed unchanged. **This is a real issue**, not a counterexample to the physical payoff estimates. The adoption requirement H18d includes trustworthy archived evidence, so it must be corrected before merge.
+
+Correction: `verify.py` now requires exact initial nullable/zero fields, F007-only motor event indices (distinct from F018 upfront-join-fee F002 indices), per-step motor decision reasons, and nullable zero-command candidate work. `attack_test.py` additionally alters these fields with SHA hashes rebuilt and requires semantic rejection. `test_f018_experiment.py` checks this expanded attack suite. The code review thread must be resolved only after exact revised-source Python3.11/3.12 CI confirms.
+
+The original 630-world observations at `26160c5` and corrected-source replays must be separately attributed; never present a pre-fix verification as evidence of the stronger post-fix claim.

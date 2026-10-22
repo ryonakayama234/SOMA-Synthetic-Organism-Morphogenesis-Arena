@@ -44,7 +44,10 @@ class TestF018Evidence(unittest.TestCase):
     def test_semantic_attacks_with_all_hashes_rebuilt(self):
         result=run_attacks(self.first)
         self.assertEqual(result["rehashed_semantic_attacks_rejected"],
-                         ["score","physics","ledger"])
+                         ["score","physics","ledger",
+                          "state_initial_candidate","state_initial_work",
+                          "state_reason","state_motor_index",
+                          "state_zero_motor_candidate"])
 
     def test_second_exact_byte_replay(self):
         second=Path(self.temp.name)/"second"

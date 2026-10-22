@@ -13,7 +13,10 @@ from .run_suite import canonical
 
 def run_attacks(root: Path) -> dict:
     verify(root)
-    cases = ("score", "physics", "ledger")
+    cases = ("score", "physics", "ledger",
+             "state_initial_candidate", "state_initial_work",
+             "state_reason", "state_motor_index",
+             "state_zero_motor_candidate")
     rejected = []
     for attack in cases:
         with tempfile.TemporaryDirectory(prefix="f018-attack-") as folder:
@@ -26,13 +29,27 @@ def run_attacks(root: Path) -> dict:
                 first["net_uj"]["A"] += 1
                 lines[0] = canonical(first).rstrip("\n")
                 path.write_text("\n".join(lines)+"\n",encoding="utf-8")
-            elif attack == "physics":
+            elif attack == "physics" or attack.startswith("state_"):
                 path = test/"states.csv"
                 with path.open("r",newline="",encoding="utf-8") as fp:
                     reader = csv.DictReader(fp)
                     headers = reader.fieldnames
                     rows = list(reader)
-                rows[0]["x_a_m"] = "0.125"
+                if attack == "physics":
+                    rows[0]["x_a_m"] = "0.125"
+                elif attack == "state_initial_candidate":
+                    rows[0]["candidate_motor_work_j"] = "0.0"  # should be null
+                elif attack == "state_initial_work":
+                    rows[0]["motor_positive_work_j"] = "9.0"
+                elif attack == "state_reason":
+                    rows[1]["decision_reason"] = "forged_accepted"
+                elif attack == "state_motor_index":
+                    rows[1]["ledger_event_index"] = "999"
+                elif attack == "state_zero_motor_candidate":
+                    target = next(row for row in rows
+                        if row["world_id"].endswith("outside-+0") and
+                           row["step_index"] == "1")
+                    target["candidate_motor_positive_work_j"] = "0.0"
                 with path.open("w",newline="",encoding="utf-8") as fp:
                     writer = csv.DictWriter(fp,fieldnames=headers,lineterminator="\n")
                     writer.writeheader()
