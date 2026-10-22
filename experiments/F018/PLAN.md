@@ -2,12 +2,12 @@
 id: EXP-F018
 title: F018 事前設計 — 接続要求と反事実的個体利得
 kind: experiment_plan
-status: design_unfrozen
+status: frozen_v1
 updated: 2026-10-22
 issue: 61
 ---
 
-# F018 experiment plan — UNEXECUTED / UNFROZEN
+# F018 experiment plan — FROZEN v1 / UNEXECUTED
 
 [Hypotheses](../../topics/F018-attachment-value/SPEC.md) / [Issue #61](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/61) / [findings](../../findings/F018-validation.md).
 
@@ -44,3 +44,19 @@ Before freezing, explicitly include `no_motor` and available non-joined motor ac
 - `DeltaOutside_i`: join-protocol individual return minus best feasible unjoined *individual* option including idle.
 
 A positive fixed-action delta but a negative outside-option delta is **not** an indication of self-interested joining. Compare both cells' outside options, not just sum. Optimizing independent actions across both cells is a bounded additional model/experiment design choice and must not use future information unavailable to local controllers. True strategic equilibrium and learned policies remain out of F018 scope.
+
+## F018 v1 preregistration freeze — 2026-10-22 (before first F018 code/world)
+
+The preceding sections preserve candidate history. **The following precise protocol supersedes their candidate scopes**; implementation must not silently extend or tune it after inspecting experiment outputs.
+
+- Fixed two-cell world: A at x=0m, B at x=0.1m, mA=mB=1kg, vA=vB=0; rigid link length=0.1m; dt=0.25s, duration=1s (four F007 semi-implicit steps), drag=0, external forces=0. Initial energy 10,000,000µJ and capacity 20,000,000µJ for each; zero baseline/idle upkeep. Only A has an externally effective motor (F007), fixed force f = 2*s N for s in {-1,+1}; no transmitted electric energy.
+- Exogenous terminal-harvest resource patches: exactly one harvest at t=1s, not first passage; each patch has integer 3,000,000µJ, a center and closed radius, can be collected at most once by the nearest eligible cell at the terminal observation (ties to A); neither receives value for a link itself. This artificial terminal interaction is an explicit model assumption, not general biological foraging.
+- Theoretical geometry for motor sign s (NOT measured data): joined endpoints A=0.625*s, B=0.1+0.625*s; solo fixed-action endpoint A=1.25*s, idle B=0.1. Define five predeclared resource layouts: NONE=[], B_LINK=[joined B endpoint], A_SOLO=[solo A endpoint], DUAL_LINK=[joined A endpoint, joined B endpoint], DUAL_SOLO=[solo A endpoint, idle B endpoint]. All patch awards are per-cell and never transferred.
+- Fully cross 5 layouts × 2 signs × 3 terminal patch radii {0.01,0.05,0.20} m × 3 joining fees {0,100000,500000} µJ per consenting/attached cell = **90 deterministic scenarios**. For EACH scenario run researcher-imposed 4 consent arms {YY,YN,NY,NN}, all with the same fixed motor force 2*s: **360 primary worlds**. In addition, run 3 separately held outside-option worlds with NN consent and motor force {-2,0,+2} N for each scenario: **270 outside worlds**; **630 total recorded 4-step worlds** (some deliberately identical). No random seed/sample inference; exact finite-factorial enumeration.
+- Initial joining fees are F002 per-cell spends at t=0 before F007 motion and never charged to rejected link requests. F007 is called with the corresponding post-fee balances so work acceptance is battery-correct. Motion motor spend is charged to cell A only; F002 accounts terminal acquisition per winning cell. Positive motor work is F005 per-step integral/ceil rule through F007, not a separate hand-imposed motion cost.
+- Per-cell net = acquired - motor_spent - join_spent (µJ). `delta_fixed_i=net_i(YY,fixed_motor)-net_i(NN,fixed_motor)`. `delta_outside_i=net_i(YY,fixed_motor)-max_{u in {-2,0,+2}} net_i(NN,u)`. The outside max is a **researcher-only, omniscient ex-post benchmark over a declared restricted A-motor menu**, NOT a proof that a local cell can know/implement the optimal action, and NOT a Nash solution. Retain winning outside motor actions and ties as raw record fields.
+- Frozen numeric expectations for sign +, radius 0.01m, fee 100000µJ: DUAL_LINK has joined (net_A,net_B)=(1,900,000,2,900,000) µJ and `delta_outside=(1,900,000,2,900,000)` µJ (outside both have zero best net); B_LINK has joined (-1,100,000,+2,900,000) µJ, `delta_fixed=(+900,000,+2,900,000)` µJ but `delta_outside_A=-1,100,000` µJ. Exact F007 outputs must independently confirm or contradict these before conclusions.
+- Acceptance checks: all primary YES-only gating and exact initial constraints; no attachment on unilateral/no requests; zero F002 conservation residual for 630 worlds; no secret cross-world input; independent from-disk saved-state mechanical/work/resource and ledger audit; all 90 summaries independently reconstructed; forced falsification through modified/rehash-invalid raw data; byte-for-byte two-root replay; Python3.11+3.12 exact-source CI. No Monte Carlo confidence interval for a deterministic 90-world grid. Classify positive fixed delta/negative outside delta as insufficient for a self-interested join.
+- Out of F018 v1 scope by *explicit pre-run restriction*: motor-B-only owner-swap physical trials (current frozen F007 only supports A-driven motor), internal F011 drive, spontaneous approach, 2D, actual contact/collision/latch, online consent learning and strategic bargaining. A motor sign reflection +/- tests signed direction; it does NOT constitute an owner-swap control. Do not claim owner-exchange invariance; add a separately frozen follow-up if warranted. Spatial widths do not establish environment-general incentives.
+- Archive `worlds.jsonl`, `states.csv`, `events.jsonl`, `ledger.jsonl`, `summary.jsonl`, `manifest.json` with exact source-hash inventory and raw-data verifier. Negative tests must tamper with scores and mechanical/ledger fields and recompute artifact hashes to test semantic auditing, not only checksum rejection.
+- Decision: technical selection gate and conditional value-landscape may be *limited adopted* only if all tests and exact-SHA CI verify. Even if theoretical positive regions occur, NO claim of voluntary informed consent, self-sustaining body, natural ecology, or emergence.
