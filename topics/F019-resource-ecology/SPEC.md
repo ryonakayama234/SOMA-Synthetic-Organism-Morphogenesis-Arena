@@ -2,7 +2,7 @@
 id: F019
 title: 経路資源場における身体構造・資源アクセス・個体別収支
 kind: research_preregistration_draft
-status: DESIGN_DRAFT_UNFROZEN_UNEXECUTED
+status: FROZEN_PREREGISTRATION_UNEXECUTED
 updated: 2026-10-22
 issue: 64
 depends_on: [F001, F002, F003, F005, F007, F018]
@@ -11,7 +11,7 @@ related: [PROJECT, F018, RESEARCH_PROCESS]
 
 # F019: 身体構造が資源へのアクセスと個体別収支をどう変えるか
 
-**SELECTED RESEARCH QUESTION / DESIGN DRAFT / NOT FROZEN / NO CODE / NO OBSERVATIONS / NOT ADOPTED.**
+**SELECTED RESEARCH QUESTION / F019 v1 PLAN FROZEN BEFORE OBSERVATION / NO F019 CODE OR OBSERVATIONS YET / NOT ADOPTED.**
 [Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [PLAN](../../experiments/F019/PLAN.md) / [UNEXECUTED findings](../../findings/F019-validation.md) / [charter](../../docs/PROJECT.md).
 
 ## One question
@@ -22,7 +22,7 @@ The primary contribution is a causally auditable **environment/harvest instrumen
 ## Why F019 now
 F018 v1 (limited adopted) measured 630 worlds across 90 fixed factorial scenes. Both individuals had positive `delta_outside` in 18/90, and all 18 were constructed DUAL_LINK terminal endpoint patches. There is no test of unplanned spatial resources or sustained viability. Adding a learner now could memorize a designer-controlled label and be mislabeled emergence. First remove that terminal-reward confound and measure what connectivity actually changes about access, claimant identity, and individual accounting before asking an agent to choose connectivity.
 
-## H19 hypotheses (proposals, **not** post-hoc acceptance claims)
+## H19 hypotheses (frozen as defined by v1 PLAN; **no** observations yet)
 - **H19a — environmental causality:** For each declared finite patch, an encounter is defined by the earliest within-step path-entry event, with one winner, irreversible depletion, no duplicate claims and auditable tie resolution. A resource event has a geometric cause, not a link-conditioned bonus.
 - **H19b — morphology-conditioned access:** In preregistered trajectory-blind resource fields, paired connected/unconnected forks permit estimating each patch's first claimant (including unclaimed), entry timing where observed, changes in resource ownership, and the distribution of both cells' `delta_fixed` / restricted `delta_outside`. Positive, negative, asymmetric, and null effects must all be retained; mutual Pareto benefit is secondary and not a software gate.
 - **H19c — negative controls:** no-resource, drive-off, nonconsensual intents, zero/large join fee, spatial reflections and manipulated resource timing yield interpretable signed outcomes, with F018 reference dynamics unchanged.
@@ -53,6 +53,9 @@ Report: per-patch winner (`A`, `B`, `unclaimed`) and first entry, changes in win
 
 ## Searchable future direction (NOT F019 scope)
 [Temporal morphology, repeated cooperation, resource transport and temporary tools — research note](../../docs/research-notes/2026-10-22-temporary-morphology-and-resource-access.md). This separate unfrozen ideation records possibilities without preassigning cell roles or changing F019's frozen-to-be mechanics. In particular F019 has **only a step-0 attachment decision and no mid-run detach/rejoin**.
+
+## V1 preregistration boundary
+The exact source-independent SHA256 sampling grid, 512 scenarios/3584 worlds, resource claim/simultaneity semantics, initial-balance motor isolation, and outcome estimands are frozen in [v1 PLAN](../../experiments/F019/PLAN.md). Candidate alternatives below the freeze section are historical design considerations only. Do not run v1 on changed seeds or patch grids under the same label. Independent external review remains necessary for scientific adoption.
 
 ## Next work — gated, not silently preimplemented
 1. Independent design review and **freeze before simulation**: physical/event edge semantics, condition count/seeds, source and tolerances, exact gates and primary vs calibration partition.
