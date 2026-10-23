@@ -26,6 +26,9 @@ Keep F007's one-dimensional ideal effective A motor (not physical ground reactio
 
 Cell-local action input consists only of a fixed experimental motor command and the cell's permitted balance; patch positions, linked-vs-unlinked fork outcomes and future events are **researcher-only truth**. All joined/nonjoined assignments are investigator-specified. Direct joint reward is never introduced.
 
+## Pre-observation quantitative audit (2026-10-23; NOT simulation)
+The [internal design review](../../docs/reviews/2026-10-23-F020-preobservation-audit.md) found that 1,000,000 µJ cannot serve as F019-parity for the nonlinked 4-step world (2,000,000 µJ positive motor work). The unfrozen high-budget candidate is now 4,000,000 µJ; same 32 seeds/1536 proposed scenarios/6144 worlds. Timing must honor F005 `ceil(1e6 × positive motor work)` and quarantine delayed claimant credits until after step 4. This revision is **pre-F020 observation**, not evidence or an adoption verdict.
+
 ## Decision gates
 1. Freeze exact seeds, samples, event order, expected calibration and negative tests in a separate **pre-first-world design commit**; this document is currently a reviewable DRAFT.
 2. Implement one-step ledger→F007→first-entry→F002 loop in a **separate implementation PR**, with complete architecture, contracts, tests, source-bound artifacts and append-only findings.
