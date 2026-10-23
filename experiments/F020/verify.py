@@ -24,6 +24,7 @@ SOURCE_FILES = (
     "soma/f007.py", "soma/f018.py", "soma/f019.py", "soma/f020.py",
     "experiments/F020/FROZEN_V1.md", "experiments/F020/PLAN.md",
     "experiments/F020/run_suite.py", "experiments/F020/verify.py",
+    "experiments/F020/attack_test.py", "experiments/F020/analyze.py",
     "tests/test_f020.py", "tests/test_f020_experiment.py",
     ".github/workflows/f020.yml", "topics/F020-metabolic-feedback/SPEC.md",
     "docs/ARCHITECTURE.md", "docs/DATA_CONTRACTS.md",
@@ -125,7 +126,8 @@ def original_scene(scene: dict) -> dict:
                     "field": canonical_field}
     else:
         fail("unknown scene kind")
-    same(scene, expected, "scene")
+    if scene != expected:
+        fail("noncanonical scene or exact resource geometry")
     return expected
 
 
