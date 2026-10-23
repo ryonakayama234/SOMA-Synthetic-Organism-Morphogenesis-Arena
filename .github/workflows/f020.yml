@@ -1,0 +1,42 @@
+name: F020-frozen-metabolic-closure
+on:
+  push:
+    branches: [main, implementation/F020-metabolic-closure-20261023]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify-f020:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Prove checked-out F020 PR head SHA
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Entire F001-F020 regression suite
+        run: python -m unittest discover -s tests -p 'test_*.py' -q
+      - name: Freeze-bound F020 full production, independent saved-data audit and byte replay
+        run: |
+          python -m experiments.F020.run_suite --output-root runs/F020-a
+          python -m experiments.F020.verify runs/F020-a
+          python -m experiments.F020.attack_test --root runs/F020-a
+          python -m experiments.F020.analyze --root runs/F020-a
+          python -m experiments.F020.run_suite --output-root runs/F020-b
+          python -m experiments.F020.verify runs/F020-b
+          diff -rq runs/F020-a runs/F020-b
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f020-worlds-py${{ matrix.python }}
+          path: runs/F020-a/
+          if-no-files-found: error

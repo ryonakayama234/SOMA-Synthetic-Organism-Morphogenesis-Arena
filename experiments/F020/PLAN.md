@@ -2,11 +2,11 @@
 id: EXP-F020
 title: F020 代謝閉ループ・事前登録ドラフト
 kind: experimental_plan
-status: DRAFT_PREOBS_NOT_FROZEN_UNEXECUTED
+status: PREOBS_DRAFT_SUPERSEDED_BY_FROZEN_V1_IMPLEMENTATION_DRAFT
 updated: 2026-10-23
 issue: 67
 ---
-# F020 experiment PLAN — candidate, NOT FROZEN / NOT EXECUTED
+# F020 experiment PLAN — historical pre-observation candidate (frozen addendum below)
 
 [Question](../../topics/F020-metabolic-feedback/SPEC.md) / [Issue #67](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/67) / [append-only findings](../../findings/F020-validation.md).
 
@@ -44,3 +44,8 @@ Motor accepted/rejected per A step and first rejection time; displacement and la
 
 ## Decision
 Technical correctness is NOT conditioned on finding self-sustaining behavior or bilateral positive payoff. A limited internal *software measurement instrument* might be adopted after evidence; **self-assembly, organismality, autonomous metabolism, evolutionary fitness and ecological generalization remain unproven**. Reviewers must freeze detailed contract/tolerances as a new append-only revision before first run.
+
+
+## Implementation-stage preregistration freeze and execution (2026-10-23)
+
+The original candidate paragraphs above remain as **historical design-stage wording**. The binding, **pre-first-world frozen** [FROZEN_V1.md](FROZEN_V1.md) was committed at `f3e3a4de4ff47677db575efaafe342655dede6c2` before `soma/f020.py` existed. Implementation [PR #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) adds one true ledger/physics/claimant feedback loop, primary `worlds.jsonl`/manifest artifact, independently recomputed world-oracle, rehashed on-disk attacks, per-seed-block analysis and exact-head Python 3.11/3.12 CI. Full 1536×4 randomized field world design remains intact. For observed outcomes, original source SHA, CI, and limitations consult [append-only findings](../../findings/F020-validation.md); this entry is **not** an adoption verdict.
