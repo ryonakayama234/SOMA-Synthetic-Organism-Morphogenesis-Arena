@@ -29,6 +29,10 @@ F019 main commit `7de755c79fed3b806417da5c15f0115ea7ac04c8` merged 2026-10-23; 1
 
 Scientific labels: SUPPORTED / REFUTED / INCONCLUSIVE / UNEXECUTED, separate from software technical acceptance. No external human peer review is claimed.
 
+## 2026-10-23 exact-rational positive control (THEORY ONLY; not F020 execution)
+
+Wolfram verified a separate hand-placed x=1/16m, radius 1/200m, 1J patch fixture (75,000µJ initially each, zero join fee, +2N, four 0.25s steps). After A's first-step claim, YY feedback predicts xA(1s)=5/8m versus YY deferred xA(1s)=1/4m; both NN forks predict xA(1s)=0m. YY deferred retains vA=1/4m/s after motor refusal; 1J is pending only until post-episode settlement. Exact details and limits in [internal audit](../docs/reviews/2026-10-23-F020-preobservation-audit.md). These numbers are **theoretical expectations for a calibration fixture**, **not** F020 simulator results; primary random-field evidence remains NONE.
+
 ## 2026-10-23 pre-observation design audit (NOT F020 world evidence)
 
 An internal independent-formula review of F005/F007 and Wolfram exact fractions revealed that the initial 1,000,000 µJ "high-battery" candidate cannot run four nonlinked ±2N 0.25s steps without energy stalls. Expected positive motor work (linear-velocity integral with F005 ceil µJ gate) is NN **2,000,000 µJ**, YY **1,000,000 µJ**, in contrast to the larger motor-force × semi-implicit displacement product. High-budget candidate revised to **4,000,000 µJ pre-observation**, while preserving the 32-seed, 1536 proposed scenarios/6144 candidate worlds factorial. Detailed critique and contract timing: [design review](../docs/reviews/2026-10-23-F020-preobservation-audit.md). F020 is still **NOT FROZEN / UNEXECUTED / NOT ADOPTED**; no real F020 trajectory or positive result has been observed.
