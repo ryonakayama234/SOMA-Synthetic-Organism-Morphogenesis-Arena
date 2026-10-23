@@ -328,8 +328,14 @@ def audit_run(directory: Path) -> dict:
     root = Path(__file__).resolve().parents[2]
     dest = Path(directory)
     manifest = json.loads((dest / "manifest.json").read_text("utf-8"))
-    if manifest.get("schema_version") != "f020.evidence.v1":
+    if set(manifest) != {
+        "schema_version", "protocol_anchor_sha", "scenarios", "worlds",
+        "steps_per_world", "seed_values", "counts", "provenance",
+        "artifact_sha256"
+    } or manifest.get("schema_version") != "f020.evidence.v1":
         fail("manifest schema")
+    if manifest["steps_per_world"] != 4 or manifest["seed_values"] != list(range(32)):
+        fail("manifest timestep/seed universe")
     if manifest.get("protocol_anchor_sha") != PROTOCOL_SHA:
         fail("protocol freeze anchor")
     origin = manifest.get("provenance")
