@@ -16,15 +16,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      - name: Prove checked-out F020 PR head SHA
+        env:
+          EXPECTED_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
       - name: Entire F001-F020 regression suite
         run: python -m unittest discover -s tests -p 'test_*.py' -q
       - name: Freeze-bound F020 full production, independent saved-data audit and byte replay
         run: |
           python -m experiments.F020.run_suite --output-root runs/F020-a
           python -m experiments.F020.verify runs/F020-a
+          python -m experiments.F020.attack_test --root runs/F020-a
+          python -m experiments.F020.analyze --root runs/F020-a
           python -m experiments.F020.run_suite --output-root runs/F020-b
           python -m experiments.F020.verify runs/F020-b
           diff -rq runs/F020-a runs/F020-b
