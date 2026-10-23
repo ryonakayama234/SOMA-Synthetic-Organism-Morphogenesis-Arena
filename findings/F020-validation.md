@@ -2,11 +2,11 @@
 id: FINDINGS-F020
 title: F020 代謝閉ループ・実験証拠（追記専用）
 kind: scientific_findings_append_only
-status: UNEXECUTED
+status: PRELIMINARY_SOURCE_BOUND_EVIDENCE_UNADOPTED
 updated: 2026-10-23
 issue: 67
 ---
-# F020 validation — UNEXECUTED / DESIGN DRAFT / NOT ADOPTED
+# F020 validation — proposal history and source-bound first observation / NOT ADOPTED
 
 **Current truth:** No `soma.f020` implementation, no F020 world, no F020 saved artifact, no model outcome, and no formal adoption. The design on [Issue #67](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/67) is **NOT frozen**, and cannot be represented as a finished preregistered test. [SPEC](../topics/F020-metabolic-feedback/SPEC.md) / [candidate PLAN](../experiments/F020/PLAN.md).
 
@@ -36,3 +36,38 @@ Wolfram verified a separate hand-placed x=1/16m, radius 1/200m, 1J patch fixture
 ## 2026-10-23 pre-observation design audit (NOT F020 world evidence)
 
 An internal independent-formula review of F005/F007 and Wolfram exact fractions revealed that the initial 1,000,000 µJ "high-battery" candidate cannot run four nonlinked ±2N 0.25s steps without energy stalls. Expected positive motor work (linear-velocity integral with F005 ceil µJ gate) is NN **2,000,000 µJ**, YY **1,000,000 µJ**, in contrast to the larger motor-force × semi-implicit displacement product. High-budget candidate revised to **4,000,000 µJ pre-observation**, while preserving the 32-seed, 1536 proposed scenarios/6144 candidate worlds factorial. Detailed critique and contract timing: [design review](../docs/reviews/2026-10-23-F020-preobservation-audit.md). F020 is still **NOT FROZEN / UNEXECUTED / NOT ADOPTED**; no real F020 trajectory or positive result has been observed.
+
+
+## 2026-10-23 F020 FIRST SOURCE-BOUND PRIMARY OBSERVATION — exact-head CI, not adopted
+
+**Evidence status:** The historical headings and "Current truth: no F020 world" paragraphs ABOVE were valid at the proposal stage and remain **append-only historical notes**. They are superseded by this dated, later source-bound observation. F020 remains **implementation PR only, NOT MERGED TO MAIN, NOT FORMALLY ADOPTED**. This is an engineering-supported result in a fixed 1D investigator-controlled model, not an autonomous body/metabolism finding.
+
+- Design was frozen **before any F020 world** by [FROZEN_V1 protocol](../experiments/F020/FROZEN_V1.md) in Git commit `f3e3a4de4ff47677db575efaafe342655dede6c2`; parameters fixed: original F019 32 SHA256 environment seeds × 2 motor signs × 2 densities × 2 patch radii × 3 balances × 2 joining fees = **1,536 canonical scenarios**, each `YY/NN × feedback/deferred_credit` = **6,144 archived worlds** and **3,072 direct feedback-vs-deferred paired comparisons**. Calibration fixtures excluded.
+- [GitHub Actions full reproducible run #39950334330](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39950334330) passed on **Python 3.11 and Python 3.12** at the **exact checked-out PR head/source SHA `80ca70d95c2a870a357a12c449b10f0109cb8686`**: 239 full F001–F020 regression tests per interpreter; 6,144 simulated worlds per clean producer root, two roots per interpreter; source-bound no-producer-import from-disk verifier; **9/9 on-disk semantic forgeries rejected even after replacing artifact SHA256**; exact byte comparison of the two complete output roots; uploaded archived `f020-worlds-py3.11` and `f020-worlds-py3.12` evidence artifacts. This source SHA is a *passing baseline*. Later documentation-only commits must earn a separate exact-head passing CI before final PR acceptance.
+- **Primary observed paired result:** feedback vs deferred credit changed **A's final trajectory in 321 / 3,072** paired contrasts. In the same **321** contrasts the feedback arm authorized ≥1 step of A motor that the deferred arm refused. Directional displacement along the prescribed ±2N command was positive in those 321 and negative in zero of the fixed matched conditions. This is a conditional within-simulator mechanism, **not** a policy/fitness result.
+- **Claimant-map changed in 64 / 3,072 pairs** (at least one patch's claimed/unclaimed or claimant-A/B map differed); this is a pair count, **not** 64 independently sampled patches or an independent causal body-benefit endpoint.
+- For descriptive ecological uncertainty, **only 32 externally generated environment seed blocks** are distinct; **27/32** have at least one nonzero trajectory response, five have none. The 3,072 pairs are correlated factorial reuse and must NEVER be reported as independent replications. There is no inferential p-value or observed spontaneous joining.
+
+| Initial energy per cell | Fixed joined YY: changed / 512 | Fixed unjoined NN: changed / 512 | Claimant-map-changed YY / NN |
+|---|---:|---:|---:|
+| 75,000µJ | 33 / 512 | 0 / 512 | 2 / 0 |
+| 250,000µJ | 82 / 512 | 206 / 512 | 6 / 56 |
+| 4,000,000µJ | 0 / 512 | 0 / 512 | 0 / 0 |
+| **Total** | **115 / 1,536** | **206 / 1,536** | **8 / 56** |
+
+**Mechanistic interpretation:** at low NN energy (75kµJ), A cannot afford its first 125kµJ step and therefore cannot reach a new field patch under this initially stationary topology; at 75kµJ YY A can afford the first 62.5kµJ step, potentially acquire its own resource and drive again. At high 4MµJ neither topology depends on newly acquired energy within four steps, agreeing with the Wolfram positive-work upper-bound control. With medium energy, some NN worlds obtain enabling resource and thus exhibit more feedback-sensitive paths than YY. All geometrical field placements are frozen F019 fields, not individually tuned to these outcomes. The separate hand-placed Wolfram technical positive control (YY A position 5/8m vs deferred 1/4m at 1s) also passed unit assertions; it was **not** counted as ecological evidence.
+
+**Falsifiers and scope:** F002 integer energy residual always zero and no A↔B transfer; a B-only resource does not authorize A; no same-step retroactive credit; motor refusal does not cancel inertia; no-field and motor-off controls; high-battery F007 motion parity; independent field/ledger/motion rederivation. Tested rehashed attacks: physical position, applied motor, claimant, harvest timestamp, retroactive energy eligibility, pending amount, spend source, field geometry, falsified manifest count. Independent auditing is **source-code independence** (verifier deliberately does not import producer/`soma`); it is NOT external human peer review. No actual ground reaction, docking, learner, dual drive, dynamic topology, autonomous joining, chemical metabolism, fitness, organismality or ecological generalization has been shown.
+
+**Reproduction (WSL2/Linux, clean PR head)**:
+```bash
+python -m unittest discover -s tests -p 'test_*.py' -q
+python -m experiments.F020.run_suite --output-root runs/F020-a
+python -m experiments.F020.verify runs/F020-a
+python -m experiments.F020.attack_test --root runs/F020-a
+python -m experiments.F020.analyze --root runs/F020-a
+python -m experiments.F020.run_suite --output-root runs/F020-b
+diff -rq runs/F020-a runs/F020-b
+```
+
+**Verdict at this stage:** technical evidence supports the existence of the requested next-step feedback in the 1D toy simulator, subject to current documented-source CI and review; **implementation remains a Draft PR #69 stacked on design PR #68; no main merge and no formal instrument adoption.** Preserve this observation, including null seeds and zero-effect high battery, even if future studies find no robust coalition benefit.
