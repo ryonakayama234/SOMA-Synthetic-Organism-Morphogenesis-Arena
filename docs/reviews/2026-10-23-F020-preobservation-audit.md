@@ -30,6 +30,21 @@ Thus a nominal 1,000,000 µJ high control fails for NN without harvesting (third
 4. No-field, B-only-harvest, step-one/step-two timing, 0/25k fee, motor-off, force reflection, rejected-while-inertial, high-budget equality and F019 nonregression must be independently replayed from files.
 5. Predeclare integer budget and float tolerance behavior, deterministic event-order tie breaking, source-hash binding, primary per-seed ecological block unit, and rejection of rehashed semantic tamper.
 
+## 2026-10-23 exact-rational artificial patch calibration — Wolfram, NOT F020 simulation
+
+Construct a **separate calibration-only** field with one 1,000,000µJ patch centered at x=1/16m and radius 1/200m. Initial xA=0m, xB=1/10m, mA=mB=1kg, both balances=75,000µJ, fee=0, +2N A-only effective motor, dt=1/4s, 4 steps, zero drag. The patch is not a frozen F019 sampled-field draw; never include this case in the primary 32-seed ecological estimand.
+
+The first linked A step costs 62,500µJ, then A crosses the patch (first-entry fraction 23/25 within step1 using 1D linear segment) and claims 1J at **the end of step1**. Same-step motor eligibility must remain independent of this credit. Wolfram exact rational recurrence yields:
+
+| Arm | xA(k=0..4) in meters | A applied motor k=1..4 | step-4 spendable A balance before deferred final settlement |
+|---|---|---|---|
+| YY feedback | [0, 1/16, 3/16, 3/8, 5/8] | [yes,yes,yes,yes] | 3/40 J = 75,000µJ |
+| YY deferred_credit | [0, 1/16, 1/8, 3/16, 1/4] | [yes,no,no,no] | 1/80 J = 12,500µJ, plus 1J pending |
+| NN feedback | [0,0,0,0,0] | [no,no,no,no] | 3/40 J = 75,000µJ |
+| NN deferred_credit | [0,0,0,0,0] | [no,no,no,no] | 3/40 J = 75,000µJ |
+
+In YY deferred, A's k=2 motor is rejected but its previously acquired v=1/4 m/s remains; coasting gives xA=1/8 m at k=2. Every A-centered endpoint and motor boolean is a **future F020 implementation assertion**, not an observed simulator output or demonstration of autonomous joining. The delta xA at k4 from enabling same-cell feedback is 3/8m; this isolated calibrated effect is engineered and not ecological inference.
+
 ## Open blockers
 
 This review does **not** freeze the draft. Before F020 v1 freeze and implementation: finalize exact saved CSV/JSON columns, conflict/tie semantics, quantized work rule, first-entry interpolation, deferred-acquire bookkeeping and thresholds. F020 should remain **UNEXECUTED / NOT ADOPTED** until separate experimental data, independent verifier, CI and a reasoned verdict exist.
