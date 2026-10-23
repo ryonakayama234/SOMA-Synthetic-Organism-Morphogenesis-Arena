@@ -2,12 +2,12 @@
 id: F020
 title: 代謝閉ループ：有限資源の取得が次の運動を変えるか
 kind: capability_proposal
-status: DESIGN_DRAFT_NOT_FROZEN_UNEXECUTED
+status: FROZEN_PROTOCOL_IMPLEMENTATION_DRAFT_NOT_ADOPTED
 updated: 2026-10-23
 issue: 67
 predecessors: [F002, F005, F007, F018, F019]
 ---
-# F020 — Metabolic Closure (design draft; NOT implemented or adopted)
+# F020 — Metabolic Closure (historical design + frozen implementation draft; NOT adopted)
 
 [Issue #67](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/67) / [experiment draft](../../experiments/F020/PLAN.md) / [unexecuted findings](../../findings/F020-validation.md) / [research decision](../../docs/decisions/2026-10-23-F020-selection.md).
 
@@ -34,3 +34,8 @@ The [internal design review](../../docs/reviews/2026-10-23-F020-preobservation-a
 2. Implement one-step ledger→F007→first-entry→F002 loop in a **separate implementation PR**, with complete architecture, contracts, tests, source-bound artifacts and append-only findings.
 3. Compare signed results, nulls and per-seed dependencies without reward shaping; make scientific interpretation separately from the technical acceptance of a limited measurement instrument.
 4. No adoption or main merge before exact-source CI, adversarial audit and critical review. Internal AI role-switching is NOT external peer review.
+
+
+## 2026-10-23 implementation branch update — protocol frozen, not main
+
+The earlier headings/gates above document the **pre-execution** stage. Protocol `f020.v1` was separately frozen at commit `f3e3a4de4ff47677db575efaafe342655dede6c2` in [FROZEN_V1.md](../../experiments/F020/FROZEN_V1.md) **before the first F020 world**. Stacked [implementation PR #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) contains the causal `soma/f020.py`, source-bound 6144-world suite, independent source/physics/energy reconstruction, synthetic positive controls and seed-block outcomes. No F001–F019 semantics changed. This is **not** autonomy, actual metabolism, a decision-learning loop or a main-branch accepted research conclusion. Refer to append-only [findings](../../findings/F020-validation.md) and exact-head CI for empirical results.
