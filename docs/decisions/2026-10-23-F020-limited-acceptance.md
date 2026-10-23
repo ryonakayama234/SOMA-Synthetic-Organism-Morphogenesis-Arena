@@ -2,7 +2,7 @@
 id: DECISION-F020-LIMITED-ACCEPTANCE-20261023
 title: F020 代謝閉ループの限定採用・内部反証レビュー
 kind: acceptance_decision
-status: CONDITIONALLY_APPROVED_PENDING_LATEST_CI_AND_POST_MAIN
+status: LIMITED_INSTRUMENT_MERGED_POST_MAIN_FINAL_CI_TO_CONFIRM
 date: 2026-10-23
 issue: 67
 ---
@@ -62,3 +62,8 @@ The 75k NN zero is a **structural boundary**: starting 75k cannot pay the unlink
 2. Mark design PR #68 ready and merge **with Git history preserved**, to retain the immutable before-world protocol SHA.
 3. Retarget stacked implementation PR #69 to `main`; verify its own final exact-head cross-version and regression workflows. Mark ready, merge with history preserved.
 4. Verify final post-main F001–F020 workflows, then report main merge SHA and close Issue #67 with a **LIMITED SOFTWARE MEASUREMENT-INSTRUMENT ADOPTION** verdict. Keep unproven scientific ambitions in #51 and this decision, never relabel as autonomous metabolic organism.
+
+
+## 2026-10-23 implementation integration status (later event; append)
+
+Exact complete implementation-head source SHA `70463cec31a971a6caffee76422c1c4f37df6fbe` passed all **20/20** F001–F020 workflows. Git-history-preserving design PR #68 merged to main `2d2ae185d428a4dfb685c22b7b9cfcbca2214b79`; implementation PR #69 merged to main `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7`. This formally integrates only the **limited versioned simulation software instrument**, contingent upon recording actual post-main exact-source workflows and revalidating any subsequent documentation-source changes. No autonomous self-assembly, biological metabolism, hardware validity, mutual net payoff, external human peer review or universal ecology is claimed. Preserve the recorded 263 negative and 36 neutral A-net contrasts and zero B differences.

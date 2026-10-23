@@ -2,7 +2,7 @@
 id: FINDINGS-F020
 title: F020 代謝閉ループ・実験証拠（追記専用）
 kind: scientific_findings_append_only
-status: PRELIMINARY_SOURCE_BOUND_EVIDENCE_UNADOPTED
+status: LIMITED_SIMULATION_MEASUREMENT_INSTRUMENT_MERGED
 updated: 2026-10-23
 issue: 67
 ---
@@ -82,3 +82,8 @@ This addendum does not replace the previously timestamped first observation or p
 **Representative observed path, independently confirmed with Wolfram exact recurrence:** canonical primary scene `s01-n5-r060-sign-1-bal0250000-fee00000`, NN; A acquires a 1J patch near x=−0.175m during step1. In feedback, A motors steps 1–3, reaches −1.125m at k4 and discovers an additional P4 patch; in deferred credit, A motors step1 only, coasts to −0.5m at k4, P4 remains unclaimed. This is *post-observation illustrative selection* and should not be treated as preregistered independent validation.
 
 **Internal conditional decision:** The requested resource→same-cell next-step motor causal mechanism is supported **within the frozen ideal 1D simulator**. Approve only its potential integration as a **limited, source-verifiable software measurement instrument** if the final doc-inclusive head CI and then post-main F001–F020 CI pass; never attach autonomous metabolism, fitness optimization, self-assembly or ecological-generalization claims. Preserve historical outcomes and all nulls. Status at this append: **CONDITIONALLY_APPROVED_NOT_YET_MERGED**.
+
+
+## 2026-10-23 integration event — F020 limited software-instrument adoption (APPEND ONLY)
+
+[Design PR #68](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/68) merged at `2d2ae185d428a4dfb685c22b7b9cfcbca2214b79`; [implementation PR #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) merged at `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7` with freeze SHA `f3e3a4de4ff47677db575efaafe342655dede6c2` preserved. Final implementation-head 20/20 workflows verified at `70463cec31a971a6caffee76422c1c4f37df6fbe`; post-main F001–F020 workflow status belongs to separate SHA checks and is not presumed complete here. All previously appended **positive, null and energy-negative** findings remain unchanged and traceable to `worlds.jsonl` with 6144 primary saved worlds and 3072 paired feedback/deferred comparisons. **Decision: adopt F020 limited versioned 1D measurement instrument** on main; do **not** adopt claims of autonomous biological metabolism, self-selected joining, independent B drive or bilateral energy benefit. 321 trajectory changes; 64 resource maps change, 74 more 1J A patches claimed; 263/36/22 of changed cases have negative/equal/positive A-net differences, and B net difference is zero. The reviewer and saved-data verifier are internal to the same AI-assisted workflow, NOT independent external human review. [Detailed adversarial decision](../docs/decisions/2026-10-23-F020-limited-acceptance.md).
