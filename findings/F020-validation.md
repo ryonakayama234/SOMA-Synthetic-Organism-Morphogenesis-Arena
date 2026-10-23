@@ -28,3 +28,7 @@ F019 main commit `7de755c79fed3b806417da5c15f0115ea7ac04c8` merged 2026-10-23; 1
 | Critical review, bounded adoption decision | NONE | NOT AUTHORIZED |
 
 Scientific labels: SUPPORTED / REFUTED / INCONCLUSIVE / UNEXECUTED, separate from software technical acceptance. No external human peer review is claimed.
+
+## 2026-10-23 pre-observation design audit (NOT F020 world evidence)
+
+An internal independent-formula review of F005/F007 and Wolfram exact fractions revealed that the initial 1,000,000 µJ "high-battery" candidate cannot run four nonlinked ±2N 0.25s steps without energy stalls. Expected positive motor work (linear-velocity integral with F005 ceil µJ gate) is NN **2,000,000 µJ**, YY **1,000,000 µJ**, in contrast to the larger motor-force × semi-implicit displacement product. High-budget candidate revised to **4,000,000 µJ pre-observation**, while preserving the 32-seed, 1536 proposed scenarios/6144 candidate worlds factorial. Detailed critique and contract timing: [design review](../docs/reviews/2026-10-23-F020-preobservation-audit.md). F020 is still **NOT FROZEN / UNEXECUTED / NOT ADOPTED**; no real F020 trajectory or positive result has been observed.
