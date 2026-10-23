@@ -1,0 +1,37 @@
+name: F019-frozen-resource-ecology
+on:
+  push:
+    branches: [main, implementation/F019-resource-ecology-v1-20261022]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify-f019:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Full regression suite including F019
+        run: python -m unittest discover -s tests -p 'test_*.py' -q
+      - name: Frozen F019 source-bound production and independent verification
+        run: |
+          python -m experiments.F019.run_suite --output-root runs/F019-a
+          python -m experiments.F019.verify --root runs/F019-a
+          python -m experiments.F019.attack_test --root runs/F019-a
+          python -m experiments.F019.analyze --root runs/F019-a
+          python -m experiments.F019.run_suite --output-root runs/F019-b
+          python -m experiments.F019.verify --root runs/F019-b
+          diff -rq runs/F019-a runs/F019-b
+      - uses: actions/upload-artifact@v4
+        with:
+          name: f019-saved-worlds-py${{ matrix.python }}
+          path: runs/F019-a/
+          if-no-files-found: error
