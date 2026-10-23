@@ -1208,3 +1208,5 @@ flowchart LR
 ```
 
 **Counterfactual:** `feedback` makes valid k-end harvest available to the *same cell* for k+1 motor eligibility. `deferred_credit` quarantines the same acquisitions until the episode ends; compare YY/NN × modes under exactly matched exogenous field. World truth and absent-controller inputs are never exposed to a cell policy. This is still A-only externally effective force, no real B motor/energy sharing, learning or dynamic joining. The theory/calibration example is **not observed F020 simulation**.
+
+**F020 pre-observation review correction (2026-10-23; design only):** Proposed upper battery 4,000,000 µJ is a harvest-independent trajectory-parity control (NN 2 J and YY 1 J motor work in four ideal steps). In the flow above, the `L2` edge is *only* spendable from k+1 for feedback; deferred claims instead go to per-cell pending/quarantined credits and post as F002 acquire events after k=4. Never infer B-to-A energy transfer. [Review and falsifiers](reviews/2026-10-23-F020-preobservation-audit.md). Diagram remains **UNIMPLEMENTED**.
