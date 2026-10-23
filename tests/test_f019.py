@@ -72,6 +72,38 @@ class F019Test(unittest.TestCase):
             self.assertEqual(x["ledger"]["residual_uj"], 0)
             self.assertEqual(set(x["net_uj"]), {"A", "B"})
 
+    def test_zero_resource_and_drive_off_controls(self):
+        empty = {"field_id": "no-resource", "patches": []}
+        self.assertEqual(harvests_from_states(empty, [
+            {"x_a_m": 0., "x_b_m": .1},
+            {"x_a_m": .5, "x_b_m": .6}]), [])
+        scene = scenario_for(0, 1, 100000, 2, .02)
+        world = simulate_world(scene, "NN", 0.)
+        self.assertEqual(world["harvests"], [])
+        self.assertEqual(world["net_uj"], {"A": 0, "B": 0})
+        self.assertEqual(world["ledger"]["residual_uj"], 0)
+
+    def test_mirrored_physical_motion_not_claimant_symmetry(self):
+        splus = scenario_for(7, 1, 0, 2, .02)
+        sminus = scenario_for(7, -1, 0, 2, .02)
+        self.assertEqual(splus["field"], sminus["field"])
+        for arm in ("YY", "NN"):
+            p, n = simulate_world(splus, arm), simulate_world(sminus, arm)
+            for rp, rn in zip(p["states"], n["states"]):
+                self.assertAlmostEqual(rp["x_a_m"], -rn["x_a_m"], places=12)
+                self.assertAlmostEqual(rp["x_b_m"] - .1, -(rn["x_b_m"] - .1), places=12)
+
+    def test_initial_occupancy_and_overlapping_patches(self):
+        field = {"field_id": "initial-calibration", "patches": [
+            {"patch_id": name, "center_m": 0., "radius_m": .01,
+             "initial_available_uj": 1000000} for name in ("P0", "P1")]}
+        hits = harvests_from_states(field, [
+            {"x_a_m": 0., "x_b_m": .1},
+            {"x_a_m": .3, "x_b_m": .1}])
+        self.assertEqual([hit["patch_id"] for hit in hits], ["P0", "P1"])
+        self.assertTrue(all(hit["winner_cell_id"] == "A" and
+                            hit["entry_time_s"] == 0. for hit in hits))
+
     def test_outside_never_becomes_policy_input(self):
         s = scenario_for(1, 1, 0, 2, .02)
         main = {a: simulate_world(s, a) for a in ("YY", "YN", "NY", "NN")}
