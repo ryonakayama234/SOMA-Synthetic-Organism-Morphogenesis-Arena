@@ -1184,3 +1184,27 @@ flowchart LR
 ~~~
 
 The F019 module cannot change F007 trajectories via acquired energy in this frozen ample-initial-battery world; acquisition is posted after the step and the motor never needs the harvested supply. There is no biological metabolism, electrical contact or dynamic topology. Source SHA and full fields are auditor-only.
+
+
+## F020 — Metabolic Closure: proposed step-causal boundary (2026-10-23; DRAFT, UNIMPLEMENTED)
+
+[Issue #67](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/67) / [SPEC](../topics/F020-metabolic-feedback/SPEC.md) / [PLAN](../experiments/F020/PLAN.md) / [data proposal](DATA_CONTRACTS.md). **Dotted edges and F020 orchestrator are NOT implemented yet. F001–F019 are unchanged.**
+
+```mermaid
+flowchart LR
+  CFG["Researcher-only config\nF019 trajectory-blind field, fixed motor, fixed YY/NN"] --> G["Proposed F020 step orchestrator"]
+  L["F002 A/B integer-µJ balances at start of step"] --> G
+  G -->|"A's current balance only"| M["F005 candidate positive-work / F007 one-step A motor gate"]
+  M --> P["F007 ideal 1D next physical state"]
+  P --> R["F019 first-path-entry / first-claim depletion"]
+  CFG --> R
+  R -->|"credit to actual A or B claimant at end of k"| L2["F002 next-step balances"]
+  L2 -.->|"available only at k+1"| G
+  P --> E["Source-bound research logs: physics, decisions, ledger, claims"]
+  R --> E
+  L2 --> E
+  E --> V["Independent saved-data verifier / falsification"]
+  V --> J["Append-only findings and researcher interpretation"]
+```
+
+**Counterfactual:** `feedback` makes valid k-end harvest available to the *same cell* for k+1 motor eligibility. `deferred_credit` quarantines the same acquisitions until the episode ends; compare YY/NN × modes under exactly matched exogenous field. World truth and absent-controller inputs are never exposed to a cell policy. This is still A-only externally effective force, no real B motor/energy sharing, learning or dynamic joining. The theory/calibration example is **not observed F020 simulation**.

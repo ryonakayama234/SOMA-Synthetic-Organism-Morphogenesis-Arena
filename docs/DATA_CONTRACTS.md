@@ -1054,3 +1054,30 @@ Source: `soma/f019.py`, `experiments/F019/run_suite.py`; standalone verifier: `e
 - `manifest.json` records actual Git SHA, clean source, SHA256 for every producer/dependency/doc/test/CI input, hashes for all six raw files, exact expected counts and independent seed universe. A rehashed artifact is not sufficient proof: the independent code must reconstruct its *meaning*.
 
 All records above are implementation-candidate additions. Formal adoption requires actual Python 3.11+3.12 full tests, independent auditor/attacks, clean byte replay, code review, and scoped research judgment. Null entry-time is only allowed when unclaimed; fractional step entry is a declared linear approximation, not exact continuous physical contact.
+
+
+## F020 proposed temporal energy-feedback contract (2026-10-23; DRAFT, NOT FROZEN OR IMPLEMENTED)
+
+[Issue #67](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/67) / [candidate plan](../experiments/F020/PLAN.md) / [unexecuted evidence](../findings/F020-validation.md). This is a **new proposed schema** `f020.candidate`; DO NOT label it `f020.v1` until preregistration and contract review. F019 `f019.v1` remains immutable.
+
+```mermaid
+flowchart TD
+  S["scenario: field_id/seed, A/B balances, sign, fee, fixed link intent"] --> W["world: feedback OR deferred_credit"]
+  W --> T["step k: available_A_before_uj, requested_positive_work_uj, applied_force_n, decision_reason"]
+  T --> X["state before/after: x_A,B; v_A,B; mechanical residual"]
+  X --> H["harvest event: patch_id, claimant A/B, entry_fraction, entry_time_s, amount_uj"]
+  H --> B["F002 ledger: credit posting or quarantine; balance_A/B_after_uj"]
+  B --> O["step k+1 eligibility / separate off-world paired analysis"]
+  O --> M["source_sha, manifest, saved-data verifier, append-only findings"]
+```
+
+| Proposed record | Key fields / units | Important validation |
+|---|---|---|
+| `scene` | `schema_version, scenario_id, field_id, base_seed, motor_sign, initial_balance_{a,b}_uj, join_fee_uj, field` | frozen deterministic generator; no trajectory/score lookahead |
+| `world` | `scenario_id, arm {YY,NN}, credit_mode {feedback,deferred_credit}` | four paired forks; cloned pristine field |
+| `step` | `step_index, time_s, available_a_before_uj, candidate_motor_positive_work_uj, motor_applied_n, decision_reason, x/v before/after, available_a_after_uj` | no retroactive motor; F005 cost before step; physical inertia retained on refusal |
+| `harvest` | `patch_id, winner_cell_id, entry_fraction_in_step, entry_time_s, acquired_uj, depletion_state` | one claimant/patch; first entry and tie; B credit not A credit |
+| `ledger` | `event_index, source_id, target_id, external_in_uj, spent_uj, balance_a_uj, balance_b_uj, residual_uj, credit_eligibility_step` | exact F002 integer µJ event conservation; deferred credits explicit |
+| `evidence` | `source_sha, source_hashes, artifact_hashes, verifier_result, forged_case_results` | independent reconstruction, two-root replay, exact-head GitHub CI |
+
+**Versioning / semantics:** `credit_eligibility_step = k+1` for feedback; deferred until after step4 for comparison, never backdate. This is an investigator-side simulator/measurement contract, **not** a cell's observation API; no world map or fork's outcome can enter A's action. Detailed order, error tolerance and file names must be frozen before F020 runs. Result tables/charts must be derived from archived events and stamped with source SHA, not illustrative numbers.
