@@ -1014,3 +1014,29 @@ The earlier F018 table above is a **proposal/historical** record; its `motor-own
 Frozen formula: `net_i_uj = acquired_i_uj - motor_spent_i_uj - join_spent_i_uj`. `delta_fixed_i = net_i(YY, motor = 2*sign) - net_i(NN, same motor)`; `delta_outside_i = net_i(YY, fixed motor) - max_u net_i(NN,u)`, `u∈{-2,0,+2}N`. A is the **only motor owner**; B may receive terminal resource, and is never automatically given A energy. All patch resources are exogenous terminal harvest (t=1s), not contact/pass-through harvest. No direct link reward.
 
 Data conservation and replay obligations: chronological positive integer F002 events, no negative/private balance or capacity overflow; no spurious spend on unilateral rejected request; F007 motor costs charged **after upfront join fee**; exact F007 physical link geometry and work audit; both independent saved-data semantics and SHA256 integrity; 2-root byte replay, falsified-and-rehashed negative evidence. The summary and entire resource layout are **forbidden controller inputs**. [Source-bound run guide](../experiments/F018/README.md).
+
+
+
+## F019 proposed resource/ecology contracts (2026-10-22; DESIGN DRAFT ONLY / NO IMPLEMENTATION)
+
+[Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [draft SPEC](../topics/F019-resource-ecology/SPEC.md) / [proposed PLAN](../experiments/F019/PLAN.md) / [UNEXECUTED findings](../findings/F019-validation.md). The following are **candidate** names/schemas and MUST be revised/frozen **before** the first F019 world run. Existing F018 schema and saved evidence stay unchanged. **Research framing:** primary estimands are paired per-patch first-entry/claimant state (including unclaimed and winner switches) and per-cell acquired/net resource; Pareto outside gains are secondary. The proposed records already contain patch IDs, world IDs, timing and owners necessary to derive these comparisons; no new learner inputs or runtime interface is authorized.
+
+| Candidate record | Fields and units | Who can read it |
+|---|---|---|
+| `f019.resource_field.v1` | `field_id, generator_version, seed, patches[]`; each `patch_id, center_m, radius_m, initial_available_uj` | World construction and investigator ONLY; not cell policy |
+| `f019.world.v1` | `world_id, field_id, consent_arm, motor_force_n, starting_ledger_balances_uj, physical_config_ref`; each causal fork regenerates same initial field | Investigator / producer |
+| `f019.harvest.v1` | `world_id, patch_id, step_index, entry_fraction_in_step, entry_time_s, winner_cell_id, available_before_uj, acquired_uj, available_after_uj, ordinal`; finite and range-checked | Investigator truth / independent verifier |
+| `f019.states.v1` | F007 original full physical `STATE_COLUMNS` plus `world_id`; positions m, time s, forces N, work J, motor spent µJ | Investigator truth ONLY |
+| `f019.ledger.v1` | F002 chronological per-cell `acquire`, `spend` and optional initial join fee; balances integer µJ, residual 0; exact event indices | Auditor; eventual local feedback must be *only own* settled values |
+| `f019.paired_summary.v1` | per-cell `net_uj, delta_fixed_uj, delta_outside_uj`, individual outside argmax motor(s), Pareto flags, claim counts, remaining supply, `base_seed` | Investigator counterfactual ONLY |
+| `f019.evidence.v1` | source SHA, git dirty, simulator/producer/verifier and frozen SPEC/PLAN SHA256, field-generator hash, input-sample universe, hashes for every saved raw artifact and two-root replay | Auditor |
+
+Suggested normalized research graph: `Field(seed) 1→N Patch(id, interval, supply)`; `Scenario(field_id, fixed force/cost) 1→7 PairedWorld(arm,outside)`; each `PairedWorld 1→N StateRow` and `0→N HarvestEvent`; each harvest references exactly one `Patch` and one `Cell(A/B)`; per-world chronological `LedgerEvent` updates each cell's balance. A patch is unique within a world, not globally shared across counterfactual branches.
+
+**Pending frozen temporal semantics:** linear interpolation across F007 endpoint pairs for earliest encounter; step time fraction in [0,1]; initial occupancy; exact boundary inclusion; stationary segment; simultaneous patch/cell ties; event ordering against motor spend and join fee; integer rounding and overflow; generator hash-to-grid and exclusion of linked predicted endpoints. A geometry event does not create electrical power: F002 `acquire` is an externally supplied abstract resource, not measured hardware energy.
+
+**Non-leakage:** A future policy must never receive field seed/full patch map, B balance, scenario labels, any counterfactual fork, outside optimum, or measured Pareto result. `harvest` records are off-world observational truth; if a later experiment grants an individual resource sensor, define that separate API and causal observation restriction first.
+
+**Scope statement:** no new controller, B motor, physical docking/collision/real-force sensor, 2D/3D world, persistent morphology or self-organized body. All F019 records and status above are **design intent**, not actual emitted files.
+
+**F019 v1 frozen-before-observation addendum (2026-10-22):** The candidate schemas are retained as proposals, and the [v1 PLAN](../experiments/F019/PLAN.md) freezes their event interpretation: `winner` in per-patch paired comparison is A/B/null, patch overlaps can each pay once independently, fees occur at step 0, motor spend before post-step harvest; source/seed generator is SHA256 first 8 bytes big-endian modulo 121, sample lattice .025 m in [-1.5,1.5], 32 seeds, radii .02/.06, patch counts 2/5, fee 0/100000µJ, amount 1000000µJ. Proposed outputs will include `harvests.jsonl` and `patch_comparison` in summaries. No F019 observed result yet. Reader-visible bytes in saved files and implementation conventions must be audited against PLAN.

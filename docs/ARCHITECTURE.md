@@ -1128,3 +1128,35 @@ flowchart TD
 ~~~
 
 **Still absent**: an actually responding learned YES/NO local policy; B-owned motor actuation; contact/collision/docking; ecological/generalizable resource distributions; private-local observation input to a learner; a stable connected morphology; real grounded/electric powertrain. F007 motor is A-only external-effective-force. Paired `delta_outside` uses an omniscient investigator-side max over the **restricted** A-motor options -2/0/+2N, not a claim about what a local decision maker can discover. [Code](../soma/f018.py) / [reproduction](../experiments/F018/README.md) / [F018 frozen PLAN](../experiments/F018/PLAN.md).
+
+
+
+## F019 selected next — path-dependent finite resources (2026-10-22; PROPOSED, NOT IMPLEMENTED)
+
+[Research Issue #64](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/64) / [F019 SPEC](../topics/F019-resource-ecology/SPEC.md) / [PLAN](../experiments/F019/PLAN.md) / [UNEXECUTED findings](../findings/F019-validation.md).
+
+The solid historical modules below are F018/F007/F002 components **already present in main**. Dashed F019 components are **design-only**. No learned consent, B-owned motor, real collision docking or actual resource world has been added.
+
+~~~mermaid
+flowchart TD
+  G["外生的資源場のseedと配置規則<br/>(軌道・報酬から独立)"] -. "F019 design" .-> FIELD["有限 ResourceField<br/>patch ID / 区間 / 在庫"]
+  IA["研究者指定: Aの結合要求"] --> CH{"既存F018<br/>両者YES＋F003適合?"}
+  IB["研究者指定: Bの結合要求"] --> CH
+  CH -->|YES| LINK["既存F007: 理想リンク1D"]
+  CH -->|NO| FREE["既存F007: 非結合1D"]
+  LINK --> TRAJ["既存F007 positions / motor work"]
+  FREE --> TRAJ
+  TRAJ -. "F019 design" .-> SWEEP["step内の線形経路<br/>初回進入時刻を計算"]
+  FIELD -.-> SWEEP
+  SWEEP -. "F019 design" .-> DEP["先着セルへ一度だけ獲得<br/>残資源→0"]
+  DEP -. "F019 design" .-> LED["既存F002台帳へcell別acquire"]
+  TRAJ --> LED
+  LED -. "F019 design" .-> RAW["研究側: states / harvests / ledgers / paired worlds"]
+  RAW -. "F019 design" .-> AUD["独立保存データ監査 / 改竄攻撃 / CI"]
+  AUD -. "F019 design" .-> FIND["append-only findings<br/>結果はまだない"]
+  RAW -. "禁止: off-world true state / oracle" .-> AGENT["将来の局所学習器<br/>現時点では未実装"]
+~~~
+
+Each paired arm receives the **same fresh original** resource field, not a field depleted by a different counterfactual arm. Within-step interpolation is an event ordering *approximation*, not F007's continuous physics. Historical diagrams remain time-scoped and are not rewritten to imply present F019 capabilities.
+
+**F019 design-question update (pre-freeze, 2026-10-22):** this proposed causal pipeline primarily measures how a fixed connected/unconnected configuration changes *resource encounter time, claimant, depletion and per-cell ledger* under identical exogenous field forks. A jointly positive attachment incentive is only a secondary question, not a required outcome. The diagram and module boundary are unchanged. [Long-horizon dynamic-body note](research-notes/2026-10-22-temporary-morphology-and-resource-access.md) is separate ideation, **not** a dashed F019 component or implemented capability.
