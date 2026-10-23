@@ -2,7 +2,7 @@
 id: F020
 title: 代謝閉ループ：有限資源の取得が次の運動を変えるか
 kind: capability_proposal
-status: FROZEN_PROTOCOL_IMPLEMENTATION_DRAFT_NOT_ADOPTED
+status: LIMITED_SIMULATION_MEASUREMENT_INSTRUMENT_MERGED
 updated: 2026-10-23
 issue: 67
 predecessors: [F002, F005, F007, F018, F019]
@@ -39,3 +39,10 @@ The [internal design review](../../docs/reviews/2026-10-23-F020-preobservation-a
 ## 2026-10-23 implementation branch update — protocol frozen, not main
 
 The earlier headings/gates above document the **pre-execution** stage. Protocol `f020.v1` was separately frozen at commit `f3e3a4de4ff47677db575efaafe342655dede6c2` in [FROZEN_V1.md](../../experiments/F020/FROZEN_V1.md) **before the first F020 world**. Stacked [implementation PR #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) contains the causal `soma/f020.py`, source-bound 6144-world suite, independent source/physics/energy reconstruction, synthetic positive controls and seed-block outcomes. No F001–F019 semantics changed. This is **not** autonomy, actual metabolism, a decision-learning loop or a main-branch accepted research conclusion. Refer to append-only [findings](../../findings/F020-validation.md) and exact-head CI for empirical results.
+
+
+## 2026-10-23 formal scope update — limited F020 tool integrated into main
+
+2026-10-23 formal bounded integration: [design #68](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/68) merged to main at `2d2ae185d428a4dfb685c22b7b9cfcbca2214b79`; [implementation #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) merged to main at `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7` preserving first-world freeze `f3e3a4de4ff47677db575efaafe342655dede6c2`. **Adopted scope: 1D F020 same-cell k-end resource→k+1 motor eligibility simulation/measurement instrument ONLY**; not self-assembly, independently acting B, metabolic biology, learned consent or fitness. 1,536 primary scenes/6,144 worlds/3,072 timing contrasts; 321 motor/trajectory effects, 64 claimant-map changes (74 additional 1J A claims), of 321 changed-trajectory contrasts 263 A-net-negative, 36 equal, 22 A-net-positive; B net identical across modes. [Exact checked-out final implementation-head F001–F020 20/20 workflow success](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/39966063549); [internal critical interpretation](../../docs/decisions/2026-10-23-F020-limited-acceptance.md). Post-main **all-workflow gate is tracked separately** and should not be asserted complete solely from the PR-head run. Internal AI review and code-independent auditor are NOT external human peer review.
+
+H20a (causal k+1 motor eligibility) and H20d (archived independent source-bound software reproduction) are supported **within the fixed simulation**; H20b (resource access consequences) is supported descriptively only for 64 matched pairs under 32 reused field seed blocks. H20c (B cannot energize A) passed. Autonomously self-chosen morphological coalition value and survival benefit were not demonstrated; motor-work costs often outweigh additional resources. Historical draft assertions above reflect earlier stages.

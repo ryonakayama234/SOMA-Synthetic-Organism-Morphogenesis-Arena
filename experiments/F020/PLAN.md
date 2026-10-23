@@ -2,7 +2,7 @@
 id: EXP-F020
 title: F020 代謝閉ループ・事前登録ドラフト
 kind: experimental_plan
-status: PREOBS_DRAFT_SUPERSEDED_BY_FROZEN_V1_IMPLEMENTATION_DRAFT
+status: FROZEN_V1_COMPLETED_LIMITED_INSTRUMENT_MERGED
 updated: 2026-10-23
 issue: 67
 ---
@@ -49,3 +49,8 @@ Technical correctness is NOT conditioned on finding self-sustaining behavior or 
 ## Implementation-stage preregistration freeze and execution (2026-10-23)
 
 The original candidate paragraphs above remain as **historical design-stage wording**. The binding, **pre-first-world frozen** [FROZEN_V1.md](FROZEN_V1.md) was committed at `f3e3a4de4ff47677db575efaafe342655dede6c2` before `soma/f020.py` existed. Implementation [PR #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) adds one true ledger/physics/claimant feedback loop, primary `worlds.jsonl`/manifest artifact, independently recomputed world-oracle, rehashed on-disk attacks, per-seed-block analysis and exact-head Python 3.11/3.12 CI. Full 1536×4 randomized field world design remains intact. For observed outcomes, original source SHA, CI, and limitations consult [append-only findings](../../findings/F020-validation.md); this entry is **not** an adoption verdict.
+
+
+## 2026-10-23 integration outcome — original preregistration retained
+
+F020's authoritative before-observation freeze remains [FROZEN_V1.md](FROZEN_V1.md), git commit `f3e3a4de4ff47677db575efaafe342655dede6c2`. Implementation PR #69 integrated to main at `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7`, preserving historical draft paragraphs for audit. Achieved a causal k-end first-claim to k+1 A motor feedback instrument; not a self-assembly or bilateral-viability result. Quantitative findings including unfavorable cases in [append-only findings](../../findings/F020-validation.md) and [critical decision](../../docs/decisions/2026-10-23-F020-limited-acceptance.md). Check final documentation-inclusive source SHA CI before making a post-main all-green claim.

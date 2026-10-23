@@ -1238,3 +1238,8 @@ flowchart TD
 ~~~
 
 The agent never sees the experimenter's field map or fork outcomes; the only A actuation in this model remains the ideal external effective force. **No physical self-assembly or independent B actuator** is implemented.
+
+
+## F020 accepted-status supersession (2026-10-23; main integration)
+
+Earlier diagram captions saying F020 `UNIMPLEMENTED` are historical pre-execution documentation. F020 was integrated via PR #68 and #69, main `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7` as a **limited simulation measurement instrument**. The implemented chronology is shown in the *F020 implementation branch #69 — genuine chronological loop* diagram above and code `soma/f020.py`; the model remains 1D, researcher-fixed YY/NN, A-only externally effective motor, no dynamic attachment, no bilateral B actuation/transfer, no organismality. See [bounded review](decisions/2026-10-23-F020-limited-acceptance.md). Source-bound F020 outputs follow `f020.evidence.v1`, not proposed CSV sketches.
