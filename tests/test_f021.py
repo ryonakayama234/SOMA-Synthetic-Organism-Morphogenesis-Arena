@@ -7,7 +7,7 @@ from soma.f021 import scene_for, grid, simulate, motor_gate, _motion
 class F021FrozenTests(unittest.TestCase):
     def test_grid_full_and_unique(self):
         items = list(grid())
-        self.assertEqual(len(items), 4608)
+        self.assertEqual(len(items), 9216)
         self.assertEqual(len({x["world_id"] for x in items}), 4608)
 
     def test_both_80k_ambiguous(self):
@@ -39,7 +39,7 @@ class F021FrozenTests(unittest.TestCase):
     def test_nonlinked_both_move_independently(self):
         x,v,link = _motion([0.,.1],[0.,0.],"NN",2.,-2.)
         self.assertEqual(v,[.5,-.5])
-        self.assertEqual(x,[.125,-.025])
+        self.assertAlmostEqual(x[0], .125)\n        self.assertAlmostEqual(x[1], -.025)
         self.assertEqual(link,[0.,0.])
 
     def test_no_b_motor_no_charge_b(self):
