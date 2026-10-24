@@ -49,3 +49,6 @@ F018–F020 の B は資源取得者・力学的負荷にはなれるが、B自�
 ## 2026-10-24 F021 v1 pre-observation freeze
 
 The authoritative final parameters and joint motor eligibility rule are now [FROZEN_V1](../../experiments/F021/FROZEN_V1.md). Prior references to an unresolved gate above are the original design-stage history; under this freeze, all feasible subsets are evaluated simultaneously, uniquely maximal-cardinality feasible subsets are applied, and ambiguous ties fail closed with alternatives logged and sensitivity-tested. No F021 software world has been observed at this design freeze.
+
+
+**2026-10-24 PRE-OBSERVATION ARITHMETIC ERRATUM:** All frozen eight factors preserved: 32×2×3×2×3×2×2×2 = **9,216 worlds / 4,608 YY-NN paired comparisons**, not the originally misstated 4,608/2,304. No F021 primary world had executed when this correction was made. See [FROZEN_V1.md](../../experiments/F021/FROZEN_V1.md) and amendment A1.
