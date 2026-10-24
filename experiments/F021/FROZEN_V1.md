@@ -31,3 +31,9 @@ Does giving **both independent cells independently charged ideal external-effect
 - Engineering qualification: frozen pre-observation commit SHA preserved; tests on py3.11 and 3.12, full inherited F001–F020 regressions, two clean output roots byte-identical, independent verifier and adversarial mutations. No formal adoption until observed evidence plus critical review; negative science outcomes can coexist with bounded *software instrument* acceptance. No external peer review claimed.
 
 **Decision ownership:** This is the researcher's 2026-10-24 authorization for design/implementation/experiments/audit, not advance authorization to assert spontaneous body emergence. F021 findings are append-only; code and records are subject to post-run review.
+
+## Pre-observation amendment A1 (2026-10-24 JST; **before any F021 primary world**)
+
+The originally frozen text inadvertently multiplied the eight-factor grid incorrectly. The exact stated factors **remain unchanged**: 32 seeds × 2 A signs × 3 B relative commands × 2 YY/NN arms × 3 balances × 2 attachment fees × 2 patch counts × 2 radii = **9,216 archived worlds**, comprising **4,608 matched YY–NN comparisons**, not 4,608/2,304. This arithmetic correction is recorded after pre-execution CI unit-test failure, which stopped before primary world generation. No factor, outcome measure, seed, model or arbitration semantics changed; no F021 primary observations have occurred. The source-controlled amendment commit/merge SHA is the binding pre-observation version for F021 execution; historical first-freeze SHA 8f82e3b remains provenance of the initial miscount. The 32 blocks—not 9,216 rows—bound ecological independent replication.
+
+**All earlier references to 4,608 worlds or 2,304 pairs in this document are superseded by this pre-observation amendment.** No change in the physics or scientific hypotheses.
