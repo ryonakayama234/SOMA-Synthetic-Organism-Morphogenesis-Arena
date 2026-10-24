@@ -36,3 +36,8 @@ Wolfram Languageで質量1kgずつ、0.25s、初速0、外部有効モーター 
 - Software/API admission verdict: **未採用**
 
 今後の結果はこの文書に追記し、先行する未実施状態や陰性結果を歴史から消さない。
+
+
+## 2026-10-24 — frozen design merged, new source produced (engineering candidate; no observed F021 outcome yet)
+
+The older UNEXECUTED text above is historical. F021 design [PR #73](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/73) was frozen before any F021 primary data, at design HEAD `8f82e3b0283b6523041647b38335c466034478f3`, merged to main via `ae37d2af5ce728c58bc8c2fd4e824f34fc1f2b71`. Frozen primary grid: 32 F019 environment seed blocks, 4,608 investigator-assigned YY/NN × A/B motor × fee × finite resource worlds and 2,304 paired YY-NN contrasts; no 4,608 independent lifeforms. At [implementation PR #74](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74), `soma/f021.py` and standalone producer, non-importing independent verifier, six rehashed tamper controls, unit tests, CI were added. **Raw F021 outcomes and technical CI verification are still pending as of this source revision**; do not replace this sentence with an invented result. Append exact CI/source-specific quantitative findings and review separately after observed execution. Scientific hypothesis verdict UNEXECUTED; bounded adoption NOT YET AUTHORIZED.
