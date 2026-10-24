@@ -239,8 +239,12 @@ def verify_root(root):
     rows={}
     count=0
     ambiguous=0
+    outside_categories={"outside_both_positive":0,"outside_both_negative":0,
+                        "outside_mixed":0,"outside_neutral":0}
     seed_metrics={str(i):{"pairs":0,"ambiguous_steps":0,"both_positive":0,
-                          "mixed":0,"both_negative":0,"neutral":0}
+                          "mixed":0,"both_negative":0,"neutral":0,
+                          "outside_both_positive":0,"outside_both_negative":0,
+                          "outside_mixed":0,"outside_neutral":0}
                   for i in range(32)}
     for line in (root/"worlds.jsonl").open(encoding="utf-8"):
         world=json.loads(line,parse_constant=lambda v: (_ for _ in ()).throw(ValueError(v)))
@@ -278,6 +282,12 @@ def verify_root(root):
         else: neutral+=1
         seed_metrics[str(key[0])]["pairs"]+=1
         seed_metrics[str(key[0])][label]+=1
+        outside=[world["net_uj"][c]-max(0,other["net_uj"][c]) for c in IDS]
+        outside_label=("outside_both_positive" if min(outside)>0 else
+                       "outside_both_negative" if max(outside)<0 else
+                       "outside_neutral" if 0 in outside else "outside_mixed")
+        outside_categories[outside_label]+=1
+        seed_metrics[str(key[0])][outside_label]+=1
         c1={h["patch_id"]:h["winner"] for h in world["harvests"]}
         c2={h["patch_id"]:h["winner"] for h in other["harvests"]}
         if c1!=c2:
@@ -290,6 +300,7 @@ def verify_root(root):
         "both_positive":both_positive,"both_negative":both_negative,
         "mixed":mixed,"neutral":neutral,
         "claimant_map_different_pairs":different_claimants,
+        **outside_categories,
         "seed_blocks":32 if primary else len({k[0] for k,a in rows}),
         "per_seed":seed_metrics,"smoke":not primary}
     same(summary,expected_summary,"summary")
