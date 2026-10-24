@@ -1131,3 +1131,17 @@ flowchart LR
 **状態機械の時系列（候補）**：step前残高→A/B指令の同時審査（**採否ゲート未確定**）→適用力で1D物理更新→各個体自身のモーター支出をF002へ記帳→両軌跡と独立場の資源先着→取得者だけのF002残高増→次step。F020の「k末の資源はk+1以降のみ支出可能」を保存。正の機械仕事の整数µJへの丸めはF005の既存解釈と整合させる。拒否しても慣性は維持する。
 
 **数値モデル注記**：F007型半陰的位置更新と、F005型の速度積分・仕事帳簿は別の離散評価。物理的な電力変換や停止時の駆動損失は未モデル化。値・列順・拒否ルール・タイブレーク・シード・閾値は第一F021世界の前に凍結する。
+
+
+## F021.v1 frozen pre-observation data-contract proposal (2026-10-24; not emitted yet)
+
+| Record | Required content | Owner / accessibility |
+|---|---|---|
+| `f021.scene.v1` | ID, seed block, F019 field id, YY/NN, commands A/B in N, starting balance per cell µJ, per-cell joining fee µJ, dt and steps, `f021.v1` | research environment |
+| `f021.step.v1` | step index; start/end x/v for both cells (m,m/s); link force each side (N); A/B command and actual force (N); per-subset feasibility / candidate positive work (J) and charge (µJ); selected subset, arbitration reason and ambiguity count; each cell spent and available balance (µJ) | researcher audit; local policy gets only own observed fields |
+| `f021.harvest.v1` | patch ID, winner A/B or null, fractional entry time, depletion, acquired µJ and step; no same-step credit | world truth; local cell only its own award |
+| `f021.ledger.v1` | time-ordered step-zero fee, motor debit, post-motion harvest via F002 per cell, integer microjoule residual exactly zero | evidence / owner-local balance projection |
+| `f021.summary.v1` | acquired/motor/join and individual net µJ; paired fixed-command YY-NN changes, inactive outside option, sign category, per-block outcome, arbitration sensitivity | investigator only |
+| `f021.provenance.v1` | frozen specification SHA and revision; simulator/producer/verifier SHA; environment seed blocks, source hash and every artifact SHA256; two-root replay | reproducibility only |
+
+**Frozen algorithm:** Evaluate all subsets with the same pre-step balances; budget positivity and ceil(F005 positive motor work in µJ) for each participating cell; choose the uniquely greatest-cardinality feasible subset or else none with `ambiguous_maximal`; log all contenders. No sequential A-first priority. Alternative A-only/B-only remain explicit separately labeled investigator sensitivity runs. [F021 preregistration](../experiments/F021/FROZEN_V1.md). These are **proposal contracts**, not already verified datasets.
