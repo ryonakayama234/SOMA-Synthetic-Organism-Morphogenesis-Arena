@@ -41,7 +41,7 @@ jobs:
         run: |
           python -m unittest discover -s tests
           python -O -m unittest discover -s tests -p 'test_f021.py'
-      - name: Frozen primary 4,608 worlds and independent verifier
+      - name: Frozen primary 9,216 worlds and independent verifier
         run: |
           python -m experiments.F021.run_suite --out /tmp/f021-worlds-a
           python -m experiments.F021.verify --root /tmp/f021-worlds-a
