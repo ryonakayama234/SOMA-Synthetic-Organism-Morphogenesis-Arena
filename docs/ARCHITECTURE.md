@@ -1324,3 +1324,8 @@ Existing source F001–F020 is unchanged. At this proposal stage, CI and F021 em
 ### 2026-10-24 source-bound F021 observation / scope
 
 At [F021 CI 40101888214](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40101888214), the 1D investigator-specified YY/NN motor-world pipeline and separate source-independent evidence verifier succeeded for 9,216 archived worlds and 4,608 pairs in Python 3.11/3.12. Internal gate ambiguity is a research-controlled architectural decision: 1,024 of 36,864 step events had tied feasible maximal-subsets, applied zero force by declared rule, and cannot be interpreted as voluntary stopping. Data analytics are explicitly researcher-only; learned local policies, physical grounded actuator feedback, and actual docking remain absent. [Evidence/limitations](../findings/F021-validation.md).
+
+
+### F021.v1 adopted architectural boundary (2026-10-24)
+
+[Bounded adoption PR #74](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74) merged to main SHA `53efe7c78529ca81cbab4b11d4ddcf10245f44fa`; the earlier paragraphs marked 'candidate' describe earlier temporal stages, not current implementation status. The live adopted architecture is fixed-resource 1D world / two externally prescribed ideal motor channels / exhaustive own-charge-per-feasible-subset joint gate / F001-F007 ideal kinematics / F002 per-cell own ledger / F019 per-cell next-step harvested credit / researcher-only all-step archive / entirely separate full-log auditor. Autonomous local joining, true contact, ground reactions and any accessible coupled policy observations are still outside the architecture. [F021 scientific acceptance and limitations](../findings/F021-validation.md).
