@@ -59,3 +59,6 @@ A/B各1kg、初速0、dt=1/4秒、YY、A=+2N、B∈{-2,0,+2}N。リンク加速�
 ## 2026-10-24 freeze superseding tentative values above
 
 See [FROZEN_V1.md](FROZEN_V1.md) for the final pre-observation v1 contract. It freezes 4,608 archived worlds from 32 environmental seed blocks, 4 steps per world, the exhaustive-subset / unique-maximum arbitration algorithm, explicit ambiguous tie sensitivity calibration and planned evidence gates. No F021 primary world has yet been executed at this commit.
+
+
+**2026-10-24 PRE-OBSERVATION ARITHMETIC ERRATUM:** All frozen eight factors preserved: 32×2×3×2×3×2×2×2 = **9,216 worlds / 4,608 YY-NN paired comparisons**, not the originally misstated 4,608/2,304. No F021 primary world had executed when this correction was made. See [FROZEN_V1.md](../../experiments/F021/FROZEN_V1.md) and amendment A1.
