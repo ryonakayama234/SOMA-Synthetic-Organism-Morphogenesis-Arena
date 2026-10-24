@@ -44,3 +44,8 @@ F018–F020 の B は資源取得者・力学的負荷にはなれるが、B自�
 技術的採用：反証可能な契約、独立オラクル、原本＋改竄攻撃＋再生と最終SHA CIで判定。科学的には支持／反証／不明／未実施を別記。結合による個体利益、同意、自律的身体形成の実証を合格基準にしない。
 
 次の研究対象（**今回の実装ではない**）：この測定器の信頼性を確立した後、局所観測による接近／結合／離脱判断、幾何接触、実在する支持反力へ段階的に移す。
+
+
+## 2026-10-24 F021 v1 pre-observation freeze
+
+The authoritative final parameters and joint motor eligibility rule are now [FROZEN_V1](../../experiments/F021/FROZEN_V1.md). Prior references to an unresolved gate above are the original design-stage history; under this freeze, all feasible subsets are evaluated simultaneously, uniquely maximal-cardinality feasible subsets are applied, and ambiguous ties fail closed with alternatives logged and sensitivity-tested. No F021 software world has been observed at this design freeze.
