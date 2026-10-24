@@ -28,6 +28,8 @@ def produce(dest: Path, *, smoke: bool = False) -> dict:
     main = dest / "worlds.jsonl"
     count = ambiguous = both_positive = mixed = both_negative = neutral = 0
     different_claimants = 0
+    outside_categories = {"outside_both_positive": 0, "outside_both_negative": 0,
+                          "outside_mixed": 0, "outside_neutral": 0}
     rows = {}
     with main.open("w", encoding="utf-8", newline="\n") as h:
         for scene in grid():
@@ -45,7 +47,9 @@ def produce(dest: Path, *, smoke: bool = False) -> dict:
     pair_count = 0
     seed_metrics = {str(i): {"pairs": 0, "ambiguous_steps": 0,
                               "both_positive": 0, "mixed": 0,
-                              "both_negative": 0, "neutral": 0}
+                              "both_negative": 0, "neutral": 0,
+                              "outside_both_positive": 0, "outside_both_negative": 0,
+                              "outside_mixed": 0, "outside_neutral": 0}
                     for i in range(32)}
     for (key, arm), world in rows.items():
         seed_metrics[str(key[0])]["ambiguous_steps"] += world["ambiguous_steps"]
@@ -67,6 +71,15 @@ def produce(dest: Path, *, smoke: bool = False) -> dict:
         else: neutral += 1
         seed_metrics[str(key[0])]["pairs"] += 1
         seed_metrics[str(key[0])][label] += 1
+        # The frozen idle-inclusive outside comparator is investigator-only:
+        # YY-own net is compared against both NN-fixed and zero-net idleness.
+        outside = [world["net_uj"][c] - max(0, other["net_uj"][c])
+                   for c in ("A", "B")]
+        outside_label = ("outside_both_positive" if min(outside) > 0 else
+                         "outside_both_negative" if max(outside) < 0 else
+                         "outside_neutral" if 0 in outside else "outside_mixed")
+        outside_categories[outside_label] += 1
+        seed_metrics[str(key[0])][outside_label] += 1
         who_a = {h["patch_id"]: h["winner"] for h in world["harvests"]}
         who_b = {h["patch_id"]: h["winner"] for h in other["harvests"]}
         if who_a != who_b:
@@ -78,6 +91,7 @@ def produce(dest: Path, *, smoke: bool = False) -> dict:
               "ambiguous_steps": ambiguous, "both_positive": both_positive,
               "both_negative": both_negative, "mixed": mixed, "neutral": neutral,
               "claimant_map_different_pairs": different_claimants,
+              **outside_categories,
               "seed_blocks": 32 if not smoke else len({k[0] for k, a in rows}),
               "per_seed": seed_metrics, "smoke": smoke}
     (dest / "summary.json").write_text(canonical(result) + "\n", encoding="utf-8")
