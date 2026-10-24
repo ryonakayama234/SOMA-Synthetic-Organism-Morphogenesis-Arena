@@ -54,3 +54,8 @@ A/B各1kg、初速0、dt=1/4秒、YY、A=+2N、B∈{-2,0,+2}N。リンク加速�
 ## まだ含めない機能
 
 学習した参加・離脱、実接触・自律ドッキング、モーター電気効率、地面と反力を満たす実在アクチュエータ、3D可視物体の実力学、自己複製／進化。これらは別の問いとして後で追加する。
+
+
+## 2026-10-24 freeze superseding tentative values above
+
+See [FROZEN_V1.md](FROZEN_V1.md) for the final pre-observation v1 contract. It freezes 4,608 archived worlds from 32 environmental seed blocks, 4 steps per world, the exhaustive-subset / unique-maximum arbitration algorithm, explicit ambiguous tie sensitivity calibration and planned evidence gates. No F021 primary world has yet been executed at this commit.
