@@ -1319,3 +1319,8 @@ flowchart TD
 ~~~
 
 Existing source F001–F020 is unchanged. At this proposal stage, CI and F021 empirical adoption remain unverified; physical-world truths and paired comparison are research-only, never policy input. [Frozen research conditions](../experiments/F021/FROZEN_V1.md) / [implementation PR #74](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74).
+
+
+### 2026-10-24 source-bound F021 observation / scope
+
+At [F021 CI 40101888214](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40101888214), the 1D investigator-specified YY/NN motor-world pipeline and separate source-independent evidence verifier succeeded for 9,216 archived worlds and 4,608 pairs in Python 3.11/3.12. Internal gate ambiguity is a research-controlled architectural decision: 1,024 of 36,864 step events had tied feasible maximal-subsets, applied zero force by declared rule, and cannot be interpreted as voluntary stopping. Data analytics are explicitly researcher-only; learned local policies, physical grounded actuator feedback, and actual docking remain absent. [Evidence/limitations](../findings/F021-validation.md).
