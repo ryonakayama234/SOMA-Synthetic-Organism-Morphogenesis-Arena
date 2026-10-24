@@ -8,7 +8,7 @@ class F021FrozenTests(unittest.TestCase):
     def test_grid_full_and_unique(self):
         items = list(grid())
         self.assertEqual(len(items), 9216)
-        self.assertEqual(len({x["world_id"] for x in items}), 4608)
+        self.assertEqual(len({x["world_id"] for x in items}), 9216)
 
     def test_both_80k_ambiguous(self):
         gate = motor_gate([0.,.1], [0.,0.], "YY",
