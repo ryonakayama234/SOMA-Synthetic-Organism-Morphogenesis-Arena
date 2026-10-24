@@ -1243,3 +1243,31 @@ The agent never sees the experimenter's field map or fork outcomes; the only A a
 ## F020 accepted-status supersession (2026-10-23; main integration)
 
 Earlier diagram captions saying F020 `UNIMPLEMENTED` are historical pre-execution documentation. F020 was integrated via PR #68 and #69, main `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7` as a **limited simulation measurement instrument**. The implemented chronology is shown in the *F020 implementation branch #69 — genuine chronological loop* diagram above and code `soma/f020.py`; the model remains 1D, researcher-fixed YY/NN, A-only externally effective motor, no dynamic attachment, no bilateral B actuation/transfer, no organismality. See [bounded review](decisions/2026-10-23-F020-limited-acceptance.md). Source-bound F020 outputs follow `f020.evidence.v1`, not proposed CSV sketches.
+
+## F021 DESIGN ONLY — 双側駆動・個体別資源収支の新しい責務境界（2026-10-24）
+
+**提案だけ／未凍結／未実装／未実験。** [研究判断](decisions/2026-10-24-F021-selection.md) / [Issue #72](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/72) / [SPEC](../topics/F021-bilateral-actuation/SPEC.md) / [PLAN](../experiments/F021/PLAN.md) / [findings](../findings/F021-validation.md)。
+
+~~~mermaid
+flowchart TB
+  EXP["研究者：凍結する環境と外生的A/B指令"] --> WORLD["F021候補: 独立したA/Bモーターチャネル"]
+  EXP --> FORK["YY/NN・B on/off・資源なし等の反事実fork"]
+  FORK --> WORLD
+  OWN["Aの局所予算と指令"] --> GATE["同時適用・同時拒否規則（未確定）"]
+  TWN["Bの局所予算と指令"] --> GATE
+  WORLD --> GATE
+  GATE --> PHYS["新規F021 1D理想リンク／分離の力学ステップ"]
+  PHYS --> RES["F019の有限資源・先着取得（既存）"]
+  RES --> LED["F002台帳: A/B個別の支出・取得・接続費"]
+  LED --> NEXT["次時刻のA/B私有予算"]
+  NEXT --> GATE
+  PHYS --> LOG["世界真値・機械仕事・内部力・時系列"]
+  LED --> LOG
+  LOG --> AUD["生ログからの独立監査／差分・不利益も記録"]
+  AUD -. "研究者のみ：政策入力禁止" .-> EXP
+  PRE["F001–F020 v1／既存の凍結成果物"] -. "変更しない・参考として再利用" .-> PHYS
+~~~
+
+**読み方**：AとBは別々の予算を持ち、両者の適用された力だけがリンクで力学的に結合する。研究者は同一初期世界からYY/NN等をforkして比較し、評価の答えは各セルに渡さない。中心のゲートの方式はまだ設計課題であり「実装済み」の矢印ではない。モーターは外部有効力の抽象化であり、実際の足・車輪・地面反力は存在しない。**個体の自律学習／結合判断は今回の機能ではない。**
+
+[提案するデータと単位](DATA_CONTRACTS.md) / [理論校正の記録](../findings/F021-validation.md)。

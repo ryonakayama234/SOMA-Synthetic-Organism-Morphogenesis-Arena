@@ -1097,3 +1097,37 @@ Do not treat source SHA alone as integrity proof: `manifest.artifact_sha256` has
 ## F020 evidence contract adoption addendum (2026-10-23)
 
 The earlier `f020.candidate` and PR-only descriptions are historical stages. The main-integrated **limited F020 software tool** uses exact `f020.v1` world / `f020.evidence.v1` archive with embedded five time-stamped states, per-cell pre-step spendable and pending µJ, claimant-first path entries, deterministic F002 fee/motor/harvest/settlement event chronology, and `manifest.json` source SHA and hash map. [PR #69](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/69) merged at `562dfc163791ffb68aa52e8b12c3fa2e33ada9c7` (frozen design ancestor `f3e3a4de4ff47677db575efaafe342655dede6c2`). Each 6144-world archive must be re-derived by the no-producer-import verifier; integer accounts exact, binary64 floats relative/absolute 1e-11, semantic forgeries rejected after rehash. This is a **measurement contract**, not agent-local world truth or proof of metabolic biology. See [latest scientific limits](decisions/2026-10-23-F020-limited-acceptance.md).
+
+## F021 DATA CONTRACT PROPOSAL — 双側駆動（2026-10-24）
+
+**状態：f021.candidate／未凍結・未実装。ここに書いた型・フィールドは現在のAPIではない。** [SPEC](../topics/F021-bilateral-actuation/SPEC.md) / [PLAN](../experiments/F021/PLAN.md) / [findings](../findings/F021-validation.md)。
+
+~~~mermaid
+flowchart LR
+  C["Scenario: field_seed／初期セル別予算"] --> F["PairedWorld: YY/NN＋B on/off"]
+  F --> D["Step: A/B私有指令・適用判定"]
+  D --> P["PhysicalState: x,v,link_force,work"]
+  P --> H["Harvest: patchの初回入域と勝者"]
+  H --> E["LedgerEvent: 個体ごとに支出・取得"]
+  E --> N["次stepのA/B残高"]
+  N --> D
+  P --> R["Evidence: 完全ログ／source hash"]
+  E --> R
+  R --> O["Researcher-only causal comparison"]
+~~~
+
+| 予定レコード | 候補フィールド（単位） | 読み取り範囲／注記 |
+|---|---|---|
+| Scene | schema_version, scene_id, field_id, base_seed, dt_s, cell A/B mass_kg, initial_balance_uj, join_fee_uj | 研究者のみ。資源分布を各セルに渡さない |
+| World | world_id, scene_id, link_arm YY/NN, command_a_n, command_b_n, credit_mode, initial_snapshot_hash | 同じ場のforkは別世界の在庫を使用 |
+| Step | k, x_a_m, x_b_m, v_a_m_s, v_b_m_s, attached, commanded_a_n, commanded_b_n, applied_a_n, applied_b_n, decision_reason_a/b | 真の状態は研究者専用。commandは実験者入力で自律行動ではない |
+| Gate | candidate_positive_work_a_j/b_j, required_a_uj/b_uj, balance_a_before_uj/b_before_uj, accepted_a/b, candidate_subset, rule_version, resolution_trace | 結合中は相手の力が費用に影響する。規則・停止理由を保存 |
+| Mechanics | link_force_on_a_n, link_force_on_b_n, signed_motor_work_a_j/b_j, positive_motor_work_a_j/b_j, kinetic_delta_j, mechanical_residual_j | 内力の総和0、符号付き仕事と正仕事を混同しない |
+| Resource | patch_id, first_entry_time_s, claimant_cell_id A/B/null, claimed_uj, remaining_uj, pending_uj | 同じpatchは各worldで一回のみ。未取得はnull |
+| Ledger | event_index, k, event_kind, source_id, target_id, amount_uj, balance_a_uj, balance_b_uj, ledger_residual_uj | F002整数µJ。Bの電池をAに暗黙転用しない |
+| Summary | delta_fixed_a_uj/b_uj, delta_outside_a_uj/b_uj, outcomes including null/negative, resource_seed_block | 反事実統計。セルの行動入力禁止 |
+| Manifest | commit_sha, dirty, frozen_SPEC_sha256, PLAN_sha256, producer/verifier/test source_sha256, artifact_sha256, replay equality | 検査器は保存データをproducerとは別経路で読む |
+
+**状態機械の時系列（候補）**：step前残高→A/B指令の同時審査（**採否ゲート未確定**）→適用力で1D物理更新→各個体自身のモーター支出をF002へ記帳→両軌跡と独立場の資源先着→取得者だけのF002残高増→次step。F020の「k末の資源はk+1以降のみ支出可能」を保存。正の機械仕事の整数µJへの丸めはF005の既存解釈と整合させる。拒否しても慣性は維持する。
+
+**数値モデル注記**：F007型半陰的位置更新と、F005型の速度積分・仕事帳簿は別の離散評価。物理的な電力変換や停止時の駆動損失は未モデル化。値・列順・拒否ルール・タイブレーク・シード・閾値は第一F021世界の前に凍結する。
