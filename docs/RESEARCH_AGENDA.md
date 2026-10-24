@@ -2,7 +2,7 @@
 id: RESEARCH-AGENDA
 title: SOMA研究アジェンダ — 解明する因果関係と実験優先順位
 kind: research_program_strategy
-status: proposed_for_review
+status: active
 updated: 2026-10-24
 related: [PROJECT, PROCESS, F020]
 long_term_issue: 51
@@ -14,7 +14,7 @@ long_term_issue: 51
 [一機能ずつの研究手順](RESEARCH_PROCESS.md)（どのように検証・採否判断するか）
 の**中間**にある、更新可能な**研究課題選定の原則**。
 [長期研究課題 #51](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/51)を
-母課題とする。本書は**提案段階**であり、F021以降の実装・事前登録・世界生成を承認しない。
+母課題とする。本書は**研究課題選定の現行原則**として採用する。ただし、本書だけではF021以降の実装・事前登録・世界生成を承認しない。
 
 ## 1. 不変の中心課題と、研究者の仕事
 
