@@ -2,7 +2,7 @@
 id: FIND-F021
 title: F021 実験記録 — 初期の設計前検算
 kind: append_only_findings
-status: unexecuted_design_only
+status: bounded_adopted_v1
 updated: 2026-10-24
 issue: 72
 ---
@@ -65,3 +65,14 @@ The older UNEXECUTED text above is historical. F021 design [PR #73](https://gith
 **Boundaries and falsification:** The simulator has external-effective ideal motors without modeled ground reaction, positive mechanical work is not electrical cost and ignores holding power, rigid 1D link is investigator assigned, initial world horizon only 1 s, finite sparse resources and per-cell 1,000,000µJ patch awards, no learned attachment, selection, autonomy, evolution or long-term biological survival. The 4,608 outcomes are factorial contrasts on only 32 reused field seeds: do not infer independent sample p-values. Negative cases remain and are not optimized away.
 
 **Engineering judgment on validated implementation head:** independent verifier, model oracle, 22 CI workflows and source-bound evidence SUPPORT **a narrowly versioned F021.v1 experimental instrument**. Scientific judgment: H21a ideal dynamics SUPPORTED within frozen equations, H21b resource and private-payoff variation SUPPORTED as descriptive conditional effects, H21c rival arbitration/control explanations PARTIALLY RESOLVED with explicit residual ambiguity, H21d reproducibility/archived-data integrity SUPPORTED within recorded attack suite. **No evidence supports voluntary joining or bilateral improvement beyond idleness in this frozen environment.** This is *limited* software suitability, not emergence validation. Main-merge and post-merge CI should be tracked as distinct subsequent actions rather than retroactively asserting them from the PR test.
+
+
+## 2026-10-24 — **FORMAL BOUNDED ADOPTION** of F021.v1 instrument (supersedes prior pending states)
+
+The investigator's agreed engineering acceptance conditions were met. Implementation [PR #74](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74) was **merged to main** at exact SHA `53efe7c78529ca81cbab4b11d4ddcf10245f44fa` on 2026-10-24. On its final pre-merge documentation-inclusive HEAD `59a8fa35ea59a83ec540e4ddf742bb7bdcdf4226`, **22/22 GitHub Actions workflows succeeded**; both Python 3.11/3.12 matrices ran 9,216 full worlds, each used an independent 4,608-pair oracle, six rehashed semantic forgery attacks, and byte-identical two-root replay. Separately downloaded real CI archives py3.11 ID 12562259592 and py3.12 ID 12563182334 were independently checked byte-for-byte identical across versions for `worlds.jsonl`, `summary.json`, and `manifest.json`, with SHA matching their own manifest. [Source-bound machine-readable per-seed summary](F021-ci-summary-2026-10-24.json) and [critical raw archive audit](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74#issuecomment-6385435188) retained. Main post-merge CI at merge SHA is a distinct verification check and must be reported separately, not inferred as already passed.
+
+**Software acceptance scope:** `f021.v1` is hereby adopted as a reproducible **investigator-controlled ideal 1D bilateral-drive resource/payoff measuring instrument**, with independent A/B force channels, individually owned integer µJ ledgers, F019 frozen finite fields, local resource credit, a declared and fully logged simultaneous gate, and a source-independent verifier. This admission is **not** an assertion of realistic embodied electric motors, 2D/3D, learned connection decisions or naturally evolved bodies. F001–F020 APIs and frozen scientific results are unchanged.
+
+**Scientific findings:** In 4,608 fixed-action YY–NN contrasts, private deltas were bilateral positive 363, bilateral negative 1,438, mixed 1,058, at least one zero 1,749. The stricter idle-inclusive comparator had **zero bilateral strict positive outcomes**. Original archives show 350/363 bilateral positive fixed contrasts use opposing drive, 13 B off, zero B aligned; 1,416/1,438 both-negative contrasts had 25,000 µJ joining fee. Separate B-on vs B-off matched field contrasts changed claim maps and B private net; this is evidence of causal **model** capability, not spontaneous consent. Arbitrator ambiguity 1,024/36,864 steps persists by explicit policy; no ecology-wide arbitration sensitivity was performed. No independent ecological significance tests from repeated 32 seed blocks and no external human peer review claimed.
+
+**Future hypotheses, not F021 success claims:** local joining/leaving policy; resource-rich contexts that may create absolute gain exceeding idle outside options; robust alternative arbitration; physical 2D contacts/support forces/real motor holding power. No retroactive seed/factor tuning to engineer more positive F021 cases.
