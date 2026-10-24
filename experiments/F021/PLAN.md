@@ -1,0 +1,61 @@
+---
+id: EXP-F021
+title: 双側駆動の事前登録ドラフト
+kind: experiment_plan
+status: proposed_unfrozen_unexecuted
+updated: 2026-10-24
+issue: 72
+---
+
+# F021 実験計画案 — 双側駆動・相互作用・個体別利害
+
+**設計案のみ。世界生成、シード凍結、ソース実装、F021実験、採用は未実施。** [SPEC](../../topics/F021-bilateral-actuation/SPEC.md) / [Issue #72](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/72) / [findings](../../findings/F021-validation.md)。
+
+## 先に固定すべき要素（観測後の閾値変更は禁止）
+
+1. F020に影響しない別版 f021.v1 候補のコード／データスキーマ。負荷は理想1D、A/B各1kg、初期位置0と0.1m、初速0、dt=0.25s、4ステップ、抗力0を**検算用候補**とする。最終採用パラメータ、生成シード宇宙、反証閾値、欠損拒否の規約は実験前にレビューしSHAを固定する。
+2. 独立な**各セル自身の**command, applied force, candidate positive work, charge, private balance, accepted/reason。AとBのモーターが両方落ちた場合も無償の強制停止をせず、0力で慣性が持続する。
+3. 両モーター費用の相互依存に対する決定的かつ監査可能な**同時ゲート**規約。候補ワールド内で可否が変わったセルの理由・反復順を保存する。個体A優先の黙示的タイブレークを使わない。
+4. F019の資源場を運動方針から独立に生成。最初の入域者のみ取得、同順位は凍結した順序で処理。同じ資源場をYY/NN、B-on/offと他の固定対照でforkし、branchごとに初期在庫からやり直す。
+5. 初期費用とF002台帳内訳、各セルの正味値 = 取得 - 駆動費 - 接続費。**YY固定動作 vs NN同動作**と**NNの非活動も含む外部選択肢**を別々に保存。推定値は研究者側だけに存在する。
+
+## 介入群（因果の識別）
+
+| 群 | 変更する一条件 | 対立説明・陰性結果 |
+|---|---|---|
+| M0 | YY / NN、A +2N・B 0N | F020と接続し、B自身の動力がない時の基準 |
+| M1 | Bを +2N にする、A +2N固定 | 同方向でも加速・利益が必ず増すとは限らない |
+| M2 | Bを -2N にする、A +2N固定 | 押し合いで重心0、内部力だけが残る反例 |
+| M3 | 符号反転・A/Bラベル鏡映 | 座標と所有者の非対称バグ検出 |
+| M4 | 片側0残高／低残高／両側高残高 | 誰の電池が拒否判定を支配するか |
+| M5 | パッチ0個／凍結済み資源場 | 駆動差と資源の先着差の切り分け |
+| M6 | YYでは接続費を導入／NNでは無し | 総体利益と個体別利益を混同しない |
+
+全因子を無秩序に直積化せず、初回は物理・決定ゲート・資源帰属を段階別に固定してから一次研究標本を作る。初回世界数とシード独立性は**未決定**。同じfield seedを複数条件で再利用した比較を独立生態標本とは数えない。
+
+## 再現可能な独立検算（モデル理論のみ。F021観測ではない）
+
+A/B各1kg、初速0、dt=1/4秒、YY、A=+2N、B∈{-2,0,+2}N。リンク加速度 a=(F_A+F_B)/2、位置は半陰的 x(k+1)=x(k)+v(k+1)dt、正の初回モーター仕事は各 F_i(v0+v1)dt/2、内部力 on A = m_A*a-F_A。
+
+| B指令 N | a m/s² | k=1のx増分 m | Aへのリンク力 N | A費用 J | B費用 J |
+|---:|---:|---:|---:|---:|---:|
+| -2 | 0 | 0 | -2 | 0 | 0 |
+| 0 | 1 | 1/16 | -1 | 1/16 | 0 |
+| +2 | 2 | 1/8 | 0 | 1/8 | 1/8 |
+
+これらはWolfram Languageにより2026-10-24検算した**理想モデルの計算予測**であり、まだF021シミュレーション実測値ではない。実装後の固定精度を事前凍結するためのpositive/negative calibrationであり、主な資源場の標本には混ぜない。[保存可能な検算式](preflight.wl)。現行位置差と時間積分による機械仕事を混同しない。
+
+## 記録・独立監査・採否
+
+生データでは各stepのcommand/applied/rejected, before/after x,v, applied internal link forces, per-cell candidate/actual signed/positive work, charges, balances, claims/depletion, event index, dataset provenanceを保持。研究者専用summaryには各セルごとの ΔYY-NN、独立した外部選択肢との差、Pareto分類、悪化・不変・不明も保存。
+
+検査器はproducerから独立し、**保存した**時系列の力学・F005仕事・F002台帳・F019先着を再構成する。正規データの2ルート同バイト再生、source + artifact SHA、適正なPython 3.11/3.12テスト、実装不能値や改竄後再ハッシュによる偽装の拒否が必要。採用するかは実験後に技術的品質と科学的仮説を**独立に**判断する。結果がゼロや負でも測定器として正当なら限定採用可能。
+
+## まだ含めない機能
+
+学習した参加・離脱、実接触・自律ドッキング、モーター電気効率、地面と反力を満たす実在アクチュエータ、3D可視物体の実力学、自己複製／進化。これらは別の問いとして後で追加する。
+
+
+## 2026-10-24 freeze superseding tentative values above
+
+See [FROZEN_V1.md](FROZEN_V1.md) for the final pre-observation v1 contract. It freezes 4,608 archived worlds from 32 environmental seed blocks, 4 steps per world, the exhaustive-subset / unique-maximum arbitration algorithm, explicit ambiguous tie sensitivity calibration and planned evidence gates. No F021 primary world has yet been executed at this commit.
