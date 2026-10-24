@@ -346,3 +346,6 @@ F014 [frozen preregistration Issue #45](https://github.com/ryonakayama234/SOMA-S
 ## 2026-10-21 F014限定採用の決定（実際のmain統合はGitHubを確認）
 
 F014は固定F007理想1DのB運動1bitの観測能力、およびその識別不能な構造反例として**限定正式採用**を承認。[設計PR #46](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/46)、[実装PR #47](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/47)、[Issue #45](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/45)、[SPEC](topics/F014-peer-body-observability/SPEC.md)、[検証記録](findings/F014-validation.md)、[WSL2再現手順](experiments/F014/README.md)。15ラン×4区間・全既存回帰・独立監査・改ざん負例・byte replayを検証。A局所履歴が同じL/GはB運動の真偽値で区別できるが、L/Cは観測同値なので物理接続・身体所属は推論できない。人間による独立査読はリソース上未実施、他の実機/通信真正性/閉ループ・学習/2Dなども未検証。事前登録時の『未実施』は歴史として残し、実際の採用統合SHAとCIはIssue #45を正とする。
+
+
+**2026-10-24 PRE-OBSERVATION ARITHMETIC ERRATUM:** All frozen eight factors preserved: 32×2×3×2×3×2×2×2 = **9,216 worlds / 4,608 YY-NN paired comparisons**, not the originally misstated 4,608/2,304. No F021 primary world had executed when this correction was made. See [FROZEN_V1.md](../../experiments/F021/FROZEN_V1.md) and amendment A1.
