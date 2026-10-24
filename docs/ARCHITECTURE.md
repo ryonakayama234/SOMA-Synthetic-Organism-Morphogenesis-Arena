@@ -1296,3 +1296,26 @@ flowchart TD
 ~~~
 
 At the pre-observation design commit the entire F021 dashed/proposed pipeline is future work. Physically coupled computation may use both participants' candidate mechanics; **individual cell action policies do not receive peer balance, global patch map, or researcher counterfactual truth**. Both motors are ideal external-effective forces, not grounded electric drives. [F021 frozen protocol](../experiments/F021/FROZEN_V1.md).
+
+
+## F021 implementation PR #74 architecture (candidate; verification pending)
+
+At proposed source `soma/f021.py`, physical dynamics are computed by an independent F001-style 1D step for A/B. The F021 joint arbitration layer enumerates all subsets **using the same pre-step balances**, recomputes velocity and per-cell F005 positive work for each subset, applies a single uniquely largest feasible subset, and fails closed on ties (`ambiguous_maximal`). Each candidate and alternative is retained for investigator audit. It does not instantiate an autonomous controller or physical ground.
+
+~~~mermaid
+flowchart TD
+  SC["Frozen F021 scene: F019 resource field, seed / YY or NN"] --> MOTOR["Exogenous A+B command N"]
+  MOTOR --> G["soma.f021.motor_gate: enumerate 4 applied subsets"]
+  G --> PHY["joint F001-like dynamics; F007 link or free A/B"]
+  PHY --> DEBIT["F002 own-cell spend, F005 positive motor work"]
+  DEBIT --> HARVEST["F019 first-entry and per-cell next-step resource credit"]
+  HARVEST --> MOTOR
+  G --> RAW["research archive: candidates / selected / reasons"]
+  PHY --> RAW
+  DEBIT --> RAW
+  HARVEST --> RAW
+  RAW --> ORACLE["experiments.F021.verify: independent archived-data replay"]
+  ORACLE --> PAIR["A/B private net and matched YY-NN comparison"]
+~~~
+
+Existing source F001–F020 is unchanged. At this proposal stage, CI and F021 empirical adoption remain unverified; physical-world truths and paired comparison are research-only, never policy input. [Frozen research conditions](../experiments/F021/FROZEN_V1.md) / [implementation PR #74](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74).
