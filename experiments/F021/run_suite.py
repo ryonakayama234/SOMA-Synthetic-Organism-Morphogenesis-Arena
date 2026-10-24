@@ -1,4 +1,4 @@
-"""F021 frozen 4,608-world evidence producer; outputs are never tracked in Git."""
+"""F021 frozen 9,216-world evidence producer; outputs are never tracked in Git."""
 from __future__ import annotations
 import argparse
 import hashlib
@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 from soma.f021 import grid, simulate
 
-FREEZE_COMMIT = "8f82e3b0283b6523041647b38335c466034478f3"
+FREEZE_COMMIT = "8f82e3b0283b6546081647b38335c466034478f3"
 
 
 def canonical(obj) -> str:
@@ -71,7 +71,7 @@ def produce(dest: Path, *, smoke: bool = False) -> dict:
         who_b = {h["patch_id"]: h["winner"] for h in other["harvests"]}
         if who_a != who_b:
             different_claimants += 1
-    if not smoke and (count != 4608 or pair_count != 2304):
+    if not smoke and (count != 9216 or pair_count != 4608):
         raise ArithmeticError("frozen sample missing")
     result = {"schema": "f021.summary.v1", "status": "observed_simulation_only",
               "worlds": count, "paired_yy_nn": pair_count,
