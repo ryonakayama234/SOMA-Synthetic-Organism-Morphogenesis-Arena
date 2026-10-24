@@ -40,7 +40,7 @@ jobs:
       - name: All inherited and F021 regressions
         run: |
           python -m unittest discover -s tests
-          python -O -m unittest tests.test_f021
+          python -O -m unittest discover -s tests -p 'test_f021.py'
       - name: Frozen primary 4,608 worlds and independent verifier
         run: |
           python -m experiments.F021.run_suite --out /tmp/f021-worlds-a
