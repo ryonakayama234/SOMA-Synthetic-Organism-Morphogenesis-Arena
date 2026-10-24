@@ -218,34 +218,85 @@ def expected_world(scene):
 
 
 def verify_root(root):
+    """Verify source provenance, ALL raw fields, and ALL summary estimands."""
+    import subprocess
     manifest=json.loads((root/"manifest.json").read_text(encoding="utf-8"))
     primary=manifest["mode"]=="primary"
     if manifest["schema"]!="f021.evidence.v1":
         raise AssertionError("manifest schema")
+    if manifest["freeze_commit"]!="8f82e3b0283b6523041647b38335c466034478f3":
+        raise AssertionError("wrong frozen design SHA")
+    actual_source=subprocess.run(["git","rev-parse","HEAD"],capture_output=True,
+                                 check=True,text=True).stdout.strip()
+    if manifest["source_commit"]!=actual_source:
+        raise AssertionError("source checkout/manifest mismatch")
     for fname,key in [("worlds.jsonl","worlds_sha256"),("summary.json","summary_sha256")]:
         actual=hashlib.sha256((root/fname).read_bytes()).hexdigest()
         if manifest[key]!=actual:
             raise AssertionError(fname+" SHA256")
     summary=json.loads((root/"summary.json").read_text(encoding="utf-8"))
     observed=set()
+    rows={}
     count=0
+    ambiguous=0
+    seed_metrics={str(i):{"pairs":0,"ambiguous_steps":0,"both_positive":0,
+                          "mixed":0,"both_negative":0,"neutral":0}
+                  for i in range(32)}
     for line in (root/"worlds.jsonl").open(encoding="utf-8"):
         world=json.loads(line,parse_constant=lambda v: (_ for _ in ()).throw(ValueError(v)))
         expected=expected_world(world["scene"])
         same(world,expected,"world["+str(count)+"]")
-        if world["scene"]["world_id"] in observed:
+        scene=world["scene"]
+        if scene["world_id"] in observed:
             raise AssertionError("duplicate world")
-        observed.add(world["scene"]["world_id"])
+        observed.add(scene["world_id"])
+        key=(scene["seed"],scene["sign"],scene["b_relative"],
+             scene["balance_uj"],scene["fee_uj"],scene["count"],scene["radius_m"])
+        rows[(key,scene["arm"])]=world
+        ambiguous+=world["ambiguous_steps"]
+        seed_metrics[str(scene["seed"])]["ambiguous_steps"]+=world["ambiguous_steps"]
         count+=1
-    if count != summary["worlds"] or (primary and count != 4608):
-        raise AssertionError("world count")
-    if primary:
-        if summary["paired_yy_nn"]!=2304 or summary["seed_blocks"]!=32:
-            raise AssertionError("pair count")
-    print(canonical({"verified_worlds":count,"sha256_ok":True,
-                     "independent_physics_ledger_patch_oracle":True}))
+    if primary and count!=4608:
+        raise AssertionError("frozen primary count")
+    pair_count=both_positive=mixed=both_negative=neutral=different_claimants=0
+    for (key,arm),world in rows.items():
+        if arm!="YY":
+            continue
+        other=rows.get((key,"NN"))
+        if other is None:
+            if primary:
+                raise AssertionError("missing matched NN")
+            continue
+        pair_count+=1
+        diff=[world["net_uj"][c]-other["net_uj"][c] for c in IDS]
+        label=("both_positive" if diff[0]>0 and diff[1]>0 else
+               "both_negative" if diff[0]<0 and diff[1]<0 else
+               "neutral" if diff[0]==0 or diff[1]==0 else "mixed")
+        if label=="both_positive": both_positive+=1
+        elif label=="both_negative": both_negative+=1
+        elif label=="mixed": mixed+=1
+        else: neutral+=1
+        seed_metrics[str(key[0])]["pairs"]+=1
+        seed_metrics[str(key[0])][label]+=1
+        c1={h["patch_id"]:h["winner"] for h in world["harvests"]}
+        c2={h["patch_id"]:h["winner"] for h in other["harvests"]}
+        if c1!=c2:
+            different_claimants+=1
+    if primary and pair_count!=2304:
+        raise AssertionError("paired count")
+    expected_summary={
+        "schema":"f021.summary.v1", "status":"observed_simulation_only",
+        "worlds":count,"paired_yy_nn":pair_count,"ambiguous_steps":ambiguous,
+        "both_positive":both_positive,"both_negative":both_negative,
+        "mixed":mixed,"neutral":neutral,
+        "claimant_map_different_pairs":different_claimants,
+        "seed_blocks":32 if primary else len({k[0] for k,a in rows}),
+        "per_seed":seed_metrics,"smoke":not primary}
+    same(summary,expected_summary,"summary")
+    print(canonical({"verified_worlds":count,"verified_pairs":pair_count,
+                     "sha256_ok":True,"source_bound":True,
+                     "independent_physics_ledger_patch_and_summary_oracle":True}))
     return count
-
 
 if __name__=="__main__":
     ap=argparse.ArgumentParser()
