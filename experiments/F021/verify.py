@@ -224,7 +224,7 @@ def verify_root(root):
     primary=manifest["mode"]=="primary"
     if manifest["schema"]!="f021.evidence.v1":
         raise AssertionError("manifest schema")
-    if manifest["freeze_commit"]!="8f82e3b0283b6523041647b38335c466034478f3":
+    if manifest["freeze_commit"]!="f2ce5d555aa4dcecd27c3e543f1275a017287a01":
         raise AssertionError("wrong frozen design SHA")
     actual_source=subprocess.run(["git","rev-parse","HEAD"],capture_output=True,
                                  check=True,text=True).stdout.strip()
@@ -256,7 +256,7 @@ def verify_root(root):
         ambiguous+=world["ambiguous_steps"]
         seed_metrics[str(scene["seed"])]["ambiguous_steps"]+=world["ambiguous_steps"]
         count+=1
-    if primary and count!=4608:
+    if primary and count!=9216:
         raise AssertionError("frozen primary count")
     pair_count=both_positive=mixed=both_negative=neutral=different_claimants=0
     for (key,arm),world in rows.items():
@@ -282,7 +282,7 @@ def verify_root(root):
         c2={h["patch_id"]:h["winner"] for h in other["harvests"]}
         if c1!=c2:
             different_claimants+=1
-    if primary and pair_count!=2304:
+    if primary and pair_count!=4608:
         raise AssertionError("paired count")
     expected_summary={
         "schema":"f021.summary.v1", "status":"observed_simulation_only",
