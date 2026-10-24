@@ -7,7 +7,7 @@ from pathlib import Path
 import subprocess
 from soma.f021 import grid, simulate
 
-FREEZE_COMMIT = "8f82e3b0283b6546081647b38335c466034478f3"
+FREEZE_COMMIT = "f2ce5d555aa4dcecd27c3e543f1275a017287a01"
 
 
 def canonical(obj) -> str:
