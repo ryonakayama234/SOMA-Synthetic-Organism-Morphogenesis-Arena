@@ -17,3 +17,7 @@ After F022.v1 bounded adoption on main `679dd024006c453f1be82d03fb1e1b7e87239b05
 
 ## Append only after preregistration, simulation and independent verification
 Freeze source SHA and fixed scene IDs and exclusions. Capture complete actual/rejected private commands, per-cell charged/debited µJ, ground reaction impulse, exact continuous TOI and null outcomes, energy and momentum residuals with individually meaningful references, source-independent from-disk audit and rehash forgery negatives, two clean-root byte replay, Python3.11/3.12 final SHA CI, all previous regressions, internal critical counteranalysis. Separately log H23a, H23b, H23c supported/refuted/inconclusive and any bounded software adoption. **No action, contact, or technical qualification may be inferred from planned diagrams or mathematical canaries.**
+
+
+## 2026-10-25 — original v1 design frozen, still UNEXECUTED
+[FROZEN_V1](../experiments/F023/FROZEN_V1.md) at commit `76dcc1db7ae12737705da06c155933d0a8251853` binds Q01–Q15 predetermined 2D calibration scenes, 5 invalid probes, per-cell ideal motor billing/reaction, 135 expected future saved frames, 30 future actions and 9 **predicted** physical events. This is **pre-observation design only**: no F023 simulator, saved real F023 output or CI yet. Earlier selection-stage UNFROZEN entry preserved as history.
