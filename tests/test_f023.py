@@ -55,8 +55,8 @@ class F023BoundedActiveEncounter(unittest.TestCase):
     def test_bad_initial_conditions_and_private_balance(self):
         base=grid()[0]
         for patch in (
-            {"x_a_m":-.2,"x_b_m":.2},
-            {"x_a_m":-.5,"x_b_m":.5},
+            {"x_a_m":-.2,"y_a_m":0.,"x_b_m":.2,"y_b_m":0.},
+            {"x_a_m":-.5,"y_a_m":0.,"x_b_m":.5,"y_b_m":0.},
             {"x_a_m":float("nan")},
             {"command_ax_ns":.26},
             {"initial_balance_a_uj":-1},
