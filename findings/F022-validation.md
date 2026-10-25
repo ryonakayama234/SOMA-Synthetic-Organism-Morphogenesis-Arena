@@ -19,3 +19,7 @@ F021.v1 validated a bounded 1D ideal bilateral motor/payoff instrument with 9,21
 
 ## Append next — only after preregistration and observed evidence
 Freeze protocol SHA; implementation SHA; exact input source hashes; analytic calibration; primary world count/independent units; signed momentum/energy residuals; contact/no-contact classifications; cases where tunneling/overlap/ambiguity appear; complete individual states/events; independent verifier and semantic tamper attacks; 2-root reproducibility; CI Python 3.11/3.12; technical admission verdict separately from scientific support/refutation/uncertainty. **Do not fill with predictions labeled as results.**
+
+
+## 2026-10-25 — v1 primary protocol frozen, F022 experimental findings still UNEXECUTED
+Historical UNFROZEN entry above is superseded only for the design stage. [FROZEN_V1](../experiments/F022/FROZEN_V1.md): 13 valid force-free continuous-TOI 2D worlds, 5 invalid rejection probes, 117 expected future grid frames; e∈{1,.5}; independent saved-data oracle and adversarial tamper gates. [Internal critical design review](../docs/reviews/2026-10-25-F022-design-audit.md) and [independent Wolfram analytic calculations](../experiments/F022/PREFLIGHT.md) are not F022 simulator observations. **No F022 implementation, actual worlds, data artifacts, CI pass, feature admission or science result.** Freeze commit SHA is on Issue #77; subsequent results must be appended, not backfilled into this note.

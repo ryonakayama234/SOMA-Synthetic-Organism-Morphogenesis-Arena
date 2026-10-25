@@ -1349,3 +1349,20 @@ flowchart TB
 ~~~
 
 This separates **world truth** from any future individual sensors or learned policy; 2D pictures alone are neither 2D physics evidence nor a body-schema learned by the cell. Numerical design/falsifiers and provenance are synchronized with [DATA_CONTRACTS](DATA_CONTRACTS.md) and the Issue.
+
+
+## F022.v1 FROZEN future architecture (2026-10-25; UNIMPLEMENTED)
+[FROZEN protocol](../experiments/F022/FROZEN_V1.md) overrides prior draft numerical decisions. Researcher initial 2D states → strict validator → continuous ballistic time-of-impact → normal impulse or zero-impulse grazing → nine post-event samples + original pre/post event log → archive/manifest → **source-independent** analytical verifier. Everything in this pipeline is **FUTURE/NOT IMPLEMENTED**. V001 1D viewer remains separate Draft; future 2D viewer uses research archive only; any future cell-local sensor must receive a restricted projection, never archived world truth.
+
+~~~mermaid
+flowchart TD
+ A["FUTURE researcher: C01..C13 + J01..J05"] --> B["FUTURE strict validation"]
+ B --> C["FUTURE continuous 2D time-of-impact"]
+ C --> D["FUTURE frictionless normal impulse / graze"]
+ D --> E["FUTURE 117 fixed-time states + contact pre/post"]
+ E --> F["FUTURE source-bound archive"]
+ F --> G["FUTURE independent from-disk physics oracle"]
+ F -. "future separate UI feature" .-> H["Researcher 2D viewer"]
+ C -. "separate future Fxxx" .-> I["Restricted cell-local senses"]
+ H -. "no world truth to agent" .-> I
+~~~

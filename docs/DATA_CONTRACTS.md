@@ -1177,3 +1177,17 @@ The `f021.v1` contracts above were exercised in GitHub Actions [40101888214](htt
 | manifest.json | schema_version, source_sha, config_sha256, artifact_hashes, environment, evidence_provenance | Bind archive and exact code, replay and rehash-tamper tests |
 
 Invariant candidates (must become quantitative before code observation): no impulse outside contact; action-reaction paired impulses; total momentum conserved in no-external-force world; kinetic energy conserved at restitution 1 and non-increased at <1; tangential relative velocity unchanged for smooth frictionless disks; no undisclosed energy supply, timestep tunneling or arbitrary contact order. Report failures and null events. No motor µJ ledger is introduced by F022. Local sensor fields are deliberately **absent**.
+
+
+## F022.v1 frozen proposed archive — NO ACTUAL FILES YET (2026-10-25)
+[FROZEN_V1](../experiments/F022/FROZEN_V1.md) binds precise world cases/physics and overrides earlier draft contract. All below are **required outputs for future implementation, not extant artifacts**.
+
+| Artifact | Frozen fields / semantics |
+|---|---|
+| `scenario.json` | `schema_version=f022.archive.v1`, per-world `world_id` C01–C13, initial `x_a_m,y_a_m,vx_a_mps,vy_a_mps,x_b_m,y_b_m,vx_b_mps,vy_b_mps,mass_a_kg,mass_b_kg,radius_a_m,radius_b_m,restitution,duration_s,sample_dt_s` |
+| `states.jsonl` | exactly 117 rows; `world_id,sample_index,time_s,phase=post,x_a_m,y_a_m,vx_a_mps,vy_a_mps,x_b_m,y_b_m,vx_b_mps,vy_b_mps,total_ke_j` |
+| `contacts.jsonl` | 0 or 1 event/world, including `world_id,event_index,time_s,kind,normal_x,normal_y,impulse_ns,pre_x_a_m,pre_y_a_m,pre_x_b_m,pre_y_b_m,pre_vx_a_mps,pre_vy_a_mps,pre_vx_b_mps,pre_vy_b_mps,post_vx_a_mps,post_vy_a_mps,post_vx_b_mps,post_vy_b_mps,restitution`; zero impulse geometric graze is an explicit kind |
+| `audit.json` | `schema_version,world_results,momentum_residual_kg_mps,ke_residual_j,overlap_bound_m,classification,invalid_probe_results` |
+| `manifest.json` | `schema_version,frozen_protocol_commit_sha,implementation_commit_sha,python_version,platform,config_sha256,states_sha256,contacts_sha256,audit_sha256` |
+
+IEEE-754 binary64 with finite checks; strict stable UTF-8 canonical sorted-key compact JSON/LF, no output-rounding, deterministic ordering; 13 × 9 expected world-state rows, 5 invalid probes not archived as valid worlds. Errors per physical scalar <=1e-9×max(1,abs(reference)) in SI unit, allowed overlap <=1e-9m. Source-independent archive verifier must reject semantic tampering even after SHA rehashing. No cell-local information or 2D motor API exists in F022 v1.

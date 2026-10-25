@@ -54,3 +54,7 @@ keywords: [F022, 2D, control, impulse, timestep, falsification, archive]
 - R22a/R22b反証検査: **未実施**
 - 技術的採用: **未採用**
 - main統合: **未実施**
+
+
+## 2026-10-25 v1 design freeze — superseding the UNFROZEN draft above
+The full binding values are in [FROZEN_V1](FROZEN_V1.md): analytic event-time collision solver; 2 passive disks; 13 specific C01–C13 valid worlds with 9 samples each; 5 J01–J05 rejection probes; e=1/0.5; fixed collision, momentum, energy and symmetry expectations; 1e-9 scaled SI analytic error bound; source-independent saved archive verifier. No biological/ecological sample sizes are implied. [Wolfram rational preflight](PREFLIGHT.md) is theoretical, not software evidence. **No F022 primary world has been run; no source/CI/adoption exists.** Freeze SHA in Issue #77. Do not retune frozen thresholds after results.

@@ -57,3 +57,7 @@ flowchart LR
 参照すべき既存V001 [#24](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/24) / [PR #25](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/25) / [PR #26](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/26)はF007の1D保存データを読むDraftで、まだ採用されていない。F022のデータアダプタは後続として構想し、勝手にV001を上書き・統合しない。
 
 成功判定は**正しい接触計測器の限定的な技術採用**と**仮説の支持/反証/不明**を分離する。接触ができても集合・同意・自己組織化を示したことにはならない。実装前に[PLAN](../../experiments/F022/PLAN.md)を凍結し、その後別の実装PRと独立監査を要求する。
+
+
+## 2026-10-25 F022.v1 design freeze (supersedes earlier selection-stage UNFROZEN status)
+The original header and draft above are historical design selection notes. [FROZEN_V1](../../experiments/F022/FROZEN_V1.md) now controls numerical physics, continuous collision time, 13 valid scenes and 5 invalid probes, 117 expected sample frames, canonical logs and precise acceptance tolerance. [Critical review](../../docs/reviews/2026-10-25-F022-design-audit.md) and [independent theory](../../experiments/F022/PREFLIGHT.md) are **pre-observation only**. Source code, CI and F022 primary data are NOT produced. Freeze SHA is anchored in [Issue #77](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/77).
