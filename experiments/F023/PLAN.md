@@ -40,3 +40,7 @@ Core independent unit = one preregistered paired deterministic scene, **not an i
 - Structure → docs/ARCHITECTURE.md + docs/DATA_CONTRACTS.md
 - Evidence → audit.json + manifest.json + findings/F023-validation.md
 Local Observation/agent training UI is **future only**, no environment truth access. Viewer and physics must never be conflated.
+
+
+## 2026-10-25 pre-observation freeze update
+Binding experiment protocol: [FROZEN_V1](FROZEN_V1.md), commit `76dcc1db7ae12737705da06c155933d0a8251853`, Issue #81 SHA anchor. Earlier illustrative scene comparisons are superseded by the fixed 15-world/5-invalid trial roster. **No F023 worlds executed yet**. Design freeze and implementation/adoption remain separate.
