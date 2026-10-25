@@ -1199,3 +1199,40 @@ Unlike the earlier design-only entries, the stacked [implementation PR #79](http
 
 ## F022.v1 limited adopted data contract — merged 2026-10-25
 The `f022.archive.v1` contract immediately above is now a tested, **technically adopted** source-bound archive for 13 specified ideal 2D two-body calibration worlds only, merged at `824a8621944ea438388c54949a2b65719be2e419`. The archive contains 13 scene records, 117 fixed-time state rows, 10 contact records (of which 1 zero-impulse tangent), individual and suite-wide momentum/KE/penetration audit metrics and a protocol+source+SHA256 manifest. No unknown agent sensor schema or public 2D actuation interface is implied. [Summary](../findings/F022-ci-summary-2026-10-25.json) / [decision](decisions/2026-10-25-F022-limited-admission.md). Raw CI archive artifacts are retained only 30 days; regenerate with `experiments/F022/README.md` against exact source for a preserved empirical archive. Future additional physical semantics require a new version.
+
+
+## F023 Active Encounter — candidate data structure, 2026-10-25 (**UNFROZEN / NOT EMITTED**)
+[Issue #81](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/81) / [SPEC](../topics/F023-active-encounter/SPEC.md) / [PLAN](../experiments/F023/PLAN.md) / [mathematical preflight](../experiments/F023/PREFLIGHT.md). All names below are **candidate**, not established schemas or files on main. No F023 run, UI or local observation exists.
+
+~~~mermaid
+flowchart LR
+  SET["Setup PANEL: Scenario + independent budgets + t0 commands"] --> SIM["F023 proposed private-action gate / ground reaction / continuous TOI"]
+  SIM --> A["Actions: accepted/rejected, J and -J ground, signed work"]
+  SIM --> ST["World states: t, A/B pos/vel, KE"]
+  SIM --> CO["Contacts: precise TOI / normal / impulse or null"]
+  A --> LED["Per-cell ledger: integer µJ before/charged/after"]
+  A --> EV["Timeline PANEL"]
+  ST --> EV
+  CO --> EV
+  LED --> EV
+  EV --> ARCH["Immutable source-bound archive + manifest"]
+  ARCH --> CHECK["Source-independent saved-data audit"]
+  CHECK --> EVID["Evidence PANEL"]
+  ARCH --> ARENA["2D Arena PANEL — future READ ONLY"]
+  ARCH --> SYS["System/Data PANEL — versioned schema links"]
+  ST -. "NO LOCAL OBSERVATION API" .-> BLOCK["Agent policy (not implemented)"]
+~~~
+
+| Record / prospect | Candidate fields + unit | Future UI owner | Security / caveat |
+| --- | --- | --- | --- |
+| `scenario.json` | `schema_version,world_id,duration_s,sample_grid_s,restitution,cells:[{id,mass_kg,radius_m,position_xy_m,velocity_xy_mps,capacity_uj,balance_uj,command_impulse_xy_ns}]` | Setup | experimenter truth only; exact typing & bounds TBD |
+| `actions.jsonl` | `world_id,time_s=0,cell_id,commanded_xy_ns,accepted,applied_xy_ns,ground_reaction_xy_ns,signed_work_j,positive_work_j,charge_uj,reason` | Cells / Timeline | own charge only; exact rejection ordering TBD |
+| `states.jsonl` | `world_id,sample_index,time_s,phase,cell_state[A/B]:[x_m,y_m,vx_mps,vy_mps],total_ke_j` | Arena / Timeline | immutable world truth; t=0 sample must distinguish before vs after actuation |
+| `contacts.jsonl` | `world_id,event_index,time_s,normal_xy,impulse_ns,pre_velocities,post_velocities,restitution,kind` | Arena / Timeline | never synthesize contact from pixel/frame overlap; null is meaningful |
+| `ledger.jsonl` | `cell_id,kind,motor_charge_uj,balance_before_uj,balance_after_uj,rounding_excess_uj` | Cells | F002-like private integers, no A-to-B implicit subsidy |
+| `audit.json` | `total_cells_momentum_xy,ground_reaction_xy,total_momentum_residual,mechanical_work_j,collision_loss_j,kinetic_delta_j,energy_residual_j,classification,oracle_status` | Evidence | full world + ground budget, not cell-only conservation through drive |
+| `manifest.json` | `frozen_protocol_sha,implementation_sha,source_hashes,artifact_sha256,python_version,replay_status` | Evidence / System | source-bound provenance / rehashed semantic forgery rejection |
+
+**Physics/units (proposal only):** `Δv=J/m`; `W=v_before·J+|J|²/(2m)`; `charge_uj=ceil(10^6 max(0,W))` (ideal positive mechanical work, pending **numerically safe quantization freeze**); `J_ground=-ΣJ_applied`. As a result, **cells-only momentum changes by ΣJ**, while **cells+ground momentum accounts for all externally applied reaction**. During ideal passive collision, inter-cell impulses sum to zero and dissipated kinetic energy equals restitution loss. Negative work is lost rather than credited. The battery charge may exceed actual positive mechanical work by rounding; record the excess and do not assert exact battery-Joules equality. Reject infeasible actions *before* any impulse/charge.
+
+**Viewer compatibility rule:** a future panel reads versioned snapshots with explicit access scopes; it must not replace solver truth or leak `scenario`/contacts into a later local agent observation API. The F022 `f022.archive.v1` remains separately adopted and unchanged.
