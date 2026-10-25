@@ -1387,3 +1387,46 @@ flowchart TD
 
 ## F022.v1 limited adopted implementation — merged 2026-10-25
 **The PR #79 named code pipeline in the diagram above is now part of main** at merge `824a8621944ea438388c54949a2b65719be2e419`, after 22/22 merged-main workflows green. The design-only historical diagrams remain labeled historical. The actual pipeline is `soma/f022.py` (ballistic continuous TOI + impulse) → `experiments/F022/run_suite.py` (117 2D samples/10 events + source-bound archive) → independent `experiments/F022/verify.py` (13 frozen source-specific analytic rederivations) + `attack_test.py` (8 rehash negatives) → [persistent findings](../findings/F022-validation.md). **Future researcher 2D playback and cell-local sensor remain UNIMPLEMENTED, and no attachment edges exist.** [Decision](decisions/2026-10-25-F022-limited-admission.md).
+
+
+## F023 Active Encounter — selected 2026-10-25, **DESIGN ONLY / NOT RUN / NOT ADOPTED**
+[Issue #81](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/81) / [SPEC](../topics/F023-active-encounter/SPEC.md) / [PLAN](../experiments/F023/PLAN.md) / [theory-only preflight](../experiments/F023/PREFLIGHT.md) / [data contract](DATA_CONTRACTS.md) / [unexecuted findings](../findings/F023-validation.md).
+
+The implemented input is still F022.v1 passive 2D collision. **Every F023 node below is proposed, not live.** The new primitive is a prescribed cell-owned one-time t=0 impulse with an **opposite explicit ground reaction** and independent cell-owned positive-work µJ debit. Inter-cell collisions thereafter follow a newly versioned F022-like passive TOI law. **No 2D agent-local sensor, learned controller, bond, UI renderer, ecology or live on-screen simulation** is provided by this design PR.
+
+~~~mermaid
+flowchart TB
+  subgraph S["① Setup / Scenarios PANEL (future)"]
+    Q["F023 candidate Scenario: initial A/B state, individual budgets, J commands, restitution, experiment ID"]
+  end
+  subgraph CORE["② 2D simulation core — DESIGN ONLY"]
+    G["Validation + per-cell private µJ gate"]
+    A["t=0 ground-referenced impulse + equal/opposite environment reaction"]
+    P["Continuous 2D free-flight + TOI + passive collision"]
+    T["Researcher-only WorldTruth: pos/vel/energy/contact"]
+  end
+  Q --> G --> A --> P --> T
+  G --> C["③ Cells PANEL (future): per-cell MotorDecision / Ledger"]
+  A --> C
+  T --> W["④ Arena PANEL (future): read-only XY replay + contact normal"]
+  T --> L["⑤ Timeline PANEL (future): states, actions, contacts incl. null"]
+  C --> L
+  L --> R["Source-bound JSONL/manifest + independent saved-file oracle"]
+  R --> V["⑥ Evidence PANEL (future): work, ground impulse, KE, verification, findings"]
+  R --> X["⑦ System/Data PANEL (future): schema + causal boundary"]
+  T -. "FUTURE separate experiment; no such F023 API" .-> O["LocalObservation (absent)"]
+  O -. "FUTURE separate experiment" .-> POL["LocalPolicy / Learning (absent)"]
+  W -. "FORBIDDEN: world truth must NOT feed local policy" .-> POL
+~~~
+
+### System/API contract vs UI panel correspondence
+| Future UI panel | Single owned source of truth | What F023 design adds / forbids |
+| --- | --- | --- |
+| Setup / Scenarios | `scenario.json` | Only researcher's initial state and prescribed interventions |
+| Arena | `states.jsonl` + `contacts.jsonl` | Exact simulated geometry, not painted-in collisions |
+| Cells | `actions.jsonl` + `ledger.jsonl` | A/B private energy and accepted impulse, never pooled battery |
+| Timeline | all ordered event and sample records | t=0 pre/post actuation, exact TOI, misses/null |
+| System/Data | `docs/ARCHITECTURE.md` + `docs/DATA_CONTRACTS.md` | Machine-readable schema version, access boundaries, method of provenance |
+| Evidence | `audit.json` + `manifest.json` + `findings/F023-validation.md` | Independent reconstruction of real saved artifacts, not claims from UI graphics |
+
+**Implementation wall:** F022's approved code, 13 deterministic scenes, and archive schema are immutable; a new F023 code path must be separate. V001 #24/#25/#26 is unmerged 1D read-only replay; creating a new 2D UI is separately versioned V00x scope.
