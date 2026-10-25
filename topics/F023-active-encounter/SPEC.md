@@ -56,3 +56,7 @@ Freeze full prospective independent unit set and tests before F023 primary run. 
 
 ## 2026-10-25 F023.v1 pre-observation design freeze — status supersession
 [Fixed FROZEN_V1](../../experiments/F023/FROZEN_V1.md) anchored to Issue #81 at `76dcc1db7ae12737705da06c155933d0a8251853` supersedes this SPEC's earlier **UNFROZEN** design-stage description *for status only*. Frozen 15-world roster and typed archive requirements are binding before any simulator world. **No implementation, primary simulation, CI or admission** exists yet; no new body formation claims.
+
+
+## 2026-10-25 F023 implementation candidate — Draft PR #83, not yet admitted
+Actual isolated code at `soma/f023.py` implements the [frozen v1](../../experiments/F023/FROZEN_V1.md) prescribed t0 A/B impulse gate with exact decimal-rational candidate-work billing, separate A/B private integer-µJ balances, opposite explicit ground impulses, then calls **unmodified** `soma.f022.simulate` with post-action velocities. `experiments/F023/run_suite.py` writes source-bound seven-file archive, while `verify.py` uses the independent F022 closest-approach oracle without importing the F023/F022 producer; ten rehashed semantic attacks in `attack_test.py`. [Reproduction](../../experiments/F023/README.md). These are **implementation claims / source paths only** until exact-source Python3.11/3.12 and F001–F022 regressions, audit and science review; no spontaneous approach or organismality claimed.
