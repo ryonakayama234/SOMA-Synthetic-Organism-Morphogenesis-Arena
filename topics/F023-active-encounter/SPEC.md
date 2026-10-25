@@ -52,3 +52,7 @@ Future `LocalObservation` and `Policy` ports are explicitly absent; a viewer wil
 Freeze full prospective independent unit set and tests before F023 primary run. New implementation PR, independent physics/ledger saved-file recomputation without importing producer, forged-rehash adversaries, two clean-root byte-identical replay, Python3.11+3.12, all F001–F022 regressions and final exact-SHA CI. Record numerical ambiguity and source of momentum and work. Strictly separate *bounded technical adoption* from scientific H23a/b/c results; no merge/close in this design PR.
 
 [Research charter](../../docs/PROJECT.md) / [agenda](../../docs/RESEARCH_AGENDA.md) / [study process](../../docs/RESEARCH_PROCESS.md).
+
+
+## 2026-10-25 F023.v1 pre-observation design freeze — status supersession
+[Fixed FROZEN_V1](../../experiments/F023/FROZEN_V1.md) anchored to Issue #81 at `76dcc1db7ae12737705da06c155933d0a8251853` supersedes this SPEC's earlier **UNFROZEN** design-stage description *for status only*. Frozen 15-world roster and typed archive requirements are binding before any simulator world. **No implementation, primary simulation, CI or admission** exists yet; no new body formation claims.
