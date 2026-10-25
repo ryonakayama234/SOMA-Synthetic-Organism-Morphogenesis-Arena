@@ -1434,3 +1434,19 @@ flowchart TB
 
 ### F023.v1 frozen design boundary — 2026-10-25
 [FROZEN_V1](../experiments/F023/FROZEN_V1.md) at `76dcc1db7ae12737705da06c155933d0a8251853` now binds the proposed *future* F023 action→TOI→archive workflow above. The diagram remains **unimplemented** at this stage; frozen design ≠ deployed UI, new motor, learning, or observed contact.
+
+
+### F023 implementation candidate code path — PR #83, **not formally adopted**
+Actual source wiring is `soma/f023.py` (strict schema and rational private t0 charge, source-owned ground counterimpulse) → **unmodified** `soma.f022.simulate` (passive continuous TOI after the scheduled action) → `experiments/F023/run_suite.py` (source-bound archive) → `experiments/F023/verify.py` (on-disk independent closest-approach and private energy oracle, no F023/F022 producer import) + `attack_test.py` (rehashed semantic forgery) → `findings/F023-validation.md`. This does **not** implement UI panel rendering, local agent sensors, learning or docking. The future panel mappings above remain read-only, and no UI receives permission to write into simulation truth. Performance/acceptance pending final-head tests.
+
+~~~mermaid
+flowchart LR
+ F["[PR #83 candidate] soma/f023.py t0 private gate + ground impulse"] --> P["[F022 adopted unchanged] soma/f022.py continuous passive TOI"]
+ P --> R["[PR #83 candidate] run_suite.py: scenario + action + ledger + state + contact + audit + manifest"]
+ R --> V["[PR #83 candidate] verify.py: alternative closest-approach + private budget replay"]
+ R --> AT["[PR #83 candidate] attack_test.py"]
+ V --> FIND["findings/F023-validation.md: pending observed results"]
+ AT --> FIND
+ R -. "FUTURE separate V00x UI" .-> UI["Arena / Cells / Timeline / Evidence"]
+ F -. "NOT PRESENT / forbidden world-truth policy feed" .-> POLICY["Local policy / learning"]
+~~~
