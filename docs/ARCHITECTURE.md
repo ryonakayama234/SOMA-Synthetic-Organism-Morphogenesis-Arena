@@ -1430,3 +1430,7 @@ flowchart TB
 | Evidence | `audit.json` + `manifest.json` + `findings/F023-validation.md` | Independent reconstruction of real saved artifacts, not claims from UI graphics |
 
 **Implementation wall:** F022's approved code, 13 deterministic scenes, and archive schema are immutable; a new F023 code path must be separate. V001 #24/#25/#26 is unmerged 1D read-only replay; creating a new 2D UI is separately versioned V00x scope.
+
+
+### F023.v1 frozen design boundary — 2026-10-25
+[FROZEN_V1](../experiments/F023/FROZEN_V1.md) at `76dcc1db7ae12737705da06c155933d0a8251853` now binds the proposed *future* F023 action→TOI→archive workflow above. The diagram remains **unimplemented** at this stage; frozen design ≠ deployed UI, new motor, learning, or observed contact.
