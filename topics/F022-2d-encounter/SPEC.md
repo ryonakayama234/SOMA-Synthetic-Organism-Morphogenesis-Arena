@@ -2,7 +2,7 @@
 id: F022
 title: Encounter Lab — 2Dで独立セルが出会うための接触世界
 kind: feature_specification
-status: SELECTED_DESIGN_DRAFT_UNFROZEN_UNEXECUTED
+status: FROZEN_DESIGN_UNIMPLEMENTED_UNEXECUTED
 updated: 2026-10-25
 issue: 77
 related: [PROJECT, RESEARCH-AGENDA, F021, V001, ARCHITECTURE, DATA]
@@ -11,7 +11,7 @@ keywords: [2D, collision, contact, encounter, impulse, body_emergence, passive_d
 
 # F022 — Encounter Lab: 2D接触・衝突世界（設計候補）
 
-**現状：設計選定のみ／数値仕様未凍結／実装・実験未実施／採用前。**
+**現状：F022.v1数値仕様・反証条件を事前凍結済み／実装・本実験未実施／採用前。** （当初の選定期の文脈は下記に保存）
 [Issue #77](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/77) / [研究憲章](../../docs/PROJECT.md) / [研究アジェンダ](../../docs/RESEARCH_AGENDA.md) / [実験計画](../../experiments/F022/PLAN.md) / [findings](../../findings/F022-validation.md)。
 
 ## 研究上の欠落と今回の一能力

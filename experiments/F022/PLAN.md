@@ -2,7 +2,7 @@
 id: EXP-F022
 title: 2D接触世界の反証実験計画案
 kind: experiment_plan
-status: DRAFT_UNFROZEN_UNEXECUTED
+status: FROZEN_DESIGN_UNIMPLEMENTED_UNEXECUTED
 updated: 2026-10-25
 issue: 77
 keywords: [F022, 2D, control, impulse, timestep, falsification, archive]
@@ -10,7 +10,7 @@ keywords: [F022, 2D, control, impulse, timestep, falsification, archive]
 
 # F022 実験計画案（PRE-REGISTRATION CANDIDATE）
 
-**設計のみ。一次世界を一つも生成していない。凍結済みseed、dt、許容誤差、採用判断は存在しない。**
+**設計のみ。一次世界を一つも生成していない。数値・比較条件・許容誤差は [FROZEN_V1](FROZEN_V1.md) で事前凍結済み。採用判断は存在しない。乱数seedは用いず決定論的13ケースを固定した。**
 [仕様](../../topics/F022-2d-encounter/SPEC.md) / [Issue #77](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/77) / [結果ノート](../../findings/F022-validation.md)
 
 ## 一つの因果機構
