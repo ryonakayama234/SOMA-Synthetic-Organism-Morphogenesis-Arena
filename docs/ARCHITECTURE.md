@@ -1366,3 +1366,20 @@ flowchart TD
  C -. "separate future Fxxx" .-> I["Restricted cell-local senses"]
  H -. "no world truth to agent" .-> I
 ~~~
+
+
+## F022.v1 implementation candidate data path — 2026-10-25 (PR #79, unmerged)
+Earlier **NOT IMPLEMENTED** diagrams describe historical design stage. The following names reflect actual code in the stacked [Draft PR #79](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/79), which has not been adopted. **No sensors, links, agents, motors or UI are imported.**
+
+~~~mermaid
+flowchart TD
+ R["FROZEN_V1: 13 2D scenarios; 5 rejected invalid inputs"] --> P["soma/f022.py: strict validation + analytic ballistic TOI + normal impulse"]
+ P --> S["experiments/F022/run_suite.py: deterministic 9-sample/world source-bound archive"]
+ S --> A["scenario.json / states.jsonl / contacts.jsonl / audit.json / manifest.json"]
+ A --> V["experiments/F022/verify.py: separate analytical closest-approach oracle"]
+ A --> T["experiments/F022/attack_test.py: 8 forged-and-rehashed negatives"]
+ V --> F["findings/F022-validation.md: software vs science gates"]
+ T --> F
+ A -. "future independent V00x work, not F022" .-> U["2D researcher replay UI"]
+ P -. "future different Fxxx, never archive truth" .-> L["Cell-local sensing/controller"]
+~~~
