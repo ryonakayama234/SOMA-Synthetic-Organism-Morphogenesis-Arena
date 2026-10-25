@@ -1236,3 +1236,7 @@ flowchart LR
 **Physics/units (proposal only):** `Δv=J/m`; `W=v_before·J+|J|²/(2m)`; `charge_uj=ceil(10^6 max(0,W))` (ideal positive mechanical work, pending **numerically safe quantization freeze**); `J_ground=-ΣJ_applied`. As a result, **cells-only momentum changes by ΣJ**, while **cells+ground momentum accounts for all externally applied reaction**. During ideal passive collision, inter-cell impulses sum to zero and dissipated kinetic energy equals restitution loss. Negative work is lost rather than credited. The battery charge may exceed actual positive mechanical work by rounding; record the excess and do not assert exact battery-Joules equality. Reject infeasible actions *before* any impulse/charge.
 
 **Viewer compatibility rule:** a future panel reads versioned snapshots with explicit access scopes; it must not replace solver truth or leak `scenario`/contacts into a later local agent observation API. The F022 `f022.archive.v1` remains separately adopted and unchanged.
+
+
+### F023.v1 frozen archive status — 2026-10-25, NOT YET EMITTED
+The earlier F023 **candidate** table describes future panel ownership. Exact source-bound archive keys and scene roster are now preregistered at [FROZEN_V1](../experiments/F023/FROZEN_V1.md) commit `76dcc1db7ae12737705da06c155933d0a8251853`; its `f023.archive.v1` fields supersede candidates where they differ. No actual F023 files or F023 UI at freeze time; do not conflate private budgets with F022.v1 passive archive.
