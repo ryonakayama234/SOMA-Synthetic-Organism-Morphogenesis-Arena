@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import platform
@@ -76,14 +77,35 @@ def produce(dest: Path, *, source_sha: str | None = None):
             raise ArithmeticError('invalid event or sample cardinality')
         state_rows.extend(states)
         contact_rows.extend(events)
+        initial_ke = .5*sum(s[k]**2 for k in
+                             ('vx_a_mps','vy_a_mps','vx_b_mps','vy_b_mps'))
+        final_ke = states[-1]['total_ke_j']
+        mx = abs((states[-1]['vx_a_mps'] + states[-1]['vx_b_mps']) -
+                 (s['vx_a_mps'] + s['vx_b_mps']))
+        my = abs((states[-1]['vy_a_mps'] + states[-1]['vy_b_mps']) -
+                 (s['vy_a_mps'] + s['vy_b_mps']))
+        signed_ke_loss = 0.
+        overlap = 0.
+        if events:
+            ev = events[0]
+            nvel = ((ev['pre_vx_b_mps']-ev['pre_vx_a_mps'])*ev['normal_x'] +
+                    (ev['pre_vy_b_mps']-ev['pre_vy_a_mps'])*ev['normal_y'])
+            signed_ke_loss = .25*(1.-s['restitution']**2)*nvel*nvel
+            overlap = max(0., 1.-math.hypot(ev['pre_x_b_m']-ev['pre_x_a_m'],
+                                            ev['pre_y_b_m']-ev['pre_y_a_m']))
         details.append({'world_id': s['world_id'], 'contact_count': len(events),
                         'classification': events[0]['kind'] if events else 'none',
-                        'ke_before_j': .5*(s['vx_a_mps']**2 + s['vy_a_mps']**2 + s['vx_b_mps']**2 + s['vy_b_mps']**2),
-                        'ke_after_j': states[-1]['total_ke_j']})
+                        'ke_before_j': initial_ke, 'ke_after_j': final_ke,
+                        'momentum_residual_kg_mps': max(mx, my),
+                        'ke_residual_j': final_ke-(initial_ke-signed_ke_loss),
+                        'overlap_bound_m': overlap})
     if len(state_rows) != 117:
         raise ArithmeticError('missing samples')
     archive = {'schema_version': SCHEMA, 'worlds': scenes}
     audit = {'schema_version': SCHEMA, 'world_results': details,
+             'momentum_residual_kg_mps': max(x['momentum_residual_kg_mps'] for x in details),
+             'ke_residual_j': max(abs(x['ke_residual_j']) for x in details),
+             'overlap_bound_m': max(x['overlap_bound_m'] for x in details),
              'invalid_probe_results': probes}
     dest.parent.mkdir(parents=True, exist_ok=True)
     temp = Path(tempfile.mkdtemp(prefix=f'.{dest.name}-staging-', dir=dest.parent))

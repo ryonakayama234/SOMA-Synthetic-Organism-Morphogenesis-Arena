@@ -169,15 +169,32 @@ def verify(root: Path, *, expected_source_sha=None):
         if e is not None: predicted_events.append(e)
         initial_ke=.5*sum(scene[k]**2 for k in
                             ('vx_a_mps','vy_a_mps','vx_b_mps','vy_b_mps'))
+        mx=abs(f[-1]['vx_a_mps']+f[-1]['vx_b_mps']-scene['vx_a_mps']-scene['vx_b_mps'])
+        my=abs(f[-1]['vy_a_mps']+f[-1]['vy_b_mps']-scene['vy_a_mps']-scene['vy_b_mps'])
+        dissipated=0.
+        overlap=0.
+        if e:
+            g=(e['pre_vx_b_mps']-e['pre_vx_a_mps'])*e['normal_x']+(e['pre_vy_b_mps']-e['pre_vy_a_mps'])*e['normal_y']
+            dissipated=.25*(1.-scene['restitution']**2)*g*g
+            overlap=max(0.,1.-math.hypot(e['pre_x_b_m']-e['pre_x_a_m'],e['pre_y_b_m']-e['pre_y_a_m']))
         result.append({'world_id':scene['world_id'],
                        'contact_count':int(e is not None),
                        'classification':e['kind'] if e else 'none',
-                       'ke_before_j':initial_ke,'ke_after_j':f[-1]['total_ke_j']})
+                       'ke_before_j':initial_ke,'ke_after_j':f[-1]['total_ke_j'],
+                       'momentum_residual_kg_mps':max(mx,my),
+                       'ke_residual_j':f[-1]['total_ke_j']-(initial_ke-dissipated),
+                       'overlap_bound_m':overlap})
     same(states,predicted_frames,'saved states')
     same(contacts,predicted_events,'saved contacts')
     audit=read_one(root/'audit.json')
     same(audit,{'schema_version':SCHEMA,'world_results':result,
+                'momentum_residual_kg_mps':max(x['momentum_residual_kg_mps'] for x in result),
+                'ke_residual_j':max(abs(x['ke_residual_j']) for x in result),
+                'overlap_bound_m':max(x['overlap_bound_m'] for x in result),
                 'invalid_probe_results':{f'J{i:02d}':'rejected' for i in range(1,6)}},'audit')
+    if (audit['momentum_residual_kg_mps']>ERROR or
+        audit['ke_residual_j']>ERROR or audit['overlap_bound_m']>ERROR):
+        raise AssertionError('frozen physical conservation or overlap gate')
     # Fixed analytical canaries independent of producer; no silently shifted physics.
     contact={e['world_id']:e for e in contacts}
     if not math.isclose(contact['C13']['time_s'],.095,abs_tol=1e-9):
