@@ -1,8 +1,10 @@
+> **F022.v1 technical status updated 2026-10-25**: limited passive 2D contact instrument **ADOPTED** after design PR #78, implementation PR #79, 22/22 merged-main workflows. This note supersedes historical selection-stage lines below *for status only*. No evidence of voluntary joining or biological embodiment. See [adoption decision](../../docs/decisions/2026-10-25-F022-limited-admission.md).
+
 ---
 id: F022
 title: Encounter Lab — 2Dで独立セルが出会うための接触世界
 kind: feature_specification
-status: FROZEN_DESIGN_UNIMPLEMENTED_UNEXECUTED
+status: TECHNICALLY_ADOPTED_LIMITED_V1
 updated: 2026-10-25
 issue: 77
 related: [PROJECT, RESEARCH-AGENDA, F021, V001, ARCHITECTURE, DATA]
