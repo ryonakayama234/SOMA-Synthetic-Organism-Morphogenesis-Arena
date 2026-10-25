@@ -1383,3 +1383,7 @@ flowchart TD
  A -. "future independent V00x work, not F022" .-> U["2D researcher replay UI"]
  P -. "future different Fxxx, never archive truth" .-> L["Cell-local sensing/controller"]
 ~~~
+
+
+## F022.v1 limited adopted implementation — merged 2026-10-25
+**The PR #79 named code pipeline in the diagram above is now part of main** at merge `824a8621944ea438388c54949a2b65719be2e419`, after 22/22 merged-main workflows green. The design-only historical diagrams remain labeled historical. The actual pipeline is `soma/f022.py` (ballistic continuous TOI + impulse) → `experiments/F022/run_suite.py` (117 2D samples/10 events + source-bound archive) → independent `experiments/F022/verify.py` (13 frozen source-specific analytic rederivations) + `attack_test.py` (8 rehash negatives) → [persistent findings](../findings/F022-validation.md). **Future researcher 2D playback and cell-local sensor remain UNIMPLEMENTED, and no attachment edges exist.** [Decision](decisions/2026-10-25-F022-limited-admission.md).

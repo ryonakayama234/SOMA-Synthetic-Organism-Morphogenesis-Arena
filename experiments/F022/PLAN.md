@@ -2,11 +2,13 @@
 id: EXP-F022
 title: 2D接触世界の反証実験計画案
 kind: experiment_plan
-status: FROZEN_DESIGN_UNIMPLEMENTED_UNEXECUTED
+status: FROZEN_EXECUTED_LIMITED_TECHNICAL_ADOPTION
 updated: 2026-10-25
 issue: 77
 keywords: [F022, 2D, control, impulse, timestep, falsification, archive]
 ---
+
+> **Current stage 2026-10-25:** F022.v1 fixed 13-case primary suite executed and admitted as a limited simulation measurement instrument, NOT evidence of organism emergence. The original draft/UNEXECUTED stage notes are retained as history. [Provenance + summary](../../findings/F022-ci-summary-2026-10-25.json) / [decision](../../docs/decisions/2026-10-25-F022-limited-admission.md). `FROZEN_V1.md` remains immutable.
 
 # F022 実験計画案（PRE-REGISTRATION CANDIDATE）
 

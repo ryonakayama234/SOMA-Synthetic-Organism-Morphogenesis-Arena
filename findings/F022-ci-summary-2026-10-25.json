@@ -1,0 +1,72 @@
+{
+  "schema": "f022.summary.v1",
+  "status": "limited_technical_adoption_synthetic_only",
+  "date": "2026-10-25",
+  "protocol_freeze_sha": "3984e9dcb2cb420abab5ca92b4d029b31b5173f8",
+  "premerge_head_sha": "cb66a3595f56f82b4c7e21439cd7ed65dd43c4f8",
+  "main_merge_commit_sha": "824a8621944ea438388c54949a2b65719be2e419",
+  "experimental_unit": "one fixed deterministic 2D two-disk scene, not independent biological sample",
+  "valid_scenes": 13,
+  "negative_invalid_input_probes": 5,
+  "saved_state_rows": 117,
+  "contact_events": 10,
+  "nonzero_impulse_events": 9,
+  "zero_impulse_geometric_grazes": 1,
+  "no_contact_worlds": [
+    "C05",
+    "C08",
+    "C09"
+  ],
+  "grazing_worlds": [
+    "C07"
+  ],
+  "impulse_worlds": [
+    "C01",
+    "C02",
+    "C03",
+    "C04",
+    "C06",
+    "C10",
+    "C11",
+    "C12",
+    "C13"
+  ],
+  "high_speed_C13_contact_time_s": 0.095,
+  "local_python313_diagnostics": {
+    "max_abs_momentum_residual_kg_mps": 0,
+    "max_abs_analytic_ke_budget_residual_j": 1.1102230246251565e-16,
+    "max_event_overlap_m": 1.1102230246251565e-16
+  },
+  "ci_python311_python312_analytic_tolerance": "abs(error)<=1e-9*max(1,abs(reference)) in SI; collision penetration <=1e-9m",
+  "rehashed_semantic_attacks_rejected": 8,
+  "deterministic_replay": "two clean output roots byte identical within each tested Python version",
+  "premerge_workflows": {
+    "passed": 23,
+    "total": 23,
+    "f022_run_ids": [
+      40175767191,
+      40175770453
+    ]
+  },
+  "merged_main_workflows": {
+    "passed": 22,
+    "total": 22,
+    "f022_run_id": 40176213718,
+    "legacy_F001_to_F021_passed": 21
+  },
+  "github_artifacts": {
+    "python311_id": 12592745454,
+    "python312_id": 12592191391,
+    "expiration_date": "2026-11-24"
+  },
+  "science": {
+    "H22a": "supported_within_frozen_model",
+    "H22b": "supported_within_frozen_model",
+    "H22c": "supported_within_frozen_model",
+    "real_world_generality": "not_tested",
+    "autonomous_joining": "not_tested"
+  },
+  "external_human_peer_review": false,
+  "local_observation_or_agent_policy": false,
+  "limitations": "No actuator or power source; no continuous multi-body contact, latching, ground reaction, sensors, learning, self-assembly, evolution, or persistent organism."
+}
