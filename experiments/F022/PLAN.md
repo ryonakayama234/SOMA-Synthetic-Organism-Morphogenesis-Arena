@@ -58,3 +58,7 @@ keywords: [F022, 2D, control, impulse, timestep, falsification, archive]
 
 ## 2026-10-25 v1 design freeze — superseding the UNFROZEN draft above
 The full binding values are in [FROZEN_V1](FROZEN_V1.md): analytic event-time collision solver; 2 passive disks; 13 specific C01–C13 valid worlds with 9 samples each; 5 J01–J05 rejection probes; e=1/0.5; fixed collision, momentum, energy and symmetry expectations; 1e-9 scaled SI analytic error bound; source-independent saved archive verifier. No biological/ecological sample sizes are implied. [Wolfram rational preflight](PREFLIGHT.md) is theoretical, not software evidence. **No F022 primary world has been run; no source/CI/adoption exists.** Freeze SHA in Issue #77. Do not retune frozen thresholds after results.
+
+
+## Implementation/review state — 2026-10-25
+The frozen v1 test design above is unchanged. [Separate Draft implementation PR #79](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/79) contains the producer, physics solver, independent from-disk analytical audit, semantic rehashed forgery negatives, and source-bound 2-root replay/legacy CI. Review at the final PR HEAD required; initial candidate local Python3.13 tests passed (6 new unit tests, 8 semantic attacks). F022 data are deterministic **simulation** observations, not ecological replicates. Software and scientific adoption remain separate. See [run instructions](README.md).

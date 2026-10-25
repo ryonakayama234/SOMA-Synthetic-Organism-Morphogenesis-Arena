@@ -1,0 +1,56 @@
+name: F022 frozen 2D encounter and independent archive audit
+
+on:
+  pull_request:
+    paths:
+      - 'soma/f022.py'
+      - 'experiments/F022/**'
+      - 'tests/test_f022.py'
+      - '.github/workflows/f022.yml'
+      - 'docs/ARCHITECTURE.md'
+      - 'docs/DATA_CONTRACTS.md'
+      - 'findings/F022-validation.md'
+  push:
+    branches:
+      - main
+      - 'feat/F022-*'
+    paths:
+      - 'soma/f022.py'
+      - 'experiments/F022/**'
+      - 'tests/test_f022.py'
+      - '.github/workflows/f022.yml'
+  workflow_dispatch:
+
+jobs:
+  frozen-worlds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: All inherited and F022 regressions, normal and optimized
+        run: |
+          python -m unittest discover -s tests
+          python -O -m unittest discover -s tests -p 'test_f022.py'
+      - name: Frozen 13-world suite and external-input adversarial verifier
+        run: |
+          python -m experiments.F022.run_suite --out /tmp/f022-worlds-a
+          python -m experiments.F022.verify --root /tmp/f022-worlds-a --expected-source-sha "$(git rev-parse HEAD)"
+          python -m experiments.F022.attack_test --root /tmp/f022-worlds-a
+          python -m experiments.F022.run_suite --out /tmp/f022-worlds-b
+          python -m experiments.F022.verify --root /tmp/f022-worlds-b --expected-source-sha "$(git rev-parse HEAD)"
+          diff -r /tmp/f022-worlds-a /tmp/f022-worlds-b
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: f022-2d-worlds-py${{ matrix.python-version }}
+          path: /tmp/f022-worlds-a/
+          retention-days: 30

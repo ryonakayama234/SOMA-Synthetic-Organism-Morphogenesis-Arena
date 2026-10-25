@@ -61,3 +61,7 @@ flowchart LR
 
 ## 2026-10-25 F022.v1 design freeze (supersedes earlier selection-stage UNFROZEN status)
 The original header and draft above are historical design selection notes. [FROZEN_V1](../../experiments/F022/FROZEN_V1.md) now controls numerical physics, continuous collision time, 13 valid scenes and 5 invalid probes, 117 expected sample frames, canonical logs and precise acceptance tolerance. [Critical review](../../docs/reviews/2026-10-25-F022-design-audit.md) and [independent theory](../../experiments/F022/PREFLIGHT.md) are **pre-observation only**. Source code, CI and F022 primary data are NOT produced. Freeze SHA is anchored in [Issue #77](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/77).
+
+
+## 2026-10-25 — actual implementation candidate (Draft PR #79, NOT ADOPTED)
+The earlier stage notes are retained historically. The separate stacked [implementation Draft PR #79](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/79) introduces `soma/f022.py` (continuous TOI, passive normal impulse, 13 frozen scenarios), `experiments/F022/run_suite.py` (immutable world files, exact source/protocol SHA), `experiments/F022/verify.py` (separately written analytic closest-approach oracle), `experiments/F022/attack_test.py`, `tests/test_f022.py`, and 3.11/3.12 GitHub CI. **Not a bonded agent, organism, motor, or externally peer-reviewed scientific result.** [Executable guide](../../experiments/F022/README.md). The frozen v1 protocol is unaltered.
