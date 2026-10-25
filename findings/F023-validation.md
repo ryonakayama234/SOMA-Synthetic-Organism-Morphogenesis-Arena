@@ -21,3 +21,7 @@ Freeze source SHA and fixed scene IDs and exclusions. Capture complete actual/re
 
 ## 2026-10-25 — original v1 design frozen, still UNEXECUTED
 [FROZEN_V1](../experiments/F023/FROZEN_V1.md) at commit `76dcc1db7ae12737705da06c155933d0a8251853` binds Q01–Q15 predetermined 2D calibration scenes, 5 invalid probes, per-cell ideal motor billing/reaction, 135 expected future saved frames, 30 future actions and 9 **predicted** physical events. This is **pre-observation design only**: no F023 simulator, saved real F023 output or CI yet. Earlier selection-stage UNFROZEN entry preserved as history.
+
+
+## 2026-10-25 — initial source implementation candidate, NOT YET VALIDATED
+On separate [Draft PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83), candidate modules `soma/f023.py`, `experiments/F023/run_suite.py`, independently coded `verify.py`, `attack_test.py`, `tests/test_f023.py` and `.github/workflows/f023.yml` have been added after freeze SHA `76dcc1db7ae12737705da06c155933d0a8251853`. Prespecified Q01–Q15 outcomes remain *predictions only* until source-bound workflow artifacts and tests are examined. No F023 run success, 135 actual frames, 9 actual collisions, 10 rejected adversarial forgeries, code admission, or main merge is asserted at this stage. This entry is append-only; do not replace it with an after-the-fact retroactive success claim.
