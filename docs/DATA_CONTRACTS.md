@@ -1162,3 +1162,18 @@ The `f021.v1` contracts above were exercised in GitHub Actions [40101888214](htt
 ### F021.v1 adopted only for frozen investigator-side records (2026-10-24)
 
 [PR #74 merged at main SHA `53efe7c78529ca81cbab4b11d4ddcf10245f44fa`](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74). Earlier 'proposed/under review' paragraphs refer to pre-execution history; `f021.v1` world/step/motor/ledger/patch/summary/manifest semantics documented above are now technically **adopted for the frozen 1D research suite**. Original CI archives (3.11 and 3.12) validated byte-equivalent source-bound records; [persistent quantitative summary](../findings/F021-ci-summary-2026-10-24.json). Not endorsed as generic animal energetics or agent input schema. Scientific claim status remains model-bounded, with 0 strict both-positive payoffs relative to idle-inclusive outside option and explicit 1,024 ambiguous tie steps.
+
+
+## F022 proposed data contract — 2D encounter world (2026-10-25; UNFROZEN, NO DATA)
+
+[Issue #77](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/77) / [SPEC](../topics/F022-2d-encounter/SPEC.md) / [PLAN](../experiments/F022/PLAN.md) / [UNEXECUTED findings](../findings/F022-validation.md). **The following names/units are a proposal for future preregistration, not runtime schemas or existing artifacts.** Exact keys, nullability, event order, timestamps, solver, numerical tolerances and SHA provenance must be frozen *before* primary F022 worlds.
+
+| Candidate artifact | Proposed fields and units | Ownership / gate |
+|---|---|---|
+| scenario.json | schema_version, model_version, world_id, mass_kg, radius_m, initial XY position_m/velocity_mps, restitution, solver/dt, seed/null, source_sha | Researcher-specified starting truth; validate finite positive mass/radius and no illegal initial overlap |
+| states.jsonl | world_id, time_s, event_or_step_index, A/B x_m,y_m,vx_mps,vy_mps, total_ke_j | Physics **world truth**, not a cell sensor API |
+| contacts.jsonl | contact_id, event_time_s, pair_id, contact_normal_xy, impulse_n_s, relative_normal_pre_mps/post_mps, signed_gap_m, solver_status | Reconstruct geometry and impulse from saved states; absence of contact is valid |
+| audit.json | momentum_residual_kg_mps, energy_delta_j, max_overlap_m, contact_count, invalid_case_count, verifier_status | Researcher-level independent oracle, not an agent reward |
+| manifest.json | schema_version, source_sha, config_sha256, artifact_hashes, environment, evidence_provenance | Bind archive and exact code, replay and rehash-tamper tests |
+
+Invariant candidates (must become quantitative before code observation): no impulse outside contact; action-reaction paired impulses; total momentum conserved in no-external-force world; kinetic energy conserved at restitution 1 and non-increased at <1; tangential relative velocity unchanged for smooth frictionless disks; no undisclosed energy supply, timestep tunneling or arbitrary contact order. Report failures and null events. No motor µJ ledger is introduced by F022. Local sensor fields are deliberately **absent**.

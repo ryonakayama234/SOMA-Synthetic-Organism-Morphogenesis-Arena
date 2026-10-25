@@ -1329,3 +1329,23 @@ At [F021 CI 40101888214](https://github.com/ryonakayama234/SOMA-Synthetic-Organi
 ### F021.v1 adopted architectural boundary (2026-10-24)
 
 [Bounded adoption PR #74](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/74) merged to main SHA `53efe7c78529ca81cbab4b11d4ddcf10245f44fa`; the earlier paragraphs marked 'candidate' describe earlier temporal stages, not current implementation status. The live adopted architecture is fixed-resource 1D world / two externally prescribed ideal motor channels / exhaustive own-charge-per-feasible-subset joint gate / F001-F007 ideal kinematics / F002 per-cell own ledger / F019 per-cell next-step harvested credit / researcher-only all-step archive / entirely separate full-log auditor. Autonomous local joining, true contact, ground reactions and any accessible coupled policy observations are still outside the architecture. [F021 scientific acceptance and limitations](../findings/F021-validation.md).
+
+
+## F022 Encounter Lab — 2026-10-25 design only, UNFROZEN / UNIMPLEMENTED
+
+[Selected Issue #77](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/77) / [F022 SPEC](../topics/F022-2d-encounter/SPEC.md) / [candidate PLAN](../experiments/F022/PLAN.md) / [UNEXECUTED findings](../findings/F022-validation.md) / [decision](decisions/2026-10-25-F022-selection.md).
+
+**Do not read these arrows as deployed code.** F022 would add only a passive 2D two-disk free-flight/contact/separation physics instrument. No motor, cell-autonomous rendezvous, bond, resource, policy, learning or 20-cell evolution. F001–F021 evidence/meaning unchanged. Existing V001 is an unadopted reader-only 1D F007 proposal, not a 2D renderer.
+
+~~~mermaid
+flowchart TB
+  C22["[DESIGN] frozen-in-future 2D initial states: A/B position, velocity, mass, radius"] --> P22["[UNIMPLEMENTED] F022 passive 2D motion and collision solver"]
+  P22 --> T22["[UNIMPLEMENTED] world truth: pose/velocity/contact impulses"]
+  T22 --> X22["[UNIMPLEMENTED] immutable states + contacts + manifest"]
+  X22 --> A22["[UNIMPLEMENTED] source-independent physics verifier"]
+  X22 -. "future researcher-only view, not a F022 deliverable" .-> V22["2D replay adapter / Observatory"]
+  T22 -. "future separate study; NOT F022" .-> O22["cell-local observations"]
+  V22 -. "FORBIDDEN world-truth feedback" .-> O22
+~~~
+
+This separates **world truth** from any future individual sensors or learned policy; 2D pictures alone are neither 2D physics evidence nor a body-schema learned by the cell. Numerical design/falsifiers and provenance are synchronized with [DATA_CONTRACTS](DATA_CONTRACTS.md) and the Issue.
