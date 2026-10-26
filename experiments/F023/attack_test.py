@@ -65,6 +65,15 @@ def attack(root: Path):
                                      x[-1]["post_vx_a_mps"]+5e-8),
                    x[-1].__setitem__("post_vx_b_mps",
                                      x[-1]["post_vx_b_mps"]-5e-8))),
+        # Codex P2: preserve event-internal momentum, energy, and the
+        # normal impulse jump, but separate its two-sided kinetic energy
+        # from the actual post-actuation/saved-trajectory energy by ~1e-5 J.
+        ("saved_contact_coherent_wrong_trajectory_energy", "contacts.jsonl",
+         lambda x:(x[-1].__setitem__("pre_vx_a_mps",100.00000005),
+                   x[-1].__setitem__("pre_vx_b_mps",-100.00000005),
+                   x[-1].__setitem__("post_vx_a_mps",-100.00000005),
+                   x[-1].__setitem__("post_vx_b_mps",100.00000005),
+                   x[-1].__setitem__("impulse_ns",200.0000001))),
         ("wrong_freeze", "manifest.json", lambda x:x.__setitem__("frozen_protocol_commit_sha","0"*40)),
     ]
     mapping = {
