@@ -8,7 +8,8 @@ import unittest
 
 from soma.f023 import FREEZE_COMMIT, grid, simulate, validate, _work_and_charge
 from experiments.F023.run_suite import produce, invalid_probes
-from experiments.F023.verify import verify, reference_roster
+from experiments.F023.verify import (verify, reference_roster, strictly_same,
+                                    check_action_inputs_exact, expected_scene)
 from experiments.F023.attack_test import attack
 
 SOURCE = "a"*40
@@ -52,6 +53,34 @@ class F023BoundedActiveEncounter(unittest.TestCase):
         self.assertEqual(_work_and_charge(0,0,0,.02)[1],200)
         self.assertEqual(_work_and_charge(0,0,0,.0200001)[1],201)
 
+    def test_frozen_inputs_have_no_numeric_tolerance(self):
+        original=reference_roster()
+        scen={"schema_version":"f023.archive.v1", "worlds":original}
+        strictly_same(scen,{"schema_version":"f023.archive.v1",
+                            "worlds":reference_roster()})
+        for field,value in (("command_ay_ns",.0200000001),
+                            ("vy_a_mps",1e-10),
+                            ("x_b_m",1.0000000001),
+                            ("initial_balance_a_uj",201)):
+            altered={"schema_version":"f023.archive.v1",
+                     "worlds":[dict(x) for x in original]}
+            altered["worlds"][1][field]=value
+            with self.subTest(field=field), self.assertRaises(AssertionError):
+                strictly_same(altered,scen)
+        # Numerics may never silently turn bool into integer.
+        with self.assertRaises(AssertionError):
+            strictly_same(True,1)
+
+    def test_own_action_billing_inputs_exact_even_when_close(self):
+        _,actions,_,_,_=expected_scene(reference_roster()[1])
+        for field in ("command_y_ns", "applied_y_ns", "ground_y_ns",
+                      "pre_vy_mps"):
+            altered=[dict(r) for r in actions]
+            altered[0][field] += 1e-10
+            with self.subTest(field=field),self.assertRaises(AssertionError):
+                check_action_inputs_exact(altered,actions)
+        check_action_inputs_exact(actions,actions)
+
     def test_bad_initial_conditions_and_private_balance(self):
         base=grid()[0]
         for patch in (
@@ -79,7 +108,7 @@ class F023BoundedActiveEncounter(unittest.TestCase):
             self.assertEqual(output["ledgers"],30)
             self.assertEqual(output["contacts"],9)
             self.assertEqual(verify(a,expected_source_sha=SOURCE)["contacts"],9)
-            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],10)
+            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],14)
             produce(b,source_sha=SOURCE)
             self.assertEqual({p.name:p.read_bytes() for p in a.iterdir()},
                              {p.name:p.read_bytes() for p in b.iterdir()})
