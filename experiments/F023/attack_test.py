@@ -41,6 +41,20 @@ def attack(root: Path):
          lambda x:x[2].__setitem__("applied_y_ns",.0200000001)),
 
         ("wrong_audit", "audit.json", lambda x:x["world_results"][1].__setitem__("contact_count",0)),
+        # Codex P2: rehashed high-speed Q15 final velocity can be inside
+        # individual 1e-9-relative oracle tolerance but outside the
+        # 1e-9 absolute *saved-world* momentum/energy conservation gates.
+        ("saved_final_high_speed_momentum", "states.jsonl",
+         lambda x:(x[-1].__setitem__("vx_a_mps",x[-1]["vx_a_mps"]+5e-8),
+                   x[-1].__setitem__("total_ke_j",.5*sum(
+                       x[-1][f"v{axis}_{c}_mps"]**2
+                       for c in ("a","b") for axis in ("x","y"))))),
+        ("saved_midflight_high_speed_momentum", "states.jsonl",
+         lambda x:(x[-3].__setitem__("vx_a_mps",x[-3]["vx_a_mps"]+5e-8),
+                   x[-3].__setitem__("total_ke_j",.5*sum(
+                       x[-3][f"v{axis}_{c}_mps"]**2
+                       for c in ("a","b") for axis in ("x","y"))))),
+
         ("wrong_freeze", "manifest.json", lambda x:x.__setitem__("frozen_protocol_commit_sha","0"*40)),
     ]
     mapping = {
