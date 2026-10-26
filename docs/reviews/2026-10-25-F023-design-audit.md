@@ -1,0 +1,18 @@
+# F023 adversarial pre-observation design review — 2026-10-25
+
+**Design-stage review only. No F023 implementation, primary experiment, CI, or admission.** This is an internal critical design analysis, **not independent human peer review**. Relates to [Issue #81](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/81) / [design PR #82](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/82).
+
+## Risks surfaced and dispositions
+1. **Reactionless actuation risk:** a disk in otherwise force-free 2D cannot freely acquire net momentum from an internal motor. F023 therefore explicitly supplies equal opposite instantaneous impulse to a declared immobile external environment/ground. Ground contact physics, finite acceleration and actuator efficiency are *not modeled*. This can support a bounded causal stimulus experiment, **not realistic locomotion**.
+2. **False 201µJ charge:** naïve binary float ceil(1e6 * positive work) can misclassify a mathematically exact 200µJ action. Freeze rational-decimal billing using `Fraction(str(...))` for each numeric scenario scalar, exact `ceil(Fraction(1_000_000)*max(0,W))`, and separately report float-world signed work and billing-rounding excess. No round-to-nearest or epsilon substitution.
+3. **Free negative-work braking:** W<0 with zero charge represents ideal passive dissipation, not a regenerative motor, controllable efficient brake or viable behavior. Include only one clear negative control and mark its physical limits; never label it ecological optimality.
+4. **Hidden second pulse / leakage:** exactly two named cells, one action assessment each at t=0, no later commands, links, sensors, policy or resource grants. Researcher truth never flows to an agent.
+5. **Scene outcome cherry-picking:** freeze complete deterministic Q01–Q15 grid and J01–J05 invalid probes before any primary producer. Analytical independent preflight and named *null cases* are mandatory.
+6. **Timeline ambiguity:** all actions occur before sample t=0 and before contact; action records store pre/post velocities while frame t=0 is post-action. Contact event at t<=1e-12 or at T endpoint should fail closed as in F022. No use of video overlap as TOI evidence.
+7. **False evidence after rehashing:** independent verifier recomputes every state/action/contact/ledger and per-world audit from the declared frozen scene roster; external SHA used. Hash alone cannot detect forged plausible trajectories.
+8. **Misleading synthetic n:** 15 deterministic cases are deliberate causal calibrations, **not 15 independent biological replicates**. No hypothesis p-values, no claim of spontaneous intent or assembly.
+9. **CI provenance:** a design-only PR cannot be merged as if it implemented physics. After design freeze, implementation lives in separate PR. Source-exact Python3.11/3.12 + all old regression workflows, false input and tamper tests, clean-root byte replay, main-postmerge check before bounded adoption.
+10. **Existing documentation:** historical F022 headers are dated history; do not rewrite them or frozen F022 artifacts. F023 append-only section with UI panel mapping must say proposed for F023 until source-bound adoption.
+
+## Go/no-go before first primary scene
+The narrow t=0 impulse is scientifically interpretable **only as a declared ideal external-force intervention**. It is unsuitable for a claim about self-sustained 2D motility or a real actuator. Go for bounded measurement instrument after protocol freeze; stop if simulator introduces extra unaccounted force, violated private budget, unjustified normalization, silent numerical ambiguity or scene edits after first observation.
