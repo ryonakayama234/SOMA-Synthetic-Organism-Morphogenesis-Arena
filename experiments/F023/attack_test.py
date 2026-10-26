@@ -55,6 +55,16 @@ def attack(root: Path):
                        x[-3][f"v{axis}_{c}_mps"]**2
                        for c in ("a","b") for axis in ("x","y"))))),
 
+        # Codex P2 contact-only forgery: keep the clean sample frames and
+        # audit, but corrupt archived Q15 collision post velocities.
+        ("saved_contact_post_momentum", "contacts.jsonl",
+         lambda x:x[-1].__setitem__("post_vx_a_mps",
+                                    x[-1]["post_vx_a_mps"]+5e-8)),
+        ("saved_contact_post_balanced_momentum_wrong_energy", "contacts.jsonl",
+         lambda x:(x[-1].__setitem__("post_vx_a_mps",
+                                     x[-1]["post_vx_a_mps"]+5e-8),
+                   x[-1].__setitem__("post_vx_b_mps",
+                                     x[-1]["post_vx_b_mps"]-5e-8))),
         ("wrong_freeze", "manifest.json", lambda x:x.__setitem__("frozen_protocol_commit_sha","0"*40)),
     ]
     mapping = {
