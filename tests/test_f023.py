@@ -9,7 +9,7 @@ import unittest
 from soma.f023 import FREEZE_COMMIT, grid, simulate, validate, _work_and_charge
 from experiments.F023.run_suite import produce, invalid_probes
 from experiments.F023.verify import (verify, reference_roster, strictly_same,
-                                    check_action_inputs_exact, expected_scene)
+                                    check_action_inputs_exact, expected_scene, gate_saved_conservation)
 from experiments.F023.attack_test import attack
 
 SOURCE = "a"*40
@@ -81,6 +81,28 @@ class F023BoundedActiveEncounter(unittest.TestCase):
                 check_action_inputs_exact(altered,actions)
         check_action_inputs_exact(actions,actions)
 
+    def test_saved_conservation_gates_each_frame_not_oracle_only(self):
+        scenes=reference_roster()
+        frames=[];actions=[];events=[];audits=[]
+        for scene in scenes:
+            f,a,e,_,audit=expected_scene(scene)
+            frames.extend(f);actions.extend(a);events.extend(e);audits.append(audit)
+        audit={"world_results":audits,
+               "momentum_residual_kg_mps":max(x["momentum_residual_kg_mps"] for x in audits),
+               "energy_residual_j":max(abs(x["energy_residual_j"]) for x in audits),
+               "overlap_bound_m":max(x["overlap_bound_m"] for x in audits)}
+        gate_saved_conservation(scenes,frames,actions,events,audit)
+        for sample in (-1,-3):
+            tampered=[dict(f) for f in frames]
+            row=tampered[sample]
+            row["vx_a_mps"]+=5e-8
+            row["total_ke_j"]=.5*sum(row[f"v{axis}_{c}_mps"]**2
+                                       for c in ("a","b") for axis in ("x","y"))
+            with self.subTest(sample=sample),self.assertRaisesRegex(
+                AssertionError,"saved physical conservation broken"
+            ):
+                gate_saved_conservation(scenes,tampered,actions,events,audit)
+
     def test_bad_initial_conditions_and_private_balance(self):
         base=grid()[0]
         for patch in (
@@ -108,7 +130,7 @@ class F023BoundedActiveEncounter(unittest.TestCase):
             self.assertEqual(output["ledgers"],30)
             self.assertEqual(output["contacts"],9)
             self.assertEqual(verify(a,expected_source_sha=SOURCE)["contacts"],9)
-            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],14)
+            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],16)
             produce(b,source_sha=SOURCE)
             self.assertEqual({p.name:p.read_bytes() for p in a.iterdir()},
                              {p.name:p.read_bytes() for p in b.iterdir()})
