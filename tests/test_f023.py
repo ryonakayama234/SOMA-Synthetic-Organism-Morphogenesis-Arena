@@ -124,6 +124,37 @@ class F023BoundedActiveEncounter(unittest.TestCase):
             ):
                 gate_saved_conservation(scenes,frames,actions,forged,audit)
 
+    def test_coherent_archived_contact_must_match_frozen_actuation_and_flight(self):
+        # This false contact balances both momentum and energy internally,
+        # unlike the prior post-only forgeries. Its energy exceeds the
+        # unchanged actual Q15 trajectory's energy by roughly 1e-5 J.
+        scenes=reference_roster()
+        frames=[];actions=[];events=[];audits=[]
+        for scene in scenes:
+            f,a,e,_,audit=expected_scene(scene)
+            frames.extend(f);actions.extend(a);events.extend(e);audits.append(audit)
+        audit={"world_results":audits,
+               "momentum_residual_kg_mps":max(x["momentum_residual_kg_mps"] for x in audits),
+               "energy_residual_j":max(abs(x["energy_residual_j"]) for x in audits),
+               "overlap_bound_m":max(x["overlap_bound_m"] for x in audits)}
+        forged=[dict(e) for e in events]
+        q15=forged[-1]
+        q15["pre_vx_a_mps"]=100.00000005
+        q15["pre_vx_b_mps"]=-100.00000005
+        q15["post_vx_a_mps"]=-100.00000005
+        q15["post_vx_b_mps"]=100.00000005
+        q15["impulse_ns"]=200.0000001
+        self.assertAlmostEqual(
+            q15["pre_vx_a_mps"]+q15["pre_vx_b_mps"],
+            q15["post_vx_a_mps"]+q15["post_vx_b_mps"],delta=1e-12)
+        self.assertAlmostEqual(
+            q15["pre_vx_a_mps"]**2+q15["pre_vx_b_mps"]**2,
+            q15["post_vx_a_mps"]**2+q15["post_vx_b_mps"]**2,delta=1e-9)
+        with self.assertRaisesRegex(
+            AssertionError,"archived contact pre-state disconnected"
+        ):
+            gate_saved_conservation(scenes,frames,actions,forged,audit)
+
     def test_bad_initial_conditions_and_private_balance(self):
         base=grid()[0]
         for patch in (
@@ -151,7 +182,7 @@ class F023BoundedActiveEncounter(unittest.TestCase):
             self.assertEqual(output["ledgers"],30)
             self.assertEqual(output["contacts"],9)
             self.assertEqual(verify(a,expected_source_sha=SOURCE)["contacts"],9)
-            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],18)
+            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],19)
             produce(b,source_sha=SOURCE)
             self.assertEqual({p.name:p.read_bytes() for p in a.iterdir()},
                              {p.name:p.read_bytes() for p in b.iterdir()})
