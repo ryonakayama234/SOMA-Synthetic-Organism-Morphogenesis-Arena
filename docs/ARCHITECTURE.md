@@ -1450,3 +1450,7 @@ flowchart LR
  R -. "FUTURE separate V00x UI" .-> UI["Arena / Cells / Timeline / Evidence"]
  F -. "NOT PRESENT / forbidden world-truth policy feed" .-> POLICY["Local policy / learning"]
 ~~~
+
+
+### F023 verifier data-trust boundary — Codex P1 follow-up (2026-10-26)
+Archive verification has **two distinct comparison contracts**: immutable researcher inputs (`scenario.json` entire frozen roster; `actions.jsonl` charge-defining command/applied/ground impulses and pre-action velocity) → **exact structural/type/numeric equality**; derived flight/contact/work/audit floats → protocol-bounded approximate physical oracle. Rehashing alone is never a physics verification. The fix is isolated to F023 evidence audit and attacks; the pre-registered physics, F022 solver and future UI ownership stay unchanged. Verification pending exact last-head CI and fresh Codex review.
