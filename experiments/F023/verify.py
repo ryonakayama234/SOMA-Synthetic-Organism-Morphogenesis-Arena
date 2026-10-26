@@ -175,6 +175,104 @@ def expected_scene(scene):
     return frames,action,events,ledger,report
 
 
+
+def gate_saved_conservation(frozen, states, actions, contacts, audit):
+    """Conservation gates on ARCHIVED values, not independent-oracle predictions.
+
+    The independent predicted trajectory is compared separately with same().
+    Its relative 1e-9 per-scalar error envelope cannot replace absolute
+    conservation of actual saved momentum and energy, especially at Q15
+    high speed: a 5e-8 velocity forgery is individually within that envelope
+    but violates the conserved total by 5e-8 kg m/s.
+    """
+    if len(states) != 9*len(frozen) or len(actions) != 2*len(frozen):
+        raise AssertionError("saved conservation: cardinality")
+    event_by_world = {}
+    for event in contacts:
+        key = event["world_id"]
+        if key in event_by_world:
+            raise AssertionError("saved conservation: multiple collisions")
+        event_by_world[key] = event
+    max_p = max_e = max_overlap = 0.
+    if len(audit["world_results"]) != len(frozen):
+        raise AssertionError("saved conservation: audit cardinality")
+    for idx, scene in enumerate(frozen):
+        world = scene["world_id"]
+        frames = states[9*idx:9*(idx+1)]
+        own_actions = actions[2*idx:2*(idx+1)]
+        recorded = audit["world_results"][idx]
+        if any(r["world_id"] != world for r in frames+own_actions):
+            raise AssertionError(f"{world}: misordered saved evidence")
+        if recorded["world_id"] != world:
+            raise AssertionError(f"{world}: misordered saved audit")
+        event = event_by_world.get(world)
+        if event is not None:
+            dvx = event["pre_vx_b_mps"]-event["pre_vx_a_mps"]
+            dvy = event["pre_vy_b_mps"]-event["pre_vy_a_mps"]
+            approach = dvx*event["normal_x"] + dvy*event["normal_y"]
+            full_loss = .25*(1.-scene["restitution"]**2)*approach**2
+            overlap = max(0.,1.-math.hypot(
+                event["pre_x_b_m"]-event["pre_x_a_m"],
+                event["pre_y_b_m"]-event["pre_y_a_m"]))
+        else:
+            full_loss = overlap = 0.
+        before_vx = scene["vx_a_mps"]+scene["vx_b_mps"]
+        before_vy = scene["vy_a_mps"]+scene["vy_b_mps"]
+        initial_ke = .5*sum(scene[f"v{axis}_{c}_mps"]**2
+                            for c in ("a","b") for axis in ("x","y"))
+        applied_work = 0.
+        for a in own_actions:
+            signed,_ = _work_charge(a["pre_vx_mps"],a["pre_vy_mps"],
+                                    a["applied_x_ns"],a["applied_y_ns"])
+            if abs(signed-a["applied_work_j"]) > TOL:
+                raise AssertionError(f"{world}: saved action work inconsistent")
+            applied_work += signed
+        px_ground = sum(a["ground_x_ns"] for a in own_actions)
+        py_ground = sum(a["ground_y_ns"] for a in own_actions)
+        final_e = final_p = 0.
+        for f in frames:
+            kinetic = .5*sum(f[f"v{axis}_{c}_mps"]**2
+                             for c in ("a","b") for axis in ("x","y"))
+            if abs(f["total_ke_j"]-kinetic) > TOL:
+                raise AssertionError(f"{world}: saved frame KE inconsistent")
+            px = (f["vx_a_mps"]+f["vx_b_mps"]-before_vx+px_ground)
+            py = (f["vy_a_mps"]+f["vy_b_mps"]-before_vy+py_ground)
+            p_res = max(abs(px),abs(py))
+            loss_so_far = (full_loss if event is not None
+                           and f["time_s"]+1e-12 >= event["time_s"] else 0.)
+            e_res = kinetic-initial_ke-applied_work+loss_so_far
+            if p_res > TOL or abs(e_res) > TOL:
+                raise AssertionError(f"{world}: saved physical conservation broken"
+                                     f" at sample {f['sample_index']}:"
+                                     f" momentum={p_res}, energy={e_res}")
+            final_e,final_p = e_res,p_res
+        checks = {
+            "initial_ke_j":initial_ke,
+            "final_ke_j":.5*sum(frames[-1][f"v{axis}_{c}_mps"]**2
+                                for c in ("a","b") for axis in ("x","y")),
+            "applied_work_j":applied_work,
+            "collision_loss_j":full_loss,
+            "momentum_residual_kg_mps":final_p,
+            "energy_residual_j":final_e,
+            "overlap_bound_m":overlap,
+        }
+        for field,observed in checks.items():
+            if abs(recorded[field]-observed)>TOL:
+                raise AssertionError(f"{world}: stored audit disagrees with saved {field}")
+        if overlap > TOL:
+            raise AssertionError(f"{world}: saved collision overlap")
+        max_p = max(max_p,final_p)
+        max_e = max(max_e,abs(final_e))
+        max_overlap = max(max_overlap,overlap)
+    for field,observed in (
+        ("momentum_residual_kg_mps",max_p),
+        ("energy_residual_j",max_e),
+        ("overlap_bound_m",max_overlap),
+    ):
+        if abs(audit[field]-observed)>TOL:
+            raise AssertionError(f"saved audit aggregate disagrees: {field}")
+
+
 def verify(root: Path, *, expected_source_sha=None):
     root=Path(root)
     names = {
@@ -216,13 +314,16 @@ def verify(root: Path, *, expected_source_sha=None):
         checks.append(report)
     assert len(frozen)==15 and len(predicted_frames)==135
     assert len(predicted_actions)==len(predicted_ledgers)==30
-    same(read_lines(root/"states.jsonl"),predicted_frames,"world states")
+    saved_states = read_lines(root/"states.jsonl")
     saved_actions = read_lines(root/"actions.jsonl")
+    saved_contacts = read_lines(root/"contacts.jsonl")
+    saved_ledgers = read_lines(root/"ledger.jsonl")
     check_action_inputs_exact(saved_actions, predicted_actions)
-    # Derived floating-point work, post-action values and TOI remain tolerant.
+    # Independent predictions still check each derived physical observation.
+    same(saved_states, predicted_frames, "world states")
     same(saved_actions, predicted_actions, "private commands")
-    same(read_lines(root/"contacts.jsonl"),predicted_events,"contact events")
-    same(read_lines(root/"ledger.jsonl"),predicted_ledgers,"private ledger")
+    same(saved_contacts, predicted_events, "contact events")
+    same(saved_ledgers, predicted_ledgers, "private ledger")
     audit=read_one(root/"audit.json")
     expected_audit = dict(schema_version=SCHEMA,world_results=checks,
                           invalid_probe_results={f"J{i:02d}":"rejected" for i in range(1,6)},
@@ -230,6 +331,8 @@ def verify(root: Path, *, expected_source_sha=None):
                           energy_residual_j=max(abs(w["energy_residual_j"]) for w in checks),
                           overlap_bound_m=max(w["overlap_bound_m"] for w in checks))
     same(audit,expected_audit,"independent audit")
+    # Explicitly gate the ARCHIVED evidence, not just predicted clean worlds.
+    gate_saved_conservation(frozen,saved_states,saved_actions,saved_contacts,audit)
     if any(abs(w["energy_residual_j"])>TOL or w["momentum_residual_kg_mps"]>TOL or
            w["overlap_bound_m"]>TOL for w in checks):
         raise AssertionError("physics residual gate")
