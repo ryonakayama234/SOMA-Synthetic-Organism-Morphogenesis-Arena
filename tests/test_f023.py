@@ -103,6 +103,27 @@ class F023BoundedActiveEncounter(unittest.TestCase):
             ):
                 gate_saved_conservation(scenes,tampered,actions,events,audit)
 
+    def test_saved_contact_conservation_is_independent_of_frames(self):
+        scenes=reference_roster()
+        frames=[];actions=[];events=[];audits=[]
+        for scene in scenes:
+            f,a,e,_,audit=expected_scene(scene)
+            frames.extend(f);actions.extend(a);events.extend(e);audits.append(audit)
+        audit={"world_results":audits,
+               "momentum_residual_kg_mps":max(x["momentum_residual_kg_mps"] for x in audits),
+               "energy_residual_j":max(abs(x["energy_residual_j"]) for x in audits),
+               "overlap_bound_m":max(x["overlap_bound_m"] for x in audits)}
+        gate_saved_conservation(scenes,frames,actions,events,audit)
+        for coupled in (False,True):
+            forged=[dict(e) for e in events]
+            forged[-1]["post_vx_a_mps"]+=5e-8
+            if coupled:
+                forged[-1]["post_vx_b_mps"]-=5e-8
+            with self.subTest(compensated_momentum=coupled),self.assertRaisesRegex(
+                AssertionError,"archived contact conservation broken"
+            ):
+                gate_saved_conservation(scenes,frames,actions,forged,audit)
+
     def test_bad_initial_conditions_and_private_balance(self):
         base=grid()[0]
         for patch in (
@@ -130,7 +151,7 @@ class F023BoundedActiveEncounter(unittest.TestCase):
             self.assertEqual(output["ledgers"],30)
             self.assertEqual(output["contacts"],9)
             self.assertEqual(verify(a,expected_source_sha=SOURCE)["contacts"],9)
-            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],16)
+            self.assertEqual(attack(a)["rehash_semantic_attacks_rejected"],18)
             produce(b,source_sha=SOURCE)
             self.assertEqual({p.name:p.read_bytes() for p in a.iterdir()},
                              {p.name:p.read_bytes() for p in b.iterdir()})
