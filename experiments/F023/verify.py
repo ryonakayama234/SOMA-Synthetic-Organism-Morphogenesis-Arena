@@ -256,6 +256,55 @@ def gate_saved_conservation(frozen, states, actions, contacts, audit):
             applied_work += signed
         px_ground = sum(a["ground_x_ns"] for a in own_actions)
         py_ground = sum(a["ground_y_ns"] for a in own_actions)
+        # Codex P2: a colliding event can conserve internally while being
+        # disconnected from the actual archived trajectory. Anchor the
+        # event's incoming state to frozen initial velocities + strictly
+        # verified actuator impulses, then anchor its outgoing state to the
+        # sampled saved flight after TOI. Both use absolute SI tolerances,
+        # never the speed-scaled F022 field comparison.
+        post_actuation = {}
+        for cell_index, cell in enumerate(("a", "b")):
+            for axis in ("x", "y"):
+                field = f"v{axis}_{cell}_mps"
+                anchor = (scene[field] +
+                          own_actions[cell_index][f"applied_{axis}_ns"])
+                post_actuation[(cell, axis)] = anchor
+                if abs(own_actions[cell_index][f"post_v{axis}_mps"]
+                       - anchor) > TOL:
+                    raise AssertionError(
+                        f"{world}: archived actuation output disconnected")
+                if event is not None and abs(
+                    event[f"pre_{field}"] - anchor
+                ) > TOL:
+                    raise AssertionError(
+                        f"{world}: archived contact pre-state disconnected"
+                        " from frozen actuation")
+        if event is not None:
+            incoming_ke = .5*sum(v*v for v in post_actuation.values())
+            if abs(event_pre_ke-incoming_ke) > TOL:
+                raise AssertionError(
+                    f"{world}: archived contact pre-energy disconnected")
+            first_after = next(
+                (row for row in frames
+                 if row["time_s"]+1e-12 >= event["time_s"]), None)
+            if first_after is None:
+                raise AssertionError(
+                    f"{world}: contact has no saved post-event sample")
+            outgoing_ke = .5*sum(
+                first_after[f"v{axis}_{cell}_mps"]**2
+                for cell in ("a","b") for axis in ("x","y"))
+            if abs(event_post_ke-outgoing_ke) > TOL:
+                raise AssertionError(
+                    f"{world}: archived contact post-energy disconnected")
+            for cell in ("a","b"):
+                for axis in ("x","y"):
+                    if abs(
+                        event[f"post_v{axis}_{cell}_mps"] -
+                        first_after[f"v{axis}_{cell}_mps"]
+                    ) > TOL:
+                        raise AssertionError(
+                            f"{world}: archived contact post-state disconnected"
+                            " from saved flight")
         final_e = final_p = 0.
         for f in frames:
             kinetic = .5*sum(f[f"v{axis}_{c}_mps"]**2
