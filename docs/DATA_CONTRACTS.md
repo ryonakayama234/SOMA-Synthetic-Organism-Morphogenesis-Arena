@@ -1240,3 +1240,126 @@ flowchart LR
 
 ### F023.v1 frozen archive status — 2026-10-25, NOT YET EMITTED
 The earlier F023 **candidate** table describes future panel ownership. Exact source-bound archive keys and scene roster are now preregistered at [FROZEN_V1](../experiments/F023/FROZEN_V1.md) commit `76dcc1db7ae12737705da06c155933d0a8251853`; its `f023.archive.v1` fields supersede candidates where they differ. No actual F023 files or F023 UI at freeze time; do not conflate private budgets with F022.v1 passive archive.
+
+
+---
+
+## V002 Counterfactual Observatory — `v002.view.v1` **PROPOSED / UNFROZEN**, 2026-10-26
+
+[Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86) / [SPEC](../topics/V002-counterfactual-observatory/SPEC.md) / [PLAN](../experiments/V002/PLAN.md) / [system diagram](ARCHITECTURE.md) / [UNEXECUTED findings](../findings/V002-validation.md). **No view contract is implemented, frozen or adopted here.** The exact-field shape must be reviewed and frozen under an immutable design SHA before writing code/primary display artifacts. Changing a panel's responsibility or adding panels requires new approved version, not an informal UI edit.
+
+### Trusted source and archive differentiation
+| Accepted source? | Archive schema | Required immutable files | Missing-field semantics |
+| --- | --- | --- | --- |
+| F022 **yes**, limited passive 2D instrument | `f022.archive.v1` | `scenario.json`, `states.jsonl`, `contacts.jsonl`, `audit.json`, `manifest.json` | Actions, motor work, private energy/ledger **NOT MODELED**, never numeric zero |
+| F023 **no until separately adopted and main merged** | `f023.archive.v1` | all F022-shaped files **plus** `actions.jsonl`, `ledger.jsonl` | F023 t=0 privately funded impulse/candidate/decision and signed work, **only after source approval** |
+| V001 — separate unmerged 1D | `v001.frame.v1` draft | not a V002 accepted source | reject 1D→2D reinterpretation |
+
+An archived `manifest.json` that merely hashes its own forged evidence is not sufficient. Each input bundle must pass the respective **source-independent from-disk verifier**, with **expected immutable source SHA and frozen-protocol SHA supplied by a trusted checked-out repository / review record**; the viewer cannot choose a trust anchor from an input supplied by the adversary. Log expected and actual identifiers, verifier/contract version, file digests, and refusal reason. A source that has no valid independent verifier or failed/frozen-unclear status is **not viewable as verified evidence**.
+
+### Proposed typed `v002.view.v1` shape (read-only derived projection)
+These conceptual keys are candidate canonical serialization fields, not source schema modifications:
+
+~~~text
+ViewBundle {
+  schema_version: "v002.view.v1"                    # proposed, not frozen
+  status: "verified_projection"                     # only after independent PASS
+  contract_id: "V002"
+  worlds: [WorldProjection, WorldProjection]         # exactly two, ordered left/right
+  joint_sample_times_s: number[]                    # exact common archived sample times
+  timeline: TimelinePointer[]                       # ordered, event times are not frames
+  parameter_diff: InputDiff[]                       # full source scenario input map
+  pair_inference: "single_field" | "multi_field" | "identical"
+  evidence: VerificationSummary
+}
+WorldProjection {
+  side: "left" | "right"
+  source_schema_version: "f022.archive.v1" | "f023.archive.v1"
+  source_id: "F022" | "F023"
+  world_id: string
+  trusted_source_sha: string                         # required external checkout identity
+  frozen_protocol_sha: string
+  manifest_sha256: string
+  samples: ReplaySample[]                            # only exact archived t-grid samples
+  events: ExactEvent[]                               # exact contact and conditional t=0 motor
+  cell_model: { kind: "not_modeled" } | { kind: "f023_private"; cells: CellPrivate[] }
+}
+ReplaySample {
+  time_s: number                                     # identical numeric source value
+  source_row: integer                                # zero-based file row pointer
+  phase: "post"                                       # F022/F023 saved sample semantic
+  xy_velocity_ke: object                             # full preserved source row, schema-checked
+}
+ExactEvent {
+  time_s: number
+  kind: "contact" | "grazing_zero_impulse" | "motor_action"
+  phase: "pre" | "post" | "decision"                    # only if backed by that record
+  source_file: "contacts.jsonl" | "actions.jsonl"
+  source_row: integer
+  payload: object                                    # source-record fields preserved, not inferred
+}
+CellPrivate {
+  cell_id: "A" | "B"
+  actions: object[]                                  # exact source fields from actions.jsonl
+  balances: object[]                                 # exact source fields from ledger.jsonl
+}
+TimelinePointer {
+  time_s: number
+  source_side: "left" | "right" | "both"
+  kind: "sample" | "event"
+  record_ref: string | null
+  other_side_state: "exact_archived" | "NO_RECORDED_SNAPSHOT_AT_TIME"
+}
+InputDiff {
+  field_path: string
+  left_present: boolean
+  right_present: boolean
+  left_value: any
+  right_value: any
+  equal: boolean
+}
+VerificationSummary {
+  verified_at_source_sha: string
+  verdict: "pass"                                    # fails refuse whole bundle
+  verifier_name_and_version: string
+  supported_schema: string
+  evidence_files_sha256: object
+  audit_ref: string
+  trusted_expected_sha_source: string
+}
+~~~
+
+**Type/canonicalization requirements before freeze:** JSON finite numeric values only (never NaN, Inf, bool for number), exact archival number round-trip, integer indices >=0, no duplicate world IDs per source bundle, stable key order, stable sample/event ordering and source-specific discriminated types. `any`/`object` above are **review placeholders**, not a license for an unvalidated UI contract: before implementation replace with the exact F022/F023 pinned record shapes and rejected-unknown-key rules. `verified_at_source_sha` means checked **against trusted source**; it is *not* a timestamp or signature. Viewer shall never generate or overwrite input source archives. `ViewBundle` output is a derived research-only artifact, not additional simulation evidence.
+
+### Exact timing and visual status contract
+- A shared time cursor on **`joint_sample_times_s`** can draw both world samples. Contact TOI is not added to `joint_sample_times_s` just because it appears as an event marker.
+- Selecting an archived exact contact event shows that **world's** pre/post event data; the other world is **NO_RECORDED_SNAPSHOT_AT_TIME** unless an equally timed exact record exists. No extrapolation/interpolation to synthesize the other's XY state.
+- On sample/event coincidence, event pre/post remains inspectable and source's sample corresponds to **post-event**. F023 action `t=0` precedes its `t=0` post-action sample, while F022 has no motor actions. F022 C13 contact t=.095s must be visible even though the first next sample is .25s.
+- A miss gives **zero contact rows**, not a fake contact at null time. Zero-impulse graze is an event distinct from miss. A missing `actions.jsonl` in F022 becomes `{kind:"not_modeled"}`, never `0µJ`.
+- `parameter_diff` compares **every input physics and initial-state field** using immutable scenario records (excluding only identifiers explicitly designated as metadata in the eventual frozen contract). Multiple changed fields prohibit a UI “one variable caused this” badge. View cannot compute or claim agent rewards/learning success.
+
+### Source → derived data → panel wiring
+~~~mermaid
+flowchart LR
+  RAW["verified F022 archive / optionally admitted F023 archive"] --> V["source-independent archive verifier + trusted SHA"]
+  V -->|PASS only| AD["V002 reader-only projection / fixed v1 candidate"]
+  AD --> SAMPLE["ReplaySample[] (samples)"]
+  AD --> EVENT["ExactEvent[] (events)"]
+  AD --> BAL["CellPrivate or not_modelled"]
+  AD --> PROV["VerificationSummary and InputDiff[]"]
+  SAMPLE --> ARENA["Arena x2"]
+  EVENT --> ARENA
+  EVENT --> TIME["Timeline"]
+  SAMPLE --> TIME
+  BAL --> CELLS["Cells"]
+  PROV --> SETUP["Setup"]
+  PROV --> EVID["Evidence"]
+  PROV --> SYS["System/Data"]
+  AD -. "FORBIDDEN" .-> POLICY["LocalObservation / LocalPolicy"]
+  AD -. "FORBIDDEN" .-> SIM["Source simulation or archive writes"]
+~~~
+
+### Rejection, version change and UI contract gate
+Projection fails **before publishing** on unadopted source, unsupported or mismatched schema, absent/forged/misordered source record, missing trusted source identity, physical/accounting oracle failure, private A/B money contradiction, inconsistent field diff, collision time changed, invalid float, illegitimate fabricated other-world sample or an existing output path. Failure emits a **diagnostic outside the canonical successful ViewBundle**, never a partly trusted UI with invented zeros. `status="verified_projection"` is success-only.
+
+Strictly existing six responsibilities: Setup owns selection/diff; Arena owns two XY scenes; Cells owns per-cell private action view; Timeline owns pointer/ordering; Evidence owns verification; System/Data owns schema/access display. **No change of ownership, new panel, agent-feedback API or source format without a revised explicit reviewed contract first.** Visual styling inside responsibilities is permissible and never a reason to relax verification. F023 path remains disabled until its own admissibility requirements are demonstrated.
