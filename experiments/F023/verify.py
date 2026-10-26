@@ -15,6 +15,47 @@ from experiments.F022.verify import (
     canonical, oracle as independent_contact_oracle, read_lines, read_one, same, sha,
 )
 
+
+
+def strictly_same(actual, expected, path="frozen"):
+    """Frozen *inputs* require exact values/types, not physics tolerances.
+
+    A 1e-10 N*s command edit can change exact decimal integer-µJ billing,
+    so applying F022's derived-trajectory 1e-9 tolerance here is unsound.
+    """
+    if type(actual) is not type(expected):
+        raise AssertionError(f"{path}: input type differs")
+    if isinstance(expected, dict):
+        if set(actual) != set(expected):
+            raise AssertionError(f"{path}: frozen field set differs")
+        for key in expected:
+            strictly_same(actual[key], expected[key], f"{path}.{key}")
+    elif isinstance(expected, list):
+        if len(actual) != len(expected):
+            raise AssertionError(f"{path}: frozen row count differs")
+        for index, (received, frozen) in enumerate(zip(actual, expected)):
+            strictly_same(received, frozen, f"{path}[{index}]")
+    elif actual != expected:
+        raise AssertionError(f"{path}: frozen value differs ({actual!r} != {expected!r})")
+
+
+# Action fields directly controlling signed work, charge, ground impulse and
+# debit decision are inputs/discrete interventions, not noisy TOI estimates.
+EXACT_ACTION_FIELDS = (
+    "command_x_ns", "command_y_ns", "applied_x_ns", "applied_y_ns",
+    "ground_x_ns", "ground_y_ns", "pre_vx_mps", "pre_vy_mps",
+)
+
+
+def check_action_inputs_exact(saved, expected):
+    if len(saved) != len(expected):
+        raise AssertionError("frozen action cardinality differs")
+    for index, (row, original) in enumerate(zip(saved, expected)):
+        for field in EXACT_ACTION_FIELDS:
+            if field not in row:
+                raise AssertionError(f"actions[{index}].{field}: missing billing input")
+            strictly_same(row[field], original[field], f"actions[{index}].{field}")
+
 SCHEMA = "f023.archive.v1"
 FREEZE = "76dcc1db7ae12737705da06c155933d0a8251853"
 TOL = 1e-9
@@ -161,8 +202,10 @@ def verify(root: Path, *, expected_source_sha=None):
         if manifest[key] != sha(root/file):
             raise AssertionError(f"{file}: SHA mismatch")
     frozen = reference_roster()
-    same(read_one(root/"scenario.json"),
-         {"schema_version":SCHEMA,"worlds":frozen},"preregistered scenario")
+    # Frozen configuration is a contract, NOT an inexact simulation result.
+    # Example: Q02 .0200000001 instead of .02 costs 201, not 200, microjoules.
+    strictly_same(read_one(root/"scenario.json"),
+                  {"schema_version":SCHEMA,"worlds":frozen},"preregistered scenario")
     predicted_frames,predicted_actions,predicted_events,predicted_ledgers,checks = [],[],[],[],[]
     for s in frozen:
         f,a,e,l,report=expected_scene(s)
@@ -174,7 +217,10 @@ def verify(root: Path, *, expected_source_sha=None):
     assert len(frozen)==15 and len(predicted_frames)==135
     assert len(predicted_actions)==len(predicted_ledgers)==30
     same(read_lines(root/"states.jsonl"),predicted_frames,"world states")
-    same(read_lines(root/"actions.jsonl"),predicted_actions,"private commands")
+    saved_actions = read_lines(root/"actions.jsonl")
+    check_action_inputs_exact(saved_actions, predicted_actions)
+    # Derived floating-point work, post-action values and TOI remain tolerant.
+    same(saved_actions, predicted_actions, "private commands")
     same(read_lines(root/"contacts.jsonl"),predicted_events,"contact events")
     same(read_lines(root/"ledger.jsonl"),predicted_ledgers,"private ledger")
     audit=read_one(root/"audit.json")
