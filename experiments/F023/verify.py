@@ -211,6 +211,33 @@ def gate_saved_conservation(frozen, states, actions, contacts, audit):
             dvy = event["pre_vy_b_mps"]-event["pre_vy_a_mps"]
             approach = dvx*event["normal_x"] + dvy*event["normal_y"]
             full_loss = .25*(1.-scene["restitution"]**2)*approach**2
+            # Codex P2: an archived collision event is itself physical
+            # evidence. Check its actual pre/post velocities, not solely
+            # nearby time-grid frames or per-field approximate predictions.
+            event_momentum = max(abs(
+                event[f"post_v{axis}_a_mps"]+event[f"post_v{axis}_b_mps"]
+                -event[f"pre_v{axis}_a_mps"]-event[f"pre_v{axis}_b_mps"])
+                for axis in ("x","y"))
+            event_pre_ke = .5*sum(event[f"pre_v{axis}_{c}_mps"]**2
+                                   for c in ("a","b") for axis in ("x","y"))
+            event_post_ke = .5*sum(event[f"post_v{axis}_{c}_mps"]**2
+                                    for c in ("a","b") for axis in ("x","y"))
+            event_energy = event_post_ke-event_pre_ke+full_loss
+            if event_momentum > TOL or abs(event_energy) > TOL:
+                raise AssertionError(
+                    f"{world}: archived contact conservation broken:"
+                    f" momentum={event_momentum}, energy={event_energy}")
+            # The per-cell pre/post jump must be the recorded normal
+            # impulse. Both disks have immutable unit mass in F023.v1.
+            for axis, component in (("x","normal_x"),("y","normal_y")):
+                for cell, sign in (("a",-1),("b",1)):
+                    actual_jump = (event[f"post_v{axis}_{cell}_mps"]
+                                   -event[f"pre_v{axis}_{cell}_mps"])
+                    expected_jump = sign*event["impulse_ns"]*event[component]
+                    if abs(actual_jump-expected_jump)>TOL:
+                        raise AssertionError(
+                            f"{world}: archived contact impulse jump broken"
+                            f" for {cell}.{axis}")
             overlap = max(0.,1.-math.hypot(
                 event["pre_x_b_m"]-event["pre_x_a_m"],
                 event["pre_y_b_m"]-event["pre_y_a_m"]))
