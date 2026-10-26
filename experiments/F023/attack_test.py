@@ -29,6 +29,17 @@ def attack(root: Path):
         ("own_charge", "actions.jsonl", lambda x:x[2].__setitem__("charge_uj",201)),
         ("private_balance", "ledger.jsonl", lambda x:x[2].__setitem__("balance_after_uj",199)),
         ("fake_scenario", "scenario.json", lambda x:x["worlds"][1].__setitem__("command_ay_ns",.03)),
+        # Codex P1 regression: a difference below F022 float tolerance
+        # changes exact decimal billing from 200 to 201 microjoules.
+        ("fake_boundary_200_to_201_uj", "scenario.json",
+         lambda x:x["worlds"][1].__setitem__("command_ay_ns",.0200000001)),
+        ("fake_nearby_initial_velocity_billing", "scenario.json",
+         lambda x:x["worlds"][1].__setitem__("vy_a_mps",1e-10)),
+        ("fake_tiny_action_command", "actions.jsonl",
+         lambda x:x[2].__setitem__("command_y_ns",.0200000001)),
+        ("fake_tiny_applied_impulse", "actions.jsonl",
+         lambda x:x[2].__setitem__("applied_y_ns",.0200000001)),
+
         ("wrong_audit", "audit.json", lambda x:x["world_results"][1].__setitem__("contact_count",0)),
         ("wrong_freeze", "manifest.json", lambda x:x.__setitem__("frozen_protocol_commit_sha","0"*40)),
     ]
