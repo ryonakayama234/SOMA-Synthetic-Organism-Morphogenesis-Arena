@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/blob/design/V002-counterfactual-observatory-20261026/contracts/v002.view.v1.schema.json",
+  "$id": "https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/blob/main/contracts/v002.view.v1.schema.json",
   "title": "V002 view-only versioned record contract — DRAFT until independent review and immutable design freeze",
   "type": "object",
   "properties": {
@@ -79,7 +79,14 @@
           "minItems": 2,
           "maxItems": 2,
           "items": {
-            "$ref": "#/$defs/VerifiedSource"
+            "oneOf": [
+              {
+                "$ref": "#/$defs/VerifiedF022Source"
+              },
+              {
+                "$ref": "#/$defs/VerifiedF023Source"
+              }
+            ]
           }
         },
         "archive_semantics_oracle": {
@@ -109,7 +116,7 @@
     "evidence"
   ],
   "additionalProperties": false,
-  "$comment": "This JSON Schema constrains view structure only; it does not confer archive trust, physical conservation or causal inference. Must also run source-independent F022/F023 verifiers with externally anchored expected SHAs and validate row indices/order, per-world world_id cross-record consistency, exact timestamps, per-world field-diff completeness, and immutable archive bits. V002 is NOT IMPLEMENTED or ADOPTED.",
+  "$comment": "This JSON Schema constrains view structure only; it does not confer archive trust, physical conservation or causal inference. Must also run source-independent F022/F023 verifiers with externally anchored expected SHAs and validate row indices/order, per-world world_id cross-record consistency, exact timestamps, per-world field-diff completeness, and immutable archive bits. V002 is NOT IMPLEMENTED or ADOPTED. F023 verifier must list 7 archive file hashes; F022 lists 5. Evidence source type must match both projected world types.",
   "$defs": {
     "F022Scenario": {
       "type": "object",
@@ -795,78 +802,6 @@
       ],
       "additionalProperties": false
     },
-    "VerifiedSource": {
-      "type": "object",
-      "properties": {
-        "side": {
-          "type": "string",
-          "enum": [
-            "left",
-            "right"
-          ]
-        },
-        "expected_source_sha": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{40}$"
-        },
-        "expected_protocol_sha": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{40}$"
-        },
-        "verifier": {
-          "type": "string"
-        },
-        "verdict": {
-          "const": "pass"
-        },
-        "file_hashes": {
-          "type": "object",
-          "properties": {
-            "scenario_sha256": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{64}$"
-            },
-            "states_sha256": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{64}$"
-            },
-            "contacts_sha256": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{64}$"
-            },
-            "audit_sha256": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{64}$"
-            },
-            "manifest_sha256": {
-              "type": "string",
-              "pattern": "^[0-9a-f]{64}$"
-            }
-          },
-          "required": [
-            "scenario_sha256",
-            "states_sha256",
-            "contacts_sha256",
-            "audit_sha256",
-            "manifest_sha256"
-          ],
-          "additionalProperties": false
-        },
-        "trusted_anchor_ref": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "side",
-        "expected_source_sha",
-        "expected_protocol_sha",
-        "verifier",
-        "verdict",
-        "file_hashes",
-        "trusted_anchor_ref"
-      ],
-      "additionalProperties": false
-    },
     "InputDiff": {
       "type": "object",
       "properties": {
@@ -970,6 +905,246 @@
         "source_row"
       ],
       "additionalProperties": false
+    },
+    "VerifiedF022Source": {
+      "type": "object",
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "expected_source_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "expected_protocol_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "verifier": {
+          "type": "string"
+        },
+        "verdict": {
+          "const": "pass"
+        },
+        "trusted_anchor_ref": {
+          "type": "string"
+        },
+        "source_schema_version": {
+          "const": "f022.archive.v1"
+        },
+        "file_hashes": {
+          "type": "object",
+          "properties": {
+            "scenario_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "states_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "contacts_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "audit_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "manifest_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "scenario_sha256",
+            "states_sha256",
+            "contacts_sha256",
+            "audit_sha256",
+            "manifest_sha256"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "side",
+        "expected_source_sha",
+        "expected_protocol_sha",
+        "verifier",
+        "verdict",
+        "trusted_anchor_ref",
+        "source_schema_version",
+        "file_hashes"
+      ],
+      "additionalProperties": false
+    },
+    "VerifiedF023Source": {
+      "type": "object",
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "expected_source_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "expected_protocol_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "verifier": {
+          "type": "string"
+        },
+        "verdict": {
+          "const": "pass"
+        },
+        "trusted_anchor_ref": {
+          "type": "string"
+        },
+        "source_schema_version": {
+          "const": "f023.archive.v1"
+        },
+        "file_hashes": {
+          "type": "object",
+          "properties": {
+            "scenario_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "states_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "contacts_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "audit_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "manifest_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "actions_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "ledger_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "scenario_sha256",
+            "states_sha256",
+            "contacts_sha256",
+            "audit_sha256",
+            "manifest_sha256",
+            "actions_sha256",
+            "ledger_sha256"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "side",
+        "expected_source_sha",
+        "expected_protocol_sha",
+        "verifier",
+        "verdict",
+        "trusted_anchor_ref",
+        "source_schema_version",
+        "file_hashes"
+      ],
+      "additionalProperties": false
     }
-  }
+  },
+  "allOf": [
+    {
+      "oneOf": [
+        {
+          "properties": {
+            "worlds": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "$ref": "#/$defs/F022World"
+                },
+                {
+                  "$ref": "#/$defs/F022World"
+                }
+              ],
+              "items": false
+            },
+            "evidence": {
+              "properties": {
+                "sources": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "$ref": "#/$defs/VerifiedF022Source"
+                    },
+                    {
+                      "$ref": "#/$defs/VerifiedF022Source"
+                    }
+                  ],
+                  "items": false
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "worlds": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "$ref": "#/$defs/F023World"
+                },
+                {
+                  "$ref": "#/$defs/F023World"
+                }
+              ],
+              "items": false
+            },
+            "evidence": {
+              "properties": {
+                "sources": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "$ref": "#/$defs/VerifiedF023Source"
+                    },
+                    {
+                      "$ref": "#/$defs/VerifiedF023Source"
+                    }
+                  ],
+                  "items": false
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
 }

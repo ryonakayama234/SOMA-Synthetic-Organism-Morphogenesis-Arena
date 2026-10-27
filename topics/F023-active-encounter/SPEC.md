@@ -2,13 +2,13 @@
 id: F023
 title: Active Encounter — 2D私有駆動による出会いの因果可能性
 kind: feature_specification
-status: SELECTED_DESIGN_UNFROZEN_UNEXECUTED
+status: IMPLEMENTED_CANDIDATE_PR_HEAD_QUALIFIED_MAIN_PENDING
 updated: 2026-10-25
 issue: 81
 related: [PROJECT, RESEARCH-AGENDA, F002, F005, F021, F022, ARCHITECTURE, DATA]
 ---
 # F023 — Active Encounter（設計案・観測前）
-**Status: selected for DESIGN, UNFROZEN. No F023 source code, primary simulator observations, CI, or adoption.**
+**CURRENT STATUS (2026-10-27): F023.v1 immutable design frozen at `76dcc1db`; implementation PR #83 source head `0c992e8` has tested 15 source-bound worlds, 135 samples, 30 separately billed A/B actions+ledgers, 9 contacts/6 misses, 19 rehashed attacks rejected, 46/46 PR workflow instances green, and critical PR #85 Codex no-major-findings on exact head. [Limited qualification decision](../../docs/decisions/2026-10-27-F023-limited-qualification.md). Main integration and post-merge CI remain pending as of this stage. Earlier design/UNFROZEN language below is retained as preimplementation history; it does not supersede the immutable [FROZEN_V1](../../experiments/F023/FROZEN_V1.md). NO autonomous approach/formation or deployed UI.**
 [Issue #81](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/81) / [PLAN](../../experiments/F023/PLAN.md) / [theoretical preflight](../../experiments/F023/PREFLIGHT.md) / [findings](../../findings/F023-validation.md).
 
 ## One question / why now
@@ -56,3 +56,11 @@ Freeze full prospective independent unit set and tests before F023 primary run. 
 
 ## 2026-10-25 F023.v1 pre-observation design freeze — status supersession
 [Fixed FROZEN_V1](../../experiments/F023/FROZEN_V1.md) anchored to Issue #81 at `76dcc1db7ae12737705da06c155933d0a8251853` supersedes this SPEC's earlier **UNFROZEN** design-stage description *for status only*. Frozen 15-world roster and typed archive requirements are binding before any simulator world. **No implementation, primary simulation, CI or admission** exists yet; no new body formation claims.
+
+
+## 2026-10-25 F023 implementation candidate — Draft PR #83, not yet admitted
+Actual isolated code at `soma/f023.py` implements the [frozen v1](../../experiments/F023/FROZEN_V1.md) prescribed t0 A/B impulse gate with exact decimal-rational candidate-work billing, separate A/B private integer-µJ balances, opposite explicit ground impulses, then calls **unmodified** `soma.f022.simulate` with post-action velocities. `experiments/F023/run_suite.py` writes source-bound seven-file archive, while `verify.py` uses the independent F022 closest-approach oracle without importing the F023/F022 producer; ten rehashed semantic attacks in `attack_test.py`. [Reproduction](../../experiments/F023/README.md). These are **implementation claims / source paths only** until exact-source Python3.11/3.12 and F001–F022 regressions, audit and science review; no spontaneous approach or organismality claimed.
+
+
+## 2026-10-26 — Codex P1 evidence-integrity repair candidate, awaiting final CI/re-review
+External-to-producer GitHub Codex review on [PR #85](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/85#discussion_r4372926357) identified that an F022-style 1e-9 float tolerance was incorrectly being used to compare **immutable frozen scenario inputs**, which can conceal an exact-decimal private bill 200→201µJ. [Original PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83) now has a candidate repair: `verify.py` checks entire frozen scenario tree with exact values/types, applies strict checks to billing-relevant action fields, while using numeric error tolerance only for derived physical outputs. Four additional forged-rehash controls bring attack count to 14. The protocol commit `76dcc1db`, preregistered worlds and F022 remain unmodified. **Correction must not be deemed verified until last-head CI and new Codex review complete.**

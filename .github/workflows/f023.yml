@@ -1,0 +1,56 @@
+name: F023 frozen privately powered 2D encounter / independent saved-data audit
+
+on:
+  pull_request:
+    paths:
+      - 'soma/f023.py'
+      - 'experiments/F023/**'
+      - 'tests/test_f023.py'
+      - '.github/workflows/f023.yml'
+      - 'docs/ARCHITECTURE.md'
+      - 'docs/DATA_CONTRACTS.md'
+      - 'findings/F023-validation.md'
+  push:
+    branches:
+      - main
+      - 'feat/F023-*'
+    paths:
+      - 'soma/f023.py'
+      - 'experiments/F023/**'
+      - 'tests/test_f023.py'
+      - '.github/workflows/f023.yml'
+  workflow_dispatch:
+
+jobs:
+  source-bound-worlds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: All F001-F023 inherited and optimized F023 regressions
+        run: |
+          python -m unittest discover -s tests
+          python -O -m unittest discover -s tests -p 'test_f023.py'
+      - name: Exact frozen worlds / independent physics and private ledger audit
+        run: |
+          python -m experiments.F023.run_suite --out /tmp/f023-worlds-a
+          python -m experiments.F023.verify --root /tmp/f023-worlds-a --expected-source-sha "$(git rev-parse HEAD)"
+          python -m experiments.F023.attack_test --root /tmp/f023-worlds-a
+          python -m experiments.F023.run_suite --out /tmp/f023-worlds-b
+          python -m experiments.F023.verify --root /tmp/f023-worlds-b --expected-source-sha "$(git rev-parse HEAD)"
+          diff -r /tmp/f023-worlds-a /tmp/f023-worlds-b
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: f023-one-shot-worlds-py${{ matrix.python-version }}
+          path: /tmp/f023-worlds-a/
+          retention-days: 30

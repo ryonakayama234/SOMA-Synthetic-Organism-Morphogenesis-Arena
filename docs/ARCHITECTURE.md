@@ -1436,6 +1436,58 @@ flowchart TB
 [FROZEN_V1](../experiments/F023/FROZEN_V1.md) at `76dcc1db7ae12737705da06c155933d0a8251853` now binds the proposed *future* F023 action→TOI→archive workflow above. The diagram remains **unimplemented** at this stage; frozen design ≠ deployed UI, new motor, learning, or observed contact.
 
 
+### F023 implementation candidate code path — PR #83, **not formally adopted**
+Actual source wiring is `soma/f023.py` (strict schema and rational private t0 charge, source-owned ground counterimpulse) → **unmodified** `soma.f022.simulate` (passive continuous TOI after the scheduled action) → `experiments/F023/run_suite.py` (source-bound archive) → `experiments/F023/verify.py` (on-disk independent closest-approach and private energy oracle, no F023/F022 producer import) + `attack_test.py` (rehashed semantic forgery) → `findings/F023-validation.md`. This does **not** implement UI panel rendering, local agent sensors, learning or docking. The future panel mappings above remain read-only, and no UI receives permission to write into simulation truth. Performance/acceptance pending final-head tests.
+
+~~~mermaid
+flowchart LR
+ F["[PR #83 candidate] soma/f023.py t0 private gate + ground impulse"] --> P["[F022 adopted unchanged] soma/f022.py continuous passive TOI"]
+ P --> R["[PR #83 candidate] run_suite.py: scenario + action + ledger + state + contact + audit + manifest"]
+ R --> V["[PR #83 candidate] verify.py: alternative closest-approach + private budget replay"]
+ R --> AT["[PR #83 candidate] attack_test.py"]
+ V --> FIND["findings/F023-validation.md: pending observed results"]
+ AT --> FIND
+ R -. "FUTURE separate V00x UI" .-> UI["Arena / Cells / Timeline / Evidence"]
+ F -. "NOT PRESENT / forbidden world-truth policy feed" .-> POLICY["Local policy / learning"]
+~~~
+
+
+### F023 verifier data-trust boundary — Codex P1 follow-up (2026-10-26)
+Archive verification has **two distinct comparison contracts**: immutable researcher inputs (`scenario.json` entire frozen roster; `actions.jsonl` charge-defining command/applied/ground impulses and pre-action velocity) → **exact structural/type/numeric equality**; derived flight/contact/work/audit floats → protocol-bounded approximate physical oracle. Rehashing alone is never a physics verification. The fix is isolated to F023 evidence audit and attacks; the pre-registered physics, F022 solver and future UI ownership stay unchanged. Verification pending exact last-head CI and fresh Codex review.
+
+### F023 archived-vs-oracle conservation boundary — Codex P2 follow-up (2026-10-26)
+Independent F023 verification has distinct gates: exact frozen input/actuation invariants, per-field derived-trajectory oracle comparison, and a **separate physical-accounting gate over the archived evidence itself**. For each saved 2D frame, reconstruct kinetic energy from archived velocities; external ground impulse from archived actions; collision loss from archived contact normal/pre-velocity and frozen restitution; compare source-initial momentum and pre-action energy to observed saved totals with absolute `1e-9` limits. Record-specific and aggregate audit fields must agree with those values. The last two rehashed semantic attacks target tiny perturbations of Q15 high-speed saved velocities, with recomputed frame KE. No robot autonomy, physics or UI scope expansion. Pending final CI / independent review.
+
+### F023 contact event audit trust boundary (2026-10-26)
+Saved `contacts.jsonl` is audited *as an event*, independently of time-grid `states.jsonl`: source-independent checker reconstructs pre/post event momentum, restitution-corrected energy and per-cell collision impulse jump, using absolute frozen gate 1e-9. This closes a bypass in which a +5e-8 edit to a high-speed Q15 event post-velocity could evade per-field relative oracle checks without perturbing already-gated state samples. Combined attack suite: 18 rehashed negatives, subject to CI/Codex re-review. Protocol F023.v1 remains immutable; F022 passive solver unmodified.
+
+### F023 contact-to-trajectory audit boundary (2026-10-26)
+Saved `contacts.jsonl` must not merely obey independent within-event conservation. Its pre-contact velocity vector is anchored to immutable `scenario.json` initial velocities plus saved, strictly verified t0 actuator impulse; event post-contact velocity is independently anchored to the first actual `states.jsonl` frame following time of impact, using absolute SI 1e-9 tolerance even when speed is 100 m/s. Both event kinetic energies are anchored separately. This closes a forgery with self-consistent event energy, momentum and normal impulse but inconsistent world trajectory. Total rehashed semantic probes: **19**, subject to final CI/Codex audit. Frozen simulator and F022 remain unchanged.
+
+
+---
+
+## F023.v1 final PR-head evidence / admission boundary — 2026-10-27
+
+**STATE: limited technical qualification at implementation PR head, not yet main-integrated when this entry was authored.** [decision](decisions/2026-10-27-F023-limited-qualification.md) / [PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83) / [findings](../findings/F023-validation.md) / [frozen protocol](../experiments/F023/FROZEN_V1.md). The earlier F023 future-panel diagram is a design projection; it does **not** claim any deployed UI. F023 implements only the 2D physical/saved-evidence source on its feature branch.
+
+~~~mermaid
+flowchart LR
+  R["F023 fixed frozen Q01-Q15 scene, private A/B energy"] --> V["Strict frozen scenario/command validation"]
+  V --> ACT["t0 A/B independently billed decisions"]
+  ACT --> ENV["equal/opposite ideal ground reaction"]
+  ACT --> TOI["F022-compatible 2D free flight + continuous TOI"]
+  TOI --> SAVED["7 archived files: scenario/states/contacts/actions/ledger/audit/manifest"]
+  SAVED --> ORACLE["source-independent from-disk physics + private ledger audit"]
+  ORACLE --> BAD["19 forged/rehashed negative controls"]
+  ORACLE --> REC["researcher-only evidence and audit"]
+  REC -. "no deployed F023 viewer" .-> UI["Existing six planned panels"]
+  REC -. "FORBIDDEN world truth feedback" .-> POL["future local sensor / policy"]
+~~~
+
+F023 does **not** add a new panel or extend Setup/Arena/Cells/Timeline/Evidence/System-Data responsibilities. Setup uses `scenario.json`, Arena uses `states.jsonl`+`contacts.jsonl`, Cells uses `actions.jsonl`+`ledger.jsonl`, Timeline uses source-record times, Evidence uses audit/manifest/source hash, System/Data uses diagrams/contracts. A later read-only 2D viewer is separately gated by V002 #86/#87; V001 1D remains separately unmerged. Design frozen physics and previous F022 passive solver remain intact.
+
+
 ---
 
 ## V002 Counterfactual Observatory — 2026-10-26 **DESIGN DRAFT ONLY; no viewer code / run / adoption**
