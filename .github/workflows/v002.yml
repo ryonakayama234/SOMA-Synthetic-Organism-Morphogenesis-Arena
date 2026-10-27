@@ -1,0 +1,50 @@
+name: V002 verified read-only 2D archive projection
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/V002/**'
+      - 'contracts/v002.view.v1.schema.json'
+      - 'tests/test_v002.py'
+      - '.github/workflows/v002.yml'
+  pull_request:
+    paths:
+      - 'experiments/V002/**'
+      - 'contracts/v002.view.v1.schema.json'
+      - 'tests/test_v002.py'
+      - '.github/workflows/v002.yml'
+
+jobs:
+  saved-projection:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install view-contract schema validator
+        run: python -m pip install 'jsonschema>=4.22,<5'
+      - name: Original source-independent archive and V002 projection tests
+        run: |
+          python -m unittest tests.test_v002 -v
+          python -m unittest discover -s tests
+      - name: Byte-identical replay and source archive integrity
+        shell: bash
+        run: |
+          set -euo pipefail
+          t="$(mktemp -d)"
+          trap 'rm -rf "$t"' EXIT
+          sha="$(git rev-parse HEAD)"
+          python -m experiments.F022.run_suite --out "$t/f022"
+          python -m experiments.F023.run_suite --out "$t/f023"
+          for v in f022 f023; do
+            python -m "experiments.${v^^}.verify" --root "$t/$v" --expected-source-sha "$sha"
+          done
+          python -m experiments.V002.project --left-root "$t/f022" --right-root "$t/f022" --left-world C01 --right-world C02 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$t/view-a"
+          python -m experiments.V002.project --left-root "$t/f022" --right-root "$t/f022" --left-world C01 --right-world C02 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$t/view-b"
+          cmp "$t/view-a/view.json" "$t/view-b/view.json"
