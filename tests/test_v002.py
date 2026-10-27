@@ -1,5 +1,6 @@
 """Initial V002 exact archive projection regression; no UI acceptance implied."""
 from pathlib import Path
+import copy
 import importlib.util
 import tempfile
 import unittest
@@ -72,7 +73,6 @@ class ProjectionSmokeTest(unittest.TestCase):
                              trusted_left_anchor="test-checkout",
                              trusted_right_anchor="test-checkout")
         self.assertEqual(result["view_oracle"], "pass")
-        import copy
         forged = copy.deepcopy(view)
         forged["worlds"][0]["samples"][0]["record"]["x_a_m"] += .1
         forged_dir = self.root/"forged-view"
@@ -85,6 +85,65 @@ class ProjectionSmokeTest(unittest.TestCase):
                         trusted_right_anchor="test-checkout")
         with self.assertRaises(FileExistsError):
             publish(dest, view, left_root=src, right_root=src,
+                    expected_left_sha=self.SHA, expected_right_sha=self.SHA,
+                    trusted_left_anchor="test-checkout",
+                    trusted_right_anchor="test-checkout")
+
+ 
+    def test_frozen_comparison_grid_and_immutable_sources(self):
+        """Frozen controls A-H must preserve full inputs, nulls and semantics."""
+        for family, producer, pairs in (
+            ("F022", f022_produce,
+             [("C01", "C02"), ("C05", "C06"), ("C07", "C08"),
+              ("C13", "C01"), ("C01", "C01")]),
+            ("F023", f023_produce,
+             [("Q02", "Q04"), ("Q02", "Q03"), ("Q02", "Q05"), ("Q02", "Q07")]),
+        ):
+            src = self.build(family, producer)
+            import hashlib
+            originals = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                         for p in src.iterdir() if p.is_file()}
+            for left, right in pairs:
+                view = self.project_pair(src, left, right)
+                self.assertEqual(len(view["worlds"]), 2)
+                self.assertEqual(len(view["joint_sample_times_s"]), 9)
+                self.assertEqual(len(view["parameter_diff"]),
+                                 15 if family == "F022" else 21)
+                self.assertEqual(view["evidence"]["view_projection_oracle"], "pass")
+                dest = self.root / (family + "-" + left + "-" + right)
+                publish(dest, view, left_root=src, right_root=src,
+                        expected_left_sha=self.SHA, expected_right_sha=self.SHA,
+                        trusted_left_anchor="test-checkout",
+                        trusted_right_anchor="test-checkout")
+                self.assertTrue((dest/"view.json").is_file())
+                self.assertTrue((dest/"index.html").is_file())
+            after = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                     for p in src.iterdir() if p.is_file()}
+            self.assertEqual(originals, after)
+        self.assertEqual(self.project_pair(self.root/"F022", "C01", "C01")
+                         ["pair_inference"], "identical")
+        self.assertEqual(self.project_pair(self.root/"F022", "C07", "C08")
+                         ["pair_inference"], "multi_field")
+
+    def test_prepublication_malicious_view_is_rejected(self):
+        src = self.build("tamper-f022", f022_produce)
+        altered = copy.deepcopy(self.project_pair(src, "C01", "C02"))
+        altered["worlds"][0]["samples"][0]["record"]["x_a_m"] += 0.5
+        dest = self.root/"must-never-publish"
+        with self.assertRaises(AssertionError):
+            publish(dest, altered, left_root=src, right_root=src,
+                    expected_left_sha=self.SHA, expected_right_sha=self.SHA,
+                    trusted_left_anchor="test-checkout",
+                    trusted_right_anchor="test-checkout")
+        self.assertFalse(dest.exists())
+        # An otherwise structurally valid derived archive with fake PASS flags
+        # must never be able to publish altered physical evidence.
+
+    def test_wrong_family_refusal(self):
+        l = self.build("f022-mixed", f022_produce)
+        r = self.build("f023-mixed", f023_produce)
+        with self.assertRaises(ValueError):
+            project(l, r, "C01", "Q02",
                     expected_left_sha=self.SHA, expected_right_sha=self.SHA,
                     trusted_left_anchor="test-checkout",
                     trusted_right_anchor="test-checkout")
