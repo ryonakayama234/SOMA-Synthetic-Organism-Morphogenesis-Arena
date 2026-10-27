@@ -2,13 +2,15 @@
 id: F023
 title: Active Encounter — 2D私有駆動による出会いの因果可能性
 kind: feature_specification
-status: IMPLEMENTED_CANDIDATE_PR_HEAD_QUALIFIED_MAIN_PENDING
+status: LIMITED_TECHNICALLY_ADOPTED
 updated: 2026-10-25
 issue: 81
 related: [PROJECT, RESEARCH-AGENDA, F002, F005, F021, F022, ARCHITECTURE, DATA]
 ---
-# F023 — Active Encounter（設計案・観測前）
-**CURRENT STATUS (2026-10-27): F023.v1 immutable design frozen at `76dcc1db`; implementation PR #83 source head `0c992e8` has tested 15 source-bound worlds, 135 samples, 30 separately billed A/B actions+ledgers, 9 contacts/6 misses, 19 rehashed attacks rejected, 46/46 PR workflow instances green, and critical PR #85 Codex no-major-findings on exact head. [Limited qualification decision](../../docs/decisions/2026-10-27-F023-limited-qualification.md). Main integration and post-merge CI remain pending as of this stage. Earlier design/UNFROZEN language below is retained as preimplementation history; it does not supersede the immutable [FROZEN_V1](../../experiments/F023/FROZEN_V1.md). NO autonomous approach/formation or deployed UI.**
+# F023 — Active Encounter（限定的技術採用済み；過去の設計記録も保持）
+
+**FINAL STATUS:** F023.v1 limited technically adopted on main at `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e`, 22/22 main push workflows successful; see [append-only findings](../../findings/F023-validation.md) and [bounded admission decision](../../docs/decisions/2026-10-27-F023-limited-qualification.md). This is not an autonomous approach or embodied joining claim. Following older design-only paragraphs are historical.
+**HISTORICAL PR-HEAD STATUS (2026-10-27; superseded by post-main adoption): F023.v1 immutable design frozen at `76dcc1db`; implementation PR #83 source head `0c992e8` has tested 15 source-bound worlds, 135 samples, 30 separately billed A/B actions+ledgers, 9 contacts/6 misses, 19 rehashed attacks rejected, 46/46 PR workflow instances green, and critical PR #85 Codex no-major-findings on exact head. [Limited qualification decision](../../docs/decisions/2026-10-27-F023-limited-qualification.md). Main integration and post-merge CI remain pending as of this stage. Earlier design/UNFROZEN language below is retained as preimplementation history; it does not supersede the immutable [FROZEN_V1](../../experiments/F023/FROZEN_V1.md). NO autonomous approach/formation or deployed UI.**
 [Issue #81](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/81) / [PLAN](../../experiments/F023/PLAN.md) / [theoretical preflight](../../experiments/F023/PREFLIGHT.md) / [findings](../../findings/F023-validation.md).
 
 ## One question / why now
