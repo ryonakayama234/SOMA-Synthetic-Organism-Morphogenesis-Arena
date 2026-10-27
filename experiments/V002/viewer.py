@@ -70,9 +70,9 @@ function table(head,rows,el){const t=node("table",null,el),h=node("tr",null,t);h
 const worlds=BUNDLE.worlds, clocks=BUNDLE.joint_sample_times_s;
 const setup=$("setup");node("p",worlds.map(w=>w.side.toUpperCase()+" = "+w.source_schema_version+" / "+w.world_id).join("   |   "),setup);
 node("p","Input-diff classification: "+BUNDLE.pair_inference+" ("+BUNDLE.parameter_diff.filter(x=>!x.equal).length+" physical input fields differ)",setup);
-const dd=BUNDLE.parameter_diff.filter(x=>!x.equal);
-if(dd.length)table(["Frozen input field","Left","Right"],dd.map(x=>[x.field_path,fmt(x.left),fmt(x.right)]),$("diff"));
-else node("p","Identical physical inputs; source provenance remains independent on both sides.",$("diff"));
+const dd=BUNDLE.parameter_diff;
+if(dd.length)table(["Frozen input field","Left","Right","Same?"],dd.map(x=>[x.field_path,fmt(x.left),fmt(x.right),x.equal?"unchanged":"DIFF"]),$("diff"));
+else node("p","No input fields found: invalid view",$("diff"));
 const choose=$("sampleTime");clocks.forEach(t=>{const o=node("option",fmt(t)+" s",choose);o.value=String(t)});
 const allxy=worlds.flatMap(w=>w.samples.flatMap(x=>[x.record.x_a_m,x.record.y_a_m,x.record.x_b_m,x.record.y_b_m]));
 const xyx=worlds.flatMap(w=>w.samples.flatMap(x=>[x.record.x_a_m,x.record.x_b_m]));
