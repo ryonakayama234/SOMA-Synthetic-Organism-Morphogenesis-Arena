@@ -2,13 +2,13 @@
 id: F023
 title: Active Encounter — 2D私有駆動による出会いの因果可能性
 kind: feature_specification
-status: SELECTED_DESIGN_UNFROZEN_UNEXECUTED
+status: IMPLEMENTED_CANDIDATE_PR_HEAD_QUALIFIED_MAIN_PENDING
 updated: 2026-10-25
 issue: 81
 related: [PROJECT, RESEARCH-AGENDA, F002, F005, F021, F022, ARCHITECTURE, DATA]
 ---
 # F023 — Active Encounter（設計案・観測前）
-**Status: selected for DESIGN, UNFROZEN. No F023 source code, primary simulator observations, CI, or adoption.**
+**CURRENT STATUS (2026-10-27): F023.v1 immutable design frozen at `76dcc1db`; implementation PR #83 source head `0c992e8` has tested 15 source-bound worlds, 135 samples, 30 separately billed A/B actions+ledgers, 9 contacts/6 misses, 19 rehashed attacks rejected, 46/46 PR workflow instances green, and critical PR #85 Codex no-major-findings on exact head. [Limited qualification decision](../../docs/decisions/2026-10-27-F023-limited-qualification.md). Main integration and post-merge CI remain pending as of this stage. Earlier design/UNFROZEN language below is retained as preimplementation history; it does not supersede the immutable [FROZEN_V1](../../experiments/F023/FROZEN_V1.md). NO autonomous approach/formation or deployed UI.**
 [Issue #81](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/81) / [PLAN](../../experiments/F023/PLAN.md) / [theoretical preflight](../../experiments/F023/PREFLIGHT.md) / [findings](../../findings/F023-validation.md).
 
 ## One question / why now

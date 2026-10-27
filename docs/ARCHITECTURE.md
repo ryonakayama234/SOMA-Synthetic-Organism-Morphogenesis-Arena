@@ -1463,3 +1463,26 @@ Saved `contacts.jsonl` is audited *as an event*, independently of time-grid `sta
 
 ### F023 contact-to-trajectory audit boundary (2026-10-26)
 Saved `contacts.jsonl` must not merely obey independent within-event conservation. Its pre-contact velocity vector is anchored to immutable `scenario.json` initial velocities plus saved, strictly verified t0 actuator impulse; event post-contact velocity is independently anchored to the first actual `states.jsonl` frame following time of impact, using absolute SI 1e-9 tolerance even when speed is 100 m/s. Both event kinetic energies are anchored separately. This closes a forgery with self-consistent event energy, momentum and normal impulse but inconsistent world trajectory. Total rehashed semantic probes: **19**, subject to final CI/Codex audit. Frozen simulator and F022 remain unchanged.
+
+
+---
+
+## F023.v1 final PR-head evidence / admission boundary — 2026-10-27
+
+**STATE: limited technical qualification at implementation PR head, not yet main-integrated when this entry was authored.** [decision](decisions/2026-10-27-F023-limited-qualification.md) / [PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83) / [findings](../findings/F023-validation.md) / [frozen protocol](../experiments/F023/FROZEN_V1.md). The earlier F023 future-panel diagram is a design projection; it does **not** claim any deployed UI. F023 implements only the 2D physical/saved-evidence source on its feature branch.
+
+~~~mermaid
+flowchart LR
+  R["F023 fixed frozen Q01-Q15 scene, private A/B energy"] --> V["Strict frozen scenario/command validation"]
+  V --> ACT["t0 A/B independently billed decisions"]
+  ACT --> ENV["equal/opposite ideal ground reaction"]
+  ACT --> TOI["F022-compatible 2D free flight + continuous TOI"]
+  TOI --> SAVED["7 archived files: scenario/states/contacts/actions/ledger/audit/manifest"]
+  SAVED --> ORACLE["source-independent from-disk physics + private ledger audit"]
+  ORACLE --> BAD["19 forged/rehashed negative controls"]
+  ORACLE --> REC["researcher-only evidence and audit"]
+  REC -. "no deployed F023 viewer" .-> UI["Existing six planned panels"]
+  REC -. "FORBIDDEN world truth feedback" .-> POL["future local sensor / policy"]
+~~~
+
+F023 does **not** add a new panel or extend Setup/Arena/Cells/Timeline/Evidence/System-Data responsibilities. Setup uses `scenario.json`, Arena uses `states.jsonl`+`contacts.jsonl`, Cells uses `actions.jsonl`+`ledger.jsonl`, Timeline uses source-record times, Evidence uses audit/manifest/source hash, System/Data uses diagrams/contracts. A later read-only 2D viewer is separately gated by V002 #86/#87; V001 1D remains separately unmerged. Design frozen physics and previous F022 passive solver remain intact.
