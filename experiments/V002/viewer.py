@@ -44,7 +44,7 @@ h3{font-size:11px;color:#d8d8d8;font-weight:550;letter-spacing:.05em;margin:10px
 p{margin:6px 0 10px}
 small,.muted{font-size:10px;color:#a1a2a3}
 #setup,#cells,#evidence,#system{padding:11px 13px;overflow:auto;min-height:0;scrollbar-color:#656668 transparent;scrollbar-width:thin}
-#diff{overflow:auto;max-height:none;min-height:0}
+#diff{flex:1;overflow:auto;max-height:none;min-height:0}
 table{border-collapse:collapse;width:100%;font-size:10.5px}
 th,td{text-align:left;font-weight:400;padding:6px 4px;border-bottom:1px solid #37383a;vertical-align:top;overflow-wrap:anywhere}
 th{font-weight:550;color:#bfc0c0;position:sticky;top:0;background:#1d1e20}
@@ -168,7 +168,7 @@ const none=node("option","(sample-only view; select event to inspect)",evsel);no
 evs.forEach((x,i)=>{const o=node("option",x.side+" "+x.kind+" at "+fmt(x.time_s)+" s · row "+x.source_row,evsel);o.value=String(i)});
 function showEvent(){
  const i=Number(evsel.value),details=$("eventDetails");details.replaceChildren();
- if(i<0){$("eventNote").textContent="Sample grid is synchronized; contact/action markers reference their original exact archived timestamps.";return}
+ if(i<0){$("eventNote").textContent="Archived samples · select an exact event.";return}
  const v=evs[i],w=worlds.find(x=>x.side===v.side);
  const list=v.kind==="contact"?w.contacts:w.cell_model.actions;
  const original=list.find(x=>x.source_row===v.source_row);
