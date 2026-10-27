@@ -1,3 +1,5 @@
+> **2026-10-28: RESEARCHER LIMITED HANDS-ON ACCEPTANCE — PASS.** The fixed six-panel offline viewer was actually operated on F023 Q02/Q04 saved sample navigation and explicitly accepted as a **limited replay-only instrument**. Technical evidence at previous code HEAD `bbf98ba3b25dc96c29a14c86f6a38e74abc09012`: 24/24 CI and no Codex findings. See [append-only admission evidence](../../findings/V002-validation.md) and [Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86). Original implementation-candidate / manual-pending text below is a **historical status before acceptance**, not the current gate. New documentation-inclusive HEAD needs its own CI before main merge. No interactive physics, learning, new physical results or new panel.
+
 # V002 implementation candidate — frozen source-verified read-only 2D observatory
 
 **STATUS: SOURCE HEAD CI/CODE REVIEW PASS / HUMAN INTERACTIVE ACCEPTANCE NOT YET EVIDENCED / NOT ADOPTED.**

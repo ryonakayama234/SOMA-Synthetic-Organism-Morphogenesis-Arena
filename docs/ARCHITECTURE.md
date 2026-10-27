@@ -1594,3 +1594,7 @@ flowchart TB
  TIM -. "UI-only source-row selection; never invented frames" .-> AR
  G -. "NO permission" .-> POL["LocalPolicy / physics write"]
 ~~~
+
+
+### V002 read-only observatory — researcher-approved limited archive playback (2026-10-28)
+The human researcher actually operated the fixed grayscale six-owner interface (F023 Q02/Q04 stored-sample navigation visible in supplied ~9s video) and explicitly marked the limited replay interface **PASS**. The prior vertically stacked layout is historically rejected. **The architecture/data flow did not change with acceptance**; fixed owner mapping from [`v002.workspace.layout.v1`](../contracts/v002.workspace.layout.v1.json) remains enforceable by the browser CI. Two trusted same-family original archives → source-independent F022/F023 verifier → immutable `v002.view.v1` projection → separate source-read-back verifier → offline researcher view. Timeline time-step and history scroll update its own fixed panel; Arena only shows exact same-clock **saved XY samples**, and off-grid event data remain separately source-timestamped. No simulator control, policy feedback, fabricated interpolation, seventh region, new physical mechanism or agent observation channel is introduced. The video attests Q02/Q04 sample stepping, not manual exercise of every frozen F022 negative control; those are checked by independent automated oracles. Exact integration and post-main CI remain individual evidence checkpoints in [Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86).

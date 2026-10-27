@@ -1,6 +1,6 @@
 {
   "contract_id": "v002.workspace.layout.v1",
-  "status": "VISUAL_DIRECTION_ENDORSED_INTERACTIVE_GATE_OPEN",
+  "status": "RESEARCHER_ACCEPTED_LIMITED_ARCHIVE_REPLAY_2026_10_28",
   "source_contract": "v002.view.v1",
   "parent_pr": 89,
   "viewport": {
@@ -136,5 +136,22 @@
     "source_provenance_exposed": true,
     "old_source_snapshot_and_event_distinct": true,
     "automated_browser_test_plus_human_interaction": true
+  },
+  "acceptance_evidence": {
+    "verdict": "PASS_LIMITED",
+    "date": "2026-10-28",
+    "issue": 86,
+    "pr": 89,
+    "video": "research conversation attachment: actual browser F023 Q02/Q04, 9.322s, sample-time stepping; not stored in this repository",
+    "demonstrated": [
+      "six owner areas stay visible",
+      "Timeline saved sample changes paired Arena exact sample display",
+      "history stays within bounded Timeline"
+    ],
+    "not_claimed": [
+      "manual tests of all F022 negative controls",
+      "interactive simulator",
+      "autonomy or biology evidence"
+    ]
   }
 }
