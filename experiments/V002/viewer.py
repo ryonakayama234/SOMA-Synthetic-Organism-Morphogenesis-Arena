@@ -28,7 +28,7 @@ def render(view):
 *{box-sizing:border-box}
 html,body{height:100%;width:100%;margin:0;overflow:hidden}
 body{display:flex;flex-direction:column;background:#101113;font-size:13px;line-height:1.4}
-header{height:54px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #353638;background:#161719;min-width:0}
+header{height:58px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 18px;border-bottom:1px solid #353638;background:#161719;min-width:0}
 header h1{font-size:15px;letter-spacing:.12em;font-weight:650;margin:0}
 header .status{font-size:10px;letter-spacing:.11em;border:1px solid #565758;padding:5px 9px;border-radius:3px;color:#c7c7c7}
 main.workspace{flex:1;min-height:0;display:grid;grid-template-columns:minmax(226px,250px) minmax(0,1fr) minmax(254px,282px);grid-template-rows:minmax(0,1fr) minmax(0,.72fr) 168px;grid-template-areas:"setup arena evidence" "cells arena system" "timeline timeline timeline";gap:10px;padding:10px}
