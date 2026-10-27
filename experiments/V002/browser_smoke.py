@@ -24,6 +24,16 @@ def check_one(browser, path: Path, *, f023: bool, out: Path):
     assert page.locator("main > section").count() == 6, "six existing panel owners"
     for title in PANEL_TITLES:
         assert any(title in x for x in page.locator("main h2").all_text_contents()), title
+    # Fixed-workstation visual layout contract at the 1500x950 design viewport.
+    assert page.evaluate("document.documentElement.scrollHeight <= window.innerHeight + 1"), "no vertically growing main document"
+    loc = lambda panel: page.locator('main > section[data-panel="' + panel + '"]').bounding_box()
+    arena_box, setup_box, evidence_box, timeline_box = (loc(k) for k in ("arena", "setup", "evidence", "timeline"))
+    assert arena_box["width"] > setup_box["width"] * 1.5
+    assert arena_box["height"] > timeline_box["height"] * 2.0
+    assert setup_box["x"] < arena_box["x"] < evidence_box["x"]
+    assert timeline_box["y"] > arena_box["y"] and timeline_box["width"] > arena_box["width"]
+    assert page.locator('main > section[data-panel="timeline"] #eventLog').count() == 1
+    assert page.locator('main > section[data-panel="setup"] #diff').count() == 1
     assert page.locator("#arena .scene").count() == 2
     assert page.locator("#arena svg").count() == 2
     assert page.locator("#arena svg circle").count() == 4, "two disks per saved world"
@@ -48,6 +58,16 @@ def check_one(browser, path: Path, *, f023: bool, out: Path):
         page.locator("#eventPicker").select_option("0")
         assert "NO_RECORDED_SNAPSHOT_AT_TIME" in page.locator("#eventNote").inner_text()
         assert "0.095" in page.locator("#eventNote").inner_text()
+    # A selected time grows the *bounded* archived log, not page height.
+    page.locator("#sampleTime").select_option("2")
+    assert page.locator("#eventLog .log-row").count() >= 18
+    log_height = page.locator("#eventLog").evaluate("(el) => [el.scrollHeight, el.clientHeight]")
+    assert log_height[0] > log_height[1], "past archive rows must scroll within Timeline"
+    page.locator("#prevSample").click()
+    assert page.locator("#sampleTime").input_value() == "1.75"
+    page.locator("#nextSample").click()
+    assert page.locator("#sampleTime").input_value() == "2"
+    assert page.evaluate("document.documentElement.scrollHeight <= window.innerHeight + 1")
     page.locator("#sampleTime").select_option("0.5")
     assert page.locator("#arena .scene").count() == 2
     assert "sample t=0.5 s" in page.locator("#arena").inner_text()
