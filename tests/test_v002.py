@@ -84,7 +84,10 @@ class ProjectionSmokeTest(unittest.TestCase):
                         trusted_left_anchor="test-checkout",
                         trusted_right_anchor="test-checkout")
         with self.assertRaises(FileExistsError):
-            publish(dest, view)
+            publish(dest, view, left_root=src, right_root=src,
+                    expected_left_sha=self.SHA, expected_right_sha=self.SHA,
+                    trusted_left_anchor="test-checkout",
+                    trusted_right_anchor="test-checkout")
 
 
 if __name__ == "__main__":
