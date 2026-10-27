@@ -1539,3 +1539,17 @@ V002 remains **read-only, researcher-only, UNIMPLEMENTED**. F023 source is now *
 
 ### V002.v1 freeze boundary — 2026-10-27 (viewer not implemented)
 Frozen preimplementation [protocol](../experiments/V002/FROZEN_V1.md) binds the existing one-way F022/F023 saved archive → independent verifier → derived typed read-only V002 → existing six panels. **Do not add a new panel** for comparison; two world canvases share Arena ownership. Source-preserving sample vs TOI, F023 action vs contact, researcher truth vs absent LocalPolicy boundaries are binding. No V002 observer code, screenshot or scientific observation yet; source diagrams are aspirational for this stage.
+
+
+### V002 implementation Draft #89 (2026-10-27; CANDIDATE ONLY)
+The original V002 frozen diagram and six panel ownership remain controlling. Candidate `experiments/V002/project.py` invokes source-independent `experiments/F022/verify.py` or `experiments/F023/verify.py` **before** projection, and passes the immutable `v002.view.v1` contract to `experiments/V002/viewer.py` offline display; a different code path, `experiments/V002/verify_view.py`, rereads saved sources and cross-checks projected source rows and events. No physical simulation or agent/local observation feeds from V002. Browser display stays on existing Setup / Arena (two copies) / Cells / Timeline / Evidence / System/Data panels. No confirmed browser acceptance or view adoption yet.
+
+~~~mermaid
+flowchart LR
+  F["F022 or F023 verified existing saved world (never edited)"] --> V["Independent source oracle + external trusted SHA"]
+  V --> P["V002 immutable view.json / schema validation"]
+  P --> O["Independent V002 view oracle (source reread)"]
+  O --> UI["Offline six-panel, read-only researcher HTML"]
+  UI -. "FORBIDDEN" .-> A["LocalObservation or policy"]
+  P -. "FORBIDDEN" .-> SIM["Original physics producer or archive mutation"]
+~~~
