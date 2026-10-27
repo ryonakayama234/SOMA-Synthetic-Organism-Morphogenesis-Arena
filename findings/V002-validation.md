@@ -34,3 +34,10 @@ At old design SHA `26b2b34d0048af1ca050a8f4461b498324cfcf1b`, critical [Codex re
 
 ## 2026-10-27 — design freeze (no V002 experiments performed)
 V002 one-ability scope, fixed six-panel ownership, accepted F022/F023 source families and source-independent SHA-bound evidence gate, exact archive sample/TOI/action semantics, strict `v002.view.v1` schema and controls were preregistered in [V002/FROZEN_V1.md](../experiments/V002/FROZEN_V1.md). Codex re-review of the corrected prefreeze design at `995acc96c3d9124ec7a8beadd7e593234156f7f0` reported no fresh major issues; earlier two P2 defects/fixes are preserved above and in Issue/PR review history. Freeze commit SHA is anchored to Issue #86 separately. **No implemented V002 reader, no browser result, no source/view artifact, no V002 test run, no V002 admission.**
+
+
+## 2026-10-27 — V002 first implementation slice on isolated Draft PR #89, CI initially queued
+
+After the V002.v1 design freeze at `4ba05357a426edaa7ec6e9d1d5f905ad64893de8` and design merge #87, the researcher authorized delegated implementation subject to stop gates. New **Draft PR #89** implements a candidate archived-source verifier → two-world canonical projection (`experiments/V002/project.py`) with frozen-view JSON Schema validation, exact saved-source row copying, scenario input diffs and ordered sample/event/action pointers. Dedicated Python 3.11/3.12 CI and limited source projection tests have been added. F022/F023 source simulators, frozen source protocols and V001 1D proposals are unchanged.
+
+**No V002 empirical outcome is asserted at this entry.** CI was queued/in progress at initial note, no offline browser UI, human browser inspection, full adversarial view-bundle independent oracle, V002 final evidence qualification or main integration has occurred. Original archive verifier runs before either view record is issued; standalone projection-origin authentication beyond a trusted caller-supplied SHA remains a security boundary requiring audit. Further entries must report exact HEAD/CI/test results and failures rather than retroactively rewriting this note. Pair controls A–H remain frozen and mandatory for acceptance.
