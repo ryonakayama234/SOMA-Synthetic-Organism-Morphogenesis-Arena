@@ -48,6 +48,15 @@ small,.muted{font-size:10px;color:#a1a2a3}
 table{border-collapse:collapse;width:100%;font-size:10.5px}
 th,td{text-align:left;font-weight:400;padding:6px 4px;border-bottom:1px solid #37383a;vertical-align:top;overflow-wrap:anywhere}
 th{font-weight:550;color:#bfc0c0;position:sticky;top:0;background:#1d1e20}
+#diff table{table-layout:fixed}
+#diff td:first-child,#diff th:first-child{width:53%}
+#diff td:nth-child(2),#diff th:nth-child(2){width:39%}
+#diff td:last-child,#diff th:last-child{width:8%;text-align:center}
+#diff td{font-size:10px;overflow-wrap:anywhere}
+#diff>small{display:block;padding:6px 4px;color:#999}
+#cells table{table-layout:fixed}
+#cells th,#cells td{font-size:10px;padding:6px 2px}
+#cells th:first-child{width:20%}
 code{color:#d5d5d5;overflow-wrap:anywhere}
 .tag{display:inline-block;padding:3px 6px;border:1px solid #535455;border-radius:4px}
 .pass,.warning{color:#e5e5e5}
@@ -115,7 +124,7 @@ const worlds=BUNDLE.worlds, clocks=BUNDLE.joint_sample_times_s;
 const setup=$("setup");node("p",worlds.map(w=>w.side.toUpperCase()+" / "+w.world_id).join("    ×    "),setup);
 node("p",BUNDLE.pair_inference+" · "+BUNDLE.parameter_diff.filter(x=>!x.equal).length+" changed fields",setup);
 const dd=BUNDLE.parameter_diff;
-if(dd.length)table(["Frozen input field","Left","Right","Same?"],dd.map(x=>[x.field_path,fmt(x.left),fmt(x.right),x.equal?"unchanged":"DIFF"]),$("diff"));
+if(dd.length){node("small","= unchanged  ·  Δ differs",$("diff"));table(["Field","Left → Right",""],dd.map(x=>[x.field_path,fmt(x.left)+" → "+fmt(x.right),x.equal?"=":"Δ"]),$("diff"));}
 else node("p","No input fields found: invalid view",$("diff"));
 const choose=$("sampleTime");clocks.forEach(t=>{const o=node("option",fmt(t)+" s",choose);o.value=String(t)});
 const allxy=worlds.flatMap(w=>w.samples.flatMap(x=>[x.record.x_a_m,x.record.y_a_m,x.record.x_b_m,x.record.y_b_m]));
@@ -148,7 +157,8 @@ function draw(){
  E("circle",{cx:x,cy:y,r:rr,fill:color,opacity:.8,stroke:"none"});
  E("line",{x1:x-4,y1:y,x2:x+4,y2:y,stroke:"#e7e7e7","stroke-width":1});
  E("line",{x1:x,y1:y-4,x2:x,y2:y+4,stroke:"#e7e7e7","stroke-width":1});
- const text=E("text",{x:x+9,y:y-10,fill:"#f1f1f1","font-size":17});text.textContent=who.toUpperCase();
+ const lx=who==="a"?x-15:x+11, ly=who==="a"?y-12:y+18;
+ const text=E("text",{x:lx,y:ly,fill:"#f1f1f1","font-size":17});text.textContent=who.toUpperCase();
  }
  node("small","sample t="+fmt(rec.time_s)+" s · row "+item.source_row+" · "+rec.phase,div);
  node("small","A ("+rec.x_a_m+", "+rec.y_a_m+")   B ("+rec.x_b_m+", "+rec.y_b_m+") m",div);
@@ -158,7 +168,7 @@ choose.addEventListener("change",draw);draw();
 for(const w of worlds){
  const el=$("cells");node("h3",w.side+" / "+w.world_id,el);
  if(w.cell_model.kind==="not_modeled")node("p","NOT MODELED · F022 has no motor or ledger",el);
- else table(["Cell","Decision","Charge µJ","Private balance after µJ"],w.cell_model.actions.map(a=>{
+ else table(["Cell","Action","µJ used","µJ left"],w.cell_model.actions.map(a=>{
  const e=w.cell_model.ledger.find(z=>z.record.cell_id===a.record.cell_id);
  return [a.record.cell_id,a.record.decision,a.record.charge_uj,e?e.record.balance_after_uj:"MISSING"];
  }),el);
@@ -204,8 +214,8 @@ for(const [id,d] of [["prevSample",-1],["nextSample",1]]){
 refreshLog();
 const evid=$("evidence");
 for(const e of BUNDLE.evidence.sources){
- node("p","PASS · "+e.side+" / "+e.source_schema_version+" · independent from-disk oracle "+e.verifier,evid).className="pass";
- const proof=node("details",null,evid);node("summary","Source / protocol / trust",proof);node("small","Expected SHA: "+e.expected_source_sha+" · protocol: "+e.expected_protocol_sha+" · anchor: "+e.trusted_anchor_ref,proof);
+ node("p","PASS · "+e.side.toUpperCase()+" / "+e.source_schema_version,evid).className="pass";
+ const proof=node("details",null,evid);node("summary","Verifier / SHA / trust",proof);node("small",e.verifier+" · Expected SHA: "+e.expected_source_sha+" · protocol: "+e.expected_protocol_sha+" · anchor: "+e.trusted_anchor_ref,proof);
 }
 node("p","Projection oracle: "+BUNDLE.evidence.view_projection_oracle+" · Archive oracle: "+BUNDLE.evidence.archive_semantics_oracle,evid);
 node("p","v002.view.v1 · "+BUNDLE.contract_id,$("system"));node("small","Verified archive → projection → six read-only owners. No agent truth feedback.",$("system"));
