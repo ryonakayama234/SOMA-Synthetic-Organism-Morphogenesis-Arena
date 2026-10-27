@@ -6,6 +6,7 @@ This executable is intentionally excluded from normal Python unittest discovery.
 from __future__ import annotations
 
 import argparse
+import json
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
@@ -21,6 +22,29 @@ def check_one(browser, path: Path, *, f023: bool, out: Path):
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto(path.resolve().as_uri(), wait_until="load")
     assert page.title() == "SOMA · V002 Counterfactual Observatory (read-only)"
+    # Independent machine-readable layout ownership is a guard against a seventh
+    # panel, accidental relocation of a control or loss of a frozen panel owner.
+    contract = json.loads((Path(__file__).resolve().parents[2] / "contracts" /
+                           "v002.workspace.layout.v1.json").read_text(encoding="utf-8"))
+    assert contract["source_contract"] == "v002.view.v1"
+    assert contract["invariant"]["panel_count"] == 6
+    assert contract["invariant"]["authoritative_clock_owner"] == "Timeline"
+    owners = {x["id"] for x in contract["slots"]}
+    visible = set(page.locator("main > section").evaluate_all(
+        "(xs) => xs.map(x => x.getAttribute(\'data-panel\'))"))
+    assert visible == owners, (visible, owners)
+    for owner, selectors in {
+        "setup": ("#setup", "#diff"),
+        "arena": ("#arena",),
+        "cells": ("#cells",),
+        "timeline": ("#eventLog", "#sampleTime", "#eventPicker", "#prevSample", "#nextSample"),
+        "evidence": ("#evidence",),
+        "system": ("#system", ".future-slot"),
+    }.items():
+        for selector in selectors:
+            assert page.locator('main > section[data-panel="' + owner + '"] ' + selector).count() >= 1, (owner, selector)
+    assert not page.locator('main > section[data-panel="arena"] button').count(), "Arena is observational only"
+    assert page.locator('main > section[data-panel="system"] .future-slot').count() >= 2
     assert page.locator("main > section").count() == 6, "six existing panel owners"
     for title in PANEL_TITLES:
         assert any(title in x for x in page.locator("main h2").all_text_contents()), title
