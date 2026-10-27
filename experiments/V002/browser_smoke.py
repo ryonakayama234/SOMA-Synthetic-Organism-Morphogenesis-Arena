@@ -36,7 +36,6 @@ def check_one(browser, path: Path, *, f023: bool, out: Path):
     assert "read-only" in page.locator("body").inner_text().lower()
     if f023:
         assert "insufficient_private_budget" in page.locator("#cells").inner_text()
-        assert "f023_private" not in page.locator("#cells").inner_text() or True
         page.locator("#eventPicker").select_option("0")
         assert "EXACT_POST_SAMPLE_AT_TIME" in page.locator("#eventNote").inner_text()
         assert "not a synchronized pre-event" in page.locator("#eventNote").inner_text()
