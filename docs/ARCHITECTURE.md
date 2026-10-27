@@ -1578,3 +1578,19 @@ flowchart TB
 ~~~
 
 The diagram tracks actual files and responsibilities in the currently reviewed implementation (PR #89), while control edges to agent/physics are **forbidden**, not APIs. Automated browser screenshot is illustration only; it is not evidence of a new physical event. All future changes of panel owner, additional panel or altered physical/display meaning require approved v2 contract **before** any UI change.
+
+
+### V002 layout response — compact six-owner fixed workspace (2026-10-27; design candidate)
+The researcher **rejected the long vertical prototype after code-head CI**, requiring an Arena-dominant neutral-gray fixed desktop workbench, short labels, bounded scrollable Timeline history and fixed allocation for future unimplemented capabilities. This changes the **layout**, not the six panel responsibilities, original archive schema or `v002.view.v1`. Proposed [UI workspace contract](../docs/ui/V002_WORKSPACE_LAYOUT_V1.md) / [machine mapping](../contracts/v002.workspace.layout.v1.json) owns detailed exact-slot layout and state. No UI implementation is approved/adopted merely by this text.
+~~~mermaid
+flowchart TB
+ A["F022/F023 verified source → immutable v002.view.v1"] --> G["Fixed workstation 1500×950 reference"]
+ G --> SET["LEFT TOP Setup: scenario + full diff (scroll)"]
+ G --> CEL["LEFT BOTTOM Cells: per-private budget"]
+ G --> AR["CENTRE Arena: paired metric XY; dominant"]
+ G --> EV["RIGHT TOP Evidence: trust/audit"]
+ G --> SYS["RIGHT BOTTOM System/Data: schema/reserved"]
+ G --> TIM["BOTTOM Timeline: exact time controls + fixed scroll history"]
+ TIM -. "UI-only source-row selection; never invented frames" .-> AR
+ G -. "NO permission" .-> POL["LocalPolicy / physics write"]
+~~~
