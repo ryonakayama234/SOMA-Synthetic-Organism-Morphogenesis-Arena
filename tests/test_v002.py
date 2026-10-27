@@ -59,6 +59,11 @@ class ProjectionSmokeTest(unittest.TestCase):
         dest = self.root / "view"
         publish(dest, view)
         self.assertEqual((dest/"view.json").read_text(), canonical(view)+"\n")
+        html = (dest/"index.html").read_text()
+        self.assertIn("SOMA · V002 Counterfactual Observatory", html)
+        self.assertIn("NO_RECORDED_SNAPSHOT_AT_TIME", html)
+        self.assertIn("NOT MODELED", html)
+        self.assertIn("Arena", html)
         with self.assertRaises(FileExistsError):
             publish(dest, view)
 
