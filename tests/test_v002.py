@@ -7,6 +7,7 @@ import unittest
 from experiments.F022.run_suite import produce as f022_produce
 from experiments.F023.run_suite import produce as f023_produce
 from experiments.V002.project import project, publish, canonical
+from experiments.V002.verify_view import verify_view
 
 
 @unittest.skipUnless(importlib.util.find_spec('jsonschema'), 'V002 schema validator not installed in inherited workflow')
@@ -64,6 +65,23 @@ class ProjectionSmokeTest(unittest.TestCase):
         self.assertIn("NO_RECORDED_SNAPSHOT_AT_TIME", html)
         self.assertIn("NOT MODELED", html)
         self.assertIn("Arena", html)
+        result = verify_view(dest/"view.json", src, src,
+                             expected_left_sha=self.SHA, expected_right_sha=self.SHA,
+                             trusted_left_anchor="test-checkout",
+                             trusted_right_anchor="test-checkout")
+        self.assertEqual(result["view_oracle"], "pass")
+        forged = dict(view)
+        import copy
+        forged = copy.deepcopy(view)
+        forged["worlds"][0]["samples"][0]["record"]["x_a_m"] += .1
+        forged_dir = self.root/"forged-view"
+        forged_dir.mkdir()
+        (forged_dir/"view.json").write_text(canonical(forged)+"\\n")
+        with self.assertRaises(AssertionError):
+            verify_view(forged_dir/"view.json", src, src,
+                        expected_left_sha=self.SHA, expected_right_sha=self.SHA,
+                        trusted_left_anchor="test-checkout",
+                        trusted_right_anchor="test-checkout")
         with self.assertRaises(FileExistsError):
             publish(dest, view)
 
