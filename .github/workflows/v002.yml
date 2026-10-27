@@ -54,3 +54,34 @@ jobs:
           python -m experiments.V002.verify_view --view "$t/view-a/view.json" --left-root "$t/f022" --right-root "$t/f022" --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha"
           python -m experiments.V002.project --left-root "$t/f023" --right-root "$t/f023" --left-world Q02 --right-world Q04 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$t/view-f023"
           python -m experiments.V002.verify_view --view "$t/view-f023/view.json" --left-root "$t/f023" --right-root "$t/f023" --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha"
+
+  browser-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install frozen-view and browser test dependencies
+        run: |
+          python -m pip install 'jsonschema>=4.22,<5' 'playwright>=1.49,<2'
+          python -m playwright install --with-deps chromium
+      - name: Build verified archived-only browser fixtures and inspect real Chromium DOM/SVG
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v002-browser"
+          mkdir -p "$p"
+          sha="$(git rev-parse HEAD)"
+          python -m experiments.F022.run_suite --out "$p/f022"
+          python -m experiments.F023.run_suite --out "$p/f023"
+          python -m experiments.V002.project --left-root "$p/f022" --right-root "$p/f022" --left-world C13 --right-world C01 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$p/f022-view"
+          python -m experiments.V002.project --left-root "$p/f023" --right-root "$p/f023" --left-world Q02 --right-world Q04 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$p/f023-view"
+          python -m experiments.V002.browser_smoke --f022 "$p/f022-view/index.html" --f023 "$p/f023-view/index.html" --out "$p/screenshots"
+      - name: Upload illustrative browser screenshots (not physics evidence)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v002-browser-screenshots
+          path: ${{ runner.temp }}/v002-browser/screenshots/*.png
+          if-no-files-found: ignore
