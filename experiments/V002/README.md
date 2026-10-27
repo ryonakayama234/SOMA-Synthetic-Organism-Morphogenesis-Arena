@@ -1,22 +1,34 @@
-# V002 implementation candidate — independent source-verified archived two-world projection
+# V002 implementation candidate — frozen source-verified read-only 2D observatory
 
-**STATUS: CANDIDATE / UNVALIDATED / NO BROWSER ACCEPTANCE / NOT ADOPTED.**
-Parent [#86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86), frozen v1 design at `4ba05357a426edaa7ec6e9d1d5f905ad64893de8`.
+**STATUS: IMPLEMENTATION CANDIDATE / latest-head CI & Codex review gate / NO HUMAN BROWSER ACCEPTANCE / NOT YET ADOPTED.**
+Parent [#86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86), [Draft PR #89](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/89), frozen preregistration SHA `4ba05357a426edaa7ec6e9d1d5f905ad64893de8`; frozen [machine-readable view contract](../../contracts/v002.view.v1.schema.json).
 
-This first implementation slice creates only an immutable derived `view.json`; no physical simulation, new panels or UI implementation is claimed yet. It invokes original F022/F023 *independent saved-data* verifiers, with externally provided exact source SHAs; independently checks source-row projection and applies the frozen JSON schema.
+## Exact one-way evidence path
+- Two **same-family** F022 or F023 saved-source folders, strictly unmodified; pass independently inspected exact `implementation_commit_sha` from original source checkout and review admission as `--expected-*-sha`, never derive trust from the archived manifest.
+- `project.py`: F022/F023 independent original on-disk oracles run first. Read-only scene/rows projection, complete physical input diff, phase/time pointers and strict JSON Schema.
+- `verify_view.py`: **second independent** source-to-derived verifier reads actual original saved rows again, checks timestamps, row indices, all projected facts, provenance/expected SHA, full frozen inputs and flags. Publish refuses a mutation **before** renaming final output.
+- `viewer.py`: offline static `index.html` from the verified `view.json`; only the original **six** panel responsibilities. Arena has two read-only XY panes with physically scaled disk radii and *separate symbolic* crosshair/letter centre annotations. Source event pre/post is inspectable independently of synchronized saved frames; no interpolation. Setup shows all initial field values, including equal fields. F022 cell ledgers show NOT MODELED, not zero.
+- `tests/test_v002.py` and `browser_smoke.py`: freeze-case controls, no-source-write proof, altered-view prepublication refusal, wrong source SHA, F022/F023 same-family, Chromium DOM/SVG/event semantics. The latter is an **automated browser smoke**, not human researcher acceptance.
+- `.github/workflows/v002.yml`: Python 3.11/3.12 source+view tests, original F022/F023 rehashed-archive negative attacks, two-root JSON/HTML replay checks, Playwright headless Chromium smoke, optional illustrative screenshot artifact.
 
-From WSL2/Linux repository root:
+## WSL2/Linux reproduction from repository root
 
 ```bash
-python -m pip install jsonschema
-python -m experiments.F022.run_suite --out /tmp/v002-f022-archive
-python -m experiments.V002.project --left-root /tmp/v002-f022-archive --right-root /tmp/v002-f022-archive \
-  --left-world C01 --right-world C02 \
-  --expected-left-sha "$(git rev-parse HEAD)" --expected-right-sha "$(git rev-parse HEAD)" \
-  --trusted-left-anchor "checked-out-source:$(git rev-parse HEAD)" \
-  --trusted-right-anchor "checked-out-source:$(git rev-parse HEAD)" --out /tmp/v002-demo
+python -m pip install 'jsonschema>=4.22,<5'
+sha="$(git rev-parse HEAD)"
+python -m experiments.F022.run_suite --out /tmp/v002-f022-original
+python -m experiments.V002.project \
+  --left-root /tmp/v002-f022-original --right-root /tmp/v002-f022-original \
+  --left-world C13 --right-world C01 \
+  --expected-left-sha "$sha" --expected-right-sha "$sha" \
+  --trusted-left-anchor "reviewed-checkout:$sha" \
+  --trusted-right-anchor "reviewed-checkout:$sha" --out /tmp/v002-c13-c01
+python -m experiments.V002.verify_view --view /tmp/v002-c13-c01/view.json \
+  --left-root /tmp/v002-f022-original --right-root /tmp/v002-f022-original \
+  --expected-left-sha "$sha" --expected-right-sha "$sha" \
+  --trusted-left-anchor "reviewed-checkout:$sha" --trusted-right-anchor "reviewed-checkout:$sha"
 ```
 
-**Trusted anchors are a caller responsibility.** A label string alone is not secure authentication: the caller must establish expected SHA through an independently inspected checkout and approval record. Self-hashed archival manifests never establish trust. Archive verifier must succeed for *both* sources before publishing output. Source archive bytes are not rewritten.
+Open `/tmp/v002-c13-c01/index.html` **offline in a browser**. To run automated Chromium checks, install `playwright` and its Chromium browser and run `python -m experiments.V002.browser_smoke --f022 path/index.html --f023 path/index.html --out screenshots` using **separate generated F022 C13/C01 and F023 Q02/Q04** outputs as done by dedicated CI.
 
-Next in the same isolated implementation PR: complete read-only six-panel browser display, source-independent view-bundle rejection oracle, semantic forgery controls, two-root deterministic audit, and browser/manual study acceptance. No technical qualification or main merge until these are done.
+**No V002 formal technical acceptance or main integration** until the exact implementation HEAD's Python CI, Codex critical review, original and derived semantic tamper tests, browser evaluation and append-only findings have been examined. Browser screenshots are illustration, not saved-source physics evidence. New physics, agent observation/policy path and seventh panel remain forbidden.
