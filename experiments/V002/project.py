@@ -70,8 +70,6 @@ def _trusted_source(root, side, expected_sha, trusted_anchor):
     oracle = verify_f022 if version == "f022.archive.v1" else verify_f023
     oracle(root, expected_source_sha=expected_sha)
     # Verify the archive has not changed since oracle execution.
-    hashes = {name.replace(".jsonl", "").replace(".json", "") + "_sha256":
-              digest(root / name) for name in names}
     mapping = {"scenario.json": "scenario_sha256", "states.jsonl": "states_sha256",
                "contacts.jsonl": "contacts_sha256", "audit.json": "audit_sha256",
                "manifest.json": "manifest_sha256", "actions.jsonl": "actions_sha256",
@@ -152,7 +150,6 @@ def _timeline(worlds):
 
 
 def _parameter_diff(a, b):
-    keys = sorted(set(a) | set(b) - {"world_id"})
     keys = sorted((set(a) | set(b)) - {"world_id"})
     if set(a) != set(b):
         raise AssertionError("mixed world input schema")
@@ -232,6 +229,8 @@ def publish(dest, view):
     tmp = Path(tempfile.mkdtemp(prefix=f".{dest.name}-v002-", dir=dest.parent))
     try:
         (tmp / "view.json").write_text(canonical(view) + "\n", encoding="utf-8", newline="\n")
+        from experiments.V002.viewer import render
+        (tmp / "index.html").write_text(render(view), encoding="utf-8", newline="\n")
         if dest.exists():
             raise FileExistsError("output was concurrently created")
         os.rename(tmp, dest)
