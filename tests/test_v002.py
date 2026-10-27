@@ -1,5 +1,6 @@
 """Initial V002 exact archive projection regression; no UI acceptance implied."""
 from pathlib import Path
+import importlib.util
 import tempfile
 import unittest
 
@@ -8,6 +9,7 @@ from experiments.F023.run_suite import produce as f023_produce
 from experiments.V002.project import project, publish, canonical
 
 
+@unittest.skipUnless(importlib.util.find_spec('jsonschema'), 'V002 schema validator not installed in inherited workflow')
 class ProjectionSmokeTest(unittest.TestCase):
     SHA = "a" * 40
 
