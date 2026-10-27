@@ -48,3 +48,5 @@ jobs:
           python -m experiments.V002.project --left-root "$t/f022" --right-root "$t/f022" --left-world C01 --right-world C02 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$t/view-a"
           python -m experiments.V002.project --left-root "$t/f022" --right-root "$t/f022" --left-world C01 --right-world C02 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$t/view-b"
           cmp "$t/view-a/view.json" "$t/view-b/view.json"
+          cmp "$t/view-a/index.html" "$t/view-b/index.html"
+          python -m experiments.V002.verify_view --view "$t/view-a/view.json" --left-root "$t/f022" --right-root "$t/f022" --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha"
