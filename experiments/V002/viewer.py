@@ -97,10 +97,17 @@ function draw(){
  const ay=E("text",{x:15,y:210,fill:"#bcd0ea","font-size":13});ay.textContent="Y (m)";
  for(const [who,color] of [["a","#65bbf1"],["b","#ffbf77"]]){
  const [x,y]=point(rec["x_"+who+"_m"],rec["y_"+who+"_m"]);
- E("circle",{cx:x,cy:y,r:Math.max(3,0.5/span*360),fill:color,opacity:.9,stroke:"#e4efff","stroke-width":1.4});
+ // Geometric radius is measured on the SAME XY physical scale, without a visibility clamp.
+ // A tiny source disk remains tiny; thin crosshair + label are symbolic centre annotations.
+ const radiusMetres=w.scenario["radius_"+who+"_m"];
+ const rr=radiusMetres/span*360;
+ E("circle",{cx:x,cy:y,r:rr,fill:color,opacity:.8,stroke:"none"});
+ E("line",{x1:x-4,y1:y,x2:x+4,y2:y,stroke:"#ffffff","stroke-width":1});
+ E("line",{x1:x,y1:y-4,x2:x,y2:y+4,stroke:"#ffffff","stroke-width":1});
  const text=E("text",{x:x+9,y:y-10,fill:"#f1f8ff","font-size":17});text.textContent=who.toUpperCase();
  }
  node("small","sample t="+fmt(rec.time_s)+" s · source row "+item.source_row+" · phase="+rec.phase,div);
+ node("small","XY centres (m)  A: ("+rec.x_a_m+", "+rec.y_a_m+")  B: ("+rec.x_b_m+", "+rec.y_b_m+"). Circles = physical disk radii; crosshairs/labels = symbolic centre annotations.",div);
  }
 }
 choose.addEventListener("change",draw);draw();
