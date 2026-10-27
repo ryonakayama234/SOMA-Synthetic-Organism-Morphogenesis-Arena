@@ -70,7 +70,6 @@ class ProjectionSmokeTest(unittest.TestCase):
                              trusted_left_anchor="test-checkout",
                              trusted_right_anchor="test-checkout")
         self.assertEqual(result["view_oracle"], "pass")
-        forged = dict(view)
         import copy
         forged = copy.deepcopy(view)
         forged["worlds"][0]["samples"][0]["record"]["x_a_m"] += .1
