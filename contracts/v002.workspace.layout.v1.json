@@ -1,6 +1,6 @@
 {
   "contract_id": "v002.workspace.layout.v1",
-  "status": "PROPOSED_AWAITING_HUMAN_LAYOUT_ACCEPTANCE",
+  "status": "VISUAL_DIRECTION_ENDORSED_INTERACTIVE_GATE_OPEN",
   "source_contract": "v002.view.v1",
   "parent_pr": 89,
   "viewport": {
