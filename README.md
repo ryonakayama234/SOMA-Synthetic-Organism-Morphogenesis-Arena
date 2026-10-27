@@ -375,3 +375,5 @@ F014は固定F007理想1DのB運動1bitの観測能力、およびその識別�
 
 
 **2026-10-24 PRE-OBSERVATION ARITHMETIC ERRATUM:** All frozen eight factors preserved: 32×2×3×2×3×2×2×2 = **9,216 worlds / 4,608 YY-NN paired comparisons**, not the originally misstated 4,608/2,304. No F021 primary world had executed when this correction was made. See [FROZEN_V1.md](../../experiments/F021/FROZEN_V1.md) and amendment A1.
+
+**V002 implementation Draft (2026-10-27; NOT ADOPTED):** [PR #89](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/89) adds a source-verified immutable two-world 2D projected bundle, independent view checker, and offline existing-six-panel display under frozen [V002.v1](experiments/V002/FROZEN_V1.md) SHA `4ba05357a426edaa7ec6e9d1d5f905ad64893de8`. Tests/CI and Codex review are **in progress**; no browser human acceptance, bounded technical viewer qualification or main integration is claimed. This is not a physical simulation, autonomous agent or body emergence.
