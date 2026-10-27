@@ -1486,3 +1486,7 @@ flowchart LR
 ~~~
 
 F023 does **not** add a new panel or extend Setup/Arena/Cells/Timeline/Evidence/System-Data responsibilities. Setup uses `scenario.json`, Arena uses `states.jsonl`+`contacts.jsonl`, Cells uses `actions.jsonl`+`ledger.jsonl`, Timeline uses source-record times, Evidence uses audit/manifest/source hash, System/Data uses diagrams/contracts. A later read-only 2D viewer is separately gated by V002 #86/#87; V001 1D remains separately unmerged. Design frozen physics and previous F022 passive solver remain intact.
+
+
+### F023 source adoption checkpoint — 2026-10-27
+Exact merged-main F023 code is **limited technically adopted**, not merely a future simulation concept: PR #83 merge `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e`, [22/22 main push workflows](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40424675606). The existing diagram above distinguishes **implemented F023 physics/evidence production** (solid data path) from **unimplemented researcher UI / local policy** (future dashed path). The six panels retain their preagreed ownership. V002 #86/#87 remains a separate read-only viewer proposal; F023 physics emits only saved evidence, never agent observations.

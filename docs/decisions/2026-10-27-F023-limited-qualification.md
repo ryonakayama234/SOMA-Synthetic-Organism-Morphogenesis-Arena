@@ -28,3 +28,7 @@ These are deterministic calibration worlds, with deliberate symmetries and contr
 4. F023 can be admitted **as a limited experimental source** to V002 only after main integration and post-main checks. V002's future read-only UI remains an independent, versioned, unfrozen proposal. V001 stays unmerged.
 
 **External validity: NOT CLAIMED. Scientific emergence: NOT DEMONSTRATED. Technical source verification: BOUNDED.**
+
+## 2026-10-27 — FINAL TECHNICAL ADMISSION (post-main gate PASSED)
+
+Prior conditional disposition above is retained as historical pre-merge status. PR #83 was merged at `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e` after 23/23 documentation-inclusive final PR-head CI succeeded. **All 22/22 selected GitHub Actions push workflows passed on that exact merged-main SHA**, including [F023 3.11/3.12 archived-source CI](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40424675606). **Status now: LIMITED TECHNICAL ADOPTED**, within the exact frozen 15 synthetic worlds; H23a/b/c have only the bounded interpretation above. Any future V002 archive comparison requires independent source-anchor and archive-verifier checks. No general biological/robot autonomy claim or external academic review.
