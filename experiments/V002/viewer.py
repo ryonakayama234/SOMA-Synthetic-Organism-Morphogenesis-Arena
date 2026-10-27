@@ -79,7 +79,7 @@ const xyx=worlds.flatMap(w=>w.samples.flatMap(x=>[x.record.x_a_m,x.record.x_b_m]
 const xyy=worlds.flatMap(w=>w.samples.flatMap(x=>[x.record.y_a_m,x.record.y_b_m]));
 const minx=Math.min(...xyx)-1,maxx=Math.max(...xyx)+1,miny=Math.min(...xyy)-1,maxy=Math.max(...xyy)+1;
 const span=Math.max(maxx-minx,maxy-miny,1),cx=(minx+maxx)/2,cy=(miny+maxy)/2;
-function point(x,y){return [20+(x-(cx-span/2))/span*560,390-(y-(cy-span/2))/span*360]}
+function point(x,y){return [120+(x-(cx-span/2))/span*360,390-(y-(cy-span/2))/span*360]}
 function draw(){
  const arena=$("arena");arena.replaceChildren();
  for(const w of worlds){
@@ -93,9 +93,11 @@ function draw(){
  div.appendChild(svg);
  const E=(tag,attrs)=>{const e=document.createElementNS("http://www.w3.org/2000/svg",tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));svg.appendChild(e);return e};
  for(const x of [0,1]){const [a,b]=point(x?cx+span/2:cx-span/2,cy);E("line",{x1:a,y1:10,x2:a,y2:400,stroke:"#294158"})}
+ const ax=E("text",{x:300,y:413,fill:"#bcd0ea","font-size":13});ax.textContent="X (m)";
+ const ay=E("text",{x:15,y:210,fill:"#bcd0ea","font-size":13});ay.textContent="Y (m)";
  for(const [who,color] of [["a","#65bbf1"],["b","#ffbf77"]]){
  const [x,y]=point(rec["x_"+who+"_m"],rec["y_"+who+"_m"]);
- E("circle",{cx:x,cy:y,r:Math.max(3,0.5/span*560),fill:color,opacity:.9,stroke:"#e4efff","stroke-width":1.4});
+ E("circle",{cx:x,cy:y,r:Math.max(3,0.5/span*360),fill:color,opacity:.9,stroke:"#e4efff","stroke-width":1.4});
  const text=E("text",{x:x+9,y:y-10,fill:"#f1f8ff","font-size":17});text.textContent=who.toUpperCase();
  }
  node("small","sample t="+fmt(rec.time_s)+" s · source row "+item.source_row+" · phase="+rec.phase,div);
