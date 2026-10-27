@@ -1553,3 +1553,28 @@ flowchart LR
   UI -. "FORBIDDEN" .-> A["LocalObservation or policy"]
   P -. "FORBIDDEN" .-> SIM["Original physics producer or archive mutation"]
 ~~~
+
+
+### V002 evidence-qualified implementation path — 2026-10-27 (candidate; no adoption)
+The actual candidate viewer follows the frozen six-panel, no-feedback contract. Exact-code-head run [40455089755](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40455089755) executed Python 3.11/3.12 archive/view audits and headless Chromium successfully; human browser acceptance remains **pending**. This is an implementation/evidence status append, **not an architecture or panel contract revision**.
+
+~~~mermaid
+flowchart TB
+  F22["Existing f022.archive.v1 files (read only)"] --> V["F022/F023 source-independent saved-data oracle + externally trusted SHA"]
+  F23["Existing f023.archive.v1 files (read only)"] --> V
+  V -->|PASS| P["V002 project.py: typed canonical view.json staged"]
+  V -->|FAIL| R["Reject; do not publish"]
+  P --> Q["V002 verify_view.py: independently reread original source + validate projected semantics"]
+  Q -->|FAIL| R
+  Q -->|PASS| H["V002 viewer.py: read-only offline HTML; immutable publish"]
+  H --> S["Setup: complete archived parameter diff"]
+  H --> A["Arena: 2 instances, shared metric XY scale"]
+  H --> C["Cells: F023 private ledger / F022 NOT MODELED"]
+  H --> T["Timeline: common samples vs exact TOI/actions"]
+  H --> E["Evidence: source oracle and trusted provenance"]
+  H --> SYS["System/Data: contract and access boundary"]
+  H -. "NO pathway" .-> POLICY["LocalObservation / Policy / Learning"]
+  H -. "NO pathway" .-> SRC["Original simulator / source archive mutation"]
+~~~
+
+The diagram tracks actual files and responsibilities in the currently reviewed implementation (PR #89), while control edges to agent/physics are **forbidden**, not APIs. Automated browser screenshot is illustration only; it is not evidence of a new physical event. All future changes of panel owner, additional panel or altered physical/display meaning require approved v2 contract **before** any UI change.

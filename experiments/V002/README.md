@@ -1,6 +1,6 @@
 # V002 implementation candidate — frozen source-verified read-only 2D observatory
 
-**STATUS: IMPLEMENTATION CANDIDATE / latest-head CI & Codex review gate / NO HUMAN BROWSER ACCEPTANCE / NOT YET ADOPTED.**
+**STATUS: SOURCE HEAD CI/CODE REVIEW PASS / HUMAN INTERACTIVE ACCEPTANCE NOT YET EVIDENCED / NOT ADOPTED.**
 Parent [#86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86), [Draft PR #89](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/89), frozen preregistration SHA `4ba05357a426edaa7ec6e9d1d5f905ad64893de8`; frozen [machine-readable view contract](../../contracts/v002.view.v1.schema.json).
 
 ## Exact one-way evidence path
@@ -32,3 +32,8 @@ python -m experiments.V002.verify_view --view /tmp/v002-c13-c01/view.json \
 Open `/tmp/v002-c13-c01/index.html` **offline in a browser**. To run automated Chromium checks, install `playwright` and its Chromium browser and run `python -m experiments.V002.browser_smoke --f022 path/index.html --f023 path/index.html --out screenshots` using **separate generated F022 C13/C01 and F023 Q02/Q04** outputs as done by dedicated CI.
 
 **No V002 formal technical acceptance or main integration** until the exact implementation HEAD's Python CI, Codex critical review, original and derived semantic tamper tests, browser evaluation and append-only findings have been examined. Browser screenshots are illustration, not saved-source physics evidence. New physics, agent observation/policy path and seventh panel remain forbidden.
+
+
+## Verified existing PR-code run and pending acceptance gate (2026-10-27)
+[Exact-code-HEAD GitHub Actions run 40455089755](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40455089755) at `ed2974d0e28808d86567f8ebb5694898758497f4`: 24/24 workflows successful; dedicated V002 Python 3.11 and 3.12 jobs individually passed 6 V002 tests and 269 full discovered tests; byte-identical two-root source/view replay and independent source/view oracles passed; Chromium headless smoke passed for F022 C13/C01 and F023 Q02/Q04. [Screenshots](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40455089755) are available as workflow artifact `v002-browser-screenshots` (ID 12711874203). Visual inspection by the assistant confirms displayed labels and physical-radius-with-symbolic-crosshair separation, **not** actual human interactive usability acceptance.
+**STOP before main/adoption:** Researcher's manual interaction and comprehension check has not been evidenced. Preserve `Draft`, keep the untouched frozen contract, have an independent reviewer reconcile historical P1/P2 review threads and check exact-final-HEAD CI after this documentation update, then record explicit limited technical adoption versus scientific support (separate gates). No new physical data/model or agent feedback is authorized by a successful screenshot.
