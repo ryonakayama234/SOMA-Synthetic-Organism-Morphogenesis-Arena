@@ -77,6 +77,8 @@ jobs:
           python -m experiments.F023.run_suite --out "$p/f023"
           python -m experiments.V002.project --left-root "$p/f022" --right-root "$p/f022" --left-world C13 --right-world C01 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$p/f022-view"
           python -m experiments.V002.project --left-root "$p/f023" --right-root "$p/f023" --left-world Q02 --right-world Q04 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$p/f023-view"
+          python -m experiments.V002.project --left-root "$p/f022" --right-root "$p/f022" --left-world C05 --right-world C06 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$p/f022-null-hit"
+          python -m experiments.V002.project --left-root "$p/f022" --right-root "$p/f022" --left-world C07 --right-world C08 --expected-left-sha "$sha" --expected-right-sha "$sha" --trusted-left-anchor "checked-out:$sha" --trusted-right-anchor "checked-out:$sha" --out "$p/f022-graze-separate"
           python -m experiments.V002.browser_smoke --f022 "$p/f022-view/index.html" --f023 "$p/f023-view/index.html" --out "$p/screenshots"
       - name: Upload illustrative browser screenshots (not physics evidence)
         if: always()
@@ -85,3 +87,28 @@ jobs:
           name: v002-browser-screenshots
           path: ${{ runner.temp }}/v002-browser/screenshots/*.png
           if-no-files-found: ignore
+
+      - name: Package verified self-contained offline HTML for human researcher interaction
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v002-browser"
+          dst="$p/offline-human-review"
+          mkdir -p "$dst"
+          cp -R "$p/f022-view" "$dst/F022-C13-vs-C01"
+          cp -R "$p/f022-null-hit" "$dst/F022-C05-vs-C06"
+          cp -R "$p/f022-graze-separate" "$dst/F022-C07-vs-C08"
+          cp -R "$p/f023-view" "$dst/F023-Q02-vs-Q04"
+          cp experiments/V002/REVIEW_GATE.md "$dst/README.md"
+          printf "CI source checkout: %s\nOriginal and derived oracles must pass before HTML publication.\n" "$(git rev-parse HEAD)" > "$dst/BUILD.txt"
+          (cd "$dst" && sha256sum */index.html */view.json > SHA256SUMS.txt)
+          test "$(find "$dst" -name index.html | wc -l)" -eq 4
+          test "$(find "$dst" -name view.json | wc -l)" -eq 4
+      - name: Upload actual offline researcher UI (not an acceptance finding)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v002-offline-manual-review
+          path: ${{ runner.temp }}/v002-browser/offline-human-review/
+          if-no-files-found: error
+          retention-days: 30
