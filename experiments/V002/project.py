@@ -220,7 +220,8 @@ def project(left_root, right_root, left_id, right_id, *, expected_left_sha,
     return view
 
 
-def publish(dest, view):
+def publish(dest, view, *, left_root, right_root, expected_left_sha, expected_right_sha,
+            trusted_left_anchor, trusted_right_anchor):
     """Single successful immutable output. Never replace/partially publish."""
     dest = Path(dest)
     if dest.exists():
@@ -229,6 +230,14 @@ def publish(dest, view):
     tmp = Path(tempfile.mkdtemp(prefix=f".{dest.name}-v002-", dir=dest.parent))
     try:
         (tmp / "view.json").write_text(canonical(view) + "\n", encoding="utf-8", newline="\n")
+        # Gate exact derived view bytes against independently re-read and source-verified
+        # originals BEFORE publishing any verified_projection artifact or HTML.
+        from experiments.V002.verify_view import verify_view
+        verify_view(tmp / "view.json", left_root, right_root,
+                    expected_left_sha=expected_left_sha,
+                    expected_right_sha=expected_right_sha,
+                    trusted_left_anchor=trusted_left_anchor,
+                    trusted_right_anchor=trusted_right_anchor)
         from experiments.V002.viewer import render
         (tmp / "index.html").write_text(render(view), encoding="utf-8", newline="\n")
         if dest.exists():
@@ -256,7 +265,10 @@ def main():
                      expected_right_sha=args.expected_right_sha,
                      trusted_left_anchor=args.trusted_left_anchor,
                      trusted_right_anchor=args.trusted_right_anchor)
-    publish(args.out, bundle)
+    publish(args.out, bundle, left_root=args.left_root, right_root=args.right_root,
+            expected_left_sha=args.expected_left_sha, expected_right_sha=args.expected_right_sha,
+            trusted_left_anchor=args.trusted_left_anchor,
+            trusted_right_anchor=args.trusted_right_anchor)
     print(canonical({"out": str(args.out), "schema": bundle["schema_version"],
                      "comparison": bundle["pair_inference"]}))
 
