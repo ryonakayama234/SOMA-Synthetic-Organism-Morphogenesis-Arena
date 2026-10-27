@@ -65,7 +65,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.79rem}
 <script nonce="v002">const BUNDLE=__V002_JSON__;
 const $=id=>document.getElementById(id);
 function node(tag,txt,parent){const x=document.createElement(tag);if(txt!==null)x.textContent=String(txt);if(parent)parent.appendChild(x);return x}
-function fmt(v){return typeof v==="number"?Number(v).toPrecision(10).replace(/\\.?0+$/,""):String(v)}
+function fmt(v){return String(v)}
 function table(head,rows,el){const t=node("table",null,el),h=node("tr",null,t);head.forEach(v=>node("th",v,h));rows.forEach(row=>{const tr=node("tr",null,t);row.forEach(v=>node("td",v,tr))});return t}
 const worlds=BUNDLE.worlds, clocks=BUNDLE.joint_sample_times_s;
 const setup=$("setup");node("p",worlds.map(w=>w.side.toUpperCase()+" = "+w.source_schema_version+" / "+w.world_id).join("   |   "),setup);
@@ -131,7 +131,8 @@ function showEvent(){
  if(!original){$("eventNote").textContent="REFUSED: archived provenance pointer missing";return}
  const other=worlds.find(x=>x.side!==v.side);
  const exists=other.samples.some(x=>x.record.time_s===v.time_s);
- $("eventNote").textContent=v.side.toUpperCase()+" "+v.kind+" / exact source time "+fmt(v.time_s)+" s. Other side: "+(exists?"EXACT_ARCHIVED_SAMPLE_AT_TIME":"NO_RECORDED_SNAPSHOT_AT_TIME")+". No extrapolation/interpolation.";
+ const otherState=exists?"EXACT_POST_SAMPLE_AT_TIME (a saved post-event/post-action frame, not a synchronized pre-event snapshot)":"NO_RECORDED_SNAPSHOT_AT_TIME";
+ $("eventNote").textContent=v.side.toUpperCase()+" "+v.kind+" / exact source time "+fmt(v.time_s)+" s. Other side: "+otherState+". No extrapolation/interpolation.";
  node("pre",JSON.stringify(original.record,null,2),details);
 }
 evsel.addEventListener("change",showEvent);showEvent();
