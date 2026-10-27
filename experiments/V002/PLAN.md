@@ -53,3 +53,11 @@ Parent: https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-
 
 ## Decision and records
 Technical verdict = PASS/FAIL/INCONCLUSIVE; H-V002 verdict = SUPPORTED/REFUTED/INCONCLUSIVE/UNEXECUTED, separately, with evidence SHA and explicit negative cases. V002 projection count and scenario coverage are **not yet observed**. [Append-only findings](../../findings/V002-validation.md) must record failed browser/manual checks, source rejections and dependency blocks, not only positive screenshots. Do not integrate without explicit user adoption decision.
+
+
+## 2026-10-27 design correction for schema review (NOT V002 execution)
+- Proposed machine-checkable JSON Schema: [`contracts/v002.view.v1.schema.json`](../../contracts/v002.view.v1.schema.json). Replaces the loose `object`/`any` proposal during review, not a freeze.
+- Check **actual** archived event kind `"impulse"` or `"grazing_zero_impulse"` against source `contacts.jsonl`; `"motor_action"` belongs only to F023 `actions.jsonl`, not a contact-kind variant.
+- `source_row` must be 0-based **full JSONL file index**, not a per-world sample index. Each `WorldProjection` remains one of two distinct sides, allowing C01 vs C01 with separate independently verified source bundle identities.
+- Only same-family two-world pairs for v1; unsupported cross-F022/F023 mixed comparisons fail closed. Cross-source provenance must not be conflated with same-world identities.
+- Cross-field/trust/semantic checks remain separately preregistered; passing structural JSON Schema alone is never sufficient. After F023 formal admission update trust anchors before freezing.

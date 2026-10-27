@@ -1,0 +1,975 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/blob/design/V002-counterfactual-observatory-20261026/contracts/v002.view.v1.schema.json",
+  "title": "V002 view-only versioned record contract — DRAFT until independent review and immutable design freeze",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "v002.view.v1"
+    },
+    "status": {
+      "const": "verified_projection"
+    },
+    "contract_id": {
+      "const": "V002"
+    },
+    "worlds": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "oneOf": [
+        {
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/F022World"
+            },
+            {
+              "$ref": "#/$defs/F022World"
+            }
+          ],
+          "items": false
+        },
+        {
+          "prefixItems": [
+            {
+              "$ref": "#/$defs/F023World"
+            },
+            {
+              "$ref": "#/$defs/F023World"
+            }
+          ],
+          "items": false
+        }
+      ]
+    },
+    "joint_sample_times_s": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "type": "number"
+      },
+      "uniqueItems": true
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/TimelinePointer"
+      }
+    },
+    "parameter_diff": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/InputDiff"
+      }
+    },
+    "pair_inference": {
+      "type": "string",
+      "enum": [
+        "identical",
+        "single_field",
+        "multi_field"
+      ]
+    },
+    "evidence": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "$ref": "#/$defs/VerifiedSource"
+          }
+        },
+        "archive_semantics_oracle": {
+          "const": "pass"
+        },
+        "view_projection_oracle": {
+          "const": "pass"
+        }
+      },
+      "required": [
+        "sources",
+        "archive_semantics_oracle",
+        "view_projection_oracle"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "contract_id",
+    "worlds",
+    "joint_sample_times_s",
+    "timeline",
+    "parameter_diff",
+    "pair_inference",
+    "evidence"
+  ],
+  "additionalProperties": false,
+  "$comment": "This JSON Schema constrains view structure only; it does not confer archive trust, physical conservation or causal inference. Must also run source-independent F022/F023 verifiers with externally anchored expected SHAs and validate row indices/order, per-world world_id cross-record consistency, exact timestamps, per-world field-diff completeness, and immutable archive bits. V002 is NOT IMPLEMENTED or ADOPTED.",
+  "$defs": {
+    "F022Scenario": {
+      "type": "object",
+      "properties": {
+        "world_id": {
+          "type": "string",
+          "pattern": "^C(0[1-9]|1[0-3])$"
+        },
+        "x_a_m": {
+          "type": "number"
+        },
+        "y_a_m": {
+          "type": "number"
+        },
+        "vx_a_mps": {
+          "type": "number"
+        },
+        "vy_a_mps": {
+          "type": "number"
+        },
+        "x_b_m": {
+          "type": "number"
+        },
+        "y_b_m": {
+          "type": "number"
+        },
+        "vx_b_mps": {
+          "type": "number"
+        },
+        "vy_b_mps": {
+          "type": "number"
+        },
+        "mass_a_kg": {
+          "type": "number"
+        },
+        "mass_b_kg": {
+          "type": "number"
+        },
+        "radius_a_m": {
+          "type": "number"
+        },
+        "radius_b_m": {
+          "type": "number"
+        },
+        "restitution": {
+          "type": "number"
+        },
+        "duration_s": {
+          "type": "number"
+        },
+        "sample_dt_s": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "world_id",
+        "x_a_m",
+        "y_a_m",
+        "vx_a_mps",
+        "vy_a_mps",
+        "x_b_m",
+        "y_b_m",
+        "vx_b_mps",
+        "vy_b_mps",
+        "mass_a_kg",
+        "mass_b_kg",
+        "radius_a_m",
+        "radius_b_m",
+        "restitution",
+        "duration_s",
+        "sample_dt_s"
+      ],
+      "additionalProperties": false
+    },
+    "F023Scenario": {
+      "type": "object",
+      "properties": {
+        "world_id": {
+          "type": "string",
+          "pattern": "^Q(0[1-9]|1[0-5])$"
+        },
+        "x_a_m": {
+          "type": "number"
+        },
+        "y_a_m": {
+          "type": "number"
+        },
+        "vx_a_mps": {
+          "type": "number"
+        },
+        "vy_a_mps": {
+          "type": "number"
+        },
+        "x_b_m": {
+          "type": "number"
+        },
+        "y_b_m": {
+          "type": "number"
+        },
+        "vx_b_mps": {
+          "type": "number"
+        },
+        "vy_b_mps": {
+          "type": "number"
+        },
+        "mass_a_kg": {
+          "type": "number"
+        },
+        "mass_b_kg": {
+          "type": "number"
+        },
+        "radius_a_m": {
+          "type": "number"
+        },
+        "radius_b_m": {
+          "type": "number"
+        },
+        "restitution": {
+          "type": "number"
+        },
+        "duration_s": {
+          "type": "number"
+        },
+        "sample_dt_s": {
+          "type": "number"
+        },
+        "command_ax_ns": {
+          "type": "number"
+        },
+        "command_ay_ns": {
+          "type": "number"
+        },
+        "command_bx_ns": {
+          "type": "number"
+        },
+        "command_by_ns": {
+          "type": "number"
+        },
+        "initial_balance_a_uj": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "initial_balance_b_uj": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "world_id",
+        "x_a_m",
+        "y_a_m",
+        "vx_a_mps",
+        "vy_a_mps",
+        "x_b_m",
+        "y_b_m",
+        "vx_b_mps",
+        "vy_b_mps",
+        "mass_a_kg",
+        "mass_b_kg",
+        "radius_a_m",
+        "radius_b_m",
+        "restitution",
+        "duration_s",
+        "sample_dt_s",
+        "command_ax_ns",
+        "command_ay_ns",
+        "command_bx_ns",
+        "command_by_ns",
+        "initial_balance_a_uj",
+        "initial_balance_b_uj"
+      ],
+      "additionalProperties": false
+    },
+    "StateRow": {
+      "type": "object",
+      "properties": {
+        "world_id": {
+          "type": "string"
+        },
+        "sample_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "time_s": {
+          "type": "number"
+        },
+        "phase": {
+          "const": "post"
+        },
+        "x_a_m": {
+          "type": "number"
+        },
+        "y_a_m": {
+          "type": "number"
+        },
+        "x_b_m": {
+          "type": "number"
+        },
+        "y_b_m": {
+          "type": "number"
+        },
+        "vx_a_mps": {
+          "type": "number"
+        },
+        "vy_a_mps": {
+          "type": "number"
+        },
+        "vx_b_mps": {
+          "type": "number"
+        },
+        "vy_b_mps": {
+          "type": "number"
+        },
+        "total_ke_j": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "world_id",
+        "sample_index",
+        "time_s",
+        "phase",
+        "x_a_m",
+        "y_a_m",
+        "x_b_m",
+        "y_b_m",
+        "vx_a_mps",
+        "vy_a_mps",
+        "vx_b_mps",
+        "vy_b_mps",
+        "total_ke_j"
+      ],
+      "additionalProperties": false
+    },
+    "ContactRow": {
+      "type": "object",
+      "properties": {
+        "world_id": {
+          "type": "string"
+        },
+        "event_index": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "time_s": {
+          "type": "number"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "impulse",
+            "grazing_zero_impulse"
+          ]
+        },
+        "normal_x": {
+          "type": "number"
+        },
+        "normal_y": {
+          "type": "number"
+        },
+        "impulse_ns": {
+          "type": "number"
+        },
+        "pre_x_a_m": {
+          "type": "number"
+        },
+        "pre_y_a_m": {
+          "type": "number"
+        },
+        "pre_x_b_m": {
+          "type": "number"
+        },
+        "pre_y_b_m": {
+          "type": "number"
+        },
+        "pre_vx_a_mps": {
+          "type": "number"
+        },
+        "pre_vy_a_mps": {
+          "type": "number"
+        },
+        "pre_vx_b_mps": {
+          "type": "number"
+        },
+        "pre_vy_b_mps": {
+          "type": "number"
+        },
+        "post_vx_a_mps": {
+          "type": "number"
+        },
+        "post_vy_a_mps": {
+          "type": "number"
+        },
+        "post_vx_b_mps": {
+          "type": "number"
+        },
+        "post_vy_b_mps": {
+          "type": "number"
+        },
+        "restitution": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "world_id",
+        "event_index",
+        "time_s",
+        "kind",
+        "normal_x",
+        "normal_y",
+        "impulse_ns",
+        "pre_x_a_m",
+        "pre_y_a_m",
+        "pre_x_b_m",
+        "pre_y_b_m",
+        "pre_vx_a_mps",
+        "pre_vy_a_mps",
+        "pre_vx_b_mps",
+        "pre_vy_b_mps",
+        "post_vx_a_mps",
+        "post_vy_a_mps",
+        "post_vx_b_mps",
+        "post_vy_b_mps",
+        "restitution"
+      ],
+      "additionalProperties": false
+    },
+    "ActionRow": {
+      "type": "object",
+      "properties": {
+        "world_id": {
+          "type": "string"
+        },
+        "cell_id": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B"
+          ]
+        },
+        "time_s": {
+          "const": 0
+        },
+        "command_x_ns": {
+          "type": "number"
+        },
+        "command_y_ns": {
+          "type": "number"
+        },
+        "applied_x_ns": {
+          "type": "number"
+        },
+        "applied_y_ns": {
+          "type": "number"
+        },
+        "ground_x_ns": {
+          "type": "number"
+        },
+        "ground_y_ns": {
+          "type": "number"
+        },
+        "pre_vx_mps": {
+          "type": "number"
+        },
+        "pre_vy_mps": {
+          "type": "number"
+        },
+        "post_vx_mps": {
+          "type": "number"
+        },
+        "post_vy_mps": {
+          "type": "number"
+        },
+        "candidate_work_j": {
+          "type": "number"
+        },
+        "applied_work_j": {
+          "type": "number"
+        },
+        "candidate_charge_uj": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "charge_uj": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "idle",
+            "applied",
+            "insufficient_private_budget"
+          ]
+        }
+      },
+      "required": [
+        "world_id",
+        "cell_id",
+        "time_s",
+        "command_x_ns",
+        "command_y_ns",
+        "applied_x_ns",
+        "applied_y_ns",
+        "ground_x_ns",
+        "ground_y_ns",
+        "pre_vx_mps",
+        "pre_vy_mps",
+        "post_vx_mps",
+        "post_vy_mps",
+        "candidate_work_j",
+        "applied_work_j",
+        "candidate_charge_uj",
+        "charge_uj",
+        "decision"
+      ],
+      "additionalProperties": false
+    },
+    "LedgerRow": {
+      "type": "object",
+      "properties": {
+        "world_id": {
+          "type": "string"
+        },
+        "cell_id": {
+          "type": "string",
+          "enum": [
+            "A",
+            "B"
+          ]
+        },
+        "balance_before_uj": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "charge_uj": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "balance_after_uj": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "world_id",
+        "cell_id",
+        "balance_before_uj",
+        "charge_uj",
+        "balance_after_uj"
+      ],
+      "additionalProperties": false
+    },
+    "SampleWithLine": {
+      "type": "object",
+      "properties": {
+        "source_row": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "record": {
+          "$ref": "#/$defs/StateRow"
+        }
+      },
+      "required": [
+        "source_row",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "ContactWithLine": {
+      "type": "object",
+      "properties": {
+        "source_row": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "record": {
+          "$ref": "#/$defs/ContactRow"
+        }
+      },
+      "required": [
+        "source_row",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "ActionWithLine": {
+      "type": "object",
+      "properties": {
+        "source_row": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "record": {
+          "$ref": "#/$defs/ActionRow"
+        }
+      },
+      "required": [
+        "source_row",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "LedgerWithLine": {
+      "type": "object",
+      "properties": {
+        "source_row": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "record": {
+          "$ref": "#/$defs/LedgerRow"
+        }
+      },
+      "required": [
+        "source_row",
+        "record"
+      ],
+      "additionalProperties": false
+    },
+    "F022World": {
+      "type": "object",
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "world_id": {
+          "type": "string"
+        },
+        "trusted_source_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "frozen_protocol_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "samples": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/SampleWithLine"
+          }
+        },
+        "contacts": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/ContactWithLine"
+          }
+        },
+        "source_schema_version": {
+          "const": "f022.archive.v1"
+        },
+        "scenario": {
+          "$ref": "#/$defs/F022Scenario"
+        },
+        "cell_model": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "not_modeled"
+            }
+          },
+          "required": [
+            "kind"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "side",
+        "world_id",
+        "trusted_source_sha",
+        "frozen_protocol_sha",
+        "manifest_sha256",
+        "samples",
+        "contacts",
+        "source_schema_version",
+        "scenario",
+        "cell_model"
+      ],
+      "additionalProperties": false
+    },
+    "F023World": {
+      "type": "object",
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "world_id": {
+          "type": "string"
+        },
+        "trusted_source_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "frozen_protocol_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "samples": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/SampleWithLine"
+          }
+        },
+        "contacts": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "$ref": "#/$defs/ContactWithLine"
+          }
+        },
+        "source_schema_version": {
+          "const": "f023.archive.v1"
+        },
+        "scenario": {
+          "$ref": "#/$defs/F023Scenario"
+        },
+        "cell_model": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "const": "f023_private"
+            },
+            "actions": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "$ref": "#/$defs/ActionWithLine"
+              }
+            },
+            "ledger": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "$ref": "#/$defs/LedgerWithLine"
+              }
+            }
+          },
+          "required": [
+            "kind",
+            "actions",
+            "ledger"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "side",
+        "world_id",
+        "trusted_source_sha",
+        "frozen_protocol_sha",
+        "manifest_sha256",
+        "samples",
+        "contacts",
+        "source_schema_version",
+        "scenario",
+        "cell_model"
+      ],
+      "additionalProperties": false
+    },
+    "VerifiedSource": {
+      "type": "object",
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "expected_source_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "expected_protocol_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "verifier": {
+          "type": "string"
+        },
+        "verdict": {
+          "const": "pass"
+        },
+        "file_hashes": {
+          "type": "object",
+          "properties": {
+            "scenario_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "states_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "contacts_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "audit_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "manifest_sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "required": [
+            "scenario_sha256",
+            "states_sha256",
+            "contacts_sha256",
+            "audit_sha256",
+            "manifest_sha256"
+          ],
+          "additionalProperties": false
+        },
+        "trusted_anchor_ref": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "side",
+        "expected_source_sha",
+        "expected_protocol_sha",
+        "verifier",
+        "verdict",
+        "file_hashes",
+        "trusted_anchor_ref"
+      ],
+      "additionalProperties": false
+    },
+    "InputDiff": {
+      "type": "object",
+      "properties": {
+        "field_path": {
+          "type": "string",
+          "enum": [
+            "x_a_m",
+            "y_a_m",
+            "vx_a_mps",
+            "vy_a_mps",
+            "x_b_m",
+            "y_b_m",
+            "vx_b_mps",
+            "vy_b_mps",
+            "mass_a_kg",
+            "mass_b_kg",
+            "radius_a_m",
+            "radius_b_m",
+            "restitution",
+            "duration_s",
+            "sample_dt_s",
+            "command_ax_ns",
+            "command_ay_ns",
+            "command_bx_ns",
+            "command_by_ns",
+            "initial_balance_a_uj",
+            "initial_balance_b_uj"
+          ]
+        },
+        "left": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "right": {
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "equal": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "field_path",
+        "left",
+        "right",
+        "equal"
+      ],
+      "additionalProperties": false
+    },
+    "TimelinePointer": {
+      "type": "object",
+      "properties": {
+        "side": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ]
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "sample",
+            "contact",
+            "action"
+          ]
+        },
+        "time_s": {
+          "type": "number"
+        },
+        "source_file": {
+          "type": "string",
+          "enum": [
+            "states.jsonl",
+            "contacts.jsonl",
+            "actions.jsonl"
+          ]
+        },
+        "source_row": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "side",
+        "kind",
+        "time_s",
+        "source_file",
+        "source_row"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
