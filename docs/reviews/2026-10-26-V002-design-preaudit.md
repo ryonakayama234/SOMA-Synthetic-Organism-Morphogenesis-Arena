@@ -23,3 +23,8 @@
 - **Required next audit**: independent reviewer should challenge every displayed claim against immutable F022 source logs and separately adopted F023 if available. Same-AI checklist does not substitute for external review.
 
 **Design verdict:** candidate ready for **Draft PR review only**. STOP before viewer implementation, protocol freeze or main merge until gaps/risks are addressed.
+
+## 2026-10-27 external-tool critical Codex re-review: two P2 corrections requested
+- **P2 Setup read-only archived command fields:** `scenario.json` necessarily contains researcher-prescribed `command_ay_ns` etc used by Q02/Q03; forbid **new command dispatch** but permit read-only field diff. Reworded both architecture and SPEC. Existing six panel responsibilities unchanged.
+- **P2 fake action source kind:** `actions.jsonl` has exact 18 fields with `decision`, not `kind`. Do not invent `motor_action`; derive viewer-only `TimelinePointer.kind="action"` from the source file and row. Corrected PLAN and data contracts; see typed draft JSON Schema.
+- This is an **AI code review**, not a human independent academic referee. Resolution remains subject to exact-head re-review, machine-schema tests and a separate immutable preimplementation freeze. No V002 UI or experiment exists.

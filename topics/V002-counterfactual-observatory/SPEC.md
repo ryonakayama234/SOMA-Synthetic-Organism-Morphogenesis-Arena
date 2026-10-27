@@ -42,7 +42,7 @@ Refute/stop for a dropped/contact-overwritten event, fabricated sampled coordina
 ## UI panel contract (all six existing responsibilities; zero extensions)
 | Panel | Sole rendering responsibility | Source-bound projection | Forbidden |
 | --- | --- | --- | --- |
-| Setup / Scenarios | select two verified saved IDs; full initial-field diff | scenario world records | send settings to simulator, mutate archive |
+| Setup / Scenarios | select two verified saved IDs; full initial-field diff | verified scenario world records **including read-only prescribed command input fields** | send live settings or command changes to simulator, mutate archive |
 | Arena | render two read-only 2D XY scenes + actual exact contact annotations | saved samples and event pre/post snapshots | synthesize new physics, own new panel |
 | Cells | per-cell private action/balance, or explicit N/A for F022 | F023 actions/ledger; F022 absent | pool A/B balance, invent missing values |
 | Timeline | common sample cursor, per-world off-grid event markers, ordered action/contact phases | exact sample/event times and kind | interpolation posing as evidence |

@@ -1523,7 +1523,7 @@ flowchart TB
 ### V002 contract → panel responsibility and data flow (NOT DEPLOYED)
 | Existing panel, no extension | Owner of *view responsibility* | Only legal input |
 | --- | --- | --- |
-| Setup | pair selection and full input-diff | verified `scenario.json` and provenance, **not** action commands |
+| Setup | pair selection and full input-diff | verified read-only `scenario.json` including archived prescribed `command_*_ns` values + provenance; **NO submission of new commands** |
 | Arena | two instances of one XY renderer, contact truth | saved `states.jsonl` rows + per-world `contacts.jsonl` pre/post |
 | Cells | each cell's private action/ledger when present | F023 `actions.jsonl`+`ledger.jsonl`; F022 **NOT MODELED** |
 | Timeline | shared exact sampled instants; source event instants separately | sample/event pointer with exact order and phase, **never interpolation** |
