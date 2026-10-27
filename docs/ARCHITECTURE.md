@@ -1490,3 +1490,52 @@ F023 does **not** add a new panel or extend Setup/Arena/Cells/Timeline/Evidence/
 
 ### F023 source adoption checkpoint — 2026-10-27
 Exact merged-main F023 code is **limited technically adopted**, not merely a future simulation concept: PR #83 merge `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e`, [22/22 main push workflows](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40424675606). The existing diagram above distinguishes **implemented F023 physics/evidence production** (solid data path) from **unimplemented researcher UI / local policy** (future dashed path). The six panels retain their preagreed ownership. V002 #86/#87 remains a separate read-only viewer proposal; F023 physics emits only saved evidence, never agent observations.
+
+
+---
+
+## V002 Counterfactual Observatory — 2026-10-26 **DESIGN DRAFT ONLY; no viewer code / run / adoption**
+
+[Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86) / [SPEC](../topics/V002-counterfactual-observatory/SPEC.md) / [PLAN](../experiments/V002/PLAN.md) / [contract](DATA_CONTRACTS.md) / [UNEXECUTED findings](../findings/V002-validation.md) / [critical preaudit](reviews/2026-10-26-V002-design-preaudit.md).
+
+**Current truth:** F022 `f022.archive.v1` is limited technically adopted as passive 2D measurement. F023 `f023.archive.v1` is frozen **design** and separately implemented on open PR #83 but not yet technically admitted/main-integrated at selection. F023 path remains **BLOCKED** until independent adoption. V001 is an unmerged 1D experiment viewer; no new viewer code is created by this diagram.
+
+~~~mermaid
+flowchart TB
+  F22["F022.v1 accepted archive (5 files)"] --> V22["Independent F022 archive verifier + externally trusted source identity"]
+  F23["F023.v1 CONDITIONAL archive (7 files)"] -. "only after separate F023 admission + main merge" .-> V23["Independent F023 archive verifier + trusted source identity"]
+  V22 --> G{"Verification PASS? + supported source schema?"}
+  V23 -.-> G
+  G -->|No / F023 blocked| STOP["FAIL CLOSED: no view bundle"]
+  G -->|Yes| ADAPT["V002 read-only projection: world records, samples, exact events, provenance"]
+  ADAPT --> DIFF["Researcher-only two-world field diff + event/sample correspondence"]
+  DIFF --> UI["v002.view.v1 DRAFT ViewBundle (immutable output)"]
+  UI --> SETUP["Setup: archive choice / complete input diff"]
+  UI --> ARENA["Arena: 2 synchronized read-only XY panes"]
+  UI --> CELLS["Cells: F023 private actions/balances; F022 NOT MODELED"]
+  UI --> TIME["Timeline: sample cursor + exact pre/post events"]
+  UI --> EVID["Evidence: independent audit / exact source provenance"]
+  UI --> SYSTEM["System/Data: schema, owners and access wall"]
+  UI -. "FORBIDDEN" .-> AGENT["Future LocalObservation / LocalPolicy"]
+  UI -. "FORBIDDEN" .-> PHYS["F022/F023 physics producer or archive write"]
+~~~
+
+### V002 contract → panel responsibility and data flow (NOT DEPLOYED)
+| Existing panel, no extension | Owner of *view responsibility* | Only legal input |
+| --- | --- | --- |
+| Setup | pair selection and full input-diff | verified read-only `scenario.json` including archived prescribed `command_*_ns` values + provenance; **NO submission of new commands** |
+| Arena | two instances of one XY renderer, contact truth | saved `states.jsonl` rows + per-world `contacts.jsonl` pre/post |
+| Cells | each cell's private action/ledger when present | F023 `actions.jsonl`+`ledger.jsonl`; F022 **NOT MODELED** |
+| Timeline | shared exact sampled instants; source event instants separately | sample/event pointer with exact order and phase, **never interpolation** |
+| Evidence | verifier status, audit and source-binding | `audit.json`, `manifest.json`, **external trusted SHA**, verification report |
+| System/Data | display provenance, version and allowed paths | `v002.view.v1` proposal, `docs/DATA_CONTRACTS.md`, architecture |
+
+**State of the diagram:** aspirational V002 adapter/UI only. Simulators and existing F022/F023 frozen protocols must not be edited. Panel count/ownership is **fixed by design contract**; any future panel addition, removal or ownership change needs new reviewed version **before** UI changes. Existing 1D/2D physics not pooled. Neither world-truth viewer nor analytical pair diff is an input to the local cell. [Review](reviews/2026-10-26-V002-design-preaudit.md).
+
+
+### V002 design/review status after F023 limited adoption (2026-10-27)
+V002 remains **read-only, researcher-only, UNIMPLEMENTED**. F023 source is now **limited adopted** at main merge `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e` with successful exact-merge CI. F023 inputs are not displayed unless the V002 per-archive independent verification+trusted source/freeze gate succeeds. The V002 displayed records follow the [exact typed draft schema](../contracts/v002.view.v1.schema.json), not the earlier exploratory `object/any` sketch. Arena has two panes under the **one existing Arena responsibility**; no new panel or feedback to LocalPolicy, physics producer or archive writer.
+
+
+### V002.v1 freeze boundary — 2026-10-27 (viewer not implemented)
+Frozen preimplementation [protocol](../experiments/V002/FROZEN_V1.md) binds the existing one-way F022/F023 saved archive → independent verifier → derived typed read-only V002 → existing six panels. **Do not add a new panel** for comparison; two world canvases share Arena ownership. Source-preserving sample vs TOI, F023 action vs contact, researcher truth vs absent LocalPolicy boundaries are binding. No V002 observer code, screenshot or scientific observation yet; source diagrams are aspirational for this stage.
