@@ -58,3 +58,6 @@ Detailed prospective `v002.view.v1` typed schema in [DATA_CONTRACTS](../../docs/
 4. Researcher receives screenshots + comparison interpretation + source-linked findings; adopts or rejects bounded viewer **explicitly** before main integration. Same-AI self-audit is not third-party peer review.
 
 **Status: SELECTED / DESIGN PROPOSAL ONLY / ZERO V002 EXECUTIONS.**
+
+## 2026-10-27 design status update — new accepted 2D source
+F023.v1 [PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83) has now merged on main and passed 22/22 exact-merge push workflows, so the **source-admission dependency is satisfied for eligible F023 archives**. Viewer evidence **still** requires per-archive independently verified saved content plus trusted expected SHA/protocol identities. F023 scenarios are never UI-generated, and V002 continues to require a reviewed/frozen machine-readable [JSON Schema](../../contracts/v002.view.v1.schema.json) before code. The October 26 historical “F023 unmerged” passages above describe the original selection checkpoint, not the current state. F022-only fallback remains valid if specific F023 archives fail verification. No V002 runs or implementation have occurred.

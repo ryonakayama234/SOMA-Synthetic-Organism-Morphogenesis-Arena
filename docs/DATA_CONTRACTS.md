@@ -1290,79 +1290,17 @@ Do not use this PR qualification to claim self-driven agency, bodily connection,
 
 An archived `manifest.json` that merely hashes its own forged evidence is not sufficient. Each input bundle must pass the respective **source-independent from-disk verifier**, with **expected immutable source SHA and frozen-protocol SHA supplied by a trusted checked-out repository / review record**; the viewer cannot choose a trust anchor from an input supplied by the adversary. Log expected and actual identifiers, verifier/contract version, file digests, and refusal reason. A source that has no valid independent verifier or failed/frozen-unclear status is **not viewable as verified evidence**.
 
-### Proposed typed `v002.view.v1` shape (read-only derived projection)
-These conceptual keys are candidate canonical serialization fields, not source schema modifications:
+### Typed v002.view.v1 source of truth — authoritative DRAFT schema
 
-~~~text
-ViewBundle {
-  schema_version: "v002.view.v1"                    # proposed, not frozen
-  status: "verified_projection"                     # only after independent PASS
-  contract_id: "V002"
-  worlds: [WorldProjection, WorldProjection]         # exactly two, ordered left/right
-  joint_sample_times_s: number[]                    # exact common archived sample times
-  timeline: TimelinePointer[]                       # ordered, event times are not frames
-  parameter_diff: InputDiff[]                       # full source scenario input map
-  pair_inference: "single_field" | "multi_field" | "identical"
-  evidence: VerificationSummary
-}
-WorldProjection {
-  side: "left" | "right"
-  source_schema_version: "f022.archive.v1" | "f023.archive.v1"
-  source_id: "F022" | "F023"
-  world_id: string
-  trusted_source_sha: string                         # required external checkout identity
-  frozen_protocol_sha: string
-  manifest_sha256: string
-  samples: ReplaySample[]                            # only exact archived t-grid samples
-  events: ExactEvent[]                               # exact contact and conditional t=0 motor
-  cell_model: { kind: "not_modeled" } | { kind: "f023_private"; cells: CellPrivate[] }
-}
-ReplaySample {
-  time_s: number                                     # identical numeric source value
-  source_row: integer                                # zero-based file row pointer
-  phase: "post"                                       # F022/F023 saved sample semantic
-  xy_velocity_ke: object                             # full preserved source row, schema-checked
-}
-ExactEvent {
-  time_s: number
-  kind: "contact" | "grazing_zero_impulse" | "motor_action"
-  phase: "pre" | "post" | "decision"                    # only if backed by that record
-  source_file: "contacts.jsonl" | "actions.jsonl"
-  source_row: integer
-  payload: object                                    # source-record fields preserved, not inferred
-}
-CellPrivate {
-  cell_id: "A" | "B"
-  actions: object[]                                  # exact source fields from actions.jsonl
-  balances: object[]                                 # exact source fields from ledger.jsonl
-}
-TimelinePointer {
-  time_s: number
-  source_side: "left" | "right" | "both"
-  kind: "sample" | "event"
-  record_ref: string | null
-  other_side_state: "exact_archived" | "NO_RECORDED_SNAPSHOT_AT_TIME"
-}
-InputDiff {
-  field_path: string
-  left_present: boolean
-  right_present: boolean
-  left_value: any
-  right_value: any
-  equal: boolean
-}
-VerificationSummary {
-  verified_at_source_sha: string
-  verdict: "pass"                                    # fails refuse whole bundle
-  verifier_name_and_version: string
-  supported_schema: string
-  evidence_files_sha256: object
-  audit_ref: string
-  trusted_expected_sha_source: string
-}
-~~~
+[**Machine-checkable source/view JSON Schema**](../contracts/v002.view.v1.schema.json) defines the exact typed field contracts for every displayed row and each legal 2D source family. This section's former exploratory `object`/`any` pseudocode has been superseded and intentionally replaced **before freeze**. The schema is a **proposal**, not frozen or implemented. Its strict source families are:
 
-**Type/canonicalization requirements before freeze:** JSON finite numeric values only (never NaN, Inf, bool for number), exact archival number round-trip, integer indices >=0, no duplicate world IDs per source bundle, stable key order, stable sample/event ordering and source-specific discriminated types. `any`/`object` above are **review placeholders**, not a license for an unvalidated UI contract: before implementation replace with the exact F022/F023 pinned record shapes and rejected-unknown-key rules. `verified_at_source_sha` means checked **against trusted source**; it is *not* a timestamp or signature. Viewer shall never generate or overwrite input source archives. `ViewBundle` output is a derived research-only artifact, not additional simulation evidence.
+- `F022Scenario` = 16 frozen keys; `F023Scenario` = the same 16 plus four command impulse keys and two private balance integer-µJ keys.
+- `StateRow` = exactly 13 original archived fields; `ContactRow` = exactly 20 including source `kind="impulse"|"grazing_zero_impulse"`, original pre/post positions/velocities and restitution.
+- `ActionRow` = exactly 18 original F023 action fields; `LedgerRow` = exactly five original private battery fields; F022 `cell_model.kind="not_modeled"` has **no actions/ledger arrays**, never measured zeros.
+- `WorldProjection` holds `source_row` (zero-based full JSONL file index) + exact typed archived record and immutable external source/freeze identity. Exactly two **same-family** sources, sides left/right, with matching typed `VerificationSummary`; F022 verifier provenance includes five file hashes, F023 includes all seven. C01 vs C01 is valid if left/right provenance differs or two ordered comparisons refer to separately verified original bundles; record identity is `(side, source SHA, manifest hash, world ID)`.
+- `TimelinePointer` distinguishes `sample`, `contact`, `action` with exact source file index. It does **not** duplicate a collision as fictitious `motor_action`, nor claim an unsampled time was stored. `InputDiff` uses the complete source initial input map **excluding the case ID** and explicitly separates multi-field from single-field difference.
+
+Passing structural JSON Schema is **necessary but insufficient**: a separate strict semantic oracle must check every record's world identity, deterministic order, exact time grid, provenance from a trusted externally supplied checkout SHA, independently recomputed physics/private billing, duplicate/missing rows, complete input diffs and source artifact immutability before publishing a ViewBundle. No preview of an unverified or unadopted source may be labeled evidence.
 
 ### Exact timing and visual status contract
 - A shared time cursor on **`joint_sample_times_s`** can draw both world samples. Contact TOI is not added to `joint_sample_times_s` just because it appears as an event marker.
@@ -1400,3 +1338,6 @@ Strictly existing six responsibilities: Setup owns selection/diff; Arena owns tw
 
 ### Machine-checkable V002 proposal schema (2026-10-27)
 [**`contracts/v002.view.v1.schema.json`**](../contracts/v002.view.v1.schema.json) enumerates and validates exact source-field keys/types for F022/F023 Scenario, 13-field sampled state, 20-field event, F023 private 18-field action and 5-field ledger, source-row provenance and two matching-family projections. It explicitly preserves the original event `kind="impulse"` / `"grazing_zero_impulse"` **without inventing `kind="contact"`**, and t0 actuation remains an `actions.jsonl` record rather than a fake collision. That **exact schema supersedes the earlier informal `object`/`any` sketch above where they conflict**; the sketch remains as a dated conceptual history. It is **DRAFT**, and the schema by itself cannot verify semantics, source trust, timing joins, field-level diffs or archival physical constraints. In particular, identical case IDs may appear on *left and right* as two separately sourced projections (C01 versus C01); the unique identity is `(side, trusted source, archive digest, world_id)`, not world ID alone. The scenario `world_id` is metadata and excluded from physical `parameter_diff`. Strict out-of-contract source content must be rejected. Review and freeze separately before implementation.
+
+### 2026-10-27 source eligibility update (does not freeze V002)
+F023.v1 [PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83) merged on main at `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e`; exact-merge [22/22 push workflows](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40424675606) passed. Therefore **F023 source eligibility can be enabled by the future viewer** only for independently verified archives against a trusted source checkout and the immutable freeze SHA `76dcc1db...`. This does not make V002 implemented or approved, and never auto-trusts an arbitrary archive manifest.

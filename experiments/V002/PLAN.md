@@ -61,3 +61,6 @@ Technical verdict = PASS/FAIL/INCONCLUSIVE; H-V002 verdict = SUPPORTED/REFUTED/I
 - `source_row` must be 0-based **full JSONL file index**, not a per-world sample index. Each `WorldProjection` remains one of two distinct sides, allowing C01 vs C01 with separate independently verified source bundle identities.
 - Only same-family two-world pairs for v1; unsupported cross-F022/F023 mixed comparisons fail closed. Cross-source provenance must not be conflated with same-world identities.
 - Cross-field/trust/semantic checks remain separately preregistered; passing structural JSON Schema alone is never sufficient. After F023 formal admission update trust anchors before freezing.
+
+## 2026-10-27 F023 admission dependency status (no V002 data yet)
+The F023 **source implementation** is now limited adopted on main after exact SHA 22/22 CI. Former controls F/G/H marked `BLOCKED_BY_SOURCE_GATE` are **eligible for upcoming V002 testing only once an actual saved bundle passes independent source-bound archive verification**. No UI data have yet been projected; do not change frozen scene values, controls, source provenance or test outcome labels as a consequence of adoption. The [draft JSON Schema](../../contracts/v002.view.v1.schema.json) now pins action/ledger private keys and event kind semantics.

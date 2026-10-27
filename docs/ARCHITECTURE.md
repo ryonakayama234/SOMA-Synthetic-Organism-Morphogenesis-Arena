@@ -1527,3 +1527,7 @@ flowchart TB
 | System/Data | display provenance, version and allowed paths | `v002.view.v1` proposal, `docs/DATA_CONTRACTS.md`, architecture |
 
 **State of the diagram:** aspirational V002 adapter/UI only. Simulators and existing F022/F023 frozen protocols must not be edited. Panel count/ownership is **fixed by design contract**; any future panel addition, removal or ownership change needs new reviewed version **before** UI changes. Existing 1D/2D physics not pooled. Neither world-truth viewer nor analytical pair diff is an input to the local cell. [Review](reviews/2026-10-26-V002-design-preaudit.md).
+
+
+### V002 design/review status after F023 limited adoption (2026-10-27)
+V002 remains **read-only, researcher-only, UNIMPLEMENTED**. F023 source is now **limited adopted** at main merge `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e` with successful exact-merge CI. F023 inputs are not displayed unless the V002 per-archive independent verification+trusted source/freeze gate succeeds. The V002 displayed records follow the [exact typed draft schema](../contracts/v002.view.v1.schema.json), not the earlier exploratory `object/any` sketch. Arena has two panes under the **one existing Arena responsibility**; no new panel or feedback to LocalPolicy, physics producer or archive writer.

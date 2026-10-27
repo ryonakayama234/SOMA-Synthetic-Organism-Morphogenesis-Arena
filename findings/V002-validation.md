@@ -25,3 +25,6 @@ issue: 86
 - Rehashed semantic archive attacks, independent view-projection audit, F022/F023 source verifiers.
 - Python 3.11/3.12 exact-head CI, two-root byte replay, no-source-mutation proof, browser/manual comprehension evidence.
 - Critical counteranalysis and scoped technical admission; separate scientific support/refutation/inconclusive verdict and user decision.
+
+## 2026-10-27 — type-contract correction, source dependency unblocked; NO V002 RUN
+F023 main merge `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e` and 22/22 exact merge push CI satisfy V002's prerequisite **source-admission** condition. [Exact-field candidate JSON Schema](../contracts/v002.view.v1.schema.json) proposed with 16/22 scenario fields, 13 sample fields, 20 contact fields and 18 action/5 ledger fields, proper `impulse` event semantics and required 5/7 file hashes. The original informal `object/any` view model has been replaced in `docs/DATA_CONTRACTS.md`. Neither archive display, browser experiment, JSON Schema validator execution, review freeze nor V002 adoption has occurred. Next: critical design review and frozen SHA before implementation.
