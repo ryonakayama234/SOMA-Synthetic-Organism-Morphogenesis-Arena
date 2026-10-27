@@ -1275,6 +1275,10 @@ Internal event momentum/energy conservation is insufficient if an attacker coher
 Do not use this PR qualification to claim self-driven agency, bodily connection, organismality, real traction or external independent scientific replication. Any future source schema change requires a new explicit version and prior contract/panel review.
 
 
+### F023 archive adoption checkpoint — 2026-10-27
+`f023.archive.v1` is now **limited adopted on main** at merge SHA `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e`, with [22/22 source-bound main push workflows](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40424675606) successful. Seven frozen source files and per-cell private billing/event samples are valid **only after exact trusted-source and independent from-disk validation**; do not automatically trust arbitrary manifest hashes. No UI source schema or panel responsibility is added by the F023 merge; `v002.view.v1` remains a separately reviewed candidate, not the actual F023 archive format. This dated checkpoint supersedes the earlier “pending main integration” notes without deleting them.
+
+
 ---
 
 ## V002 Counterfactual Observatory — `v002.view.v1` **PROPOSED / UNFROZEN**, 2026-10-26
