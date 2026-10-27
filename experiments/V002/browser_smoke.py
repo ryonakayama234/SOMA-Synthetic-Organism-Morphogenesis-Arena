@@ -20,7 +20,7 @@ def check_one(browser, path: Path, *, f023: bool, out: Path):
     errors = []
     page.on("pageerror", lambda error: errors.append(str(error)))
     page.goto(path.resolve().as_uri(), wait_until="load")
-    assert page.title() == "SOMA · V002 Counterfactual Observatory"
+    assert page.title() == "SOMA · V002 Counterfactual Observatory (read-only)"
     assert page.locator("main > section").count() == 6, "six existing panel owners"
     for title in PANEL_TITLES:
         assert any(title in x for x in page.locator("main h2").all_text_contents()), title
