@@ -1535,3 +1535,7 @@ flowchart TB
 
 ### V002 design/review status after F023 limited adoption (2026-10-27)
 V002 remains **read-only, researcher-only, UNIMPLEMENTED**. F023 source is now **limited adopted** at main merge `6ca8c9db2b29ca87a70eebc0c2c139681ca67d6e` with successful exact-merge CI. F023 inputs are not displayed unless the V002 per-archive independent verification+trusted source/freeze gate succeeds. The V002 displayed records follow the [exact typed draft schema](../contracts/v002.view.v1.schema.json), not the earlier exploratory `object/any` sketch. Arena has two panes under the **one existing Arena responsibility**; no new panel or feedback to LocalPolicy, physics producer or archive writer.
+
+
+### V002.v1 freeze boundary — 2026-10-27 (viewer not implemented)
+Frozen preimplementation [protocol](../experiments/V002/FROZEN_V1.md) binds the existing one-way F022/F023 saved archive → independent verifier → derived typed read-only V002 → existing six panels. **Do not add a new panel** for comparison; two world canvases share Arena ownership. Source-preserving sample vs TOI, F023 action vs contact, researcher truth vs absent LocalPolicy boundaries are binding. No V002 observer code, screenshot or scientific observation yet; source diagrams are aspirational for this stage.

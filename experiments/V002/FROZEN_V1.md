@@ -1,0 +1,46 @@
+# V002.v1 — immutable preregistration for read-only verified 2D counterfactual observatory (2026-10-27)
+
+**DESIGN FROZEN BEFORE ANY V002 IMPLEMENTATION OR VIEW PROJECTION.** [Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86); [design PR #87](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/87); [SPEC](../../topics/V002-counterfactual-observatory/SPEC.md); [PLAN](PLAN.md); [machine-readable frozen V1 proposal contract](../../contracts/v002.view.v1.schema.json); [architecture](../../docs/ARCHITECTURE.md); [data contracts](../../docs/DATA_CONTRACTS.md); [append-only UNEXECUTED findings](../../findings/V002-validation.md). The containing commit SHA must be anchored *after* commit in Issue #86, because a commit cannot contain its own hash. No V002 viewer code, experimental display bundle, CI acceptance, human browser review, main implementation/adoption or physical robot exists at freeze time. V001 1D Draft remains independent.
+
+## Frozen central question and limit
+**Can a researcher faithfully compare two independently verified saved 2D F022/F023 worlds side-by-side without silently altering original physical event semantics, hiding nulls, fabricating unsampled states, changing the physics, or leaking observer world truth to a cell?** H-V002 and falsifiers are defined in SPEC/PLAN. V002 is a **measurement/interpretation instrument**, not a new 2D physics hypothesis or autonomous embodiment experiment. Never claim new emergence from a picture.
+
+## Source eligibility and authority
+- Only preexisting `f022.archive.v1` (F022 limited adopted passive two-disk physics; 13 frozen worlds) and `f023.archive.v1` (F023 limited adopted ideal prescribed t0 private-energy impulse; 15 frozen worlds, implementation PR #83 merged and post-main 22/22 CI) archives may feed V002. Both worlds **must have the same source schema family in v1**. A future cross-family semantic comparison requires a separate approved v2/version.
+- F022 requires exactly `scenario.json`, `states.jsonl`, `contacts.jsonl`, `audit.json`, `manifest.json`. **No** motor/ledger files or budget information are modeled; display explicit **NOT MODELED**, not measured 0. F023 additionally requires `actions.jsonl` and `ledger.jsonl` with A/B individual work, charge and balance; never pool.
+- Source-independent **from-disk physical/accounting verifier** runs *before* accepting either source bundle, receives **externally trusted** expected source SHA and immutable freeze SHA from an inspected checkout/review admission record, not archive's own manifest; validates required files and full stored semantics. SHA-repacking a manifest cannot create trust. Rejection stops the whole new bundle (no partial credible “verified” display). Original archive files must stay byte-for-byte intact.
+- Source contract of truth is F022/F023 immutable archive; the **view** representation must conform to `contracts/v002.view.v1.schema.json`, with strict keys/types (16/22 scene keys, 13 sample, 20 contact, 18 F023 action, 5 ledger, and 5/7 provenance file digests). A source row's `kind` is **only** `impulse` or `grazing_zero_impulse` for `contacts.jsonl`; **F023 `actions.jsonl` has NO source `kind`**. `TimelinePointer.kind="action"` is a derived read-only provenance pointer, never injected into source.
+
+## Frozen comparison grid, nulls and causality qualifiers
+| Control | Frozen input sources | Mandatory interpretation |
+| --- | --- | --- |
+| A | F022 C01 vs C02 | e 1 vs .5 contact, event-time exact vs post-sample; full source-field diff |
+| B | F022 C05 vs C06 | miss vs near-graze collision; null has zero contact rows |
+| C | F022 C07 vs C08 | geometric zero-impulse event vs separating no-contact, **multi-field**, no false single-factor causal claim |
+| D | F022 C13 vs C01 or off-grid C13 inspection | C13 contact t=0.095s before .25s sample; other world's unsampled XY **not** extrapolated |
+| E | F022 C01 vs itself (two separately verified ordered sides) | zero physical parameter changes, preserve two provenance references |
+| F | F023 Q02 vs Q04 | 200 vs 199 µJ A budget; rejected t0 drive and contact-null control |
+| G | F023 Q02 vs Q03; Q02 vs Q05 | prescribed action +Y vs -Y; B private budget must not pay A's action; show full diff |
+| H | F023 Q02 vs Q07 | restitution 1 vs .5 changes post-contact dissipation; not battery efficiency |
+| I | F022/F023 malformed, edited or untrusted archive | reject, including independently rehashed semantic forgery |
+| J | unmerged V001 1D / cross-family 2D mixed pair | unsupported sources rejected in v1 |
+
+All source initial-setting fields except world-identifying metadata participate in the input diff. A claim that only one variable changed is legal **only if** the complete physically relevant input map differs in exactly one field. Initial *commands* are part of `scenario.json` and can be inspected in Setup read-only; they may **never be dispatched** to F023 or modified by the viewer. Null worlds and multi-field contrasts stay visible. Analysis unit is one deterministic archived world, not an independent ecological replication.
+
+## Frozen observational time semantics and six-panel ownership
+- A synchronized paired Arena cursor may render only exact sample timestamps present in both archived worlds, with copied saved XY positions and velocities in SI units. Same-timestamp event post-samples remain **post**; source sample `phase="post"`. No interpolation or independent physics simulation presented as observed truth.
+- Exact off-grid TOI contact events are inspectable **as archived pre/post event records** without inventing a new sample. If other world has no exact saved snapshot at that event timestamp, show **NO_RECORDED_SNAPSHOT_AT_TIME**; neither blank nor zero is evidence of a physical event. F023 prescribed `t=0` action logging precedes its `t=0` post-actuation grid frame.
+- **Existing panel responsibilities only:** Setup: source choice and complete read-only frozen input diff; Arena: two copies of one XY scene renderer; Cells: F023 private A/B action+ledger or F022 NOT MODELED; Timeline: ordered sample/contact/action reference pointers; Evidence: independent verification/trust and refusal reasons; System/Data: contracts, provenance, observer/agent boundary. No seventh “comparison” panel, no responsibility shifts without new reviewed schema/version and researcher agreement.
+- World truth/visualization/analytics flow one-way to researcher. No `LocalObservation`, policy, action, simulation or source-archive write path; no physics, learning, connection or joining extension.
+
+## Frozen engineering tests / falsifiers (not yet run)
+1. Schema-validate every emitted `v002.view.v1` artifact, independently cross-check its **every** copied numerical/semantic row, source row index/time/phase, contact/action ordering, input diff and displayed provenance against individually verified frozen archives. Zero invented/missing source events permitted.
+2. Archive forgery suite must include altered-and-rehashed frozen scenario boundary/billing, high-speed saved-frame and coherent contact/trajectory errors, wrong expected source/freeze SHA, malformed/deleted/duplicate rows, phantom contact, swapped A/B private balance, and source-value/display discrepancy. Every proposed attack rejected *before publishing* a `verified_projection` bundle.
+3. Deterministic two-root projection from identical trusted sources is byte-identical in the same interpreter/environment, source bytes unchanged. Test Python 3.11/3.12, all inherited regressions and current exact-head CI. A source-independent projection checker must not reuse the render-model projector as oracle.
+4. Browser/manual UX acceptance: equal-scale labelled X/Y axes/metres, A/B identity, sampled vs off-grid event timing, clear null/graze/underfunded control, F022 NOT MODELED, refusal of untrusted bundle, legible read-only evidence and provenance. Screenshots are illustration, **not** source physics evidence.
+5. Technical viewer gate PASS/FAIL/INCONCLUSIVE and H-V002 SUPPORTED/REFUTED/INCONCLUSIVE/UNEXECUTED kept separate in append-only findings; defects/nulls recorded. Do not claim a biological or physical discovery purely from visualization.
+
+## Inviolable freeze/change control
+These are binding V002.v1 design choices **before V002 view code or primary viewer observations**: one read-only two-world observer, source families/keys, verification trust wall, exact sample/event semantics, six fixed panel owners, private cell budgets/null semantics, controls/negative gates and version `v002.view.v1`. Style, code factoring, local offline rendering stack, CLI packaging and nonsemantic performance optimizations are left to the implementation PR provided the contract holds. Contract changes after primary observation require **V002.v2 / a new reviewed pre-observation design**, never rewriting this frozen file or grading thresholds after outcomes. Implementation branch/PR and formal main adoption are separate gates; same-AI and Codex reviews are not external human peer review.
+
+**FREEZE STATUS: DESIGN FROZEN / IMPLEMENTATION UNEXECUTED / SCIENTIFIC V002 RESULTS UNOBSERVED / VIEWER NOT ADOPTED.**

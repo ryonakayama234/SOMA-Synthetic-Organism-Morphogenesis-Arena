@@ -2,7 +2,7 @@
 id: V002
 title: Counterfactual Observatory — verified 2D archive comparison
 kind: design_specification
-status: PROPOSED_UNFROZEN
+status: DESIGN_FROZEN_UNIMPLEMENTED
 updated: 2026-10-26
 issue: 86
 depends_on: [F022, F023]
@@ -61,3 +61,6 @@ Detailed prospective `v002.view.v1` typed schema in [DATA_CONTRACTS](../../docs/
 
 ## 2026-10-27 design status update — new accepted 2D source
 F023.v1 [PR #83](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/pull/83) has now merged on main and passed 22/22 exact-merge push workflows, so the **source-admission dependency is satisfied for eligible F023 archives**. Viewer evidence **still** requires per-archive independently verified saved content plus trusted expected SHA/protocol identities. F023 scenarios are never UI-generated, and V002 continues to require a reviewed/frozen machine-readable [JSON Schema](../../contracts/v002.view.v1.schema.json) before code. The October 26 historical “F023 unmerged” passages above describe the original selection checkpoint, not the current state. F022-only fallback remains valid if specific F023 archives fail verification. No V002 runs or implementation have occurred.
+
+## 2026-10-27 immutable preimplementation design freeze
+The exact reviewed versioned contract is frozen in [`experiments/V002/FROZEN_V1.md`](../../experiments/V002/FROZEN_V1.md) and its [strict machine-checkable `v002.view.v1` JSON Schema](../../contracts/v002.view.v1.schema.json), anchored to Issue #86 after the freeze commit. The earlier candidate/UNFROZEN descriptions are original design history. Implementation, viewer observations, human browser acceptance and adoption are **still UNEXECUTED**. No panel responsibility change was approved.

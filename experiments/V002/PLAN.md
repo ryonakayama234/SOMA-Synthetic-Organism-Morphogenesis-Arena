@@ -1,7 +1,7 @@
 ---
 id: PLAN-V002
 title: V002 observable and falsifiable replay controls
-status: PROPOSED_UNFROZEN
+status: FROZEN_BEFORE_IMPLEMENTATION
 updated: 2026-10-26
 issue: 86
 ---
@@ -64,3 +64,6 @@ Technical verdict = PASS/FAIL/INCONCLUSIVE; H-V002 verdict = SUPPORTED/REFUTED/I
 
 ## 2026-10-27 F023 admission dependency status (no V002 data yet)
 The F023 **source implementation** is now limited adopted on main after exact SHA 22/22 CI. Former controls F/G/H marked `BLOCKED_BY_SOURCE_GATE` are **eligible for upcoming V002 testing only once an actual saved bundle passes independent source-bound archive verification**. No UI data have yet been projected; do not change frozen scene values, controls, source provenance or test outcome labels as a consequence of adoption. The [draft JSON Schema](../../contracts/v002.view.v1.schema.json) now pins action/ledger private keys and event kind semantics.
+
+## 2026-10-27 preregistration freeze record
+[**FROZEN_V1.md**](FROZEN_V1.md) fixes the above controls, nulls, wrong-hash/refusal cases and technical acceptance gates **before any view projection**. Actual V002 tests, CI outputs and any browser review are still **NOT RUN**. Only a new version may change locked scientific/evidence boundaries after running V002.
