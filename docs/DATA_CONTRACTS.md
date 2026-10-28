@@ -1405,3 +1405,50 @@ flowchart LR
 - Request file may be prepared in Setup as a separate local action, but V003 v1 has NO browser-to-Python command execution path; an explicitly invoked local offline runner produces the source and viewer bundles. A truly live simulator needs a future approved command-transport contract.
 
 **Data/UI change gate:** without an approved v003.workspace.layout version, no changes to the six owners' geometry, data fields, authority or actions, and no seventh panel. Architecture + data contracts + experiment records are updated jointly in this design branch. This is NOT an experimental or UI result.
+
+## V003 third design audit — measurement ownership, types and authority boundaries (2026-10-28; DESIGN ONLY)
+
+**No existing `v002.view.v1` or F022 source schema is edited.** V003 design PR #94 adds one *draft summary field* to the already proposed `v003.lab.v1`, **not** an additional runtime module, panel or free-form editor. Independently verified original C05 is the reference; only B's initial `y_b_m` changes, with eleven predeclared decimal-string values. All derived data are explicitly a new, initially unverified authority.
+
+| Data / source | Type / value | Semantics | Owner / permitted consumption |
+|---|---|---|---|
+| request.candidate_y_b_decimal | enumerated decimal STRING .95–1.05 by .01 | must match `fork_id` and exact parsed scenario Y | Setup only; offline export, no direct simulator call |
+| original.scenario, original.states[], original.contacts[] | original F022 C05 verified rows | immutable baseline and truth for researcher | Setup / Arena / Cells / Timeline; never local agent policy |
+| derived.scenario, derived.samples[], derived.contacts[] | `v003.derived.v1` | producer output always `unverified_derived`, separate source family and root | only independent verifier until admitted |
+| mechanical_contrast.free_flight_clearance_m | finite m FLOAT | y-1 nominal free-flight closest margin; **NOT physical penetration** | Evidence; recompute from verified scenario |
+| mechanical_contrast.contact_kind | `impulse\|grazing_zero_impulse\|no_contact` | independently derived exact category | Evidence; must agree with actual contact rows |
+| mechanical_contrast.time_of_impact_s | number or null | archived event timestamp, not grid sample | Evidence, corresponding event chronology in Timeline |
+| mechanical_contrast.normal_impulse_ns | number or null | j=0 for tangent; **null for no event** | Evidence, contact event in Arena |
+| mechanical_contrast.a_terminal_velocity_delta_norm_mps | finite nonnegative m/s | Euclidean A final velocity delta vs original C05 at t=2 s | Evidence summary, underlying signed velocities in Cells |
+| mechanical_contrast.a_terminal_position_delta_norm_m | finite nonnegative m | Euclidean A final position delta vs original C05 | Evidence summary, underlying XY in Arena / Cells |
+| evidence.original_oracle, derived_oracle, projection_oracle | independently substantiated `pass` verdicts | mutually distinct trust checks; never producer self-certification | Evidence |
+| cell_energy | `not_modeled` | no F022 motor/battery evidence | Cells; do not convert to 0 |
+
+**Source-generated values vs analysis:** `mechanical_contrast` is a verified *projection-derived scalar summary*, not a new simulated sensor, cell-local measurement or F022 state field. It must be independently reconstructed and compared against original/derived saved source rows plus analytic theory, with signed x/y components audited BEFORE taking norms. JSON Schema alone cannot prove cross-field equality, finiteness under nonstrict JSON parsers, source trust, event semantics, or a causal interpretation; separate semantic verifier enforces them.
+
+```mermaid
+flowchart TD
+    A["Full original F022 + externally inspected source SHA"] --> B["Independent original-roster verifier"]
+    B --> C["Immutable C05 + archived C06/C07 control access"]
+    S["Setup: request JSON only"] --> Q["Validated one-parameter V003 offline request"]
+    C --> Q
+    Q --> P["Unmodified F022 producer"]
+    P --> D["v003.derived.v1 raw / UNVERIFIED"]
+    D --> E["Separate physics oracle / out-of-band audit receipt"]
+    C --> E
+    E --> F["Independent projection and contrast verifier"]
+    F --> G["v003.lab.v1 / verified mechanical_contrast"]
+    G --> H["Evidence: clearance/event/j/Delta-v_A/Delta-x_A"]
+    G --> I["Arena: physical XY and genuine events"]
+    G --> J["Cells: individual A/B physical state"]
+    G --> K["Timeline: authoritative saved sample + event clocks"]
+    G --> L["Setup: original-vs-fork parameter map"]
+    G --> M["System/Data: schema and trust authority"]
+    G -. "FORBIDDEN" .-> N["Policy / Learning / source archive writes"]
+```
+
+**Cross-control contract:** `y=1.01` fork vs original C05 identity; `y=.99` fork vs original C06 impulse; `y=1.00` fork vs original C07 grazing. The original F022 whole-roster oracle must run first, and normalize ONLY the `world_id` for comparison with C06/C07 physical fields/rows/events. A positive-control match does not replace the separate independent mathematical oracle.
+
+**Six frozen owners remain**: Setup owns editable/exportable REQUEST ONLY; Arena owns metrically faithful scene; Cells owns signed per-cell source motion; Timeline owns time/event selection; Evidence exclusively owns verification and the new contrast *display*; System/Data owns contracts and authority status. A **new owner, panel, control-to-simulator bridge, derived-to-agent feedback or live policy source** is forbidden until an independently versioned, explicitly researcher-approved UI contract.
+
+**Acceptance**: actual source original and independent derived checks, unforgeable-within-test threat-model negative tests (rehashed semantic tamper), same-environment deterministic archive/view, exact CI SHA and reviewer audit, manual researcher comprehension and an explicit adoption decision. These integrity controls do NOT establish cryptographic trust against an attacker controlling the whole inspected checkout or external provenance anchor. No scientific emergent embodiment claim is supported by the present proposal.
