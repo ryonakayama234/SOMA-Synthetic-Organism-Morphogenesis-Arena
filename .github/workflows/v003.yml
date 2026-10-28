@@ -182,4 +182,7 @@ jobs:
             ${{ runner.temp }}/v003/A
             ${{ runner.temp }}/v003/requests
             ${{ runner.temp }}/v003/receipts
+            ${{ runner.temp }}/v003/views
+            ${{ runner.temp }}/v003/prepare.html
+            ${{ runner.temp }}/v003/browser-screenshots
           retention-days: 30
