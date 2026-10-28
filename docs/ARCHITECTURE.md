@@ -1634,3 +1634,44 @@ flowchart TB
 6. **Same six UI owners** (Setup, Arena, Cells, Timeline, Evidence, System/Data) under new prospective v003.workspace.layout.v1, with the same 1500x950 desktop-first monochrome fixed geometry; Setup may export a bounded request file only. The V003 v1 runner is an offline CLI process, NOT browser Python/server dispatch. Timeline owns a bounded scroll history and saved cursor. Cells shows F022 motor/energy NOT MODELED; no 0 fabricated; System/Data keeps policy and learning placeholders disabled.
 
 **Change control:** this section is a prospective v003-only contract design appended for review, not a retroactive extension of V002 or permission to change panels. Changes to panel count, positions, sources/rights or simulator execution bridge require a newly reviewed version and researcher approval.
+
+## V003 Third Design Audit — encounter to mechanical influence, six-owner evidence path (2026-10-28, DRAFT, NOT IMPLEMENTED)
+
+This diagram **amends the unfrozen proposal only**. An encounter/contact marker is not equivalent to transferable mechanical influence; a mechanical influence is not evidence of sustainable joined embodiment. V003 calibrates the *first two*, while morphogenesis, voluntary connection, resource/fitness benefit and robot learning remain OUT OF SCOPE. Principal implementation owner if later approved: `experiments/V003`; existing F022 physics unchanged.
+
+```mermaid
+flowchart TD
+    R["Setup: fixed B-Y request only; export JSON"] --> Q["V003 request and external source-trust gate"]
+    O["Original full frozen F022 C01-C13"] --> V{"Original independent oracle + inspected source SHA"}
+    V -->|PASS| Q
+    V -->|FAIL| STOP["REFUSE: no verified view"]
+    Q -->|valid C05 + enumerated Y| S["Existing unchanged soma/f022.py"]
+    Q -->|FAIL| STOP
+    S --> D["NEW raw v003.derived.v1; always UNVERIFIED"]
+    D --> A{"Separate on-disk V003 physics oracle; independent receipt"}
+    A -->|FAIL| STOP
+    A -->|PASS| P{"Source-to-view independent semantic oracle"}
+    O --> P
+    P -->|FAIL| STOP
+    P -->|PASS| B["v003.lab.v1: verified comparison + mechanical_contrast"]
+    B --> UI["Six fixed V002 workspace owners"]
+    UI -. "STRICTLY NO GLOBAL TRUTH/CONTROL FEEDBACK" .-> AGENT["Blocked cell LocalObservation / Policy / Learning"]
+```
+
+The **mathematical causal chain** and evidence provenance are separate:
+```mermaid
+flowchart LR
+    Y["Only B initial Y is externally intervened"] --> GEO["Nominal straight-line clearance y-1 m"]
+    GEO --> EVT["Event kind / exact TOI or null"]
+    EVT --> IMP["Transferred normal impulse (N s), 0 or null"]
+    IMP --> A["A terminal motion difference (m/s, m)"]
+    A -. "NOT YET MEASURED" .-> BODY["Sustained attachment / body function"]
+```
+
+Interpretation guards:
+- The `free_flight_clearance_m` is a **counterfactual unimpeded-path** geometric margin; it is not actual overlap in the collision-resolved trajectory.
+- A's unchanged initial state makes its terminal motion contrast a useful **in-model mechanical causal effect**, not observed hardware causality, intelligence or fitness.
+- A tangent event at y=1 is physically recorded but yields exactly zero impulse and A motion change. An absent contact at y>1 has `event=null` and `impulse=null`, not fabricated zeros. Archived sample rows remain distinct from continuous TOI event rows.
+- Original C05/C06/C07 are independently source-verified archived identity, impact and grazing **controls**, not V003 derived worlds; all controls checked after stripping only `world_id` on physical row comparisons. Existing source producer and original full-roster oracle cannot be weakened.
+- V002 remains fixed in authority and presentation. V003 exports a bounded request; there is NO browser-to-simulator bridge. Only independent verified V003 comparison artifacts may be displayed, using the exact six existing owner slots.
+- Separate engineering, model-physics and researcher-usability verdicts; not executed, not frozen, not adopted.
