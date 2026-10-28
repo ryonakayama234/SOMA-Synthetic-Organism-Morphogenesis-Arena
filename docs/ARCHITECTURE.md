@@ -1539,3 +1539,62 @@ V002 remains **read-only, researcher-only, UNIMPLEMENTED**. F023 source is now *
 
 ### V002.v1 freeze boundary — 2026-10-27 (viewer not implemented)
 Frozen preimplementation [protocol](../experiments/V002/FROZEN_V1.md) binds the existing one-way F022/F023 saved archive → independent verifier → derived typed read-only V002 → existing six panels. **Do not add a new panel** for comparison; two world canvases share Arena ownership. Source-preserving sample vs TOI, F023 action vs contact, researcher truth vs absent LocalPolicy boundaries are binding. No V002 observer code, screenshot or scientific observation yet; source diagrams are aspirational for this stage.
+
+
+### V002 implementation Draft #89 (2026-10-27; CANDIDATE ONLY)
+The original V002 frozen diagram and six panel ownership remain controlling. Candidate `experiments/V002/project.py` invokes source-independent `experiments/F022/verify.py` or `experiments/F023/verify.py` **before** projection, and passes the immutable `v002.view.v1` contract to `experiments/V002/viewer.py` offline display; a different code path, `experiments/V002/verify_view.py`, rereads saved sources and cross-checks projected source rows and events. No physical simulation or agent/local observation feeds from V002. Browser display stays on existing Setup / Arena (two copies) / Cells / Timeline / Evidence / System/Data panels. No confirmed browser acceptance or view adoption yet.
+
+~~~mermaid
+flowchart LR
+  F["F022 or F023 verified existing saved world (never edited)"] --> V["Independent source oracle + external trusted SHA"]
+  V --> P["V002 immutable view.json / schema validation"]
+  P --> O["Independent V002 view oracle (source reread)"]
+  O --> UI["Offline six-panel, read-only researcher HTML"]
+  UI -. "FORBIDDEN" .-> A["LocalObservation or policy"]
+  P -. "FORBIDDEN" .-> SIM["Original physics producer or archive mutation"]
+~~~
+
+
+### V002 evidence-qualified implementation path — 2026-10-27 (candidate; no adoption)
+The actual candidate viewer follows the frozen six-panel, no-feedback contract. Exact-code-head run [40455089755](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/actions/runs/40455089755) executed Python 3.11/3.12 archive/view audits and headless Chromium successfully; human browser acceptance remains **pending**. This is an implementation/evidence status append, **not an architecture or panel contract revision**.
+
+~~~mermaid
+flowchart TB
+  F22["Existing f022.archive.v1 files (read only)"] --> V["F022/F023 source-independent saved-data oracle + externally trusted SHA"]
+  F23["Existing f023.archive.v1 files (read only)"] --> V
+  V -->|PASS| P["V002 project.py: typed canonical view.json staged"]
+  V -->|FAIL| R["Reject; do not publish"]
+  P --> Q["V002 verify_view.py: independently reread original source + validate projected semantics"]
+  Q -->|FAIL| R
+  Q -->|PASS| H["V002 viewer.py: read-only offline HTML; immutable publish"]
+  H --> S["Setup: complete archived parameter diff"]
+  H --> A["Arena: 2 instances, shared metric XY scale"]
+  H --> C["Cells: F023 private ledger / F022 NOT MODELED"]
+  H --> T["Timeline: common samples vs exact TOI/actions"]
+  H --> E["Evidence: source oracle and trusted provenance"]
+  H --> SYS["System/Data: contract and access boundary"]
+  H -. "NO pathway" .-> POLICY["LocalObservation / Policy / Learning"]
+  H -. "NO pathway" .-> SRC["Original simulator / source archive mutation"]
+~~~
+
+The diagram tracks actual files and responsibilities in the currently reviewed implementation (PR #89), while control edges to agent/physics are **forbidden**, not APIs. Automated browser screenshot is illustration only; it is not evidence of a new physical event. All future changes of panel owner, additional panel or altered physical/display meaning require approved v2 contract **before** any UI change.
+
+
+### V002 layout response — compact six-owner fixed workspace (2026-10-27; design candidate)
+The researcher **rejected the long vertical prototype after code-head CI**, requiring an Arena-dominant neutral-gray fixed desktop workbench, short labels, bounded scrollable Timeline history and fixed allocation for future unimplemented capabilities. This changes the **layout**, not the six panel responsibilities, original archive schema or `v002.view.v1`. Proposed [UI workspace contract](../docs/ui/V002_WORKSPACE_LAYOUT_V1.md) / [machine mapping](../contracts/v002.workspace.layout.v1.json) owns detailed exact-slot layout and state. No UI implementation is approved/adopted merely by this text.
+~~~mermaid
+flowchart TB
+ A["F022/F023 verified source → immutable v002.view.v1"] --> G["Fixed workstation 1500×950 reference"]
+ G --> SET["LEFT TOP Setup: scenario + full diff (scroll)"]
+ G --> CEL["LEFT BOTTOM Cells: per-private budget"]
+ G --> AR["CENTRE Arena: paired metric XY; dominant"]
+ G --> EV["RIGHT TOP Evidence: trust/audit"]
+ G --> SYS["RIGHT BOTTOM System/Data: schema/reserved"]
+ G --> TIM["BOTTOM Timeline: exact time controls + fixed scroll history"]
+ TIM -. "UI-only source-row selection; never invented frames" .-> AR
+ G -. "NO permission" .-> POL["LocalPolicy / physics write"]
+~~~
+
+
+### V002 read-only observatory — researcher-approved limited archive playback (2026-10-28)
+The human researcher actually operated the fixed grayscale six-owner interface (F023 Q02/Q04 stored-sample navigation visible in supplied ~9s video) and explicitly marked the limited replay interface **PASS**. The prior vertically stacked layout is historically rejected. **The architecture/data flow did not change with acceptance**; fixed owner mapping from [`v002.workspace.layout.v1`](../contracts/v002.workspace.layout.v1.json) remains enforceable by the browser CI. Two trusted same-family original archives → source-independent F022/F023 verifier → immutable `v002.view.v1` projection → separate source-read-back verifier → offline researcher view. Timeline time-step and history scroll update its own fixed panel; Arena only shows exact same-clock **saved XY samples**, and off-grid event data remain separately source-timestamped. No simulator control, policy feedback, fabricated interpolation, seventh region, new physical mechanism or agent observation channel is introduced. The video attests Q02/Q04 sample stepping, not manual exercise of every frozen F022 negative control; those are checked by independent automated oracles. Exact integration and post-main CI remain individual evidence checkpoints in [Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86).

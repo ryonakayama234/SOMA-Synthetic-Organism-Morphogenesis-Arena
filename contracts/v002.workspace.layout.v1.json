@@ -1,0 +1,157 @@
+{
+  "contract_id": "v002.workspace.layout.v1",
+  "status": "RESEARCHER_ACCEPTED_LIMITED_ARCHIVE_REPLAY_2026_10_28",
+  "source_contract": "v002.view.v1",
+  "parent_pr": 89,
+  "viewport": {
+    "mode": "desktop_first",
+    "reference_width_px": 1500,
+    "reference_height_px": 950,
+    "scroll_policy": "no_document_vertical_scroll_at_reference_viewport; each bounded panel owns overflow",
+    "header_px": 58,
+    "timeline_min_px": 160
+  },
+  "palette": {
+    "intent": "monochrome",
+    "colors": "neutral grayscale only; status distinguished by text + icons, not hue",
+    "scene": "recessed visual depth via grayscale shading; physical XY projection remains orthographic and metrically accurate"
+  },
+  "slots": [
+    {
+      "owner": "Setup",
+      "id": "setup",
+      "area": "left-top",
+      "sources": [
+        "worlds[].scenario",
+        "parameter_diff[]",
+        "pair_inference"
+      ],
+      "actions": [
+        "inspect archived world pair",
+        "scroll complete frozen input diff"
+      ],
+      "writes": []
+    },
+    {
+      "owner": "Arena",
+      "id": "arena",
+      "area": "centre-dominant",
+      "sources": [
+        "worlds[].samples[]",
+        "worlds[].contacts[]",
+        "joint_sample_times_s"
+      ],
+      "actions": [
+        "inspect two existing-source XY scenes at selected saved sample"
+      ],
+      "writes": []
+    },
+    {
+      "owner": "Cells",
+      "id": "cells",
+      "area": "left-bottom",
+      "sources": [
+        "worlds[].cell_model"
+      ],
+      "actions": [
+        "inspect private F023 action/balance or explicit F022 NOT MODELED"
+      ],
+      "writes": []
+    },
+    {
+      "owner": "Timeline",
+      "id": "timeline",
+      "area": "bottom-fixed",
+      "sources": [
+        "joint_sample_times_s",
+        "timeline[]",
+        "source_row pointers"
+      ],
+      "actions": [
+        "select saved sample time",
+        "inspect archived exact event",
+        "scroll bounded chronological event history"
+      ],
+      "writes": []
+    },
+    {
+      "owner": "Evidence",
+      "id": "evidence",
+      "area": "right-top",
+      "sources": [
+        "evidence.sources[]",
+        "evidence.archive_semantics_oracle",
+        "evidence.view_projection_oracle"
+      ],
+      "actions": [
+        "inspect verifier verdict and provenance"
+      ],
+      "writes": []
+    },
+    {
+      "owner": "System/Data",
+      "id": "system",
+      "area": "right-bottom",
+      "sources": [
+        "schema_version",
+        "contract_id",
+        "source schema/version metadata"
+      ],
+      "actions": [
+        "inspect contract/version/authority boundaries; display reserved future placeholders"
+      ],
+      "writes": []
+    }
+  ],
+  "invariant": {
+    "panel_count": 6,
+    "scrolling_log_owner": "Timeline",
+    "authoritative_clock_owner": "Timeline",
+    "no_new_panel": true,
+    "physical_truth": "read-only original archive only",
+    "viewer_cannot_mutate": [
+      "source archives",
+      "simulation",
+      "policy",
+      "agent observations"
+    ],
+    "event_semantics": "archived off-grid event pre/post distinct from jointly stored post samples; never generate an interpolated frame",
+    "audit": "source independent archive verification and derived view verification precede HTML publication",
+    "current_source_families": [
+      "f022.archive.v1",
+      "f023.archive.v1"
+    ],
+    "cross_family_compare": false,
+    "future_placeholder": "visual reserved slot only; zero data events/APIs/actions; empty is not evidence of zero"
+  },
+  "acceptance": {
+    "no_body_scroll_at_reference_viewport": true,
+    "arena_largest_area": true,
+    "six_sections_only": true,
+    "neutral_palette": true,
+    "fixed_height_scrollable_timeline_log": true,
+    "complete_setup_input_map_scrollable": true,
+    "shared_axis_metre_scale": true,
+    "no_false_physical_radius_inflation": true,
+    "source_provenance_exposed": true,
+    "old_source_snapshot_and_event_distinct": true,
+    "automated_browser_test_plus_human_interaction": true
+  },
+  "acceptance_evidence": {
+    "verdict": "PASS_LIMITED",
+    "date": "2026-10-28",
+    "issue": 86,
+    "pr": 89,
+    "video": "research conversation attachment: actual browser F023 Q02/Q04, 9.322s, sample-time stepping; not stored in this repository",
+    "demonstrated": [
+      "six owner areas stay visible",
+      "Timeline saved sample changes paired Arena exact sample display",
+      "history stays within bounded Timeline"
+    ],
+    "not_claimed": [
+      "manual tests of all F022 negative controls",
+      "interactive simulator",
+      "autonomy or biology evidence"
+    ]
+  }
+}
