@@ -99,14 +99,17 @@
       "area": "right-top",
       "reads": [
         "evidence",
-        "full_parameter_diff"
+        "full_parameter_diff",
+        "mechanical_contrast"
       ],
       "local_actions": [
-        "inspect original/derived/view audit and refusal"
+        "inspect original/derived/view audit and refusal",
+        "inspect clearance/event/impulse and A-side terminal motion contrast with source-vs-derived and theoretical prediction clearly labeled"
       ],
       "writes": [],
       "forbidden": [
-        "promote_unverified_result"
+        "promote_unverified_result",
+        "classify_contact_as_body_formation_or_fitness"
       ]
     },
     {
@@ -138,7 +141,9 @@
     "no_simulator_or_agent_feedback": true,
     "no_original_archive_write": true,
     "original_and_derived_provenance_separate": true,
-    "manual_ui_acceptance_required": true
+    "manual_ui_acceptance_required": true,
+    "independently_verified_mechanical_contrast_only": true,
+    "contact_event_not_equal_mechanical_influence": true
   },
-  "$comment": "Candidate V003 ONLY: Setup export capability is not a retroactive edit to read-only V002. Future integrated run/simulator GUI or learning require a separately approved contract."
+  "$comment": "Candidate V003 ONLY: Setup export capability is not a retroactive edit to read-only V002. Future integrated run/simulator GUI or learning require a separately approved contract. The draft V003 mechanical_contrast is owned ONLY by Evidence, source A/B state by Cells, scene geometry by Arena, chronological authority by Timeline. No seventh panel and no agent-policy input."
 }
