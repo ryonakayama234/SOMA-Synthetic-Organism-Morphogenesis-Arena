@@ -88,6 +88,65 @@ jobs:
               events=m['contacts']
               assert (events[0]['kind'] if events else None)==expected
           PY
+      - name: Reconstruct all 11 verified two-authority views with independent source-to-view oracle
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v003"
+          for derived in "$p/A/"V003-Y*; do
+            id="$(basename "$derived")"
+            python -m experiments.V003.project \
+              --original-root "$RUNNER_TEMP/v003-original" \
+              --source-receipt "$p/receipts/source.json" \
+              --derived-root "$derived" \
+              --derived-receipt "$p/receipts/A-$id.json" \
+              --out "$p/views/$id"
+            python -m experiments.V003.verify_view \
+              --original-root "$RUNNER_TEMP/v003-original" \
+              --source-receipt "$p/receipts/source.json" \
+              --derived-root "$derived" \
+              --derived-receipt "$p/receipts/A-$id.json" \
+              --view "$p/views/$id/view.json"
+          done
+          test "$(find "$p/views" -name view.json | wc -l)" -eq 11
+          test "$(find "$p/views" -name index.html | wc -l)" -eq 11
+          python -m experiments.V003.prepare \
+            --original-root "$RUNNER_TEMP/v003-original" \
+            --source-receipt "$p/receipts/source.json" \
+            --out "$p/prepare.html"
+      - name: Rehashed false view summary must fail independently before publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v003"
+          mkdir -p "$p/forged-view"
+          python - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'v003'
+          target=p/'forged-view/view.json'
+          view=json.loads((p/'views/V003-Y099/view.json').read_text())
+          view['mechanical_contrast']['a_terminal_velocity_delta_norm_mps']+=0.05
+          target.write_text(json.dumps(view,sort_keys=True,separators=(',',':'),allow_nan=False)+'\n')
+          PY
+          if python -m experiments.V003.verify_view \
+            --original-root "$RUNNER_TEMP/v003-original" \
+            --source-receipt "$p/receipts/source.json" \
+            --derived-root "$p/A/V003-Y099" \
+            --derived-receipt "$p/receipts/A-V003-Y099.json" \
+            --view "$p/forged-view/view.json"; then
+            echo "FATAL: rehashed forged mechanical contrast was accepted"; exit 1
+          fi
+      - name: Real Chromium six-panel browser smoke (Python 3.11 only)
+        if: matrix.python == '3.11'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'playwright>=1.49,<2'
+          python -m playwright install --with-deps chromium
+          python -m experiments.V003.browser_smoke \
+            --prepare "$RUNNER_TEMP/v003/prepare.html" \
+            --verified "$RUNNER_TEMP/v003/views/V003-Y099/index.html" \
+            --out "$RUNNER_TEMP/v003/browser-screenshots"
       - name: Rehashed semantic tamper must fail the independent derived oracle
         shell: bash
         run: |
