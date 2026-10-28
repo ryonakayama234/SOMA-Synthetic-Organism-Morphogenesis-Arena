@@ -1,0 +1,409 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRAFT V003 derived-world record; never f022.archive.v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "v003.derived.v1"
+    },
+    "status": {
+      "enum": [
+        "unverified_derived",
+        "verified_derived"
+      ]
+    },
+    "fork_id": {
+      "type": "string",
+      "pattern": "^V003-Y(095|096|097|098|099|100|101|102|103|104|105)$"
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "candidate_y_b_decimal": {
+          "type": "string",
+          "enum": [
+            "0.95",
+            "0.96",
+            "0.97",
+            "0.98",
+            "0.99",
+            "1.00",
+            "1.01",
+            "1.02",
+            "1.03",
+            "1.04",
+            "1.05"
+          ]
+        },
+        "request_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "candidate_y_b_decimal",
+        "request_sha256"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_family": {
+          "const": "f022.archive.v1"
+        },
+        "source_world_id": {
+          "const": "C05"
+        },
+        "original_manifest_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "original_source_commit_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "original_frozen_protocol_sha": {
+          "const": "3984e9dcb2cb420abab5ca92b4d029b31b5173f8"
+        },
+        "external_trust_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "source_family",
+        "source_world_id",
+        "original_manifest_sha256",
+        "original_source_commit_sha",
+        "original_frozen_protocol_sha",
+        "external_trust_receipt_sha256"
+      ]
+    },
+    "scenario": {
+      "$ref": "#/$defs/scenario"
+    },
+    "samples": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/state"
+      }
+    },
+    "contacts": {
+      "type": "array",
+      "maxItems": 1,
+      "items": {
+        "$ref": "#/$defs/contact"
+      }
+    },
+    "energy_model": {
+      "const": "not_modeled"
+    },
+    "producer_commit_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "independent_derived_oracle": {
+      "enum": [
+        "not_run",
+        "pass",
+        "fail"
+      ]
+    },
+    "original_archive_unchanged": {
+      "type": "boolean"
+    },
+    "files_sha256": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "minProperties": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "status",
+    "fork_id",
+    "request",
+    "source",
+    "scenario",
+    "samples",
+    "contacts",
+    "energy_model",
+    "producer_commit_sha",
+    "independent_derived_oracle",
+    "original_archive_unchanged",
+    "files_sha256"
+  ],
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "world_id": {
+          "const": "C05"
+        },
+        "x_a_m": {
+          "const": -1
+        },
+        "y_a_m": {
+          "const": 0
+        },
+        "vx_a_mps": {
+          "const": 1
+        },
+        "vy_a_mps": {
+          "const": 0
+        },
+        "x_b_m": {
+          "const": 1
+        },
+        "y_b_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "vx_b_mps": {
+          "const": -1
+        },
+        "vy_b_mps": {
+          "const": 0
+        },
+        "mass_a_kg": {
+          "const": 1
+        },
+        "mass_b_kg": {
+          "const": 1
+        },
+        "radius_a_m": {
+          "const": 0.5
+        },
+        "radius_b_m": {
+          "const": 0.5
+        },
+        "restitution": {
+          "const": 1
+        },
+        "duration_s": {
+          "const": 2
+        },
+        "sample_dt_s": {
+          "const": 0.25
+        }
+      },
+      "required": [
+        "world_id",
+        "x_a_m",
+        "y_a_m",
+        "vx_a_mps",
+        "vy_a_mps",
+        "x_b_m",
+        "y_b_m",
+        "vx_b_mps",
+        "vy_b_mps",
+        "mass_a_kg",
+        "mass_b_kg",
+        "radius_a_m",
+        "radius_b_m",
+        "restitution",
+        "duration_s",
+        "sample_dt_s"
+      ]
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "world_id": {
+          "const": "C05"
+        },
+        "sample_index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 8
+        },
+        "time_s": {
+          "type": "number",
+          "enum": [
+            0,
+            0.25,
+            0.5,
+            0.75,
+            1,
+            1.25,
+            1.5,
+            1.75,
+            2
+          ]
+        },
+        "phase": {
+          "const": "post"
+        },
+        "x_a_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "y_a_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "x_b_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "y_b_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "vx_a_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "vy_a_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "vx_b_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "vy_b_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "total_ke_j": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        }
+      },
+      "required": [
+        "world_id",
+        "sample_index",
+        "time_s",
+        "phase",
+        "x_a_m",
+        "y_a_m",
+        "x_b_m",
+        "y_b_m",
+        "vx_a_mps",
+        "vy_a_mps",
+        "vx_b_mps",
+        "vy_b_mps",
+        "total_ke_j"
+      ]
+    },
+    "contact": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "world_id": {
+          "const": "C05"
+        },
+        "event_index": {
+          "const": 0
+        },
+        "time_s": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "kind": {
+          "enum": [
+            "impulse",
+            "grazing_zero_impulse"
+          ]
+        },
+        "normal_x": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "normal_y": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "impulse_ns": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_x_a_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_y_a_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_x_b_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_y_b_m": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_vx_a_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_vy_a_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_vx_b_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "pre_vy_b_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "post_vx_a_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "post_vy_a_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "post_vx_b_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "post_vy_b_mps": {
+          "type": "number",
+          "description": "Finite SI JSON number; source-independent semantic verifier required"
+        },
+        "restitution": {
+          "const": 1
+        }
+      },
+      "required": [
+        "world_id",
+        "event_index",
+        "time_s",
+        "kind",
+        "normal_x",
+        "normal_y",
+        "impulse_ns",
+        "pre_x_a_m",
+        "pre_y_a_m",
+        "pre_x_b_m",
+        "pre_y_b_m",
+        "pre_vx_a_mps",
+        "pre_vy_a_mps",
+        "pre_vx_b_mps",
+        "pre_vy_b_mps",
+        "post_vx_a_mps",
+        "post_vy_a_mps",
+        "post_vx_b_mps",
+        "post_vy_b_mps",
+        "restitution"
+      ]
+    }
+  },
+  "$comment": "Schema pass never grants physical trust: exact field diff, independently validated full F022 original roster with external SHA, separate V003 source-independent analytical oracle, original bytes unchanged and numerical semantics are separately mandatory."
+}
