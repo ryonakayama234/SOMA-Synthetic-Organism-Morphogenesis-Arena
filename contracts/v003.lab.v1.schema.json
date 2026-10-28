@@ -128,6 +128,10 @@
         "producer_commit_sha": {
           "type": "string",
           "pattern": "^[0-9a-f]{40}$"
+        },
+        "derived_oracle_receipt_sha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
         }
       },
       "required": [
@@ -137,7 +141,8 @@
         "original_manifest_sha256",
         "derived_manifest_sha256",
         "source_anchor",
-        "producer_commit_sha"
+        "producer_commit_sha",
+        "derived_oracle_receipt_sha256"
       ]
     },
     "cell_energy": {
@@ -501,5 +506,5 @@
       ]
     }
   },
-  "$comment": "Only same immutable original C05 vs independently verified V003 C05-derived fork; semantic guard checks complete input map/row time and event pointers/provenance before HTML publication. Never use V002.view.v1 for cross-family original/derived worlds. No fabricated interpolation; two source authorities are explicitly unequal."
+  "$comment": "Trusted full original F022 archive, separately audited derived archive, and an independent view semantic audit are mandatory outside JSON Schema. A producer's self-issued manifest or 'verified' string never confers trust. Separate derived oracle receipt SHA must be checked against trusted audit output. V002.view.v1 stays unchanged."
 }
