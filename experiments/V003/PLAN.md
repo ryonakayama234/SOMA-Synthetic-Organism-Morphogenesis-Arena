@@ -78,7 +78,7 @@ The calibrated V003 output can later become a control for **contact without mech
 
 Original source must be the pre-existing immutable 13-world CI archive from successful F022 workflow **40176213718**, artifact **12592745454** (Python 3.11), source commit `824a8621944ea438388c54949a2b65719be2e419`, original protocol `3984e9dcb2cb420abab5ca92b4d029b31b5173f8`. The trusted external CI record MUST agree with independent original-roster oracle; the untrusted request/manifest cannot pick a different original. Source extraction and byte hashes are bound before a fork and rechecked before publishing a view. No fallback to newly generated original evidence under a V003 primary run.
 
-Canonical request bytes are `(json.dumps(request,sort_keys=True,separators=(',',':'),allow_nan=False)+'\\n').encode('utf-8')`; key set is precisely `schema_version,operation,source_family,source_world_id,candidate_y_b_decimal,fork_id,expected_source_commit_sha,expected_frozen_protocol_sha`, values constrained by the fork-request schema. SHA-256 of those exact bytes are preregistered as follows (the only 11 authorized request artifacts):
+Canonical request bytes are `(json.dumps(request,sort_keys=True,separators=(',',':'),allow_nan=False)+'\n').encode('utf-8')`; key set is precisely `schema_version,operation,source_family,source_world_id,candidate_y_b_decimal,fork_id,expected_source_commit_sha,expected_frozen_protocol_sha`, values constrained by the fork-request schema. SHA-256 of those exact bytes are preregistered as follows (the only 11 authorized request artifacts):
 
 | y_B decimal string | fork_id | canonical request SHA-256 |
 |---|---|---|
