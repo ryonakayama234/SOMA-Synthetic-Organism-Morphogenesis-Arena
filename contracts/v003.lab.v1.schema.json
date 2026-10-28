@@ -132,6 +132,15 @@
         "derived_oracle_receipt_sha256": {
           "type": "string",
           "pattern": "^[0-9a-f]{64}$"
+        },
+        "original_source_commit_sha": {
+          "const": "824a8621944ea438388c54949a2b65719be2e419"
+        },
+        "original_workflow_run_id": {
+          "const": 40176213718
+        },
+        "original_artifact_id": {
+          "const": 12592745454
         }
       },
       "required": [
@@ -142,7 +151,10 @@
         "derived_manifest_sha256",
         "source_anchor",
         "producer_commit_sha",
-        "derived_oracle_receipt_sha256"
+        "derived_oracle_receipt_sha256",
+        "original_source_commit_sha",
+        "original_workflow_run_id",
+        "original_artifact_id"
       ]
     },
     "cell_energy": {
@@ -558,5 +570,5 @@
       ]
     }
   },
-  "$comment": "Trusted full original F022 archive, separately audited derived archive, and an independent view semantic audit are mandatory outside JSON Schema. A producer's self-issued manifest or 'verified' string never confers trust. Separate derived oracle receipt SHA must be checked against trusted audit output. V002.view.v1 stays unchanged. Draft post-review amendment: mechanical_contrast fields must be recomputed by independent source-to-view semantic verifier, exact null/grazing rules, and no feedback to cells. This is not authorization for V003 implementation."
+  "$comment": "Only independently audited complete original F022 CI run 40176213718 artifact 12592745454 from commit 824a862... is eligible. In-model signed delta vectors, exact input-diff cardinality, event/snapshot pointers, explicit null vs zero, derived oracle receipt and all replicated source data must be independently checked, not just JSON Schema. V003 only: no change to v002.view.v1."
 }
