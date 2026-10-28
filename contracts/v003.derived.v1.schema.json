@@ -525,7 +525,7 @@
       ]
     }
   },
-  "$comment": "Always unverified_derived; never self-certify. Original commit, 11 canonical request digests and fork IDs are fixed before V003 run. Independent physical oracle must check on-disk scenario.json/states.jsonl/contacts.jsonl exactly against embedded scenario/samples/contacts, all their hashes and complete physically predicted values. Audit receipt is an OUT-OF-BAND verifier artifact; this producer record cannot contain a verified status.",
+  "$comment": "Always unverified_derived; never self-certify. Original commit, 11 canonical request digests and fork IDs are fixed before V003 run. Independent physical oracle must check on-disk scenario.json/states.jsonl/contacts.jsonl exactly against embedded scenario/samples/contacts, all their hashes and complete physically predicted values. Audit receipt is an OUT-OF-BAND verifier artifact; this producer record cannot contain a verified status. Fixed after exact-head Codex P2: each outer branch binds fork_id, scenario.y_b_m, and embedded request.candidate_y_b_decimal; nested request.oneOf then binds digest.",
   "oneOf": [
     {
       "properties": {
@@ -536,6 +536,13 @@
           "properties": {
             "y_b_m": {
               "const": 0.95
+            }
+          }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.95"
             }
           }
         }
@@ -552,6 +559,13 @@
               "const": 0.96
             }
           }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.96"
+            }
+          }
         }
       }
     },
@@ -564,6 +578,13 @@
           "properties": {
             "y_b_m": {
               "const": 0.97
+            }
+          }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.97"
             }
           }
         }
@@ -580,6 +601,13 @@
               "const": 0.98
             }
           }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.98"
+            }
+          }
         }
       }
     },
@@ -592,6 +620,13 @@
           "properties": {
             "y_b_m": {
               "const": 0.99
+            }
+          }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.99"
             }
           }
         }
@@ -608,6 +643,13 @@
               "const": 1
             }
           }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.00"
+            }
+          }
         }
       }
     },
@@ -620,6 +662,13 @@
           "properties": {
             "y_b_m": {
               "const": 1.01
+            }
+          }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.01"
             }
           }
         }
@@ -636,6 +685,13 @@
               "const": 1.02
             }
           }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.02"
+            }
+          }
         }
       }
     },
@@ -648,6 +704,13 @@
           "properties": {
             "y_b_m": {
               "const": 1.03
+            }
+          }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.03"
             }
           }
         }
@@ -664,6 +727,13 @@
               "const": 1.04
             }
           }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.04"
+            }
+          }
         }
       }
     },
@@ -676,6 +746,13 @@
           "properties": {
             "y_b_m": {
               "const": 1.05
+            }
+          }
+        },
+        "request": {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.05"
             }
           }
         }
