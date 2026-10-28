@@ -30,3 +30,7 @@ State remains **DESIGN DRAFT / UNFROZEN / UNEXECUTED / NOT ADOPTED**. No V003 si
 **Design review still required:** audit newly proposed mechanical_contrast display-field math, finite/null semantics and source-independent recomputation, stringent A/B state and event verification, C05/C06/C07 alignment, unchanged V002 contracts, fixed six-owner UI, and testable viewer refusal/no-feedback. Previously reviewed PR #94 SHA `d891b46` predates this appendix and must not be represented as a review of the new design.
 
 **Current dependency:** V002 #89 is now merged into main (`4e6acb6e`); old issue/PR 'pending merge' paragraphs are historical. V003 is not thereby frozen or authorized for code.
+
+## 2026-10-28 — researcher authorized further work, source anchor chosen (NO V003 OBSERVATIONS)
+
+The researcher accepted continuing with V003 precise design and eventual separate implementation; this does not pre-judge any scientific or technical gate. External F022 original source identity is fixed BEFORE a V003 run to successful CI run 40176213718, artifact 12592745454, commit `824a8621944ea438388c54949a2b65719be2e419`, protocol `3984e9dcb2cb420abab5ca92b4d029b31b5173f8`. This is source selection from recorded historical CI metadata, NOT a claim that the artifact has already been downloaded and independently revalidated for V003. The eleven canonical request hashes and the required PREPARE_REQUEST versus VERIFIED_COMPARISON UI states are specified in PLAN. No new derived V003 physical world has been generated in this design update; admission remains pending.
