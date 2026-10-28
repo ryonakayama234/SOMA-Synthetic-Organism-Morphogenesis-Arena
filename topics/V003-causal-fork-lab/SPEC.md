@@ -61,3 +61,38 @@ Proposed prospective V003 UI ownership map: contracts/v003.workspace.layout.v1.j
 
 ## Adoption sequence
 Design-only Issue/SPEC/PLAN, machine-readable source/derived/view/layout contracts and architecture/data/finding synchronized on a Draft PR -> critical review and design corrections -> separate **pre-observation freeze** SHA in experiments/V003/FROZEN_V1.md -> separate implementation and independent reviewer -> actual execution + negative/tamper tests + repeatability CI -> human browser comprehension -> separate scientific and engineering verdict + explicit researcher decision -> main integration. V002 #89 is a prerequisite to main integration; no frozen F022/V002 artifacts or original science changed.
+
+## Third design audit — physical influence, not just contact (2026-10-28; PROPOSED, NOT FROZEN)
+
+### Why this instrument matters for SOMA, and where it stops
+The original V003 design primarily classified contact/no-contact. This is necessary but insufficient to operationalize SOMA's central distinction: *encounter opportunity* is not *mechanical influence*, and neither implies *sustained embodiment*. The research target of this **calibration instrument** is now the precise causal pathway
+`externally chosen B Y -> approach geometry -> contact event -> transferred normal impulse -> change in A's later observable motion`.
+The third step toward embodiment (persisting attachment, resource/behavioral advantage, individual choice) remains explicitly **UNMODELED**. Do not label these passive predetermined trajectories as self-assembly, emergent function, adaptive strategy or organism.
+
+### Primary estimand: A receives a consequence even though only B's initial Y changes
+Define the **model-world counterfactual contrast** against immutable original F022 C05 (B Y=1.01 m):
+`D_A^v(y) = ||v_A(t=2 s; do(y_b=y)) - v_A(t=2 s; original C05)||_2` in m/s.
+A's own initial position, velocity, mass and model must be exactly unchanged. Thus a nonzero `D_A^v` is attributable **within the fixed deterministic passive model** to the B-Y intervention mediated by an actual contact impulse; it is not an observed causal effect in hardware or learned agency. A's terminal position norm contrast `D_A^x(y)` in m is a secondary corroboration. Compare full signed component vectors in the verifier; norms are display summaries only.
+
+Three separable observables, never conflated:
+- **Geometric opportunity**: signed *unconstrained-free-flight* clearance `c_free(y)=y-1 m` at nominal closest approach (t=1 s), not the measured physical overlap/minimum separation of the collision-resolved trajectory. Negative means an imaginary unimpeded pass would overlap, **not** actual simulated penetration.
+- **Physical event**: `contact_kind in {impulse,grazing_zero_impulse,no_contact}`, continuous exact TOI or null, and normal impulse `j` [N s]; `j=null` for no event versus `j=0` for tangency. Avoid replacing null with 0.
+- **Mechanical effect**: `D_A^v(y)` and `D_A^x(y)`, both zero at tangency and non-contact; strict source-row and analytic-oracle audit. A recorded grazing event is therefore NOT evidence of changed action capability.
+
+With the existing equal 1 kg discs, R=1 m, opposite x velocities and e=1, theory predicts for y<1:
+`t_hit=1-0.5*sqrt(1-y*y) s`, `j=2*sqrt(1-y*y) N s`, `D_A^v=j/(1 kg)`, and `D_A^x=(2-t_hit)*D_A^v`.
+At y=1: event at t=1, j=0, both A effects zero. For y>1: no event, `time_of_impact_s=null`, `normal_impulse_ns=null`, both A effects zero. Total momentum (0,0) kg m/s and total KE 1 J are conservation *diagnostics*, NOT signs of individual benefit. Approach is analytically prescribed, not cell-selected.
+
+### Stronger falsification and controls without extra simulated worlds
+H3b now has TWO independent subclaims: (i) proper impulse/tangent/miss event classification; (ii) the measured **A terminal velocity and position changes** agree with the independent analytical formula under the predeclared tolerance, not just that there is a contact marker. Support for one does not automatically support the other. Reject contact-without-physical-effect being called mechanically effective; reject simulated A motion changed with no applicable physical event or another modified input.
+
+In addition to C05 y=1.01 identity control, the frozen *original* F022 roster already contains **C06 y=.99 impulse** and **C07 y=1.00 grazing** under exactly the same remaining physical parameters (except original `world_id`). The V003 .99 and 1.00 forks must match corresponding *independently verified archived original C06/C07 physical scenario/rows/events after excluding ONLY the frozen source world-ID field*. This is a prospective archived positive-control cross-check, not additional V003 forks, a replacement for the independent mathematics oracle, or an acceptance of modified f022.archive.v1.
+
+### Epistemic boundaries and decision criteria
+1. **Scientific-model statement**: the calibrated passive F022 model exhibits the predicted geometry-to-impulse-to-A-change chain under specified interventions; no life-science claim.
+2. **Engineering statement**: one immutable source, one approved variable, an independently verified derived family, and truthful six-owner UI presentation. Schema validity, self-asserted hashes, screenshot reviews, or passing unit tests alone do not confer source authority.
+3. **Research direction statement**: future attachment/selection experiments may reuse this calibrated intervention/evidence method only through separately approved physics, local-observation and UI contracts. They may find non-attachment or detrimental effects.
+4. **GO/NO-GO**: if these metrics cannot be independently reconstructed from saved states/events, if an archived C06/C07 cross-check fails, if agent/world truth leaks, or if any panel consumes an unverified artifact, **NO IMPLEMENTATION/ADOPTION** until redesign. The next scientific functionality is not authorized by a successful viewer.
+
+### No new runtime subsystems
+The sole V003 feature owner remains `experiments/V003`; `soma/f022.py` and its source verifier stay unchanged. A new `mechanical_contrast` *data field in the existing proposed v003.lab.v1 display contract* summarizes derived-AND-verified evidence, not a new service, analytics engine, seventh panel, policy or free-form parameter interface. Evidence owns the summary; Cells owns each cell's source state; Arena owns physical geometry; Timeline owns clocks.
