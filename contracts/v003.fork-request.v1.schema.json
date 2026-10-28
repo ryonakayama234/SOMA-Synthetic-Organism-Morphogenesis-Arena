@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRAFT V003 fork request; a JSON request cannot establish independent source trust",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "v003.fork-request.v1"
+    },
+    "operation": {
+      "const": "export_request_for_offline_runner"
+    },
+    "source_family": {
+      "const": "f022.archive.v1"
+    },
+    "source_world_id": {
+      "const": "C05"
+    },
+    "candidate_y_b_decimal": {
+      "type": "string",
+      "enum": [
+        "0.95",
+        "0.96",
+        "0.97",
+        "0.98",
+        "0.99",
+        "1.00",
+        "1.01",
+        "1.02",
+        "1.03",
+        "1.04",
+        "1.05"
+      ]
+    },
+    "fork_id": {
+      "type": "string",
+      "pattern": "^V003-Y(095|096|097|098|099|100|101|102|103|104|105)$"
+    },
+    "expected_source_commit_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "expected_frozen_protocol_sha": {
+      "const": "3984e9dcb2cb420abab5ca92b4d029b31b5173f8"
+    }
+  },
+  "required": [
+    "schema_version",
+    "operation",
+    "source_family",
+    "source_world_id",
+    "candidate_y_b_decimal",
+    "fork_id",
+    "expected_source_commit_sha",
+    "expected_frozen_protocol_sha"
+  ],
+  "$comment": "Semantic checks must ensure fork_id suffix exactly corresponds to candidate_y_b_decimal; independently inspect externally supplied expected original checkout/source commit SHA, not self-issuer request/manifest. No user-supplied SHA alone can certify trust."
+}
