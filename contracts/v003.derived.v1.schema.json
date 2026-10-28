@@ -8,10 +8,7 @@
       "const": "v003.derived.v1"
     },
     "status": {
-      "enum": [
-        "unverified_derived",
-        "verified_derived"
-      ]
+      "const": "unverified_derived"
     },
     "fork_id": {
       "type": "string",
@@ -108,22 +105,33 @@
       "pattern": "^[0-9a-f]{40}$"
     },
     "independent_derived_oracle": {
-      "enum": [
-        "not_run",
-        "pass",
-        "fail"
-      ]
+      "const": "not_run"
     },
     "original_archive_unchanged": {
       "type": "boolean"
     },
     "files_sha256": {
       "type": "object",
-      "additionalProperties": {
-        "type": "string",
-        "pattern": "^[0-9a-f]{64}$"
+      "additionalProperties": false,
+      "properties": {
+        "scenario.json": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "states.jsonl": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "contacts.jsonl": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
       },
-      "minProperties": 1
+      "required": [
+        "scenario.json",
+        "states.jsonl",
+        "contacts.jsonl"
+      ]
     }
   },
   "required": [
@@ -405,5 +413,5 @@
       ]
     }
   },
-  "$comment": "Schema pass never grants physical trust: exact field diff, independently validated full F022 original roster with external SHA, separate V003 source-independent analytical oracle, original bytes unchanged and numerical semantics are separately mandatory."
+  "$comment": "Producer cannot claim an independent audit. Derived raw record remains unverified_derived/not_run. files_sha256 binds separate raw data files only. Independent evidence is supplied via a separate verifier receipt and checked again by view verifier."
 }
