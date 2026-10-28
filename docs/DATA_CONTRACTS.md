@@ -1366,3 +1366,42 @@ A visual usability rejection requires an independent, reviewable [workspace layo
 
 ### V002 presentation-owner contract — researcher accepted limited six-slot workbench (2026-10-28)
 The [layout-owner JSON](../contracts/v002.workspace.layout.v1.json) is accepted for **read-only deterministic archive comparison**, based on real user playback of F023 Q02/Q04. Original frozen `contracts/v002.view.v1.schema.json` is unchanged. **Only** Setup owns complete `scenario`/`parameter_diff`; Arena draws saved metric `samples` for each same-family side; Cells shows F023 two private `actions`/`ledger` or F022 `not_modeled`; Timeline owns `joint_sample_times_s`, source-pinned ordered `timeline[]`, transient time selection and bounded event history; Evidence owns original and derived independent-oracle verdicts and externally anchored SHA; System/Data owns `schema_version`, contract and disabled future slots. Selecting a timeline entry is *ephemeral UI state*; it is **never** an original source row, sampled off-grid position, agent observation or physics write. Do not add a seventh panel, drift data/logic to another owner or grow the main page vertically. Cross-family comparison stays forbidden by v1. User's PASS applies to limited replay UX; negative F022 manual controls are NOT claimed from the supplied Q02/Q04 video and remain independently tested in CI. Track final-head CI and actual main merge in Issue #86.
+
+
+---
+
+## V003 draft — original/derived trust and six-panel schema mapping (2026-10-28)
+
+[Issue #93](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/93) / [SPEC](../topics/V003-causal-fork-lab/SPEC.md) / [PLAN](../experiments/V003/PLAN.md) / [architecture diagram](ARCHITECTURE.md) / [findings UNEXECUTED](../findings/V003-validation.md).
+
+**Not implemented, no worlds observed, not frozen.** V003 source lineage must NEVER be disguised as the old frozen F022 archive: F022's independently verified original source family f022.archive.v1 has exact C01–C13; C05 is source input with y_b_m=1.01. Changing C05 creates a distinct derived-family record and separate proof obligation. Likewise do not modify v002.view.v1 to admit new fork worlds.
+
+~~~mermaid
+flowchart LR
+  O["Original full F022 archive / immutable"] --> A["Independent original trusted-source verifier"]
+  A --> Q["v003.fork-request.v1 / one decimal y input"]
+  Q --> S["Original F022 passive 2D solver, unchanged"]
+  S --> D["NEW v003.derived.v1 per-fork evidence"]
+  D --> V["Independent V003 derived saved-data physics verifier"]
+  V --> W["NEW v003.lab.v1 verified comparison"]
+  W --> U["Fixed existing six UI owners"]
+~~~
+
+| Proposed source/contract | Owner / responsibility | Critical boundary |
+| --- | --- | --- |
+| contracts/v003.fork-request.v1.schema.json | Setup exports offline request; local CLI consumes | Only decimal-string y_B candidates .95–1.05 in .01 steps; exact fork-ID mapping; request SHA alone is not trusted checkout proof |
+| contracts/v003.derived.v1.schema.json | V003 writer and separate from-disk physics oracle | Full exact cloned C05 16-key scenario except y; nine post frames, zero/one event, unique fork_id outside physical scenario; immutable derived root and original source |
+| contracts/v003.lab.v1.schema.json | Separate view projector + independent semantic auditor | Original original_frozen_f022 and derived derived_v003_independently_verified; complete input diff; explicit source/event/sample positions and trust; no extrapolated XY |
+| contracts/v003.workspace.layout.v1.json | Existing six fixed slots and rights | Setup request export only; Arena sampled/event inspection; Cells NOT MODELED energy; Timeline cursor; Evidence provenance; System/Data versions; no new panel or feedback |
+
+**Important schema semantics:**
+- A valid JSON Schema instance is not automatically credible physical evidence; original source anchor must be externally trusted and source-verifier accepted, and new derived-world oracle independently compares saved data to analytic mechanics.
+- Whole source F022 roster must be verified before C05 extraction. The fork uses original solver world_id C05 for every separately named derived root; fork_id is experiment provenance and is not a physical input difference.
+- y_b_m exact values and types (including identity y=1.01) must be compared without numerical tolerance; physical derived magnitudes use the separately preregistered SI 1e-9 criterion.
+- Null contact is zero archived contact rows and no time; geometric tangent is an event with kind grazing_zero_impulse and j=0. Physical sample at coincident exact event time remains post; off-grid event is archived pre/post, not a new grid sample.
+- Original F022 and new V003 derived bodies have **no motor or private energy account modeled**. Never show a fabricated zero charge or merged F023 ledger.
+- Only an independently verified cross-authority V003 lab view can display original+derived pair; V002's immutable same-family view contract cannot be broadened informally.
+- Exactly eleven derived worlds are proposed, including unchanged identity; each has nine saved post-grid rows; total 99 planned new rows plus preserved original C05 source. These are deterministic worlds, not 11 statistical replicates.
+- Request file may be prepared in Setup as a separate local action, but V003 v1 has NO browser-to-Python command execution path; an explicitly invoked local offline runner produces the source and viewer bundles. A truly live simulator needs a future approved command-transport contract.
+
+**Data/UI change gate:** without an approved v003.workspace.layout version, no changes to the six owners' geometry, data fields, authority or actions, and no seventh panel. Architecture + data contracts + experiment records are updated jointly in this design branch. This is NOT an experimental or UI result.
