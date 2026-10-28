@@ -1,0 +1,142 @@
+{
+  "contract_id": "v003.workspace.layout.v1",
+  "status": "DESIGN_DRAFT_UNFROZEN_UNIMPLEMENTED",
+  "inherits": "v002.workspace.layout.v1",
+  "stacked_parent_pr": 89,
+  "source_contract": "v003.lab.v1",
+  "request_contract": "v003.fork-request.v1",
+  "viewport": {
+    "width_px": 1500,
+    "height_px": 950,
+    "scroll_policy": "no_document_vertical_scroll;bounded_per_owner"
+  },
+  "palette": "neutral_grayscale_only",
+  "slots": [
+    {
+      "owner": "Setup",
+      "id": "setup",
+      "area": "left-top",
+      "reads": [
+        "original.scenario",
+        "derived.scenario",
+        "full_parameter_diff",
+        "request.candidate_y_b_decimal"
+      ],
+      "local_actions": [
+        "select approved y candidate",
+        "export typed request JSON",
+        "inspect full field diff"
+      ],
+      "writes": [
+        "request_file_export_only"
+      ],
+      "forbidden": [
+        "invoke_physics",
+        "edit_original_archive"
+      ]
+    },
+    {
+      "owner": "Arena",
+      "id": "arena",
+      "area": "centre-dominant",
+      "reads": [
+        "original.samples",
+        "derived.samples",
+        "contacts and event pre/post",
+        "joint_sample_times_s"
+      ],
+      "local_actions": [
+        "inspect true stored paired XY",
+        "inspect actual contact pre/post event"
+      ],
+      "writes": [],
+      "forbidden": [
+        "interpolate_unsampled_physics"
+      ]
+    },
+    {
+      "owner": "Cells",
+      "id": "cells",
+      "area": "left-bottom",
+      "reads": [
+        "per-cell A/B state",
+        "cell_energy"
+      ],
+      "local_actions": [
+        "inspect read-only cell states and F022 NOT MODELED motor/energy"
+      ],
+      "writes": [],
+      "forbidden": [
+        "invent_private_energy_ledger",
+        "motor_actions"
+      ]
+    },
+    {
+      "owner": "Timeline",
+      "id": "timeline",
+      "area": "bottom-fixed",
+      "reads": [
+        "timeline[]",
+        "joint_sample_times_s"
+      ],
+      "local_actions": [
+        "select saved sample cursor",
+        "inspect archived event",
+        "scroll bounded history"
+      ],
+      "writes": [
+        "ephemeral_local_cursor_only"
+      ],
+      "forbidden": [
+        "invent_event_sample"
+      ]
+    },
+    {
+      "owner": "Evidence",
+      "id": "evidence",
+      "area": "right-top",
+      "reads": [
+        "evidence",
+        "full_parameter_diff"
+      ],
+      "local_actions": [
+        "inspect original/derived/view audit and refusal"
+      ],
+      "writes": [],
+      "forbidden": [
+        "promote_unverified_result"
+      ]
+    },
+    {
+      "owner": "System/Data",
+      "id": "system",
+      "area": "right-bottom",
+      "reads": [
+        "schema_version",
+        "contract_id",
+        "evidence"
+      ],
+      "local_actions": [
+        "inspect exact version and authority",
+        "show disabled future slots"
+      ],
+      "writes": [],
+      "forbidden": [
+        "send_world_truth_to_agent"
+      ]
+    }
+  ],
+  "invariants": {
+    "panel_count": 6,
+    "new_panel": false,
+    "arena_largest_area": true,
+    "orthographic_metric_equal_axes": true,
+    "timeline_internal_bounded_scroll": true,
+    "no_browser_to_python_bridge": true,
+    "no_simulator_or_agent_feedback": true,
+    "no_original_archive_write": true,
+    "original_and_derived_provenance_separate": true,
+    "manual_ui_acceptance_required": true
+  },
+  "$comment": "Candidate V003 ONLY: Setup export capability is not a retroactive edit to read-only V002. Future integrated run/simulator GUI or learning require a separately approved contract."
+}
