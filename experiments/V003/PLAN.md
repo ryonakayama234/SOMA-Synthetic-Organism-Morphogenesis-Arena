@@ -39,3 +39,37 @@ Invalid negative tests: non-enumerated decimal, 1.00000000000001, wrong type, Na
 6. Record per-case pass/fail and negative attempts in append-only findings. Technical PASS/FAIL/INCONCLUSIVE and H3a–d SUPPORTED/REFUTED/INCONCLUSIVE/UNEXECUTED separate; no biology/autonomy conclusion.
 
 **Hard stop:** no V003 primary run before design review and explicit frozen V003 protocol SHA; no main merge before V002 PR #89 accepted + its exact-head review and post-merge gates.
+
+## Third pre-implementation refinement — primary estimand and archived positive controls (UNEXECUTED)
+
+**Design-only amendment; NOT a post-hoc result.** Keep exactly 11 y values, zero new input degrees of freedom, original C05 baseline and the current nine samples/fork (99 derived rows planned). Explicitly distinguish three unrelated kinds of claims: saved physical observations, deterministic independent model predictions, and display-only summaries. All numerical predictions below are algebra, NOT a V003 run.
+
+### Predeclare one primary mechanical outcome
+`D_A^v(y)=hypot(vx_A_fork(2)-vx_A_original_C05(2), vy_A_fork(2)-vy_A_original_C05(2))` m/s.
+Report BOTH signed component residuals as verifier inputs and the norm as a researcher summary; record `D_A^x(y)` analogously from A's (x,y) at t=2 s. A is an especially clean intervention receiver: A's entire initial state is frozen while **only B's Y** is manipulated. Do not claim that any resultant change is learned behavior, adaptive benefit, survival advantage, or sustained body integration.
+
+Analytical expectations for each fixed candidate:
+- `c_free=y-1` m is the **counterfactual straight-line closest-approach clearance**, never logged as actual collision overlap.
+- If `y<1`: `t_hit=(2-sqrt(1-y*y))/2` s, `j=2*sqrt(1-y*y)` N s, `D_A^v=j/1kg` m/s and `D_A^x=(2-t_hit)*D_A^v` m.
+- If `y=1`: ONE archived grazing event at t=1, j=0, `D_A^v=D_A^x=0`.
+- If `y>1`: ZERO events, TOI=null, impulse=null, `D_A^v=D_A^x=0`.
+Always verify terminal A and B **component** velocities/positions against independent equations; compare total P and KE for conservation (P=(0,0), KE=1J, within frozen numeric tolerance). Do not infer individual fitness from conserved total energy.
+The impulse curve is nonlinear and tends to zero at tangent boundary; `d j/dy=-2*y/sqrt(1-y*y)` (y<1) becomes steep as y approaches 1. These 11 discretized deterministic cases identify only this chosen grid, not a continuous robustness envelope or an empirical contact probability.
+
+### Embedded source-roster controls: no additional experiments
+- C05 y=1.01: derived identity .01-against-1.01 matches entire original C05 physical record *byte-for-byte canonical physical values where original record formatting permits*; provenance envelopes are not compared for equality.
+- C06 y=.99: derived fork .99 matches original independently accepted F022 C06 physical scenario, nine saved states and contact event **after stripping only the original `world_id` label**.
+- C07 y=1.00: derived fork 1.00 matches original F022 C07 physical scenario, nine saved states and zero-impulse grazing event by the same restricted label normalization.
+These controls are valid only after independent full original 13-world archive verification; never bypass the original full-roster oracle. Exact binary identity is required for the identity control under same source implementation/environment, with numerical/oracle comparison for cross-world canonical data when record representations differ.
+
+### Specific adversarial and null controls for the new estimand
+Fail on `no_contact` with zero-valued fabricated impulse instead of null; a tangency described as `no_contact`; `impulse` event with zero impulse; analytic nonzero A effect but display says zero; tampered/rehashed A final velocity, A final position or displayed norm; swapped C06/C07 purported positive-control labels; injected nonzero `c_free` claimed as actual physical penetration; a false archived sample interpolated at off-grid TOI; a hardcoded `pass` in producer output. Derived verifier and independently coded view verifier recompute all summaries from source rows, source-independent mechanics and externally inspected anchor; a JSON Schema parser alone is insufficient.
+
+### Decision gates separated by domain
+- **Measurement**: all 11 results have complete signed vectors, correct event/null semantics, analytic signed normal/TOI/impulse, independent primary/secondary A contrasts, and explicit full original C05/C06/C07 controls.
+- **Software/provenance**: no altered original bytes, no additional scenario field differences, immutable new derived roots, rehashed tamper refusals, source-independent oracle and receipt, two-root reproducibility, exact-HEAD CI/review.
+- **UI/authority**: six owners only, central metric Arena, Setup only exports bounded request, Evidence distinguishes raw source/verified mechanical contrast/theory and the three audit verdicts, Timeline refuses fabricated frames, no agent feedback; manual browser comprehension.
+- **Science**: classify model-physics prediction separately from pipeline adequacy, mark missing/negative results, no biological/emergence claims. Researcher must separately approve a freeze before any implementation.
+
+### Minimal future scientific payoff and stopping rule
+The calibrated V003 output can later become a control for **contact without mechanical effect vs contact with effect** in a different, explicitly approved attachment experiment. It does NOT itself test whether joining is beneficial. If the only feasible output is an attractive 11-trajectory animation without independently auditable A influence, stop V003 at design and revisit priority against attachment mechanics. No new panels or modules should be invented to conceal an unconvincing research endpoint.
