@@ -147,6 +147,57 @@
     },
     "cell_energy": {
       "const": "not_modeled"
+    },
+    "mechanical_contrast": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Researcher-only, independently reconstructed model-world contrast with immutable original C05. Source rows and event semantics remain authoritative; never fed to local agent policy.",
+      "properties": {
+        "free_flight_clearance_m": {
+          "type": "number",
+          "description": "Signed nominal straight-line closest approach clearance y-1 m; NOT actual physical penetration. Independently checked finite."
+        },
+        "contact_kind": {
+          "enum": [
+            "impulse",
+            "grazing_zero_impulse",
+            "no_contact"
+          ],
+          "description": "Must agree exactly with verified derived contacts[] (empty means no_contact)."
+        },
+        "time_of_impact_s": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Exact archived event time or null for absent event; not a fabricated stored sample."
+        },
+        "normal_impulse_ns": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "description": "Event impulse from independently verified contact; null for non-contact, 0 for grazing."
+        },
+        "a_terminal_velocity_delta_norm_mps": {
+          "type": "number",
+          "minimum": 0,
+          "description": "||vA_derived(2s)-vA_original_C05(2s)||; independently recompute exact signed vector components first."
+        },
+        "a_terminal_position_delta_norm_m": {
+          "type": "number",
+          "minimum": 0,
+          "description": "||xA_derived(2s)-xA_original_C05(2s)||; independently recompute exact signed vector components first."
+        }
+      },
+      "required": [
+        "free_flight_clearance_m",
+        "contact_kind",
+        "time_of_impact_s",
+        "normal_impulse_ns",
+        "a_terminal_velocity_delta_norm_mps",
+        "a_terminal_position_delta_norm_m"
+      ]
     }
   },
   "required": [
@@ -158,6 +209,7 @@
     "full_parameter_diff",
     "joint_sample_times_s",
     "timeline",
+    "mechanical_contrast",
     "evidence",
     "cell_energy"
   ],
@@ -506,5 +558,5 @@
       ]
     }
   },
-  "$comment": "Trusted full original F022 archive, separately audited derived archive, and an independent view semantic audit are mandatory outside JSON Schema. A producer's self-issued manifest or 'verified' string never confers trust. Separate derived oracle receipt SHA must be checked against trusted audit output. V002.view.v1 stays unchanged."
+  "$comment": "Trusted full original F022 archive, separately audited derived archive, and an independent view semantic audit are mandatory outside JSON Schema. A producer's self-issued manifest or 'verified' string never confers trust. Separate derived oracle receipt SHA must be checked against trusted audit output. V002.view.v1 stays unchanged. Draft post-review amendment: mechanical_contrast fields must be recomputed by independent source-to-view semantic verifier, exact null/grazing rules, and no feedback to cells. This is not authorization for V003 implementation."
 }
