@@ -1452,3 +1452,22 @@ flowchart TD
 **Six frozen owners remain**: Setup owns editable/exportable REQUEST ONLY; Arena owns metrically faithful scene; Cells owns signed per-cell source motion; Timeline owns time/event selection; Evidence exclusively owns verification and the new contrast *display*; System/Data owns contracts and authority status. A **new owner, panel, control-to-simulator bridge, derived-to-agent feedback or live policy source** is forbidden until an independently versioned, explicitly researcher-approved UI contract.
 
 **Acceptance**: actual source original and independent derived checks, unforgeable-within-test threat-model negative tests (rehashed semantic tamper), same-environment deterministic archive/view, exact CI SHA and reviewer audit, manual researcher comprehension and an explicit adoption decision. These integrity controls do NOT establish cryptographic trust against an attacker controlling the whole inspected checkout or external provenance anchor. No scientific emergent embodiment claim is supported by the present proposal.
+
+
+## V003 frozen-v1 implementation mapping — PR #95, unadopted
+
+The immutable [V003 freeze](../experiments/V003/FROZEN_V1.md) and four candidate contracts `v003.fork-request.v1`, `v003.derived.v1`, `v003.lab.v1`, `v003.workspace.layout.v1` govern this **implementation candidate**. Exact Git commit of the freeze-containing design = `46860b42846e434a54c10e906c2212d2c24e4ab3`. Existing `f022.archive.v1`/F022 oracle and `v002.view.v1` remain unchanged.
+
+| Implementation owner | Input / accepted record | Output / authority |
+|---|---|---|
+| `experiments.V003.prepare` | externally independently checked original C05 | Original-only offline HTML; 11 approved B-Y choices, typed canonical request export; NO produced V003 state |
+| `experiments.V003.run_suite.export_requests` | frozen 11 y decimal strings, pinned F022 source SHA | 11 `v003.fork-request.v1` canonical LF JSON files with fixed SHA-256 |
+| `experiments.V003.run_suite.produce` | fixed original full archive, trusted source receipt, one approved request | NEW root: `scenario.json`, `states.jsonl`, `contacts.jsonl`, `manifest.json` (unverified, cannot certify itself) |
+| `experiments.V003.verify.original` | complete original F022 5 files, exact externally pinned SHA and immutable roster | source qualification and external `source_receipt.json` |
+| `experiments.V003.verify.verify_derived` | saved raw four files + externally pinned original + independent receipt | out-of-band `derived_receipt.json`; independent analytic scene, event, nine samples and 16-field input checks |
+| `experiments.V003.project` | two physical families and separate oracle receipt | candidate `v003.lab.v1` comparison, signed input/state data, mechanical contrast and genuine timeline pointers |
+| `experiments.V003.verify_view` | saved view JSON plus separately accepted raw source and derived | independently reverified view only; mandatory BEFORE HTML publication |
+| `experiments.V003.viewer` | verified comparison or externally verified original-only preparation | offline 6-owner HTML, read-only physically, no physics API/agent truth |
+| `experiments.V003.browser_smoke` | prepared/verified HTML | real Chromium UI checks and screenshots for *engineering review only* |
+
+The original externally pinned source bytes are five files with SHA-256 enumerated in the frozen V003 protocol. An original 13-world preflight was performed **on the pre-existing** F022 CI archive, not on new V003 worlds. All V003 generated physical states and scientific verdicts remain pending actual CI results. Produced `v003.derived.v1` always carries `status=unverified_derived` and `independent_derived_oracle=not_run`; only an independent receipt authorizes publication. `world_id=C05` is not fork identity. Only separate `fork_id` and roots distinguish the 11 cases. No browser-to-Python or viewer-to-agent feedback, no seventh panel, no extra 2D physics.
