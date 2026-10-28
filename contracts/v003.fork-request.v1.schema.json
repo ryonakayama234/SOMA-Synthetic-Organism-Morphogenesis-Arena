@@ -37,8 +37,8 @@
       "pattern": "^V003-Y(095|096|097|098|099|100|101|102|103|104|105)$"
     },
     "expected_source_commit_sha": {
-      "type": "string",
-      "pattern": "^[0-9a-f]{40}$"
+      "const": "824a8621944ea438388c54949a2b65719be2e419",
+      "description": "Pinned to the independently inspected original F022 merged-main CI artifact; NEVER infer trust from request alone"
     },
     "expected_frozen_protocol_sha": {
       "const": "3984e9dcb2cb420abab5ca92b4d029b31b5173f8"
@@ -54,5 +54,117 @@
     "expected_source_commit_sha",
     "expected_frozen_protocol_sha"
   ],
-  "$comment": "Semantic checks must ensure fork_id suffix exactly corresponds to candidate_y_b_decimal; independently inspect externally supplied expected original checkout/source commit SHA, not self-issuer request/manifest. No user-supplied SHA alone can certify trust."
+  "$comment": "Accept only the 11 exact decimal/fork-id pairs, pinned original source SHA, and frozen protocol. Independent runtime gate must check external original artifact provenance and canonical request SHA against the preregistered digest register in V003 PLAN/FROZEN. JSON Schema alone is not external source trust.",
+  "oneOf": [
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "0.95"
+        },
+        "fork_id": {
+          "const": "V003-Y095"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "0.96"
+        },
+        "fork_id": {
+          "const": "V003-Y096"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "0.97"
+        },
+        "fork_id": {
+          "const": "V003-Y097"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "0.98"
+        },
+        "fork_id": {
+          "const": "V003-Y098"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "0.99"
+        },
+        "fork_id": {
+          "const": "V003-Y099"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "1.00"
+        },
+        "fork_id": {
+          "const": "V003-Y100"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "1.01"
+        },
+        "fork_id": {
+          "const": "V003-Y101"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "1.02"
+        },
+        "fork_id": {
+          "const": "V003-Y102"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "1.03"
+        },
+        "fork_id": {
+          "const": "V003-Y103"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "1.04"
+        },
+        "fork_id": {
+          "const": "V003-Y104"
+        }
+      }
+    },
+    {
+      "properties": {
+        "candidate_y_b_decimal": {
+          "const": "1.05"
+        },
+        "fork_id": {
+          "const": "V003-Y105"
+        }
+      }
+    }
+  ]
 }
