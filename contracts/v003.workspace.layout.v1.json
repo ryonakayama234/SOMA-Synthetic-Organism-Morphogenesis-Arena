@@ -20,7 +20,7 @@
         "original.scenario",
         "derived.scenario",
         "full_parameter_diff",
-        "request.candidate_y_b_decimal"
+        "v003.fork-request.v1:candidate_y_b_decimal"
       ],
       "local_actions": [
         "select approved y candidate",
@@ -40,9 +40,10 @@
       "id": "arena",
       "area": "centre-dominant",
       "reads": [
-        "original.samples",
-        "derived.samples",
-        "contacts and event pre/post",
+        "original.states",
+        "derived.states",
+        "original.contacts",
+        "derived.contacts",
         "joint_sample_times_s"
       ],
       "local_actions": [
@@ -59,7 +60,8 @@
       "id": "cells",
       "area": "left-bottom",
       "reads": [
-        "per-cell A/B state",
+        "original.states",
+        "derived.states",
         "cell_energy"
       ],
       "local_actions": [
