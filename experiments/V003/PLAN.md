@@ -73,3 +73,29 @@ Fail on `no_contact` with zero-valued fabricated impulse instead of null; a tang
 
 ### Minimal future scientific payoff and stopping rule
 The calibrated V003 output can later become a control for **contact without mechanical effect vs contact with effect** in a different, explicitly approved attachment experiment. It does NOT itself test whether joining is beneficial. If the only feasible output is an attractive 11-trajectory animation without independently auditable A influence, stop V003 at design and revisit priority against attachment mechanics. No new panels or modules should be invented to conceal an unconvincing research endpoint.
+
+## Fixed pre-V003 source anchor, canonical requests and UI-state register — 2026-10-28 amendment (UNEXECUTED)
+
+Original source must be the pre-existing immutable 13-world CI archive from successful F022 workflow **40176213718**, artifact **12592745454** (Python 3.11), source commit `824a8621944ea438388c54949a2b65719be2e419`, original protocol `3984e9dcb2cb420abab5ca92b4d029b31b5173f8`. The trusted external CI record MUST agree with independent original-roster oracle; the untrusted request/manifest cannot pick a different original. Source extraction and byte hashes are bound before a fork and rechecked before publishing a view. No fallback to newly generated original evidence under a V003 primary run.
+
+Canonical request bytes are `(json.dumps(request,sort_keys=True,separators=(',',':'),allow_nan=False)+'\\n').encode('utf-8')`; key set is precisely `schema_version,operation,source_family,source_world_id,candidate_y_b_decimal,fork_id,expected_source_commit_sha,expected_frozen_protocol_sha`, values constrained by the fork-request schema. SHA-256 of those exact bytes are preregistered as follows (the only 11 authorized request artifacts):
+
+| y_B decimal string | fork_id | canonical request SHA-256 |
+|---|---|---|
+| `0.95` | `V003-Y095` | `57c94a0dbcd474da5d985a7feb5b6bf3609e73e07751e4cc24751e19ce5baeff` |
+| `0.96` | `V003-Y096` | `d11c7a99544efd02fb6d7a0ca9a8e91f469a7a1d5ebcfbc4a5267e30872efdf8` |
+| `0.97` | `V003-Y097` | `bf26386b743043421658a64e9bcea0902fca56565a85a6d65c1b4dd71dc2796a` |
+| `0.98` | `V003-Y098` | `ffea73dc4fd83feebb9f6537a510b00afc05caabe51fc534bbe1e5c437b07547` |
+| `0.99` | `V003-Y099` | `ed943c86e037af97d57ae2702331b75e3c8f42c391034dbf9a3a43c77f743b44` |
+| `1.00` | `V003-Y100` | `0b4911b8deb7882d6c92b474e77cca193d6c3190f66c6dfc5961bf163d817f60` |
+| `1.01` | `V003-Y101` | `680e7366d781ce7f8e61272e91616ee70ce92f711b457a17b267ce2edd0daac7` |
+| `1.02` | `V003-Y102` | `e9e1f5f1123c6540f3a3e94741f3de1fc84f1c06605af878b8756488e01751c6` |
+| `1.03` | `V003-Y103` | `63857fea662ab3bd08a2d553261174cac778516f06ab97e6a9993e5aad079b7c` |
+| `1.04` | `V003-Y104` | `0e375fafde7888f2c6f0c2320863cdd530a976189f1ac1d2e972c4377f4bc3bf` |
+| `1.05` | `V003-Y105` | `9163ad3e75893913e1ef4c7bb5b802c1b106acdf8ece13e2d5eb66e769d78ec4` |
+
+A mismatch is a hard failure even when request, scenario and internal hashes are mutually consistent. JSON-line and duplicated embedded physical records must match **exactly** after canonical parsing (not approximate), with independent physics values checked by 1e-9 scaled SI scalar criterion. The 11 requests are a paired deterministic register, not 11 statistical replicates.
+
+The V003 UI has exactly two states: (1) `PREPARE_REQUEST` exposes only the trusted original, the 11-value chooser and export action; derived values are explicitly `NOT GENERATED`, never an empty display interpreted as zero. (2) `VERIFIED_COMPARISON` requires original, derived and projection oracle PASS and displays the complete 16-key physical input map and a separate 0/1 physical-field difference index. Setup never invokes the physics runner directly. A display receipt or physical result alone cannot grant user approval or scientific adoption.
+
+**Source limitation:** this preexisting CI artifact may expire. If it becomes inaccessible before a complete independent check and preservation, halt and request a NEW pre-observation protocol revision; do not silently substitute another CI run or newly made original.
