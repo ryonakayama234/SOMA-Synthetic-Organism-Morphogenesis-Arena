@@ -96,3 +96,13 @@ In addition to C05 y=1.01 identity control, the frozen *original* F022 roster al
 
 ### No new runtime subsystems
 The sole V003 feature owner remains `experiments/V003`; `soma/f022.py` and its source verifier stay unchanged. A new `mechanical_contrast` *data field in the existing proposed v003.lab.v1 display contract* summarizes derived-AND-verified evidence, not a new service, analytics engine, seventh panel, policy or free-form parameter interface. Evidence owns the summary; Cells owns each cell's source state; Arena owns physical geometry; Timeline owns clocks.
+
+## Final researcher-approved design refinements — 2026-10-28, before freeze
+
+Researcher authorized proceeding with the detailed V003 design and separate implementation, **not scientific admission**. The original trusted archive is a PREEXISTING successful GitHub Actions artifact: workflow run **40176213718**, Python 3.11 artifact **12592745454**, commit `824a8621944ea438388c54949a2b65719be2e419`, frozen F022 protocol `3984e9dcb2cb420abab5ca92b4d029b31b5173f8`. Require externally inspected matching workflow, checkout and **complete 13-world archive** before selecting C05. Do not create a new original F022 archive under a V003 run or treat source SHA echoed by a JSON request as external authority. The artifact expires in November 2026; its immutability must be independently secured before expiry, with trust receipts, not silently substituted.
+
+The canonical, newline-terminated 11 request SHA-256 digests are fixed in PLAN and enforced by the V003 derived contract; request content uses the exact pinned original SHA and protocol above. `fork_id` and `candidate_y_b_decimal` are a strict one-to-one pair. Each raw derived record has separate on-disk three-file hashes and embedded scene/samples/contacts: independently assert full byte-level canonical file/embedded semantic equivalence; never trust a hash alone. Independent receipt remains out-of-band.
+
+UI must represent two mutually exclusive states **PREPARE_REQUEST** (original-only evidence, no generated world, Setup exports an allowed request without a simulation bridge) and **VERIFIED_COMPARISON** (only audited `v003.lab.v1`). Setup shows all 16 physical scene keys from the two source scenes in comparison mode; `full_parameter_diff` is just the 0/1 changed-field INDEX and cannot replace the full mapping. During request preparation, a proposed candidate is NOT an observation. The six V002 panel owners and observer-only data boundary do not change.
+
+Freeze must follow exact-head design review and must precede generation of any V003 derived-world primary observation. No biological, self-assembly or learning conclusion is authorized by this approval.
