@@ -1598,3 +1598,80 @@ flowchart TB
 
 ### V002 read-only observatory — researcher-approved limited archive playback (2026-10-28)
 The human researcher actually operated the fixed grayscale six-owner interface (F023 Q02/Q04 stored-sample navigation visible in supplied ~9s video) and explicitly marked the limited replay interface **PASS**. The prior vertically stacked layout is historically rejected. **The architecture/data flow did not change with acceptance**; fixed owner mapping from [`v002.workspace.layout.v1`](../contracts/v002.workspace.layout.v1.json) remains enforceable by the browser CI. Two trusted same-family original archives → source-independent F022/F023 verifier → immutable `v002.view.v1` projection → separate source-read-back verifier → offline researcher view. Timeline time-step and history scroll update its own fixed panel; Arena only shows exact same-clock **saved XY samples**, and off-grid event data remain separately source-timestamped. No simulator control, policy feedback, fabricated interpolation, seventh region, new physical mechanism or agent observation channel is introduced. The video attests Q02/Q04 sample stepping, not manual exercise of every frozen F022 negative control; those are checked by independent automated oracles. Exact integration and post-main CI remain individual evidence checkpoints in [Issue #86](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/86).
+
+
+---
+
+## V003 Causal Fork Lab — proposed design, NOT implemented (2026-10-28)
+
+[Issue #93](https://github.com/ryonakayama234/SOMA-Synthetic-Organism-Morphogenesis-Arena/issues/93) / [V003 SPEC](../topics/V003-causal-fork-lab/SPEC.md) / [V003 PLAN](../experiments/V003/PLAN.md) / [candidate six-owner UI contract](../contracts/v003.workspace.layout.v1.json) / [UNEXECUTED findings](../findings/V003-validation.md).
+
+**DESIGN DRAFT / UNFROZEN / NO NEW WORLDS / NO V003 IMPLEMENTATION OR ADOPTION.** This proposal is stacked on the existing V002 #89 implementation candidate and preserves the V002 six-slot workspace. V002 is still separately gated before main integration; do not change original F022 or V002 frozen source/view semantics.
+
+~~~mermaid
+flowchart TB
+  S["FULL immutable frozen F022 C01-C13 source archive"] --> G{"Independent F022 original verifier + externally inspected source SHA"}
+  G -->|pass| C["Source authority: C05 original"]
+  G -->|fail| R["FAIL CLOSED / no certified view"]
+  U["Researcher Setup: enumerated B initial y decimal"] --> Q["V003 request validation / exact one-field intervention"]
+  C --> Q
+  Q -->|accept| P["Unmodified soma.f022 2D passive physics"]
+  Q -->|reject| R
+  P --> D["Separate NEW v003.derived.v1 archive / immutable fork root"]
+  D --> V{"Independent new V003 derived physical saved-data oracle"}
+  V -->|pass| M["v003.lab.v1 two-authority verified projection"]
+  V -->|fail| R
+  M --> E["Existing six UI owner slots only"]
+  E -.->|FORBIDDEN FEEDBACK| X["LocalObservation / agent policy / learning / original archive"]
+~~~
+
+**Module responsibilities and code-flow contract**:
+1. **Original source verifier** checks whole preexisting immutable F022 13-world archive with independently trusted original implementation and frozen SHA, not an extracted or modified C05 singleton.
+2. **V003 orchestrator** accepts only a versioned researcher-request file, replaces y_b_m in a cloned C05 scenario, and creates a separate immutable fork output root. Unique fork_id lives OUTSIDE solver scenario; solver row world_id remains C05. No physical policy, motor, source rewrite or ad-hoc editor.
+3. **Existing solver** runs unmodified F022 equations and cannot confer source/evidence trust.
+4. **New derived source-independent verifier** checks complete exact input fields, analytic geometry, event/no-event, every stored sample, momentum/energy, provenance and adversarial rehash attacks. Its methods must not import the producer's solver.
+5. **V003 source-to-view checker** compares each displayed value, time, phase, pointer, input diff and authority label to independently verified original and derived records before publication. The v003.lab.v1 display is NOT a new physical source. The old v002.view.v1 never accepts this cross-authority pair.
+6. **Same six UI owners** (Setup, Arena, Cells, Timeline, Evidence, System/Data) under new prospective v003.workspace.layout.v1, with the same 1500x950 desktop-first monochrome fixed geometry; Setup may export a bounded request file only. The V003 v1 runner is an offline CLI process, NOT browser Python/server dispatch. Timeline owns a bounded scroll history and saved cursor. Cells shows F022 motor/energy NOT MODELED; no 0 fabricated; System/Data keeps policy and learning placeholders disabled.
+
+**Change control:** this section is a prospective v003-only contract design appended for review, not a retroactive extension of V002 or permission to change panels. Changes to panel count, positions, sources/rights or simulator execution bridge require a newly reviewed version and researcher approval.
+
+## V003 Third Design Audit — encounter to mechanical influence, six-owner evidence path (2026-10-28, DRAFT, NOT IMPLEMENTED)
+
+This diagram **amends the unfrozen proposal only**. An encounter/contact marker is not equivalent to transferable mechanical influence; a mechanical influence is not evidence of sustainable joined embodiment. V003 calibrates the *first two*, while morphogenesis, voluntary connection, resource/fitness benefit and robot learning remain OUT OF SCOPE. Principal implementation owner if later approved: `experiments/V003`; existing F022 physics unchanged.
+
+```mermaid
+flowchart TD
+    R["Setup: fixed B-Y request only; export JSON"] --> Q["V003 request and external source-trust gate"]
+    O["Original full frozen F022 C01-C13"] --> V{"Original independent oracle + inspected source SHA"}
+    V -->|PASS| Q
+    V -->|FAIL| STOP["REFUSE: no verified view"]
+    Q -->|valid C05 + enumerated Y| S["Existing unchanged soma/f022.py"]
+    Q -->|FAIL| STOP
+    S --> D["NEW raw v003.derived.v1; always UNVERIFIED"]
+    D --> A{"Separate on-disk V003 physics oracle; independent receipt"}
+    A -->|FAIL| STOP
+    A -->|PASS| P{"Source-to-view independent semantic oracle"}
+    O --> P
+    P -->|FAIL| STOP
+    P -->|PASS| B["v003.lab.v1: verified comparison + mechanical_contrast"]
+    B --> UI["Six fixed V002 workspace owners"]
+    UI -. "STRICTLY NO GLOBAL TRUTH/CONTROL FEEDBACK" .-> AGENT["Blocked cell LocalObservation / Policy / Learning"]
+```
+
+The **mathematical causal chain** and evidence provenance are separate:
+```mermaid
+flowchart LR
+    Y["Only B initial Y is externally intervened"] --> GEO["Nominal straight-line clearance y-1 m"]
+    GEO --> EVT["Event kind / exact TOI or null"]
+    EVT --> IMP["Transferred normal impulse (N s), 0 or null"]
+    IMP --> A["A terminal motion difference (m/s, m)"]
+    A -. "NOT YET MEASURED" .-> BODY["Sustained attachment / body function"]
+```
+
+Interpretation guards:
+- The `free_flight_clearance_m` is a **counterfactual unimpeded-path** geometric margin; it is not actual overlap in the collision-resolved trajectory.
+- A's unchanged initial state makes its terminal motion contrast a useful **in-model mechanical causal effect**, not observed hardware causality, intelligence or fitness.
+- A tangent event at y=1 is physically recorded but yields exactly zero impulse and A motion change. An absent contact at y>1 has `event=null` and `impulse=null`, not fabricated zeros. Archived sample rows remain distinct from continuous TOI event rows.
+- Original C05/C06/C07 are independently source-verified archived identity, impact and grazing **controls**, not V003 derived worlds; all controls checked after stripping only `world_id` on physical row comparisons. Existing source producer and original full-roster oracle cannot be weakened.
+- V002 remains fixed in authority and presentation. V003 exports a bounded request; there is NO browser-to-simulator bridge. Only independent verified V003 comparison artifacts may be displayed, using the exact six existing owner slots.
+- Separate engineering, model-physics and researcher-usability verdicts; not executed, not frozen, not adopted.
