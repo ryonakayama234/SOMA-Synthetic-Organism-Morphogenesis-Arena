@@ -42,6 +42,118 @@
       "required": [
         "candidate_y_b_decimal",
         "request_sha256"
+      ],
+      "oneOf": [
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.95"
+            },
+            "request_sha256": {
+              "const": "57c94a0dbcd474da5d985a7feb5b6bf3609e73e07751e4cc24751e19ce5baeff"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.96"
+            },
+            "request_sha256": {
+              "const": "d11c7a99544efd02fb6d7a0ca9a8e91f469a7a1d5ebcfbc4a5267e30872efdf8"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.97"
+            },
+            "request_sha256": {
+              "const": "bf26386b743043421658a64e9bcea0902fca56565a85a6d65c1b4dd71dc2796a"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.98"
+            },
+            "request_sha256": {
+              "const": "ffea73dc4fd83feebb9f6537a510b00afc05caabe51fc534bbe1e5c437b07547"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "0.99"
+            },
+            "request_sha256": {
+              "const": "ed943c86e037af97d57ae2702331b75e3c8f42c391034dbf9a3a43c77f743b44"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.00"
+            },
+            "request_sha256": {
+              "const": "0b4911b8deb7882d6c92b474e77cca193d6c3190f66c6dfc5961bf163d817f60"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.01"
+            },
+            "request_sha256": {
+              "const": "680e7366d781ce7f8e61272e91616ee70ce92f711b457a17b267ce2edd0daac7"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.02"
+            },
+            "request_sha256": {
+              "const": "e9e1f5f1123c6540f3a3e94741f3de1fc84f1c06605af878b8756488e01751c6"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.03"
+            },
+            "request_sha256": {
+              "const": "63857fea662ab3bd08a2d553261174cac778516f06ab97e6a9993e5aad079b7c"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.04"
+            },
+            "request_sha256": {
+              "const": "0e375fafde7888f2c6f0c2320863cdd530a976189f1ac1d2e972c4377f4bc3bf"
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidate_y_b_decimal": {
+              "const": "1.05"
+            },
+            "request_sha256": {
+              "const": "9163ad3e75893913e1ef4c7bb5b802c1b106acdf8ece13e2d5eb66e769d78ec4"
+            }
+          }
+        }
       ]
     },
     "source": {
@@ -59,8 +171,7 @@
           "pattern": "^[0-9a-f]{64}$"
         },
         "original_source_commit_sha": {
-          "type": "string",
-          "pattern": "^[0-9a-f]{40}$"
+          "const": "824a8621944ea438388c54949a2b65719be2e419"
         },
         "original_frozen_protocol_sha": {
           "const": "3984e9dcb2cb420abab5ca92b4d029b31b5173f8"
@@ -108,7 +219,8 @@
       "const": "not_run"
     },
     "original_archive_unchanged": {
-      "type": "boolean"
+      "const": true,
+      "description": "Producer assertion only; independent byte preservation check required"
     },
     "files_sha256": {
       "type": "object",
@@ -413,5 +525,161 @@
       ]
     }
   },
-  "$comment": "Producer cannot claim an independent audit. Derived raw record remains unverified_derived/not_run. files_sha256 binds separate raw data files only. Independent evidence is supplied via a separate verifier receipt and checked again by view verifier."
+  "$comment": "Always unverified_derived; never self-certify. Original commit, 11 canonical request digests and fork IDs are fixed before V003 run. Independent physical oracle must check on-disk scenario.json/states.jsonl/contacts.jsonl exactly against embedded scenario/samples/contacts, all their hashes and complete physically predicted values. Audit receipt is an OUT-OF-BAND verifier artifact; this producer record cannot contain a verified status.",
+  "oneOf": [
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y095"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 0.95
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y096"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 0.96
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y097"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 0.97
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y098"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 0.98
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y099"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 0.99
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y100"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y101"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 1.01
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y102"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 1.02
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y103"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 1.03
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y104"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 1.04
+            }
+          }
+        }
+      }
+    },
+    {
+      "properties": {
+        "fork_id": {
+          "const": "V003-Y105"
+        },
+        "scenario": {
+          "properties": {
+            "y_b_m": {
+              "const": 1.05
+            }
+          }
+        }
+      }
+    }
+  ]
 }
