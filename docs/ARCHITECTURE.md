@@ -1675,3 +1675,30 @@ Interpretation guards:
 - Original C05/C06/C07 are independently source-verified archived identity, impact and grazing **controls**, not V003 derived worlds; all controls checked after stripping only `world_id` on physical row comparisons. Existing source producer and original full-roster oracle cannot be weakened.
 - V002 remains fixed in authority and presentation. V003 exports a bounded request; there is NO browser-to-simulator bridge. Only independent verified V003 comparison artifacts may be displayed, using the exact six existing owner slots.
 - Separate engineering, model-physics and researcher-usability verdicts; not executed, not frozen, not adopted.
+
+
+## V003 post-freeze implementation candidate — code and authority (2026-10-28, PR #95)
+
+**Status: implementation candidate, pending GitHub Actions, browser manual inspection, design PR #94 gate and researcher adoption.** V003.v1 preregistration is immutable at [FROZEN_V1](../experiments/V003/FROZEN_V1.md), design SHA `46860b42846e434a54c10e906c2212d2c24e4ab3`. This paragraph supersedes prior *prospective/unfrozen* descriptors for the new implementation branch but leaves the historical design notes intact. Do not claim physics/science results before exact-head CI.
+
+```mermaid
+flowchart TD
+  SOURCE["External original F022 CI artifact\nrun 40176213718 / 5 pinned files"] --> ORIGINAL["experiments.V003.verify.original\nfull original 13-world physical verifier"]
+  ORIGINAL --> SRCRECEIPT["source receipt (outside source)"]
+  SRCRECEIPT --> PREPARE["experiments.V003.prepare\ntrusted original-only 6-panel UI"]
+  PREPARE --> EXPORT["11-option canonical request export\nNO browser-to-Python bridge"]
+  EXPORT --> RUN["experiments.V003.run_suite\nbounded offline executor"]
+  ORIGINAL --> RUN
+  RUN --> SIM["unchanged soma.f022.simulate"]
+  SIM --> RAW["v003.derived.v1\n4-file unverified derived root"]
+  RAW --> DERIVED{"experiments.V003.verify.verify_derived\nindependent closed-form from-disk oracle"}
+  DERIVED --> RECEIPT["separate derived audit receipt"]
+  RECEIPT --> PROJECT["experiments.V003.project\noriginal+derived research-only projection"]
+  ORIGINAL --> PROJECT
+  PROJECT --> AUDIT{"experiments.V003.verify_view\nindependent copy/timeline/contrast checker"}
+  AUDIT -->|PASS| VIEW["v003.lab.v1 + offline HTML\nexisting six owners"]
+  AUDIT -->|FAIL| STOP["REFUSE / publish nothing"]
+  VIEW -. "NO DATA OR CONTROL FEEDBACK" .-> AGENT["LocalObservation, policy, learning"]
+```
+
+The only changed physics-world input is B initial `y_b_m`; unchanged source F022 and frozen F022 verifier are reused, not modified. The first UI state is **PREPARE_REQUEST** (original physical data only, derived = NOT GENERATED); the second is **VERIFIED_COMPARISON** (after three independent source/derived/view gates). The renderer never itself certifies an artifact, and no new authority/panel exists. The six V002 owners retain Setup, Arena, Cells, Evidence, System/Data and Timeline responsibilities. `experiments/V003/browser_smoke.py` proposes a real Chromium 1500×950 test; this is NOT a completed manual researcher test.
