@@ -1702,3 +1702,34 @@ flowchart TD
 ```
 
 The only changed physics-world input is B initial `y_b_m`; unchanged source F022 and frozen F022 verifier are reused, not modified. The first UI state is **PREPARE_REQUEST** (original physical data only, derived = NOT GENERATED); the second is **VERIFIED_COMPARISON** (after three independent source/derived/view gates). The renderer never itself certifies an artifact, and no new authority/panel exists. The six V002 owners retain Setup, Arena, Cells, Evidence, System/Data and Timeline responsibilities. `experiments/V003/browser_smoke.py` proposes a real Chromium 1500×950 test; this is NOT a completed manual researcher test.
+
+## V003 verified candidate checkpoint — 2026-10-29 (PR #95; no new authority)
+
+The preceding implementation mapping remains valid. The downloaded prior V003 CI archive (workflow 40714782658 / unadopted artifact 12827604335) was additionally reconstructed outside SOMA code across 11 frozen scenes and 99 saved rows; only A's original B-Y intervention is permitted. New `tests/test_v003.py` dependency gate affects **test discovery only**, not physical simulation, archived outputs, panel rendering or local agent observations. At correction SHA `f83ce39e15721f8f253c955da02612dcc25d3b74`, all 24/24 PR workflows (23 inherited plus V003) passed.
+
+~~~mermaid
+flowchart TD
+  O["Externally SHA-pinned F022 original C01–C13"] --> T{"Full-roster original verifier"}
+  T -->|pass| S["Trusted immutable C05 baseline"]
+  S --> F["V003 exactly one B-Y fork request"]
+  F --> PH["Unmodified soma.f022 2D contact mechanics"]
+  PH --> RAW["v003.derived.v1: unverified saved states and events"]
+  RAW --> DV{"Independent closed-form disk physics audit"}
+  DV -->|pass| RECEIPT["Out-of-band derived receipt"]
+  S --> PV{"Independent source-to-view semantic audit"}
+  RAW --> PV
+  RECEIPT --> PV
+  PV -->|pass| VIEW["v003.lab.v1 / EXACTLY six inherited UI owners"]
+  T -->|reject| STOP["Fail closed: no verified comparison"]
+  DV -->|reject| STOP
+  PV -->|reject| STOP
+  VIEW -. "NEVER return global truth" .-> CELL["Blocked agent observation / policy / training"]
+
+  TEST["Inherited F001–F023 test collection"] --> DEP{"jsonschema installed?"}
+  DEP -->|no| SKIP["Skip V003-only module; run inherited tests"]
+  DEP -->|yes| RUN["Run V003 contract tests too"]
+  CI["Dedicated V003 CI"] --> INSTALL["Install required jsonschema"]
+  INSTALL --> RUN
+~~~
+
+**UI/data obligation unchanged:** Setup alone exports one of eleven typed requests; Arena reads real saved XY/events; Cells shows F022 energy/motor as NOT MODELED; Timeline edits only local saved-sample cursor; Evidence owns archived/derived/view audit and A mechanical contrast; System/Data owns schema and provenance. No seventh owner, browser-to-Python execution, interpolation, solver mutation, or analytics-to-agent path. Human acceptance remains separate from automated Chromium smoke. See [append-only results](../findings/V003-validation.md) and [v1 frozen pre-observation contract](../experiments/V003/FROZEN_V1.md).

@@ -1471,3 +1471,30 @@ The immutable [V003 freeze](../experiments/V003/FROZEN_V1.md) and four candidate
 | `experiments.V003.browser_smoke` | prepared/verified HTML | real Chromium UI checks and screenshots for *engineering review only* |
 
 The original externally pinned source bytes are five files with SHA-256 enumerated in the frozen V003 protocol. An original 13-world preflight was performed **on the pre-existing** F022 CI archive, not on new V003 worlds. All V003 generated physical states and scientific verdicts remain pending actual CI results. Produced `v003.derived.v1` always carries `status=unverified_derived` and `independent_derived_oracle=not_run`; only an independent receipt authorizes publication. `world_id=C05` is not fork identity. Only separate `fork_id` and roots distinguish the 11 cases. No browser-to-Python or viewer-to-agent feedback, no seventh panel, no extra 2D physics.
+
+## V003 data/evidence provenance checkpoint — 2026-10-29 (NO SCHEMA CHANGE)
+
+Existing frozen contracts remain: `v003.fork-request.v1` (11 canonical one-variable requests), `v003.derived.v1` (separate unverified physical output), `v003.lab.v1` (independently rechecked comparison) and `v003.workspace.layout.v1` (existing six fixed owner slots). No new field, read authority, panel, policy input or schema version is introduced in this checkpoint. `f022.archive.v1` original and `v002.view.v1` are untouched.
+
+~~~mermaid
+flowchart LR
+  PIN["F022 trusted original 5-file hash pin"] --> SRC["Original 13-world source audit"]
+  SRC --> FORK["V003 request: B Y only"]
+  FORK --> RAW["4-file derived raw root / status=unverified"]
+  RAW --> DR["Separate analytic derived receipt"]
+  DR --> VIEW["v003.lab.v1: source + derived + mechanical_contrast"]
+  SRC --> VIEW
+  VIEW --> CHECK["Independent source-to-view check"]
+  CHECK --> UI["Six fixed owners (read-only physical comparison)"]
+~~~
+
+| Evidence boundary | Required versioned/source fact | Allowed interpretation |
+|---|---|---|
+| Source | Exact pre-existing F022 13-world file pins; C05 comparison base | Frozen archived source, not newly simulated F022 source |
+| Request | Exactly 11 B-Y decimal candidates; own request SHA and fork ID | Researcher-owned intervention only |
+| Derived | Saved scenario + nine post samples + 0/1 contact per fork; status `unverified_derived` | Derived physical observations pending independent receipt |
+| Derived audit | Independent on-disk closed-form rows/events + separate receipt | Software-verified within fixed F022 mathematical model |
+| View | `mechanical_contrast`: signed-component-checked terminal A velocity/position norms; TOI and impulse `null` for no contact versus impulse `0` for exact tangent | Research-only comparison after original/derived/view gates |
+| UI | Setup / Arena / Cells / Timeline / Evidence / System-Data | Read/display permitted as frozen; no world-truth flow back to cell policy |
+
+**Recorded observation bound:** CI workflow 40714782658 (source SHA `1d6e2cdf`) produced 11 candidate worlds / 99 physical state rows (5 impulse, 1 zero-impulse graze, 5 miss); downloaded Python 3.11 artifact 12827604335 independently reconstructed with standard-library-only analytic math and raw SHA checks, max absolute component discrepancy 1.3322676295501878e-15. A follow-up *test discovery only* fix at `f83ce39e` passed all 24/24 inherited+V003 workflows, without changing these source/view contract fields. Details, limitations, and adoption gates: [V003 findings](../findings/V003-validation.md). This is model-world evidence, not new robot capability or agent learning.
