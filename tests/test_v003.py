@@ -5,7 +5,17 @@ import json
 import math
 import tempfile
 import unittest
+import importlib.util
 from pathlib import Path
+
+# V003's schema validator is an optional dependency for inherited F001–F023 CI.
+# Those workflows must still test their original features without importing
+# the isolated V003 runner. The dedicated V003 CI installs jsonschema and runs
+# all tests in this module; absence here is an explicit unittest skip, not PASS.
+if importlib.util.find_spec("jsonschema") is None:
+    raise unittest.SkipTest(
+        "V003 contract tests require jsonschema; mandatory in dedicated V003 CI"
+    )
 
 from experiments.V003.run_suite import frozen_request, export_requests, accept_request
 from experiments.V003.verify import (YS,DIGESTS,ORIGINAL_SHA,F022_FREEZE,
