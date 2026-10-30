@@ -95,6 +95,14 @@ def verify_view(view_file,original_root,source_receipt,derived_root,derived_rece
             fork_a["x_a_m"]-ref_a["x_a_m"],
             fork_a["y_a_m"]-ref_a["y_a_m"]))
     # Signed A physics is checked by derived closed-form audit before the norms.
+    # Physical predictions may use SI tolerance; a projected archive value
+    # must instead copy its independently verified source *exactly*.
+    if event is not None and event["kind"] == "grazing_zero_impulse":
+        if type(event["impulse_ns"]) is not float or event["impulse_ns"] != 0.0:
+            raise AssertionError("view source: grazing impulse must be exactly 0.0")
+    copied(view["mechanical_contrast"]["normal_impulse_ns"],
+           expected_contrast["normal_impulse_ns"],
+           "exact source-to-view normal impulse")
     close(view["mechanical_contrast"],expected_contrast,"independent contrast")
     expected_evidence=dict(
         original_oracle="pass",derived_oracle="pass",projection_oracle="pass",

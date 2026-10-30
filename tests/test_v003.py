@@ -19,7 +19,8 @@ if importlib.util.find_spec("jsonschema") is None:
 
 from experiments.V003.run_suite import frozen_request, export_requests, accept_request
 from experiments.V003.verify import (YS,DIGESTS,ORIGINAL_SHA,F022_FREEZE,
-                                    physics,schema,read,hash_file,ORIGINAL_HASHES)
+                                    physics,schema,read,hash_file,ORIGINAL_HASHES,
+                                    require_exact_grazing_impulse)
 
 class FrozenV003(unittest.TestCase):
     def test_all_eleven_request_bytes_and_provenance(self):
@@ -78,6 +79,25 @@ class FrozenV003(unittest.TestCase):
                 self.assertEqual(events,[])
                 self.assertEqual(frames[-1]["vx_a_mps"],1.)
         self.assertEqual((impulses,graze,miss),(5,1,5))
+    def test_exact_grazing_zero_and_view_impulse_copy(self):
+        from experiments.V003.verify_view import copied
+        require_exact_grazing_impulse(
+            {"kind":"grazing_zero_impulse","impulse_ns":0.0})
+        require_exact_grazing_impulse(
+            {"kind":"impulse","impulse_ns":5e-10})
+        for altered in (-5e-10,5e-10,0,False,None,"0.0"):
+            with self.subTest(altered=repr(altered)):
+                with self.assertRaisesRegex(AssertionError,"exactly 0.0"):
+                    require_exact_grazing_impulse(
+                        {"kind":"grazing_zero_impulse","impulse_ns":altered})
+        copied(0.0,0.0,"exact impulse")
+        copied(None,None,"missing contact")
+        for forged,expected in ((-5e-10,0.0),(5e-10,0.0),
+                                (0.0,None),(None,0.0)):
+            with self.subTest(view=forged,source=expected):
+                with self.assertRaises(AssertionError):
+                    copied(forged,expected,"exact impulse provenance")
+
     def test_contract_rejects_cross_field_fork_provenance(self):
         import jsonschema
         contract=json.loads((Path(__file__).resolve().parents[1]/

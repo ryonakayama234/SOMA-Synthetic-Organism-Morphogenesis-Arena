@@ -107,6 +107,14 @@ def close(got,ref,key="root"):
         for i,(x,y) in enumerate(zip(got,ref)): close(x,y,f"{key}[{i}]")
     elif type(got)!=type(ref) or got!=ref: raise AssertionError(key)
 
+def require_exact_grazing_impulse(event, key="contact"):
+    """Enforce the frozen discrete j=0 meaning, never SI float tolerance."""
+    if event["kind"] == "grazing_zero_impulse":
+        impulse = event["impulse_ns"]
+        if type(impulse) is not float or impulse != 0.0:
+            raise AssertionError(f"{key}: grazing impulse must be exactly 0.0")
+
+
 def physics(c05,y):
     """Closed-form independent mechanics for the fixed V003 predeclared geometry."""
     if y not in YS: raise AssertionError("unregistered coordinate")
@@ -193,6 +201,9 @@ def verify_derived(root,original_root,source_receipt_file):
         raise AssertionError("scene/request mismatch")
     close(raw_scene,expected_s,"scene")
     close(raw_samples,expected_samples,"samples")
+    # The frozen grazing class requires exact j=0 even for rehashed archives.
+    for i, event in enumerate(raw_contacts):
+        require_exact_grazing_impulse(event, f"contacts[{i}]")
     close(raw_contacts,expected_events,"contacts")
     for row in raw_samples:
         if abs(row["vx_a_mps"]+row["vx_b_mps"])>1e-9:

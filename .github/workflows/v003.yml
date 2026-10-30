@@ -136,6 +136,49 @@ jobs:
             --view "$p/forged-view/view.json"; then
             echo "FATAL: rehashed forged mechanical contrast was accepted"; exit 1
           fi
+      - name: Rehashed near-zero grazing archive and forged view must fail (frozen exact j=0)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,shutil
+          from experiments.V003.verify import verify_derived,encode
+          from experiments.V003.verify_view import verify_view
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"v003"
+          original=pathlib.Path(os.environ["RUNNER_TEMP"])/"v003-original"
+          source_receipt=p/"receipts/source.json"
+          good=p/"A/V003-Y100"
+          good_view=json.loads((p/"views/V003-Y100/view.json").read_text())
+          for label,delta in (("negative",-5e-10),("positive",5e-10)):
+              bad=p/("forged-graze-"+label)
+              shutil.copytree(good,bad)
+              events_file=bad/"contacts.jsonl"
+              events=[json.loads(row) for row in events_file.read_text().splitlines()]
+              assert len(events)==1 and events[0]["kind"]=="grazing_zero_impulse"
+              events[0]["impulse_ns"]=delta
+              events_file.write_bytes(b"".join(encode(e) for e in events))
+              manifest=json.loads((bad/"manifest.json").read_text())
+              manifest["contacts"]=events
+              manifest["files_sha256"]["contacts.jsonl"]=hashlib.sha256(events_file.read_bytes()).hexdigest()
+              (bad/"manifest.json").write_bytes(encode(manifest))
+              try:
+                  verify_derived(bad,original,source_receipt)
+              except AssertionError as exc:
+                  assert "grazing impulse must be exactly 0.0" in str(exc),str(exc)
+              else:
+                  raise AssertionError("rehashed near-zero grazing was certified")
+              bad_view=p/("forged-graze-view-"+label+".json")
+              view=json.loads(json.dumps(good_view))
+              view["mechanical_contrast"]["normal_impulse_ns"]=delta
+              bad_view.write_bytes(encode(view))
+              try:
+                  verify_view(bad_view,original,source_receipt,good,
+                              p/"receipts/A-V003-Y100.json")
+              except AssertionError as exc:
+                  assert "exact source-to-view normal impulse" in str(exc),str(exc)
+              else:
+                  raise AssertionError("near-zero view-only forgery was certified")
+          PY
       - name: Real Chromium six-panel browser smoke (Python 3.11 only)
         if: matrix.python == '3.11'
         shell: bash
