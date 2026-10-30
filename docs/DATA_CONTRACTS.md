@@ -1452,3 +1452,64 @@ flowchart TD
 **Six frozen owners remain**: Setup owns editable/exportable REQUEST ONLY; Arena owns metrically faithful scene; Cells owns signed per-cell source motion; Timeline owns time/event selection; Evidence exclusively owns verification and the new contrast *display*; System/Data owns contracts and authority status. A **new owner, panel, control-to-simulator bridge, derived-to-agent feedback or live policy source** is forbidden until an independently versioned, explicitly researcher-approved UI contract.
 
 **Acceptance**: actual source original and independent derived checks, unforgeable-within-test threat-model negative tests (rehashed semantic tamper), same-environment deterministic archive/view, exact CI SHA and reviewer audit, manual researcher comprehension and an explicit adoption decision. These integrity controls do NOT establish cryptographic trust against an attacker controlling the whole inspected checkout or external provenance anchor. No scientific emergent embodiment claim is supported by the present proposal.
+
+
+## V003 frozen-v1 implementation mapping — PR #95, unadopted
+
+The immutable [V003 freeze](../experiments/V003/FROZEN_V1.md) and four candidate contracts `v003.fork-request.v1`, `v003.derived.v1`, `v003.lab.v1`, `v003.workspace.layout.v1` govern this **implementation candidate**. Exact Git commit of the freeze-containing design = `46860b42846e434a54c10e906c2212d2c24e4ab3`. Existing `f022.archive.v1`/F022 oracle and `v002.view.v1` remain unchanged.
+
+| Implementation owner | Input / accepted record | Output / authority |
+|---|---|---|
+| `experiments.V003.prepare` | externally independently checked original C05 | Original-only offline HTML; 11 approved B-Y choices, typed canonical request export; NO produced V003 state |
+| `experiments.V003.run_suite.export_requests` | frozen 11 y decimal strings, pinned F022 source SHA | 11 `v003.fork-request.v1` canonical LF JSON files with fixed SHA-256 |
+| `experiments.V003.run_suite.produce` | fixed original full archive, trusted source receipt, one approved request | NEW root: `scenario.json`, `states.jsonl`, `contacts.jsonl`, `manifest.json` (unverified, cannot certify itself) |
+| `experiments.V003.verify.original` | complete original F022 5 files, exact externally pinned SHA and immutable roster | source qualification and external `source_receipt.json` |
+| `experiments.V003.verify.verify_derived` | saved raw four files + externally pinned original + independent receipt | out-of-band `derived_receipt.json`; independent analytic scene, event, nine samples and 16-field input checks |
+| `experiments.V003.project` | two physical families and separate oracle receipt | candidate `v003.lab.v1` comparison, signed input/state data, mechanical contrast and genuine timeline pointers |
+| `experiments.V003.verify_view` | saved view JSON plus separately accepted raw source and derived | independently reverified view only; mandatory BEFORE HTML publication |
+| `experiments.V003.viewer` | verified comparison or externally verified original-only preparation | offline 6-owner HTML, read-only physically, no physics API/agent truth |
+| `experiments.V003.browser_smoke` | prepared/verified HTML | real Chromium UI checks and screenshots for *engineering review only* |
+
+The original externally pinned source bytes are five files with SHA-256 enumerated in the frozen V003 protocol. An original 13-world preflight was performed **on the pre-existing** F022 CI archive, not on new V003 worlds. All V003 generated physical states and scientific verdicts remain pending actual CI results. Produced `v003.derived.v1` always carries `status=unverified_derived` and `independent_derived_oracle=not_run`; only an independent receipt authorizes publication. `world_id=C05` is not fork identity. Only separate `fork_id` and roots distinguish the 11 cases. No browser-to-Python or viewer-to-agent feedback, no seventh panel, no extra 2D physics.
+
+## V003 data/evidence provenance checkpoint — 2026-10-29 (NO SCHEMA CHANGE)
+
+Existing frozen contracts remain: `v003.fork-request.v1` (11 canonical one-variable requests), `v003.derived.v1` (separate unverified physical output), `v003.lab.v1` (independently rechecked comparison) and `v003.workspace.layout.v1` (existing six fixed owner slots). No new field, read authority, panel, policy input or schema version is introduced in this checkpoint. `f022.archive.v1` original and `v002.view.v1` are untouched.
+
+~~~mermaid
+flowchart LR
+  PIN["F022 trusted original 5-file hash pin"] --> SRC["Original 13-world source audit"]
+  SRC --> FORK["V003 request: B Y only"]
+  FORK --> RAW["4-file derived raw root / status=unverified"]
+  RAW --> DR["Separate analytic derived receipt"]
+  DR --> VIEW["v003.lab.v1: source + derived + mechanical_contrast"]
+  SRC --> VIEW
+  VIEW --> CHECK["Independent source-to-view check"]
+  CHECK --> UI["Six fixed owners (read-only physical comparison)"]
+~~~
+
+| Evidence boundary | Required versioned/source fact | Allowed interpretation |
+|---|---|---|
+| Source | Exact pre-existing F022 13-world file pins; C05 comparison base | Frozen archived source, not newly simulated F022 source |
+| Request | Exactly 11 B-Y decimal candidates; own request SHA and fork ID | Researcher-owned intervention only |
+| Derived | Saved scenario + nine post samples + 0/1 contact per fork; status `unverified_derived` | Derived physical observations pending independent receipt |
+| Derived audit | Independent on-disk closed-form rows/events + separate receipt | Software-verified within fixed F022 mathematical model |
+| View | `mechanical_contrast`: signed-component-checked terminal A velocity/position norms; TOI and impulse `null` for no contact versus impulse `0` for exact tangent | Research-only comparison after original/derived/view gates |
+| UI | Setup / Arena / Cells / Timeline / Evidence / System-Data | Read/display permitted as frozen; no world-truth flow back to cell policy |
+
+**Recorded observation bound:** CI workflow 40714782658 (source SHA `1d6e2cdf`) produced 11 candidate worlds / 99 physical state rows (5 impulse, 1 zero-impulse graze, 5 miss); downloaded Python 3.11 artifact 12827604335 independently reconstructed with standard-library-only analytic math and raw SHA checks, max absolute component discrepancy 1.3322676295501878e-15. A follow-up *test discovery only* fix at `f83ce39e` passed all 24/24 inherited+V003 workflows, without changing these source/view contract fields. Details, limitations, and adoption gates: [V003 findings](../findings/V003-validation.md). This is model-world evidence, not new robot capability or agent learning.
+
+
+## V003.v1 post-freeze grazing-event semantic verification (2026-10-30 candidate, PR #95)
+
+No machine-readable V003 schema, scenario parameter, frozen numerical tolerance, original F022 archive or workspace owner changes. Derived source and view oracles use different equality policies according to the **meaning** of the field:
+
+| Field or property | Required comparison | Why |
+|---|---|---|
+| Derived `kind=grazing_zero_impulse`, `impulse_ns` | Exact `float` type and `== 0.0` before approximate checks | Frozen discrete contact semantics; a nonzero signed impulse is not grazing |
+| Nonzero physical impulses, TOI, frame values, conservation diagnostics | Frozen scaled-SI `abs(error) <= 1e-9*max(1,abs(reference))` | Bounded floating-point physical computation |
+| Absent contact `contacts=[]` / view impulse and event time `null` | Exact event absence and JSON `null` | No contact is not a zero-impulse contact |
+| `v003.lab.v1.mechanical_contrast.normal_impulse_ns` | Exact canonical value equality with independently verified contact impulse, or exact `null` | The display copies archive evidence, not a new approximate prediction |
+| Other continuous `mechanical_contrast` summaries | Frozen physical tolerance, after signed frame verification | These are derived numerical effects |
+
+Source-bound negative CI controls clone V003-Y100, mutate `contacts.jsonl` impulse to `-5e-10` and `+5e-10` N·s, update the embedded manifest contacts and file hash, then demand that independent derived verification reject both. Separate view-only tampering must be rejected when raw derived source stays valid. Unaltered eleven frozen controls must continue to pass. Physical files and independently issued receipts must not be overwritten or relabeled as F022 evidence.

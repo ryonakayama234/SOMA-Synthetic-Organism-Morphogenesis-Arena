@@ -1,0 +1,231 @@
+name: V003 frozen one-coordinate fork source-bound audit (not research admission)
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/V003/**'
+      - 'tests/test_v003.py'
+      - 'contracts/v003.*'
+      - '.github/workflows/v003.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/V003/**'
+      - 'tests/test_v003.py'
+      - '.github/workflows/v003.yml'
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  original-and-derived:
+    name: V003 archived-source and 11-fork audit, Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install JSON Schema validator
+        run: python -m pip install 'jsonschema>=4.22,<5'
+      - name: All inherited regressions and V003 isolated preflight
+        run: |
+          python -m unittest tests.test_v003 -v
+          python -m unittest discover -s tests
+      - name: Download ONLY pre-registered existing original F022 CI artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/v003-original"
+          gh run download 40176213718 --repo "$GH_REPO" \
+            --name f022-2d-worlds-py3.11 --dir "$RUNNER_TEMP/v003-original"
+          test "$(find "$RUNNER_TEMP/v003-original" -maxdepth 1 -type f | wc -l)" -eq 5
+          sha256sum "$RUNNER_TEMP/v003-original/"*
+      - name: Verify original and all 11 derived roots / independent receipts
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v003"
+          mkdir -p "$p/receipts"
+          original="$RUNNER_TEMP/v003-original"
+          python -m experiments.V003.verify \
+            --original-root "$original" --source-receipt "$p/receipts/source.json"
+          python -m experiments.V003.run_suite --export-requests "$p/requests"
+          for request in "$p/requests/"*.json; do
+            id="$(basename "$request" .json)"
+            for root in A B; do
+              python -m experiments.V003.run_suite --original-root "$original" \
+                --source-receipt "$p/receipts/source.json" \
+                --request "$request" --out "$p/$root/$id"
+              python -m experiments.V003.verify --original-root "$original" \
+                --source-receipt "$p/receipts/source.json" \
+                --derived-root "$p/$root/$id" \
+                --derived-receipt "$p/receipts/$root-$id.json"
+            done
+            diff -r "$p/A/$id" "$p/B/$id"
+            cmp "$p/receipts/A-$id.json" "$p/receipts/B-$id.json"
+          done
+          test "$(find "$p/A" -name states.jsonl | wc -l)" -eq 11
+          test "$(find "$p/B" -name states.jsonl | wc -l)" -eq 11
+          test "$(cat "$p/A/"*/states.jsonl | wc -l)" -eq 99
+          test "$(cat "$p/A/"*/contacts.jsonl | wc -l)" -eq 6
+          python - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'v003'
+          for y,expected in [('099','impulse'),('100','grazing_zero_impulse'),('101',None)]:
+              m=json.loads((p/'A'/('V003-Y'+y)/'manifest.json').read_text())
+              events=m['contacts']
+              assert (events[0]['kind'] if events else None)==expected
+          PY
+      - name: Reconstruct all 11 verified two-authority views with independent source-to-view oracle
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v003"
+          for derived in "$p/A/"V003-Y*; do
+            id="$(basename "$derived")"
+            python -m experiments.V003.project \
+              --original-root "$RUNNER_TEMP/v003-original" \
+              --source-receipt "$p/receipts/source.json" \
+              --derived-root "$derived" \
+              --derived-receipt "$p/receipts/A-$id.json" \
+              --out "$p/views/$id"
+            python -m experiments.V003.verify_view \
+              --original-root "$RUNNER_TEMP/v003-original" \
+              --source-receipt "$p/receipts/source.json" \
+              --derived-root "$derived" \
+              --derived-receipt "$p/receipts/A-$id.json" \
+              --view "$p/views/$id/view.json"
+          done
+          test "$(find "$p/views" -name view.json | wc -l)" -eq 11
+          test "$(find "$p/views" -name index.html | wc -l)" -eq 11
+          python -m experiments.V003.prepare \
+            --original-root "$RUNNER_TEMP/v003-original" \
+            --source-receipt "$p/receipts/source.json" \
+            --out "$p/prepare.html"
+      - name: Rehashed false view summary must fail independently before publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v003"
+          mkdir -p "$p/forged-view"
+          python - <<'PY'
+          import json,os,pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'v003'
+          target=p/'forged-view/view.json'
+          view=json.loads((p/'views/V003-Y099/view.json').read_text())
+          view['mechanical_contrast']['a_terminal_velocity_delta_norm_mps']+=0.05
+          target.write_text(json.dumps(view,sort_keys=True,separators=(',',':'),allow_nan=False)+'\n')
+          PY
+          if python -m experiments.V003.verify_view \
+            --original-root "$RUNNER_TEMP/v003-original" \
+            --source-receipt "$p/receipts/source.json" \
+            --derived-root "$p/A/V003-Y099" \
+            --derived-receipt "$p/receipts/A-V003-Y099.json" \
+            --view "$p/forged-view/view.json"; then
+            echo "FATAL: rehashed forged mechanical contrast was accepted"; exit 1
+          fi
+      - name: Rehashed near-zero grazing archive and forged view must fail (frozen exact j=0)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib,json,os,pathlib,shutil
+          from experiments.V003.verify import verify_derived,encode
+          from experiments.V003.verify_view import verify_view
+          p=pathlib.Path(os.environ["RUNNER_TEMP"])/"v003"
+          original=pathlib.Path(os.environ["RUNNER_TEMP"])/"v003-original"
+          source_receipt=p/"receipts/source.json"
+          good=p/"A/V003-Y100"
+          good_view=json.loads((p/"views/V003-Y100/view.json").read_text())
+          for label,delta in (("negative",-5e-10),("positive",5e-10)):
+              bad=p/("forged-graze-"+label)
+              shutil.copytree(good,bad)
+              events_file=bad/"contacts.jsonl"
+              events=[json.loads(row) for row in events_file.read_text().splitlines()]
+              assert len(events)==1 and events[0]["kind"]=="grazing_zero_impulse"
+              events[0]["impulse_ns"]=delta
+              events_file.write_bytes(b"".join(encode(e) for e in events))
+              manifest=json.loads((bad/"manifest.json").read_text())
+              manifest["contacts"]=events
+              manifest["files_sha256"]["contacts.jsonl"]=hashlib.sha256(events_file.read_bytes()).hexdigest()
+              (bad/"manifest.json").write_bytes(encode(manifest))
+              try:
+                  verify_derived(bad,original,source_receipt)
+              except AssertionError as exc:
+                  assert "grazing impulse must be exactly 0.0" in str(exc),str(exc)
+              else:
+                  raise AssertionError("rehashed near-zero grazing was certified")
+              bad_view=p/("forged-graze-view-"+label+".json")
+              view=json.loads(json.dumps(good_view))
+              view["mechanical_contrast"]["normal_impulse_ns"]=delta
+              bad_view.write_bytes(encode(view))
+              try:
+                  verify_view(bad_view,original,source_receipt,good,
+                              p/"receipts/A-V003-Y100.json")
+              except AssertionError as exc:
+                  assert "exact source-to-view normal impulse" in str(exc),str(exc)
+              else:
+                  raise AssertionError("near-zero view-only forgery was certified")
+          PY
+      - name: Real Chromium six-panel browser smoke (Python 3.11 only)
+        if: matrix.python == '3.11'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install 'playwright>=1.49,<2'
+          python -m playwright install --with-deps chromium
+          python -m experiments.V003.browser_smoke \
+            --prepare "$RUNNER_TEMP/v003/prepare.html" \
+            --verified "$RUNNER_TEMP/v003/views/V003-Y099/index.html" \
+            --out "$RUNNER_TEMP/v003/browser-screenshots"
+      - name: Rehashed semantic tamper must fail the independent derived oracle
+        shell: bash
+        run: |
+          set -euo pipefail
+          p="$RUNNER_TEMP/v003"
+          cp -r "$p/A/V003-Y099" "$p/forged"
+          python - <<'PY'
+          import hashlib,json,os,pathlib
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'v003/forged'
+          canonical=lambda o:(json.dumps(o,sort_keys=True,separators=(',',':'),allow_nan=False)+'\n').encode()
+          file=root/'states.jsonl'
+          rows=[json.loads(s) for s in file.read_text().splitlines()]
+          rows[-1]['vx_a_mps']+=0.04
+          file.write_bytes(b''.join(canonical(row) for row in rows))
+          manifest=json.loads((root/'manifest.json').read_text())
+          manifest['samples']=rows
+          manifest['files_sha256']['states.jsonl']=hashlib.sha256(file.read_bytes()).hexdigest()
+          (root/'manifest.json').write_bytes(canonical(manifest))
+          PY
+          if python -m experiments.V003.verify \
+            --original-root "$RUNNER_TEMP/v003-original" \
+            --source-receipt "$p/receipts/source.json" \
+            --derived-root "$p/forged" --derived-receipt "$p/forged-receipt.json"; then
+            echo "FATAL: rehashed forged physical sample was accepted"; exit 1
+          fi
+          test ! -e "$p/forged-receipt.json"
+      - name: Preserve unadopted V003 derived archives and verifier receipts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: v003-derived-unadopted-py${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/v003/A
+            ${{ runner.temp }}/v003/requests
+            ${{ runner.temp }}/v003/receipts
+            ${{ runner.temp }}/v003/views
+            ${{ runner.temp }}/v003/prepare.html
+            ${{ runner.temp }}/v003/browser-screenshots
+          retention-days: 30

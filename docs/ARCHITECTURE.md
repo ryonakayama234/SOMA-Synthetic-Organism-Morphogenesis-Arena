@@ -1675,3 +1675,85 @@ Interpretation guards:
 - Original C05/C06/C07 are independently source-verified archived identity, impact and grazing **controls**, not V003 derived worlds; all controls checked after stripping only `world_id` on physical row comparisons. Existing source producer and original full-roster oracle cannot be weakened.
 - V002 remains fixed in authority and presentation. V003 exports a bounded request; there is NO browser-to-simulator bridge. Only independent verified V003 comparison artifacts may be displayed, using the exact six existing owner slots.
 - Separate engineering, model-physics and researcher-usability verdicts; not executed, not frozen, not adopted.
+
+
+## V003 post-freeze implementation candidate — code and authority (2026-10-28, PR #95)
+
+**Status: implementation candidate, pending GitHub Actions, browser manual inspection, design PR #94 gate and researcher adoption.** V003.v1 preregistration is immutable at [FROZEN_V1](../experiments/V003/FROZEN_V1.md), design SHA `46860b42846e434a54c10e906c2212d2c24e4ab3`. This paragraph supersedes prior *prospective/unfrozen* descriptors for the new implementation branch but leaves the historical design notes intact. Do not claim physics/science results before exact-head CI.
+
+```mermaid
+flowchart TD
+  SOURCE["External original F022 CI artifact\nrun 40176213718 / 5 pinned files"] --> ORIGINAL["experiments.V003.verify.original\nfull original 13-world physical verifier"]
+  ORIGINAL --> SRCRECEIPT["source receipt (outside source)"]
+  SRCRECEIPT --> PREPARE["experiments.V003.prepare\ntrusted original-only 6-panel UI"]
+  PREPARE --> EXPORT["11-option canonical request export\nNO browser-to-Python bridge"]
+  EXPORT --> RUN["experiments.V003.run_suite\nbounded offline executor"]
+  ORIGINAL --> RUN
+  RUN --> SIM["unchanged soma.f022.simulate"]
+  SIM --> RAW["v003.derived.v1\n4-file unverified derived root"]
+  RAW --> DERIVED{"experiments.V003.verify.verify_derived\nindependent closed-form from-disk oracle"}
+  DERIVED --> RECEIPT["separate derived audit receipt"]
+  RECEIPT --> PROJECT["experiments.V003.project\noriginal+derived research-only projection"]
+  ORIGINAL --> PROJECT
+  PROJECT --> AUDIT{"experiments.V003.verify_view\nindependent copy/timeline/contrast checker"}
+  AUDIT -->|PASS| VIEW["v003.lab.v1 + offline HTML\nexisting six owners"]
+  AUDIT -->|FAIL| STOP["REFUSE / publish nothing"]
+  VIEW -. "NO DATA OR CONTROL FEEDBACK" .-> AGENT["LocalObservation, policy, learning"]
+```
+
+The only changed physics-world input is B initial `y_b_m`; unchanged source F022 and frozen F022 verifier are reused, not modified. The first UI state is **PREPARE_REQUEST** (original physical data only, derived = NOT GENERATED); the second is **VERIFIED_COMPARISON** (after three independent source/derived/view gates). The renderer never itself certifies an artifact, and no new authority/panel exists. The six V002 owners retain Setup, Arena, Cells, Evidence, System/Data and Timeline responsibilities. `experiments/V003/browser_smoke.py` proposes a real Chromium 1500×950 test; this is NOT a completed manual researcher test.
+
+## V003 verified candidate checkpoint — 2026-10-29 (PR #95; no new authority)
+
+The preceding implementation mapping remains valid. The downloaded prior V003 CI archive (workflow 40714782658 / unadopted artifact 12827604335) was additionally reconstructed outside SOMA code across 11 frozen scenes and 99 saved rows; only A's original B-Y intervention is permitted. New `tests/test_v003.py` dependency gate affects **test discovery only**, not physical simulation, archived outputs, panel rendering or local agent observations. At correction SHA `f83ce39e15721f8f253c955da02612dcc25d3b74`, all 24/24 PR workflows (23 inherited plus V003) passed.
+
+~~~mermaid
+flowchart TD
+  O["Externally SHA-pinned F022 original C01–C13"] --> T{"Full-roster original verifier"}
+  T -->|pass| S["Trusted immutable C05 baseline"]
+  S --> F["V003 exactly one B-Y fork request"]
+  F --> PH["Unmodified soma.f022 2D contact mechanics"]
+  PH --> RAW["v003.derived.v1: unverified saved states and events"]
+  RAW --> DV{"Independent closed-form disk physics audit"}
+  DV -->|pass| RECEIPT["Out-of-band derived receipt"]
+  S --> PV{"Independent source-to-view semantic audit"}
+  RAW --> PV
+  RECEIPT --> PV
+  PV -->|pass| VIEW["v003.lab.v1 / EXACTLY six inherited UI owners"]
+  T -->|reject| STOP["Fail closed: no verified comparison"]
+  DV -->|reject| STOP
+  PV -->|reject| STOP
+  VIEW -. "NEVER return global truth" .-> CELL["Blocked agent observation / policy / training"]
+
+  TEST["Inherited F001–F023 test collection"] --> DEP{"jsonschema installed?"}
+  DEP -->|no| SKIP["Skip V003-only module; run inherited tests"]
+  DEP -->|yes| RUN["Run V003 contract tests too"]
+  CI["Dedicated V003 CI"] --> INSTALL["Install required jsonschema"]
+  INSTALL --> RUN
+~~~
+
+**UI/data obligation unchanged:** Setup alone exports one of eleven typed requests; Arena reads real saved XY/events; Cells shows F022 energy/motor as NOT MODELED; Timeline edits only local saved-sample cursor; Evidence owns archived/derived/view audit and A mechanical contrast; System/Data owns schema and provenance. No seventh owner, browser-to-Python execution, interpolation, solver mutation, or analytics-to-agent path. Human acceptance remains separate from automated Chromium smoke. See [append-only results](../findings/V003-validation.md) and [v1 frozen pre-observation contract](../experiments/V003/FROZEN_V1.md).
+
+
+## V003.v1 post-freeze exact grazing verifier — 2026-10-30 candidate, PR #95
+
+**Existing data and authority paths, no new UI owner.** Source-independent derived verification requires `grazing_zero_impulse` to carry an exact floating-point `impulse_ns=0.0` (never apply physical SI tolerance to this discrete event meaning). The independent view verifier checks the exact copy of the verified derived impulse or `null`, before publishing the offline HTML. Both reject altered data.
+
+~~~mermaid
+flowchart TD
+  O["Pinned original F022 full 13-world archive"] --> G{"Independent F022 oracle + external SHA"}
+  R["Frozen 11 requests"] --> P["Existing F022 producer via V003 offline runner"]
+  G -->|verified| P
+  P --> D["Unverified V003 derived archive"]
+  D --> I{"Independent derived oracle: exact grazing j=0"}
+  I -->|reject| X["No PASS receipt / no verified display"]
+  I -->|pass| E["Out-of-band audit receipt"]
+  E --> V["V003 cross-authority projector"]
+  G --> V
+  V --> J{"Independent view oracle: exact impulse / null"}
+  J -->|reject| X
+  J -->|pass| U["Existing Setup / Arena / Cells / Timeline / Evidence / System-Data"]
+  U -. "FORBIDDEN world-truth feedback" .-> L["LocalObservation / LocalPolicy / Learning"]
+~~~
+
+The frozen V003.v1 source and request specification, unmodified F022 solver, existing V002 source/view contract and six-owner layout are unchanged. This graph clarifies a verifier invariant rather than creating a runtime module or UI panel. Fresh final-head CI and review are required before adoption.
