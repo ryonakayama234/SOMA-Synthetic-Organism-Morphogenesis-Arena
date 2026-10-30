@@ -1498,3 +1498,18 @@ flowchart LR
 | UI | Setup / Arena / Cells / Timeline / Evidence / System-Data | Read/display permitted as frozen; no world-truth flow back to cell policy |
 
 **Recorded observation bound:** CI workflow 40714782658 (source SHA `1d6e2cdf`) produced 11 candidate worlds / 99 physical state rows (5 impulse, 1 zero-impulse graze, 5 miss); downloaded Python 3.11 artifact 12827604335 independently reconstructed with standard-library-only analytic math and raw SHA checks, max absolute component discrepancy 1.3322676295501878e-15. A follow-up *test discovery only* fix at `f83ce39e` passed all 24/24 inherited+V003 workflows, without changing these source/view contract fields. Details, limitations, and adoption gates: [V003 findings](../findings/V003-validation.md). This is model-world evidence, not new robot capability or agent learning.
+
+
+## V003.v1 post-freeze grazing-event semantic verification (2026-10-30 candidate, PR #95)
+
+No machine-readable V003 schema, scenario parameter, frozen numerical tolerance, original F022 archive or workspace owner changes. Derived source and view oracles use different equality policies according to the **meaning** of the field:
+
+| Field or property | Required comparison | Why |
+|---|---|---|
+| Derived `kind=grazing_zero_impulse`, `impulse_ns` | Exact `float` type and `== 0.0` before approximate checks | Frozen discrete contact semantics; a nonzero signed impulse is not grazing |
+| Nonzero physical impulses, TOI, frame values, conservation diagnostics | Frozen scaled-SI `abs(error) <= 1e-9*max(1,abs(reference))` | Bounded floating-point physical computation |
+| Absent contact `contacts=[]` / view impulse and event time `null` | Exact event absence and JSON `null` | No contact is not a zero-impulse contact |
+| `v003.lab.v1.mechanical_contrast.normal_impulse_ns` | Exact canonical value equality with independently verified contact impulse, or exact `null` | The display copies archive evidence, not a new approximate prediction |
+| Other continuous `mechanical_contrast` summaries | Frozen physical tolerance, after signed frame verification | These are derived numerical effects |
+
+Source-bound negative CI controls clone V003-Y100, mutate `contacts.jsonl` impulse to `-5e-10` and `+5e-10` N·s, update the embedded manifest contacts and file hash, then demand that independent derived verification reject both. Separate view-only tampering must be rejected when raw derived source stays valid. Unaltered eleven frozen controls must continue to pass. Physical files and independently issued receipts must not be overwritten or relabeled as F022 evidence.
